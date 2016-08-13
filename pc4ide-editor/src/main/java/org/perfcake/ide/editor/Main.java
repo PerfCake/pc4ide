@@ -28,18 +28,19 @@ public class Main {
 			public void run() {
 				JFrame frame = new JFrame();
 				frame.setTitle("Java2d example");
-				frame.setSize(300, 200);
+//				frame.setSize(300, 200);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				EditorView editor = new EditorView();
 
 				int numOfSectors = 7;
 				int angleExtent = 40;
-				Point2D center = new Point2D.Double(400,400);
+				Point2D center = new Point2D.Double(300,300);
 				for (int i = 0; i < numOfSectors; i++){
-					SectorView sector = new SectorView("ComponentName", center, (int) (center.getX()*0.85), 50, i*angleExtent, angleExtent);
+					SectorView sector = new SectorView("Section " + i, center, (int) (center.getX()*0.85), 50, i*angleExtent, angleExtent);
 					editor.addSector(sector);
 				}
+
 
 				frame.add(editor);
 

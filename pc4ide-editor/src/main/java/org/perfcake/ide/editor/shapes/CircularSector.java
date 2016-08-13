@@ -88,14 +88,14 @@ public class CircularSector extends JPanel {
 		//font along the line:
 		Font font = new Font("Serif", Font.PLAIN, 24);
 		FontRenderContext frc = g2d.getFontRenderContext();
+
+
 		g2d.translate(endOuterArcPoint.getX(), endOuterArcPoint.getY());
 		g2d.rotate(Math.toRadians(startAngle + 120));
-
 		GlyphVector gv = font.createGlyphVector(frc, componentName);
 		int length = gv.getNumGlyphs();
 		for (int i = 0; i < length; i++) {
 			Point2D p = gv.getGlyphPosition(i);
-//			double theta = (double) i / (double) (length - 1) * Math.PI / 4;
 			double theta = (double) i/ (double) (length ) * Math.toRadians(angleExtent);
 			AffineTransform at = AffineTransform.getTranslateInstance(p.getX(), p.getY());
 			at.rotate(theta);
@@ -103,6 +103,7 @@ public class CircularSector extends JPanel {
 			Shape transformedGlyph = at.createTransformedShape(glyph);
 			g2d.fill(transformedGlyph);
 		}
+
 
 	}
 

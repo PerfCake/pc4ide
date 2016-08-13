@@ -90,11 +90,20 @@ public class SectorView implements ComponentView {
 		g2d.draw(line1);
 		g2d.draw(line2);
 
+
+		drawSectionName(g2d, endOuterArcPoint);
+
+
+	}
+
+
+	private void drawSectionName(Graphics2D g2d, Point2D startingPoint) {
 		//font along the line:
-		Font font = new Font("Serif", Font.PLAIN, 24);
+		Font font = new Font("Serif", Font.PLAIN, 12);
 		FontRenderContext frc = g2d.getFontRenderContext();
-		g2d.translate(endOuterArcPoint.getX(), endOuterArcPoint.getY());
-		g2d.rotate(Math.toRadians(startAngle + 120));
+		AffineTransform defaultTransform = g2d.getTransform();
+		g2d.translate(startingPoint.getX(), startingPoint.getY());
+		g2d.rotate(Math.toRadians(-(startAngle - 55)));
 
 		GlyphVector gv = font.createGlyphVector(frc, componentName);
 		int length = gv.getNumGlyphs();
@@ -109,7 +118,7 @@ public class SectorView implements ComponentView {
 			g2d.fill(transformedGlyph);
 		}
 
-
+		g2d.setTransform(defaultTransform);
 	}
 
 	/* (non-Javadoc)
