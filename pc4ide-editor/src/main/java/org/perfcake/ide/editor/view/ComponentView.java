@@ -4,7 +4,7 @@
 package org.perfcake.ide.editor.view;
 
 import java.awt.Graphics;
-import java.awt.geom.Point2D;
+import java.awt.Shape;
 
 /**
  * Base type for component view in editor MVC.
@@ -21,11 +21,9 @@ public interface ComponentView {
 	public void draw(Graphics g);
 
 	/**
-	 * Tests whether the view contains point
 	 *
-	 * @param point
-	 * @return true if this view contains point
+	 * @return {@link Shape} which completely encloses this view graphical representation
 	 */
-	public boolean containts(Point2D point);
+	public Shape getViewBounds();
 
 }
