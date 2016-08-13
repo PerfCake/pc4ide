@@ -67,12 +67,6 @@ public class SectorView  implements ComponentView {
 		innerArc.setArcByCenter(center.getX(), center.getY(), innerRadius, startAngle - angularOverlap, angleExtent + 2*angularOverlap, Arc2D.PIE);
 
 
-		Point2D startOuterArcPoint = new Point2D.Double(center.getX() + outerRadius * Math.cos(Math.toRadians(-startAngle)),
-				center.getY() + outerRadius * Math.sin(Math.toRadians(-startAngle)));
-
-		Point2D endOuterArcPoint = new Point2D.Double(center.getX() + outerRadius * Math.cos(Math.toRadians(-(startAngle + angleExtent))),
-				center.getY() + outerRadius * Math.sin(Math.toRadians(-(startAngle+angleExtent))));
-
 //		Point2D startInnerArcPoint = new Point2D.Double(center.getX() + innerRadius * Math.cos(Math.toRadians(-startAngle)),
 //				center.getY() + innerRadius * Math.sin(Math.toRadians(-startAngle)));
 //
@@ -108,30 +102,42 @@ public class SectorView  implements ComponentView {
 
 		bounds = boundArea;
 
+
+		g2d.draw(boundArea);
+
+		drawSectorName(g2d);
+
+//		drawSectionName(g2d, endOuterArcPoint);
+
+
+	}
+
+
+	protected void drawSectorName(Graphics2D g2d) {
+		Point2D startOuterArcPoint = new Point2D.Double(center.getX() + outerRadius * Math.cos(Math.toRadians(-startAngle)),
+				center.getY() + outerRadius * Math.sin(Math.toRadians(-startAngle)));
+
+		Point2D endOuterArcPoint = new Point2D.Double(center.getX() + outerRadius * Math.cos(Math.toRadians(-(startAngle + angleExtent))),
+				center.getY() + outerRadius * Math.sin(Math.toRadians(-(startAngle+angleExtent))));
+
 		Point2D chordCenter = new Point2D.Double(
 				(startOuterArcPoint.getX() + endOuterArcPoint.getX())/2,
 				(startOuterArcPoint.getY() + endOuterArcPoint.getY())/2);
-
-
 
 		AffineTransform defaultTransform = g2d.getTransform();
 		FontRenderContext frc = g2d.getFontRenderContext();
 		Font font = g2d.getFont();
 		Rectangle2D fontBounds = font.getStringBounds(componentName, frc);
 
+		Point2D textCenter = new Point2D.Double(
+				chordCenter.getX() - fontBounds.getHeight()*Math.cos(Math.toRadians(-(startAngle + angleExtent/2))),
+				chordCenter.getY() - fontBounds.getHeight()*Math.sin(Math.toRadians(-(startAngle + angleExtent/2))));
+
 		Double theta = 90 - (startAngle + angleExtent/2);
 
-		g2d.rotate(Math.toRadians(theta), chordCenter.getX(), chordCenter.getY());
-		g2d.drawString(componentName, (float) (chordCenter.getX() - fontBounds.getWidth()/2) , (float) (chordCenter.getY() - fontBounds.getHeight()/2));
+		g2d.rotate(Math.toRadians(theta), textCenter.getX(), textCenter.getY());
+		g2d.drawString(componentName, (float) (textCenter.getX() - fontBounds.getWidth()/2) , (float) (textCenter.getY() - fontBounds.getHeight()/2));
 		g2d.setTransform(defaultTransform);
-
-
-
-		g2d.draw(boundArea);
-
-//		drawSectionName(g2d, endOuterArcPoint);
-
-
 	}
 
 //
