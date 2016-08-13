@@ -25,6 +25,10 @@ import java.util.Map;
  */
 public class SectorView  implements ComponentView {
 
+	public String getComponentName() {
+		return componentName;
+	}
+
 	private String componentName;
 	private Point2D center;
 	private int outerRadius;

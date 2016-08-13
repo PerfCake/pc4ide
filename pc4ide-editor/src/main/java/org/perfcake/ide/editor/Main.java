@@ -37,7 +37,7 @@ public class Main {
 				int angleExtent = 40;
 				Point2D center = new Point2D.Double(300,300);
 				for (int i = 0; i < numOfSectors; i++){
-					SectorView sector = new SectorView("Section " + i, center, (int) (center.getX()*0.85), 50, i*angleExtent, angleExtent);
+					SectorView sector = new SectorView("Section " + i, center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180, angleExtent);
 					editor.addSector(sector);
 				}
 
