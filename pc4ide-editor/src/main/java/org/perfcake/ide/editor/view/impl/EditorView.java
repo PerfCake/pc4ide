@@ -6,6 +6,7 @@ package org.perfcake.ide.editor.view.impl;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
+import org.perfcake.ide.editor.view.icons.GeneratorIcon;
 
 import javax.swing.JComponent;
 
@@ -33,7 +34,7 @@ public class EditorView extends AbstractView {
 		int angleExtent = 180/numOfSectors;
 		Point2D center = new Point2D.Double(300,300);
 		for (int i = 0; i < numOfSectors; i++){
-			SectorView sector = new SectorView("Section " + (i+1), center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180 - angleExtent, angleExtent);
+			SectorView sector = new SectorView("Section " + (i+1), center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180 - angleExtent, angleExtent, new GeneratorIcon());
 			addChild(sector);
 			invalidate();
 		}
