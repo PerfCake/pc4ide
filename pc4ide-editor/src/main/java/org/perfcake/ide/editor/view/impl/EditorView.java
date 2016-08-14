@@ -1,89 +1,105 @@
+/**
+ *
+ */
 package org.perfcake.ide.editor.view.impl;
 
+import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 
 import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.awt.geom.Point2D;
+import java.util.Iterator;
 
-public class EditorView extends JPanel {
+/**
+ * @author jknetl
+ *
+ */
+public class EditorView extends AbstractView {
 
-	private List<SectorView> sectors = new ArrayList<>();
+	// Swing component containing the editor
+	private JComponent jComponent;
 
 
-
-
-	public EditorView() {
+	public EditorView(JComponent jComponent) {
 		super();
-		addMouseListener(new EditorMouseListener());
+		this.jComponent = jComponent;
+
+		int numOfSectors = 5;
+		int angleExtent = 180/numOfSectors;
+		Point2D center = new Point2D.Double(300,300);
+		for (int i = 0; i < numOfSectors; i++){
+			SectorView sector = new SectorView("Section " + (i+1), center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180 - angleExtent, angleExtent);
+			addChild(sector);
+			invalidate();
+		}
+
+
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		for (ComponentView sector: sectors){
-			sector.draw(g);
+	public void addChild(ComponentView child) throws UnsupportedChildViewException {
+		if (child instanceof SectorView){
+			super.addChild(child);
+		} else {
+			throw new UnsupportedChildViewException("Editor view can accept only SectorView object as child");
 		}
-
 	}
 
-	public void addSector(SectorView sector){
-		sectors.add(sector);
+
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		jComponent.repaint();
 	}
 
-	public void removeSector(SectorView sector){
-		sectors.remove(sector);
-	}
-
-	/**
-	 *
-	 * @return unmodifiable collection of sectors
+	/* (non-Javadoc)
+	 * @see org.perfcake.ide.editor.view.ComponentView#draw(java.awt.Graphics)
 	 */
-	public List<SectorView> getSectors() {
-		return Collections.unmodifiableList(sectors);
+	@Override
+	public void draw(Graphics g) {
+		Iterator<ComponentView> iterator = getChildrenIterator();
+		while (iterator.hasNext()){
+			ComponentView child = iterator.next();
+			child.draw(g);
+		}
 	}
 
-	private class EditorMouseListener implements MouseListener{
+	/* (non-Javadoc)
+	 * @see org.perfcake.ide.editor.view.ComponentView#getViewBounds()
+	 */
+	@Override
+	public Shape getViewBounds() {
+		return null;
+	}
 
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			for (SectorView s : sectors){
-				if (s.getViewBounds().contains(e.getX(), e.getY())){
-					System.out.println("Sector \"" + s.getComponentName() + "\" clicked!");
-				}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		Iterator<ComponentView> iterator = getChildrenIterator();
+		while (iterator.hasNext()){
+			ComponentView child = iterator.next();
+			if (child.getViewBounds().contains(e.getX(), e.getY())){
+				unselectOthers();
+				child.setSelected(true);
 			}
-
 		}
 
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
 
+	}
+
+	private void unselectOthers() {
+		Iterator<ComponentView> it2 = getChildrenIterator();
+		while (it2.hasNext()){
+			ComponentView child2 = it2.next();
+			if (child2.isSelected()){
+				child2.setSelected(false);
+			}
 		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
 	}
 
 

@@ -3,13 +3,16 @@
  */
 package org.perfcake.ide.editor.view.impl;
 
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.AbstractView;
 
+import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
@@ -23,7 +26,7 @@ import java.util.Map;
  * @author jknetl
  *
  */
-public class SectorView  implements ComponentView {
+public class SectorView  extends AbstractView {
 
 	public String getComponentName() {
 		return componentName;
@@ -35,6 +38,7 @@ public class SectorView  implements ComponentView {
 	private int innerRadius;
 	private double startAngle;
 	private double angleExtent;
+
 
 	private Shape bounds;
 
@@ -106,8 +110,14 @@ public class SectorView  implements ComponentView {
 
 		bounds = boundArea;
 
+		Stroke defaultStorke = g2d.getStroke();
+		if (isSelected()){
+			Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+			g2d.setStroke(selectedStroke);
+		}
 
 		g2d.draw(boundArea);
+		g2d.setStroke(defaultStorke);
 
 		drawSectorName(g2d);
 
@@ -171,6 +181,12 @@ public class SectorView  implements ComponentView {
 	@Override
 	public Shape getViewBounds() {
 		return bounds;
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		super.mouseReleased(e);
 	}
 
 }
