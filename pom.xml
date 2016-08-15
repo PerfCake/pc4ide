@@ -10,6 +10,7 @@
 
 	<modules>
 		<module>pc4ide-editor</module>
+		<module>pc4ide-core</module>
 	</modules>
 	
 	<properties>
