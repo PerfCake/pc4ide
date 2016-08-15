@@ -15,7 +15,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
@@ -191,11 +190,6 @@ public class SectorView extends AbstractView {
 	@Override
 	public Shape getViewBounds() {
 		return bounds;
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		super.mouseReleased(e);
 	}
 
 }

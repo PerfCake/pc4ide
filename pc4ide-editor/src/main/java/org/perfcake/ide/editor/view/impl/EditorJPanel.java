@@ -1,5 +1,7 @@
 package org.perfcake.ide.editor.view.impl;
 
+import org.perfcake.ide.editor.controller.impl.EditorController;
+
 import javax.swing.JPanel;
 
 import java.awt.Graphics;
@@ -8,19 +10,19 @@ import java.awt.event.MouseListener;
 
 public class EditorJPanel extends JPanel {
 
-	private EditorView editor;
+	private EditorController editorController;
 
 	public EditorJPanel() {
 		super();
 		addMouseListener(new EditorMouseListener());
-		editor = new EditorView(this);
+		editorController = new EditorController(this);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		editor.draw(g);
+		editorController.drawView(g);
 	}
 
 	private class EditorMouseListener implements MouseListener{
@@ -38,7 +40,7 @@ public class EditorJPanel extends JPanel {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			editor.mouseReleased(e);
+			editorController.mouseReleased(e);
 //			for (SectorView s : sectors){
 //				if (s.getViewBounds().contains(e.getX(), e.getY())){
 //					//unselect sectors
