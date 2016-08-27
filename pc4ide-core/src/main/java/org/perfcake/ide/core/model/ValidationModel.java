@@ -20,6 +20,7 @@
 package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Scenario.Validation;
+import org.perfcake.model.Scenario.Validation.Validator;
 
 public class ValidationModel extends AbstractModel {
 
@@ -35,6 +36,12 @@ public class ValidationModel extends AbstractModel {
 			throw new IllegalArgumentException("Validation must not be null");
 		}
 		this.validation = validation;
+
+		if (validation.getValidator() != null) {
+			for (final Validator v : validation.getValidator()) {
+				addValidator(new ValidatorModel(v));
+			}
+		}
 	}
 
 	public ValidationModel() {

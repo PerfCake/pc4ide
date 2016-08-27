@@ -19,6 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Properties;
 
 import java.util.Collections;
@@ -36,6 +37,12 @@ public class PropertiesModel extends AbstractModel implements PropertyContainer 
 			throw new IllegalArgumentException("Properties must not be null");
 		}
 		this.properties = properties;
+
+		if (properties.getProperty() != null) {
+			for (final Property p : properties.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public PropertiesModel() {

@@ -19,7 +19,10 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Header;
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Messages.Message;
+import org.perfcake.model.Scenario.Messages.Message.ValidatorRef;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +44,24 @@ public class MessageModel extends AbstractModel implements PropertyContainer {
 			throw new IllegalArgumentException("Message must not be null.");
 		}
 		this.message = message;
+
+		if (message.getHeader() != null) {
+			for (final Header h : message.getHeader()) {
+				addHeader(new HeaderModel(h));
+			}
+		}
+
+		if (message.getProperty() != null) {
+			for (final Property p : message.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
+
+		if (message.getValidatorRef() != null) {
+			for (final ValidatorRef v : message.getValidatorRef()) {
+				addValidatorRef(new ValidatorRefModel(v));
+			}
+		}
 	}
 
 	public MessageModel() {

@@ -19,7 +19,9 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination;
+import org.perfcake.model.Scenario.Reporting.Reporter.Destination.Period;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +41,18 @@ public class DestinationModel extends AbstractModel implements PropertyContainer
 			throw new IllegalArgumentException("Destination must not be null");
 		}
 		this.destination = destination;
+
+		if (destination.getPeriod() != null) {
+			for (final Period p : destination.getPeriod()) {
+				addPeriod(new PeriodModel(p));
+			}
+		}
+
+		if (destination.getProperty() != null) {
+			for (final Property p : destination.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public DestinationModel() {

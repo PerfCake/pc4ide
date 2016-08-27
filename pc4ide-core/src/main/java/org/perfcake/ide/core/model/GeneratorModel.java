@@ -19,6 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Generator;
 
 import java.util.Collections;
@@ -39,6 +40,12 @@ public class GeneratorModel extends AbstractModel implements PropertyContainer {
 			throw new IllegalArgumentException("Generator must not be null");
 		}
 		this.generator = generator;
+
+		if (generator.getProperty() != null) {
+			for (final Property p : generator.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public GeneratorModel() {

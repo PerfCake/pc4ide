@@ -16,11 +16,17 @@
 	<properties>
 		<perfcake.version>6.0</perfcake.version>
 		<slf4j.version>1.7.21</slf4j.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+			<groupId>org.perfcake</groupId>
+			<artifactId>perfcake</artifactId>
+			<version>${perfcake.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
@@ -30,18 +36,24 @@
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-			</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

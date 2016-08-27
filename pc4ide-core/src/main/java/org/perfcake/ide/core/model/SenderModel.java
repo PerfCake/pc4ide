@@ -19,6 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Sender;
 
 import java.util.Collections;
@@ -37,6 +38,12 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
 			throw new IllegalArgumentException("Sender must not be null");
 		}
 		this.sender = sender;
+
+		if (sender.getProperty() != null) {
+			for (final Property p : sender.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public SenderModel() {

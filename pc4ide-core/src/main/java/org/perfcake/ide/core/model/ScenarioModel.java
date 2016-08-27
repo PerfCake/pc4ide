@@ -46,6 +46,35 @@ public class ScenarioModel extends AbstractModel {
 			throw new IllegalArgumentException("Scenario must not be null");
 		}
 		this.scenario = scenario;
+
+		if (scenario.getSender() != null) {
+			setSender(new SenderModel(scenario.getSender()));
+		}
+
+		if (scenario.getGenerator() != null) {
+			setGenerator(new GeneratorModel(scenario.getGenerator()));
+		}
+
+		if (scenario.getRun() != null) {
+			setRun(new RunModel(scenario.getRun()));
+		}
+
+		if (scenario.getReporting() != null) {
+			setReporting(new ReportingModel(scenario.getReporting()));
+		}
+
+		if (scenario.getMessages() != null) {
+			setMessages(new MessagesModel(scenario.getMessages()));
+		}
+
+		if (scenario.getValidation() != null) {
+			setValidation(new ValidationModel(scenario.getValidation()));
+		}
+
+		if (scenario.getProperties() != null) {
+			setProperties(new PropertiesModel(scenario.getProperties()));
+		}
+
 	}
 
 	public ScenarioModel() {

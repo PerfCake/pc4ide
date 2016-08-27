@@ -19,7 +19,9 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Reporting;
+import org.perfcake.model.Scenario.Reporting.Reporter;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +39,18 @@ public class ReportingModel extends AbstractModel implements PropertyContainer {
 			throw new IllegalArgumentException("Reporting must not be null.");
 		}
 		this.reporting = reporting;
+
+		if (reporting.getReporter() != null) {
+			for (final Reporter r : reporting.getReporter()) {
+				addReporter(new ReporterModel(r));
+			}
+		}
+
+		if (reporting.getProperty() != null) {
+			for (final Property p : reporting.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public ReportingModel() {

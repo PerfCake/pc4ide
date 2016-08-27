@@ -19,6 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
+import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Validation.Validator;
 
 import java.util.Collections;
@@ -39,6 +40,12 @@ public class ValidatorModel extends AbstractModel implements PropertyContainer {
 			throw new IllegalArgumentException("Validator must not be null.");
 		}
 		this.validator = validator;
+
+		if (validator.getProperty() != null) {
+			for (final Property p : validator.getProperty()) {
+				addProperty(new PropertyModel(p));
+			}
+		}
 	}
 
 	public ValidatorModel() {

@@ -20,6 +20,7 @@
 package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Scenario.Messages;
+import org.perfcake.model.Scenario.Messages.Message;
 
 public class MessagesModel extends AbstractModel {
 
@@ -33,6 +34,12 @@ public class MessagesModel extends AbstractModel {
 			throw new IllegalArgumentException("Messages must not be null");
 		}
 		this.messages = messages;
+
+		if (messages.getMessage() != null) {
+			for (final Message m : messages.getMessage()) {
+				addMessage(new MessageModel(m));
+			}
+		}
 	}
 
 	public MessagesModel() {
