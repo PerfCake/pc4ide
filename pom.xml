@@ -14,7 +14,7 @@
 	</modules>
 
 	<properties>
-		<perfcake.version>6.0</perfcake.version>
+		<perfcake.version>7.0-SNAPSHOT</perfcake.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<junit.version>4.12</junit.version>
 	</properties>
