@@ -21,6 +21,9 @@ package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination.Period;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PeriodModel extends AbstractModel {
 
 	public static final String PROPERTY_TYPE = "period-type";
@@ -51,16 +54,30 @@ public class PeriodModel extends AbstractModel {
 		return period;
 	}
 
+	public String getType() {
+		return period.getType();
+	}
+
 	public void setType(String type) {
 		final String oldType = period.getType();
 		period.setType(type);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_TYPE, oldType, type);
 	}
 
+	public String getValue() {
+		return period.getValue();
+	}
+
 	public void setValue(String value) {
 		final String oldValue = period.getValue();
 		period.setValue(value);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		return children;
 	}
 
 }

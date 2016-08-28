@@ -23,6 +23,7 @@ import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Reporting;
 import org.perfcake.model.Scenario.Reporting.Reporter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,6 +86,11 @@ public class ReportingModel extends AbstractModel implements PropertyContainer {
 		}
 	}
 
+	public List<ReporterModel> getReporter() {
+		final List<ReporterModel> result = MapperUtils.getPc4ideList(reporting.getReporter(), getMapper());
+		return Collections.unmodifiableList(result);
+	}
+
 	@Override
 	public void addProperty(PropertyModel property) {
 		addProperty(reporting.getProperty().size(), property);
@@ -109,5 +115,13 @@ public class ReportingModel extends AbstractModel implements PropertyContainer {
 	public List<PropertyModel> getProperty() {
 		final List<PropertyModel> result = MapperUtils.getPc4ideList(reporting.getProperty(), getMapper());
 		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getReporter());
+		children.addAll(getProperty());
+		return children;
 	}
 }

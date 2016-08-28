@@ -21,6 +21,9 @@ package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Header;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HeaderModel extends AbstractModel {
 
 	public static final String PROPERTY_NAME = "header-name";
@@ -51,15 +54,30 @@ public class HeaderModel extends AbstractModel {
 		return header;
 	}
 
+	public String getName() {
+		return header.getName();
+	}
+
 	public void setName(String name) {
 		final String oldName = header.getName();
 		header.setName(name);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldName, name);
 	}
 
+	public String getValue() {
+		return header.getValue();
+	}
+
 	public void setValue(String value) {
 		final String oldValue = header.getValue();
 		header.setValue(value);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+
+		return children;
 	}
 }

@@ -24,6 +24,7 @@ import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Messages.Message;
 import org.perfcake.model.Scenario.Messages.Message.ValidatorRef;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -122,6 +123,11 @@ public class MessageModel extends AbstractModel implements PropertyContainer {
 		}
 	}
 
+	public List<HeaderModel> getHeader() {
+		final List<HeaderModel> result = MapperUtils.getPc4ideList(message.getHeader(), getMapper());
+		return Collections.unmodifiableList(result);
+	}
+
 	public void addValidatorRef(ValidatorRefModel ref) {
 		addValidatorRef(message.getValidatorRef().size(), ref);
 	}
@@ -139,10 +145,23 @@ public class MessageModel extends AbstractModel implements PropertyContainer {
 		}
 	}
 
+	public List<ValidatorRefModel> getValidatorRef() {
+		final List<ValidatorRefModel> result = MapperUtils.getPc4ideList(message.getValidatorRef(), getMapper());
+		return Collections.unmodifiableList(result);
+	}
+
+	public String getUri() {
+		return message.getUri();
+	}
+
 	public void setUri(String uri) {
 		final String oldUri = message.getUri();
 		message.setUri(uri);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_URI, oldUri, uri);
+	}
+
+	public String getMultiplicity() {
+		return message.getMultiplicity();
 	}
 
 	public void setMultiplicity(String multiplicity) {
@@ -151,9 +170,22 @@ public class MessageModel extends AbstractModel implements PropertyContainer {
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_MULTIPLICITY, oldMultiplicity, multiplicity);
 	}
 
+	public String getContent() {
+		return message.getContent();
+	}
+
 	public void setContent(String content) {
 		final String oldContent = message.getContent();
 		message.setContent(content);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_CONTENT, oldContent, content);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getProperty());
+		children.addAll(getHeader());
+		children.addAll(getValidatorRef());
+		return children;
 	}
 }

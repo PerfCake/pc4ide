@@ -28,6 +28,9 @@ import org.perfcake.model.Scenario.Run;
 import org.perfcake.model.Scenario.Sender;
 import org.perfcake.model.Scenario.Validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScenarioModel extends AbstractModel {
 
 	public static final String PROPERTY_GENERATOR = "scenario-generator";
@@ -106,6 +109,10 @@ public class ScenarioModel extends AbstractModel {
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_SENDER, oldSenderModel, sender);
 	}
 
+	public SenderModel getSender() {
+		return (SenderModel) getMapper().getModel(scenario.getSender());
+	}
+
 	public void setGenerator(GeneratorModel generator) {
 		final Generator oldGenerator = scenario.getGenerator();
 		AbstractModel oldGeneratorModel = null;
@@ -118,6 +125,10 @@ public class ScenarioModel extends AbstractModel {
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_GENERATOR, oldGeneratorModel, generator);
 	}
 
+	public GeneratorModel getGenerator(){
+		return (GeneratorModel) getMapper().getModel(scenario.getGenerator());
+	}
+
 	public void setRun(RunModel run) {
 		final Run oldRun = scenario.getRun();
 		AbstractModel oldRunModel = null;
@@ -128,6 +139,10 @@ public class ScenarioModel extends AbstractModel {
 		}
 		getMapper().bind(run.getRun(), run);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_RUN, oldRunModel, run);
+	}
+
+	public RunModel getRun() {
+		return (RunModel) getMapper().getModel(scenario.getRun());
 	}
 
 	public void setReporting(ReportingModel reporting) {
@@ -143,6 +158,10 @@ public class ScenarioModel extends AbstractModel {
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_REPORTING, oldReportingModel, reporting);
 	}
 
+	public ReportingModel getReporting() {
+		return (ReportingModel) getMapper().getModel(scenario.getReporting());
+	}
+
 	public void setMessages(MessagesModel messages) {
 		final Messages oldMessages = scenario.getMessages();
 		AbstractModel oldMessagesModel = null;
@@ -154,6 +173,10 @@ public class ScenarioModel extends AbstractModel {
 		getMapper().bind(messages.getMessages(), messages);
 
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_MESSAGES, oldMessagesModel, messages);
+	}
+
+	public MessagesModel getMessages() {
+		return (MessagesModel) getMapper().getModel(scenario.getMessages());
 	}
 
 	public void setValidation(ValidationModel validation) {
@@ -169,6 +192,10 @@ public class ScenarioModel extends AbstractModel {
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALIDATION, oldValidationModel, validation);
 	}
 
+	public ValidationModel getValidation() {
+		return (ValidationModel) getMapper().getModel(scenario.getValidation());
+	}
+
 	public void setProperties(PropertiesModel properties) {
 		final Properties oldProperties = scenario.getProperties();
 		AbstractModel oldPropertiesModel = null;
@@ -179,5 +206,22 @@ public class ScenarioModel extends AbstractModel {
 		}
 		getMapper().bind(properties.getProperties(), properties);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_PROPERTIES, oldPropertiesModel, properties);
+	}
+
+	public PropertiesModel getProperties() {
+		return (PropertiesModel) getMapper().getModel(scenario.getProperties());
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.add(getGenerator());
+		children.add(getSender());
+		children.add(getMessages());
+		children.add(getReporting());
+		children.add(getRun());
+		children.add(getValidation());
+		children.add(getProperties());
+		return children;
 	}
 }

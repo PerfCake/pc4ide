@@ -22,6 +22,7 @@ package org.perfcake.ide.core.model;
 import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Sender;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
 
 	public static final String PROPERTY_CLASS = "sender-class";
 	public static final String PROPERTY_PROPERTIES = "sender-property";
+	private static final String PROPERTY_TARGET = "sender-target";
 
 	private Sender sender;
 
@@ -61,10 +63,24 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
 		return sender;
 	}
 
+	public String getClazz() {
+		return sender.getClazz();
+	}
+
 	public void setClazz(String clazz) {
 		final String oldClazz = sender.getClazz();
 		sender.setClazz(clazz);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_CLASS, oldClazz, clazz);
+	}
+
+	public String getTarget() {
+		return sender.getTarget();
+	}
+
+	public void setTarget(String value) {
+		final String oldTarget = sender.getTarget();
+		sender.setTarget(value);
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_TARGET, oldTarget, value);
 	}
 
 	@Override
@@ -91,5 +107,12 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
 	public List<PropertyModel> getProperty() {
 		final List<PropertyModel> result = MapperUtils.getPc4ideList(sender.getProperty(), getMapper());
 		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getProperty());
+		return children;
 	}
 }

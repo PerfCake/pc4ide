@@ -21,6 +21,9 @@ package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Scenario.Run;
 
+import java.util.Collections;
+import java.util.List;
+
 public class RunModel extends AbstractModel {
 	public static final String PROPERTY_TYPE = "run-type";
 	public static final String PROPERTY_VALUE = "run-value";
@@ -49,15 +52,28 @@ public class RunModel extends AbstractModel {
 		return run;
 	}
 
+	public String getType() {
+		return run.getType();
+	}
+
 	public void setType(String value) {
 		final String oldValue = run.getType();
 		run.setType(value);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_TYPE, oldValue, value);
 	}
 
+	public String getValue() {
+		return run.getValue();
+	}
+
 	public void setValue(String value) {
 		final String oldValue = run.getValue();
 		run.setValue(value);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		return Collections.emptyList();
 	}
 }

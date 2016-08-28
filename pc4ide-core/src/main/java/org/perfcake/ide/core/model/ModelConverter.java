@@ -12,12 +12,12 @@ import org.perfcake.model.Scenario;
  * @author jknetl
  *
  */
-final class ModelConverter {
+final public class ModelConverter {
 
 	private ModelConverter() {
 	}
 
-	public ScenarioModel getPc4ideModel(Scenario perfcakeModel) {
+	public static ScenarioModel getPc4ideModel(Scenario perfcakeModel) {
 		if (perfcakeModel == null) {
 			throw new IllegalArgumentException("Model must not be null.");
 		}
@@ -28,7 +28,7 @@ final class ModelConverter {
 
 	}
 
-	public Scenario getPerfcakeModel(ScenarioModel pc4ideModel) {
+	public static Scenario getPerfcakeModel(ScenarioModel pc4ideModel) {
 		if (pc4ideModel == null) {
 			throw new IllegalArgumentException("Model must not be null.");
 		}

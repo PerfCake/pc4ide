@@ -22,6 +22,10 @@ package org.perfcake.ide.core.model;
 import org.perfcake.model.Scenario.Messages;
 import org.perfcake.model.Scenario.Messages.Message;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class MessagesModel extends AbstractModel {
 
 	public static final String PROPERTY_MESSAGE = "messages-message";
@@ -72,5 +76,17 @@ public class MessagesModel extends AbstractModel {
 			getMapper().unbind(m.getMessage(), m);
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_MESSAGE, m, null);
 		}
+	}
+
+	public List<MessageModel> getMessage() {
+		final List<MessageModel> result = MapperUtils.getPc4ideList(messages.getMessage(), getMapper());
+		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getMessage());
+		return children;
 	}
 }

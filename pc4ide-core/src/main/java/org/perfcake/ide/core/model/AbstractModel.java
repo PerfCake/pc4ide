@@ -21,6 +21,7 @@ package org.perfcake.ide.core.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 
 
 /**
@@ -28,7 +29,7 @@ import java.beans.PropertyChangeSupport;
  * @author Jakub Knetl
  *
  */
-public class AbstractModel {
+public abstract class AbstractModel {
 
 	private PropertyChangeSupport propertyChangeSupport;
 	private final Mapper mapper;
@@ -69,4 +70,10 @@ public class AbstractModel {
 	public void removePropertyChangeListener(PropertyChangeListener listener){
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
+
+	/**
+	 *
+	 * @return List of children which has own model. If there are no children, then empty list is returned.
+	 */
+	public abstract List<AbstractModel> getModelChildren();
 }

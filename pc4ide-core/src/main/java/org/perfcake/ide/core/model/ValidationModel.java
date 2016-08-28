@@ -22,6 +22,10 @@ package org.perfcake.ide.core.model;
 import org.perfcake.model.Scenario.Validation;
 import org.perfcake.model.Scenario.Validation.Validator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ValidationModel extends AbstractModel {
 
 	public static final String PROPERTY_VALIDATORS = "validation-validators";
@@ -76,15 +80,35 @@ public class ValidationModel extends AbstractModel {
 		}
 	}
 
+	public List<ValidatorModel> getValidator() {
+		final List<ValidatorModel> result = MapperUtils.getPc4ideList(validation.getValidator(), getMapper());
+		return Collections.unmodifiableList(result);
+	}
+
+	public boolean isEnabled() {
+		return validation.isEnabled();
+	}
+
 	public void setEnabled(boolean enabled) {
 		final boolean oldEnabled = validation.isEnabled();
 		validation.setEnabled(enabled);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ENABLED, oldEnabled, enabled);
 	}
 
+	public boolean isFastForward() {
+		return validation.isFastForward();
+	}
+
 	public void setFastForward(boolean fastForward) {
 		final boolean oldFastForward = validation.isFastForward();
 		validation.setFastForward(fastForward);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_FAST_FORWARD, oldFastForward, fastForward);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getValidator());
+		return children;
 	}
 }

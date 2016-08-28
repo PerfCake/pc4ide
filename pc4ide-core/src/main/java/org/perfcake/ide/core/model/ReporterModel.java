@@ -23,6 +23,7 @@ import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Reporting.Reporter;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,6 +70,10 @@ public class ReporterModel extends AbstractModel implements PropertyContainer, S
 		return reporter;
 	}
 
+	public String getClazz() {
+		return reporter.getClazz();
+	}
+
 	public void setClazz(String clazz) {
 		final String oldClazz = reporter.getClazz();
 		reporter.setClazz(clazz);
@@ -90,6 +95,11 @@ public class ReporterModel extends AbstractModel implements PropertyContainer, S
 			getMapper().unbind(destination.getDestinatnion(), destination);
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_DESTINATIONS, destination, null);
 		}
+	}
+
+	public List<DestinationModel> getDestination() {
+		final List<DestinationModel> result = MapperUtils.getPc4ideList(reporter.getDestination(), getMapper());
+		return Collections.unmodifiableList(result);
 	}
 
 	@Override
@@ -129,5 +139,13 @@ public class ReporterModel extends AbstractModel implements PropertyContainer, S
 	@Override
 	public boolean isEnabled() {
 		return reporter.isEnabled();
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getDestination());
+		children.addAll(getProperty());
+		return children;
 	}
 }

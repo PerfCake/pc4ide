@@ -22,6 +22,7 @@ package org.perfcake.ide.core.model;
 import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Properties;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,4 +86,12 @@ public class PropertiesModel extends AbstractModel implements PropertyContainer 
 		final List<PropertyModel> result = MapperUtils.getPc4ideList(properties.getProperty(), getMapper());
 		return Collections.unmodifiableList(result);
 	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getProperty());
+		return children;
+	}
+
 }

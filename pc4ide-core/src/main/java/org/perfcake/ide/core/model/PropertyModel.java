@@ -20,11 +20,16 @@
 package org.perfcake.ide.core.model;
 
 import org.perfcake.model.Property;
+import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyModel extends AbstractModel {
 
 	public static final String PROPERTY_NAME = "property-name";
 	public static final String PROPERTY_VALUE = "property-value";
+	private static final String PROPERTY_ANY = "property-any";
 
 	private Property property;
 
@@ -51,6 +56,10 @@ public class PropertyModel extends AbstractModel {
 		return property;
 	}
 
+	public String getName() {
+		return property.getName();
+	}
+
 	public void setName(String name){
 		final String oldName = getProperty().getName();
 		property.setName(name);
@@ -58,9 +67,29 @@ public class PropertyModel extends AbstractModel {
 	}
 
 
+	public String getValue() {
+		return property.getValue();
+	}
+
 	public void setValue(String value){
 		final String oldValue = getProperty().getValue();
 		property.setValue(value);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+	}
+
+	public Element getAny() {
+		return property.getAny();
+	}
+
+	public void setAny(Element value) {
+		final Element oldAny = getProperty().getAny();
+		property.setAny(value);
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_ANY, oldAny, value);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		return children;
 	}
 }

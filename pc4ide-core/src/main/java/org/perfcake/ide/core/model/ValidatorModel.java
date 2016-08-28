@@ -22,6 +22,7 @@ package org.perfcake.ide.core.model;
 import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Validation.Validator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,10 +64,18 @@ public class ValidatorModel extends AbstractModel implements PropertyContainer {
 		return validator;
 	}
 
+	public String getClazz() {
+		return validator.getClazz();
+	}
+
 	public void setClazz(String clazz) {
 		final String oldClazz = validator.getClazz();
 		validator.setClazz(clazz);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_CLASS, oldClazz, clazz);
+	}
+
+	public String getId() {
+		return validator.getId();
 	}
 
 	public void setId(String id) {
@@ -99,6 +108,13 @@ public class ValidatorModel extends AbstractModel implements PropertyContainer {
 	public List<PropertyModel> getProperty() {
 		final List<PropertyModel> result = MapperUtils.getPc4ideList(validator.getProperty(), getMapper());
 		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+		children.addAll(getProperty());
+		return children;
 	}
 
 }

@@ -23,6 +23,7 @@ import org.perfcake.model.Property;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination.Period;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,6 +77,10 @@ public class DestinationModel extends AbstractModel implements PropertyContainer
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_CLASS, oldClazz, clazz);
 	}
 
+	public String getClazz() {
+		return destination.getClazz();
+	}
+
 	public void addPeriod(PeriodModel period) {
 		addPeriod(destination.getPeriod().size(), period);
 	}
@@ -91,6 +96,11 @@ public class DestinationModel extends AbstractModel implements PropertyContainer
 			getMapper().unbind(period.getPeriod(), period);
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_PERIOD, period, null);
 		}
+	}
+
+	public List<PeriodModel> getPeriod() {
+		final List<PeriodModel> result = MapperUtils.getPc4ideList(destination.getPeriod(), getMapper());
+		return Collections.unmodifiableList(result);
 	}
 
 	@Override
@@ -130,6 +140,15 @@ public class DestinationModel extends AbstractModel implements PropertyContainer
 	@Override
 	public boolean isEnabled() {
 		return destination.isEnabled();
+	}
+
+	@Override
+	public List<AbstractModel> getModelChildren() {
+		final List<AbstractModel> children = new ArrayList<>();
+
+		children.addAll(getProperty());
+		children.addAll(getPeriod());
+		return children;
 	}
 
 }
