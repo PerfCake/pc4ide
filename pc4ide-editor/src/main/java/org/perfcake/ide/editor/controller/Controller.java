@@ -63,11 +63,12 @@ public interface Controller extends MouseListener {
 	 * Draws the corresponding view.
 	 * @param g
 	 */
-	void drawView(Graphics g);
+	public void drawView(Graphics g);
 
 	/**
 	 *
 	 * @return associated view
 	 */
 	public ComponentView getView();
+
 }

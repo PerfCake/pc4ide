@@ -3,7 +3,10 @@
  */
 package org.perfcake.ide.editor.view.impl;
 
+import org.perfcake.ide.editor.layout.AngularData;
+import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.view.AbstractView;
+import org.perfcake.ide.editor.view.ComponentView;
 
 import java.awt.Graphics;
 import java.awt.Shape;
@@ -16,6 +19,10 @@ public class EditorView extends AbstractView {
 
 
 
+
+	public EditorView(ComponentView parent) {
+		super(parent);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.perfcake.ide.editor.view.ComponentView#draw(java.awt.Graphics)
@@ -30,5 +37,10 @@ public class EditorView extends AbstractView {
 	@Override
 	public Shape getViewBounds() {
 		return null;
+	}
+
+	@Override
+	public AngularData getPrefferedAngularData(RadiusData radius) {
+		return new AngularData();
 	}
 }

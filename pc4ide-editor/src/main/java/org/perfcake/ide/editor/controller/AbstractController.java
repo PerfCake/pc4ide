@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
 import java.awt.event.MouseEvent;
@@ -27,7 +28,12 @@ public abstract class AbstractController implements Controller {
 	private boolean isValid = false;
 	private List<Controller> children = new ArrayList<>();
 	private Controller parent = null;
+	private LayoutData planeLayoutData;
 
+	public AbstractController(LayoutData planeLayoutData) {
+		super();
+		this.planeLayoutData = planeLayoutData;
+	}
 
 	@Override
 	public Controller getParent() {
@@ -53,7 +59,7 @@ public abstract class AbstractController implements Controller {
 
 	@Override
 	public boolean removeChild(Controller child) {
-		boolean removed = children.remove(child);
+		final boolean removed = children.remove(child);
 		if (removed) {
 			child.setParent(null);
 			invalidate();
@@ -98,4 +104,13 @@ public abstract class AbstractController implements Controller {
 	public void mouseExited(MouseEvent e) {
 		//empty on purpose
 	}
+
+	public LayoutData getPlaneLayoutData() {
+		return planeLayoutData;
+	}
+
+	public void setPlaneLayoutData(LayoutData planeLayoutData) {
+		this.planeLayoutData = planeLayoutData;
+	}
+
 }

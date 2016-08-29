@@ -25,5 +25,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.perfcake</groupId>
+			<artifactId>pc4ide-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
 	</dependencies>
 </project>

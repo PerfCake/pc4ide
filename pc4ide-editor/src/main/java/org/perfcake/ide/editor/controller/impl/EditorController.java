@@ -1,7 +1,9 @@
 package org.perfcake.ide.editor.controller.impl;
 
+import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
+import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.impl.EditorView;
@@ -19,17 +21,23 @@ public class EditorController extends AbstractController {
 	private EditorView view;
 	private Point2D center;
 
+	private ScenarioModel scenarioModel;
 
-	public EditorController(JComponent jComponent) {
-		super();
+
+	public EditorController(JComponent jComponent, LayoutData data, ScenarioModel model) {
+		super(data);
+		this.scenarioModel = model;
 		this.jComponent = jComponent;
-		int numOfSectors = 5;
-		int angleExtent = 180/numOfSectors;
-		view = new EditorView();
+		final int numOfSectors = 5;
+		final int angleExtent = 180/numOfSectors;
+		view = new EditorView(null);
 		center = new Point2D.Double(300,300);
 		for (int i = 0; i < numOfSectors; i++){
-//			SectorView sector = new SectorView("Section " + (i+1), center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180 - angleExtent, angleExtent, new GeneratorIcon());
-			SectionController section = new SectionController(center, (int) (center.getX()*0.85), 50, -i*angleExtent + 180 - angleExtent, angleExtent);
+			final LayoutData childData = new LayoutData(data);
+			childData.getAngularData().setStartAngle(data.getAngularData().getStartAngle() + i * angleExtent);
+			childData.getAngularData().setAngleExtent(angleExtent);
+			//			final SectorView sector = new SectorView(null, "Section " + (i + 1), childData, new GeneratorIcon());
+			final SectionController section = new SectionController(childData);
 			addChild(section);
 			invalidate();
 		}
@@ -56,9 +64,9 @@ public class EditorController extends AbstractController {
 	public void drawView(Graphics g) {
 		view.draw(g);
 
-		Iterator<Controller> it = getChildrenIterator();
+		final Iterator<Controller> it = getChildrenIterator();
 		while (it.hasNext()){
-			Controller child = it.next();
+			final Controller child = it.next();
 			child.drawView(g);
 		}
 
@@ -72,9 +80,9 @@ public class EditorController extends AbstractController {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		Iterator<Controller> iterator = getChildrenIterator();
+		final Iterator<Controller> iterator = getChildrenIterator();
 		while (iterator.hasNext()){
-			Controller child = iterator.next();
+			final Controller child = iterator.next();
 			if (child.getView().getViewBounds().contains(e.getX(), e.getY())){
 				unselectOthers();
 				child.getView().setSelected(true);
@@ -84,9 +92,9 @@ public class EditorController extends AbstractController {
 	}
 
 	private void unselectOthers() {
-		Iterator<Controller> it = getChildrenIterator();
+		final Iterator<Controller> it = getChildrenIterator();
 		while (it.hasNext()){
-			Controller child = it.next();
+			final Controller child = it.next();
 			if (child.getView().isSelected()){
 				child.getView().setSelected(false);
 				child.invalidate();

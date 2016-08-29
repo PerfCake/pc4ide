@@ -24,10 +24,22 @@ public class Main {
 
 			@Override
 			public void run() {
-				JFrame frame = new JFrame();
+
+				//				final PerfCakeScenarioParser parser = new PerfCakeScenarioParser();
+				//				ScenarioModel model = null;
+				//				try {
+				//					final Scenario s = parser.parse(new File("src/main/resources/scenario/http.xml").toURI().toURL());
+				//					model = ModelConverter.getPc4ideModel(s);
+				//				} catch (final PerfCakeException e) {
+				//					e.printStackTrace();
+				//				} catch (final MalformedURLException e) {
+				//					e.printStackTrace();
+				//				}
+
+				final JFrame frame = new JFrame();
 				frame.setTitle("Perfcake editor");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				EditorJPanel editor = new EditorJPanel();
+				final EditorJPanel editor = new EditorJPanel(null);
 				frame.add(editor);
 				frame.setVisible(true);
 			}
