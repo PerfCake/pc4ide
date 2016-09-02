@@ -4,6 +4,7 @@
 package org.perfcake.ide.editor.view;
 
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.LayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public abstract class AbstractView implements ComponentView {
 	private boolean isSelected = false;
 	private List<ComponentView> children = new ArrayList<>();
 	private ComponentView parent;
+	private LayoutManager layoutManager;
 
 	public AbstractView(ComponentView parent) {
 		super();

@@ -60,6 +60,13 @@ public interface ComponentView{
 	public LayoutData getLayoutData();
 
 	/**
+	 * Sets layout which will be used for the component on {@link #draw(Graphics)} method.
+	 *
+	 * @param data
+	 */
+	public void setLayoutData(LayoutData data);
+
+	/**
 	 *
 	 * @return Views that acts as a child of current view (they are inside of the view)
 	 */

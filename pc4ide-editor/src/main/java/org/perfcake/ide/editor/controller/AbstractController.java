@@ -4,6 +4,7 @@
 package org.perfcake.ide.editor.controller;
 
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
 import java.awt.event.MouseEvent;
@@ -28,11 +29,12 @@ public abstract class AbstractController implements Controller {
 	private boolean isValid = false;
 	private List<Controller> children = new ArrayList<>();
 	private Controller parent = null;
-	private LayoutData planeLayoutData;
+	protected LayoutData layoutData;
 
-	public AbstractController(LayoutData planeLayoutData) {
+	protected LayoutManager layoutManager;
+
+	public AbstractController() {
 		super();
-		this.planeLayoutData = planeLayoutData;
 	}
 
 	@Override
@@ -76,8 +78,38 @@ public abstract class AbstractController implements Controller {
 	public void invalidate() {
 		isValid = false;
 		if (parent != null) {
+			// indicate to parent that this controller needs validation
 			parent.invalidate();
+		} else {
+			// if this controller is root then perform validation
+			validate();
 		}
+	}
+
+	@Override
+	public void validate() {
+		layoutManager.layoutChildren();
+		for (final Controller controller : children) {
+			controller.validate();
+		}
+	}
+
+	@Override
+	public LayoutData getLayoutData() {
+		return layoutData;
+	}
+
+	@Override
+	public void setLayoutData(LayoutData layoutData) {
+		this.layoutData = layoutData;
+	}
+
+	public LayoutManager getLayoutManager() {
+		return layoutManager;
+	}
+
+	public void setLayoutManager(LayoutManager layoutManager) {
+		this.layoutManager = layoutManager;
 	}
 
 	@Override
@@ -103,14 +135,6 @@ public abstract class AbstractController implements Controller {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		//empty on purpose
-	}
-
-	public LayoutData getPlaneLayoutData() {
-		return planeLayoutData;
-	}
-
-	public void setPlaneLayoutData(LayoutData planeLayoutData) {
-		this.planeLayoutData = planeLayoutData;
 	}
 
 }

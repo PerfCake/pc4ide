@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
@@ -47,6 +48,7 @@ public interface Controller extends MouseListener {
 	 * @return iterator over children.
 	 */
 	public Iterator<Controller> getChildrenIterator();
+
 	/**
 	 *
 	 * @return true if the view is valid (up to date)
@@ -57,6 +59,12 @@ public interface Controller extends MouseListener {
 	 * Invalidates view to indicate that it needs to be redrawn
 	 */
 	public void invalidate();
+
+	/**
+	 * Validates the views of the children. It means that it sets view sizes and positions so that consequent draw operation
+	 * will draw it on proper place with proper size.
+	 */
+	public void validate();
 
 
 	/**
@@ -70,5 +78,18 @@ public interface Controller extends MouseListener {
 	 * @return associated view
 	 */
 	public ComponentView getView();
+
+	/**
+	 * Sets {@link LayoutData} for the controller. This indicates what part of drawing surface may
+	 * be used for the controller.
+	 * @param data
+	 */
+	public void setLayoutData(LayoutData data);
+
+	/**
+	 *
+	 * @return LayoutData which this component is using.
+	 */
+	public LayoutData getLayoutData();
 
 }

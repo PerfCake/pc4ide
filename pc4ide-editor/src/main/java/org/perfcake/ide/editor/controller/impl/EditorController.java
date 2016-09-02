@@ -4,6 +4,7 @@ import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.impl.EditorView;
@@ -25,13 +26,13 @@ public class EditorController extends AbstractController {
 
 
 	public EditorController(JComponent jComponent, LayoutData data, ScenarioModel model) {
-		super(data);
+		super();
+		this.layoutManager = new SimpleCircularLayoutManager(data, this);
 		this.scenarioModel = model;
 		this.jComponent = jComponent;
-		final int numOfSectors = 5;
+		final int numOfSectors = 4;
 		final int angleExtent = 180/numOfSectors;
 		view = new EditorView(null);
-		center = new Point2D.Double(300,300);
 		for (int i = 0; i < numOfSectors; i++){
 			final LayoutData childData = new LayoutData(data);
 			childData.getAngularData().setStartAngle(data.getAngularData().getStartAngle() + i * angleExtent);
@@ -57,6 +58,11 @@ public class EditorController extends AbstractController {
 	@Override
 	public void invalidate() {
 		super.invalidate();
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
 		jComponent.repaint();
 	}
 

@@ -5,6 +5,7 @@ package org.perfcake.ide.editor.controller.impl;
 
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.icons.GeneratorIcon;
 import org.perfcake.ide.editor.view.impl.SectorView;
@@ -21,9 +22,11 @@ public class SectionController extends AbstractController {
 
 	//TODO(jknetl): encapsulate multiple argument with object (e.g. LayoutData)
 	public SectionController(LayoutData data) {
-		super(data);
+		super();
+		this.layoutManager = new SimpleCircularLayoutManager(data, this);
 		final ComponentView parentView = (getParent() == null) ? null : getParent().getView();
-		view = new SectorView(parentView, "Section", data, new GeneratorIcon());
+		final GeneratorIcon icon = new GeneratorIcon();
+		view = new SectorView(parentView, "Section", data, icon);
 	}
 
 	@Override

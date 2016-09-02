@@ -3,7 +3,7 @@
  */
 package org.perfcake.ide.editor;
 
-import org.perfcake.ide.editor.view.impl.EditorJPanel;
+import org.perfcake.ide.editor.swing.EditorJPanel;
 
 import javax.swing.JFrame;
 

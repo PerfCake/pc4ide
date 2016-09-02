@@ -1,4 +1,4 @@
-package org.perfcake.ide.editor.view.impl;
+package org.perfcake.ide.editor.swing;
 
 import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.controller.impl.EditorController;
@@ -19,6 +19,7 @@ public class EditorJPanel extends JPanel {
 	private static final int MAXIMUM_INNER_RADIUS = 50;
 	private EditorController editorController;
 
+
 	public EditorJPanel(ScenarioModel scenarioModel) {
 		super();
 		addMouseListener(new EditorMouseListener());
@@ -26,7 +27,7 @@ public class EditorJPanel extends JPanel {
 		final double innerRadius = Math.min(MAXIMUM_INNER_RADIUS, (0.2*Math.min(getWidth(), getHeight()))/2);
 		final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
 		final AngularData angularData = new AngularData(DEFAULT_START_ANGLE, DEFAULT_ANGLE_EXTENT);
-		final LayoutData data = new LayoutData(500, 500, new RadiusData(50, 240), new AngularData(0, 180));
+		final LayoutData data = new LayoutData(1000, 1000, new RadiusData(50, 480), new AngularData(0, 180));
 		editorController = new EditorController(this, data, scenarioModel);
 	}
 
