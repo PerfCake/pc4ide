@@ -51,7 +51,7 @@ public class Main {
 				final JFrame frame = new JFrame();
 				frame.setTitle("Perfcake editor");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				final EditorJPanel editor = new EditorJPanel(null);
+				final EditorJPanel editor = new EditorJPanel(model);
 				frame.add(editor);
 				frame.setVisible(true);
 			}

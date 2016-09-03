@@ -26,9 +26,8 @@ public class SimpleCircularLayoutManager implements LayoutManager {
 	 * @param dataForChildren LayoutData which can this layout manager use to layout the children
 	 * @param controller Controller whose children are managed by this manger
 	 */
-	public SimpleCircularLayoutManager(LayoutData dataForChildren, Controller controller) {
+	public SimpleCircularLayoutManager(Controller controller) {
 		super();
-		this.dataForChildren = dataForChildren;
 		this.controller = controller;
 	}
 
@@ -46,6 +45,10 @@ public class SimpleCircularLayoutManager implements LayoutManager {
 			final LayoutData data = new LayoutData(dataForChildren);
 			data.getAngularData().setAngleExtent(angularExtendForChild);
 			data.getAngularData().setStartAngle(startAngle);
+			//sets layout data to child layoutManager
+			//TODO(jknetl): there should be called setLayoutData only once!!!
+			child.setLayoutData(data);
+			//sets layout data to child view
 			child.getView().setLayoutData(data);
 			startAngle += angularExtendForChild;
 		}
@@ -61,6 +64,17 @@ public class SimpleCircularLayoutManager implements LayoutManager {
 		}
 
 		return i;
+	}
+
+	@Override
+	public void setLayoutData(LayoutData data) {
+		dataForChildren = data;
+
+	}
+
+	@Override
+	public LayoutData getLayoutData() {
+		return dataForChildren;
 	}
 
 }

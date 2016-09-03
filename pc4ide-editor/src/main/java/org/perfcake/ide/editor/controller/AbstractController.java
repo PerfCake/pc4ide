@@ -29,7 +29,6 @@ public abstract class AbstractController implements Controller {
 	private boolean isValid = false;
 	private List<Controller> children = new ArrayList<>();
 	private Controller parent = null;
-	protected LayoutData layoutData;
 
 	protected LayoutManager layoutManager;
 
@@ -96,20 +95,12 @@ public abstract class AbstractController implements Controller {
 
 	@Override
 	public LayoutData getLayoutData() {
-		return layoutData;
+		return layoutManager.getLayoutData();
 	}
 
 	@Override
 	public void setLayoutData(LayoutData layoutData) {
-		this.layoutData = layoutData;
-	}
-
-	public LayoutManager getLayoutManager() {
-		return layoutManager;
-	}
-
-	public void setLayoutManager(LayoutManager layoutManager) {
-		this.layoutManager = layoutManager;
+		layoutManager.setLayoutData(layoutData);
 	}
 
 	@Override

@@ -17,4 +17,16 @@ public interface LayoutManager {
 	 */
 	void layoutChildren();
 
+	/**
+	 * Sets {@link LayoutData} for the layoutManager. This indicates what part of drawing surface may
+	 * be used for the children
+	 * @param data
+	 */
+	public void setLayoutData(LayoutData data);
+
+	/**
+	 *
+	 * @return LayoutData which this component is using.
+	 */
+	public LayoutData getLayoutData();
 }

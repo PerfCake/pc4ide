@@ -3,12 +3,13 @@
  */
 package org.perfcake.ide.editor.controller.impl;
 
+import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.editor.controller.AbstractController;
-import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
-import org.perfcake.ide.editor.view.icons.GeneratorIcon;
 import org.perfcake.ide.editor.view.impl.SectorView;
+
+import javax.swing.Icon;
 
 import java.awt.Graphics;
 
@@ -19,14 +20,14 @@ import java.awt.Graphics;
 public class SectionController extends AbstractController {
 
 	private ComponentView view;
+	private AbstractModel model;
 
-	//TODO(jknetl): encapsulate multiple argument with object (e.g. LayoutData)
-	public SectionController(LayoutData data) {
+	public SectionController(String sectionName, Icon icon, AbstractModel model) {
 		super();
-		this.layoutManager = new SimpleCircularLayoutManager(data, this);
+		this.model = model;
+		this.layoutManager = new SimpleCircularLayoutManager(this);
 		final ComponentView parentView = (getParent() == null) ? null : getParent().getView();
-		final GeneratorIcon icon = new GeneratorIcon();
-		view = new SectorView(parentView, "Section", data, icon);
+		view = new SectorView(parentView, sectionName, icon);
 	}
 
 	@Override

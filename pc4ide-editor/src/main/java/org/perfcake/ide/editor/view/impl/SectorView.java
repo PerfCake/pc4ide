@@ -4,7 +4,6 @@
 package org.perfcake.ide.editor.view.impl;
 
 import org.perfcake.ide.editor.layout.AngularData;
-import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
@@ -38,17 +37,14 @@ public class SectorView extends AbstractView {
 		return componentName;
 	}
 
-	private LayoutData layoutData;
-
 	private String componentName;
 	private Icon icon;
 
 	private Shape bounds;
 
 
-	public SectorView(ComponentView parent, String componentName, LayoutData layoutData, Icon icon) {
+	public SectorView(ComponentView parent, String componentName, Icon icon) {
 		super(parent);
-		this.layoutData = layoutData;
 		this.componentName = componentName;
 		this.icon = icon;
 	}
