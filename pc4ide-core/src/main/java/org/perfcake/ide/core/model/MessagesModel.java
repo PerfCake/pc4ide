@@ -41,7 +41,7 @@ public class MessagesModel extends AbstractModel {
 
 		if (messages.getMessage() != null) {
 			for (final Message m : messages.getMessage()) {
-				addMessage(new MessageModel(m));
+				getMapper().bind(m, new MessageModel(m));
 			}
 		}
 	}

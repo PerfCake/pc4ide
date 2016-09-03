@@ -19,8 +19,8 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Header;
-import org.perfcake.model.Property;
+import org.perfcake.model.HeaderType;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Messages.Message;
 import org.perfcake.model.Scenario.Messages.Message.ValidatorRef;
 
@@ -47,20 +47,20 @@ public class MessageModel extends AbstractModel implements PropertyContainer {
 		this.message = message;
 
 		if (message.getHeader() != null) {
-			for (final Header h : message.getHeader()) {
-				addHeader(new HeaderModel(h));
+			for (final HeaderType h : message.getHeader()) {
+				getMapper().bind(h, new HeaderModel(h));
 			}
 		}
 
 		if (message.getProperty() != null) {
-			for (final Property p : message.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : message.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 
 		if (message.getValidatorRef() != null) {
 			for (final ValidatorRef v : message.getValidatorRef()) {
-				addValidatorRef(new ValidatorRefModel(v));
+				getMapper().bind(v, new ValidatorRefModel(v));
 			}
 		}
 	}

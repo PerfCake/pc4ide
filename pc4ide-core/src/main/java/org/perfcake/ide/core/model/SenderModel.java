@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Sender;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
 		this.sender = sender;
 
 		if (sender.getProperty() != null) {
-			for (final Property p : sender.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : sender.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

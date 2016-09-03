@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination.Period;
 
@@ -45,13 +45,13 @@ public class DestinationModel extends AbstractModel implements PropertyContainer
 
 		if (destination.getPeriod() != null) {
 			for (final Period p : destination.getPeriod()) {
-				addPeriod(new PeriodModel(p));
+				getMapper().bind(p, new PeriodModel(p));
 			}
 		}
 
 		if (destination.getProperty() != null) {
-			for (final Property p : destination.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : destination.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

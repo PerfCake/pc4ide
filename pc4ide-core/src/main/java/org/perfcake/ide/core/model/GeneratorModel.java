@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Generator;
 
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class GeneratorModel extends AbstractModel implements PropertyContainer {
 		this.generator = generator;
 
 		if (generator.getProperty() != null) {
-			for (final Property p : generator.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : generator.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

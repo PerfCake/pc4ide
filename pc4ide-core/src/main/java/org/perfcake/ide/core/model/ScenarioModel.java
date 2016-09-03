@@ -23,9 +23,11 @@ import org.perfcake.model.Scenario;
 import org.perfcake.model.Scenario.Generator;
 import org.perfcake.model.Scenario.Messages;
 import org.perfcake.model.Scenario.Properties;
+import org.perfcake.model.Scenario.Receiver;
 import org.perfcake.model.Scenario.Reporting;
 import org.perfcake.model.Scenario.Run;
 import org.perfcake.model.Scenario.Sender;
+import org.perfcake.model.Scenario.Sequences;
 import org.perfcake.model.Scenario.Validation;
 
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class ScenarioModel extends AbstractModel {
 	public static final String PROPERTY_PROPERTIES = "scenario-properties";
 	public static final String PROPERTY_REPORTING = "scenario-reporting";
 	public static final String PROPERTY_VALIDATION = "scenario-validation";
+	public static final String PROPERTY_SEQUENCES = "scenario-sequences";
+	public static final String PROPERTY_RECEIVER = "scenario-receiver";
 	public static final String PROPERTY_RUN = "scenario-run";
 
 	private Scenario scenario;
@@ -51,31 +55,39 @@ public class ScenarioModel extends AbstractModel {
 		this.scenario = scenario;
 
 		if (scenario.getSender() != null) {
-			setSender(new SenderModel(scenario.getSender()));
+			getMapper().bind(scenario.getSender(), new SenderModel(scenario.getSender()));
 		}
 
 		if (scenario.getGenerator() != null) {
-			setGenerator(new GeneratorModel(scenario.getGenerator()));
+			getMapper().bind(scenario.getGenerator(), new GeneratorModel(scenario.getGenerator()));
 		}
 
 		if (scenario.getRun() != null) {
-			setRun(new RunModel(scenario.getRun()));
+			getMapper().bind(scenario.getRun(), new RunModel(scenario.getRun()));
 		}
 
 		if (scenario.getReporting() != null) {
-			setReporting(new ReportingModel(scenario.getReporting()));
+			getMapper().bind(scenario.getReporting(), new ReportingModel(scenario.getReporting()));
 		}
 
 		if (scenario.getMessages() != null) {
-			setMessages(new MessagesModel(scenario.getMessages()));
+			getMapper().bind(scenario.getMessages(), new MessagesModel(scenario.getMessages()));
 		}
 
 		if (scenario.getValidation() != null) {
-			setValidation(new ValidationModel(scenario.getValidation()));
+			getMapper().bind(scenario.getValidation(), new ValidationModel(scenario.getValidation()));
+		}
+
+		if (scenario.getSequences() != null) {
+			getMapper().bind(scenario.getSequences(), new SequencesModel(scenario.getSequences()));
+		}
+
+		if (scenario.getReceiver() != null) {
+			getMapper().bind(scenario.getReceiver(), new ReceiverModel(scenario.getReceiver()));
 		}
 
 		if (scenario.getProperties() != null) {
-			setProperties(new PropertiesModel(scenario.getProperties()));
+			getMapper().bind(scenario.getProperties(), new PropertiesModel(scenario.getProperties()));
 		}
 
 	}
@@ -106,6 +118,7 @@ public class ScenarioModel extends AbstractModel {
 		}
 
 		getMapper().bind(sender.getSender(), sender);
+		scenario.setSender(sender.getSender());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_SENDER, oldSenderModel, sender);
 	}
 
@@ -122,6 +135,7 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldGenerator, oldGeneratorModel);
 		}
 		getMapper().bind(generator.getGenerator(), generator);
+		scenario.setGenerator(generator.getGenerator());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_GENERATOR, oldGeneratorModel, generator);
 	}
 
@@ -138,6 +152,7 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldRun, oldRunModel);
 		}
 		getMapper().bind(run.getRun(), run);
+		scenario.setRun(run.getRun());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_RUN, oldRunModel, run);
 	}
 
@@ -154,7 +169,7 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldReporting, oldReportingModel);
 		}
 		getMapper().bind(reporting.getReporting(), reporting);
-
+		scenario.setReporting(reporting.getReporting());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_REPORTING, oldReportingModel, reporting);
 	}
 
@@ -171,7 +186,7 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldMessages, oldMessagesModel);
 		}
 		getMapper().bind(messages.getMessages(), messages);
-
+		scenario.setMessages(messages.getMessages());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_MESSAGES, oldMessagesModel, messages);
 	}
 
@@ -188,12 +203,44 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldValidation, oldValidationModel);
 		}
 		getMapper().bind(validation.getValidation(), validation);
-
+		scenario.setValidation(validation.getValidation());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_VALIDATION, oldValidationModel, validation);
 	}
 
 	public ValidationModel getValidation() {
 		return (ValidationModel) getMapper().getModel(scenario.getValidation());
+	}
+
+	public SequencesModel getSequences() {
+		return (SequencesModel) getMapper().getModel(scenario.getSequences());
+	}
+
+	public void setSequences(SequencesModel value) {
+		final Sequences oldSequneces = scenario.getSequences();
+		AbstractModel oldSequencesModel = null;
+		if (oldSequneces != null) {
+			oldSequencesModel = getMapper().getModel(oldSequneces);
+			getMapper().unbind(oldSequneces, oldSequencesModel);
+		}
+		getMapper().bind(value.getSequences(), value);
+		scenario.setSequences(value.getSequences());
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_SEQUENCES, oldSequencesModel, value);
+	}
+
+	public ReceiverModel getReceiver() {
+		return (ReceiverModel) getMapper().getModel(scenario.getReceiver());
+	}
+
+	public void setReceiver(ReceiverModel value) {
+		final Receiver oldReceiver = scenario.getReceiver();
+		AbstractModel oldReceiverModel = null;
+		if (oldReceiver != null) {
+			oldReceiverModel = getMapper().getModel(oldReceiver);
+			getMapper().unbind(oldReceiver, oldReceiverModel);
+		}
+		getMapper().bind(value.getReceiver(), value);
+		scenario.setReceiver(value.getReceiver());
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_RECEIVER, oldReceiverModel, value);
 	}
 
 	public void setProperties(PropertiesModel properties) {
@@ -205,6 +252,7 @@ public class ScenarioModel extends AbstractModel {
 			getMapper().unbind(oldProperties, oldPropertiesModel);
 		}
 		getMapper().bind(properties.getProperties(), properties);
+		scenario.setProperties(properties.getProperties());
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_PROPERTIES, oldPropertiesModel, properties);
 	}
 

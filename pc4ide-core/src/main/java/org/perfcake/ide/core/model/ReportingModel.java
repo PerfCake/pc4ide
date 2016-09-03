@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Reporting;
 import org.perfcake.model.Scenario.Reporting.Reporter;
 
@@ -43,13 +43,13 @@ public class ReportingModel extends AbstractModel implements PropertyContainer {
 
 		if (reporting.getReporter() != null) {
 			for (final Reporter r : reporting.getReporter()) {
-				addReporter(new ReporterModel(r));
+				getMapper().bind(r, new ReporterModel(r));
 			}
 		}
 
 		if (reporting.getProperty() != null) {
-			for (final Property p : reporting.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : reporting.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

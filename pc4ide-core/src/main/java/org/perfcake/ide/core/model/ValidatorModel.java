@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Validation.Validator;
 
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class ValidatorModel extends AbstractModel implements PropertyContainer {
 		this.validator = validator;
 
 		if (validator.getProperty() != null) {
-			for (final Property p : validator.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : validator.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

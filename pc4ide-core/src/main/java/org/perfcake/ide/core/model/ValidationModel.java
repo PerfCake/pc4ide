@@ -43,7 +43,7 @@ public class ValidationModel extends AbstractModel {
 
 		if (validation.getValidator() != null) {
 			for (final Validator v : validation.getValidator()) {
-				addValidator(new ValidatorModel(v));
+				getMapper().bind(v, new ValidatorModel(v));
 			}
 		}
 	}

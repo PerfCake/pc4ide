@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Header;
+import org.perfcake.model.HeaderType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +29,9 @@ public class HeaderModel extends AbstractModel {
 	public static final String PROPERTY_NAME = "header-name";
 	public static final String PROPERTY_VALUE = "header-value";
 
-	private Header header;
+	private HeaderType header;
 
-	HeaderModel(Header header) {
+	HeaderModel(HeaderType header) {
 		super();
 		if (header == null) {
 			throw new IllegalArgumentException("Header must not be null");
@@ -41,7 +41,7 @@ public class HeaderModel extends AbstractModel {
 
 	public HeaderModel() {
 		super();
-		this.header = new Header();
+		this.header = new HeaderType();
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class HeaderModel extends AbstractModel {
 	 *
 	 * @return PerfCake model of Header
 	 */
-	Header getHeader() {
+	HeaderType getHeader() {
 		return header;
 	}
 

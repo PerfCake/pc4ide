@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Properties;
 
 import java.util.ArrayList;
@@ -40,8 +40,8 @@ public class PropertiesModel extends AbstractModel implements PropertyContainer 
 		this.properties = properties;
 
 		if (properties.getProperty() != null) {
-			for (final Property p : properties.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : properties.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}

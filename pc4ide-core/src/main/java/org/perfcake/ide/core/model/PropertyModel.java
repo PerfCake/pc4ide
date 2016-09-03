@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -31,9 +31,9 @@ public class PropertyModel extends AbstractModel {
 	public static final String PROPERTY_VALUE = "property-value";
 	private static final String PROPERTY_ANY = "property-any";
 
-	private Property property;
+	private PropertyType property;
 
-	PropertyModel(Property property) {
+	PropertyModel(PropertyType property) {
 		super();
 		if (property == null){
 			throw new IllegalArgumentException("Property must not be null");
@@ -43,7 +43,7 @@ public class PropertyModel extends AbstractModel {
 
 	public PropertyModel() {
 		super();
-		this.property = new Property();
+		this.property = new PropertyType();
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class PropertyModel extends AbstractModel {
 	 *
 	 * @return PerfCake model of Property
 	 */
-	Property getProperty() {
+	PropertyType getProperty() {
 		return property;
 	}
 

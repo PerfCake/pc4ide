@@ -19,7 +19,7 @@
 
 package org.perfcake.ide.core.model;
 
-import org.perfcake.model.Property;
+import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario.Reporting.Reporter;
 import org.perfcake.model.Scenario.Reporting.Reporter.Destination;
 
@@ -45,13 +45,13 @@ public class ReporterModel extends AbstractModel implements PropertyContainer, S
 
 		if (reporter.getDestination() != null) {
 			for (final Destination d : reporter.getDestination()) {
-				addDestination(new DestinationModel(d));
+				getMapper().bind(d, new DestinationModel(d));
 			}
 		}
 
 		if (reporter.getProperty() != null) {
-			for (final Property p : reporter.getProperty()) {
-				addProperty(new PropertyModel(p));
+			for (final PropertyType p : reporter.getProperty()) {
+				getMapper().bind(p, new PropertyModel(p));
 			}
 		}
 	}
