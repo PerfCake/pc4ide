@@ -12,7 +12,7 @@ import org.perfcake.model.Scenario;
  * @author jknetl
  *
  */
-final public class ModelConverter {
+final class ModelConverter {
 
 	private ModelConverter() {
 	}

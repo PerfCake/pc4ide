@@ -21,16 +21,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PerfCakeScenarioParser {
+public class ModelLoader {
 
 	/**
-	    * Does the parsing itself by using JAXB.
-	    *
-	    * @return Parsed JAXB scenario model.
-	    * @throws PerfCakeException
-	    *       If XML is not valid or cannot be successfully parsed.
-	    */
-	public Scenario parse(URL scenarioLocation) throws PerfCakeException {
+	* Does the parsing itself by using JAXB.
+	*
+	* @return Parsed JAXB scenario model.
+	* @throws PerfCakeException   If XML is not valid or cannot be successfully parsed.
+	*/
+	Scenario parse(URL scenarioLocation) throws PerfCakeException {
 		try {
 			final Source scenarioXML = new StreamSource(scenarioLocation.openStream());
 			final String schemaFileName = "perfcake-scenario-" + PerfCakeConst.XSD_SCHEMA_VERSION + ".xsd";
@@ -65,6 +64,12 @@ public class PerfCakeScenarioParser {
 		} catch (final IOException e) {
 			throw new PerfCakeException("Wrong scenario url.", e);
 		}
+	}
+
+	public ScenarioModel loadModel(URL url) throws PerfCakeException {
+		final Scenario scenario = parse(url);
+		final ScenarioModel model = ModelConverter.getPc4ideModel(scenario);
+		return model;
 	}
 
 }

@@ -3,11 +3,16 @@
  */
 package org.perfcake.ide.editor;
 
+import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.model.ModelLoader;
+import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 
 import javax.swing.JFrame;
 
 import java.awt.EventQueue;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * @author jknetl
@@ -17,9 +22,16 @@ public class Main {
 
 	/**
 	 * @param args
+	 * @throws PerfCakeException
+	 * @throws MalformedURLException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MalformedURLException, PerfCakeException {
 		// TODO Auto-generated method stub
+
+		final ModelLoader loader = new ModelLoader();
+		final File scenarioFile = new File("src/main/resources/scenario/http.xml");
+		final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
+
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override

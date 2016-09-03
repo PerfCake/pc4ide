@@ -1,4 +1,4 @@
-package org.perfcake.ide.model;
+package org.perfcake.ide.core.model;
 /**
  *
  */
@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.model.PerfCakeScenarioParser;
+import org.perfcake.ide.core.model.ModelLoader;
 import org.perfcake.model.Scenario;
 import org.perfcake.model.Scenario.Reporting.Reporter;
 
@@ -22,12 +22,12 @@ import java.net.MalformedURLException;
  */
 public class ParserTest {
 
-	PerfCakeScenarioParser parser;
+	ModelLoader parser;
 
 
 	@Before
 	public void before() {
-		parser = new PerfCakeScenarioParser();
+		parser = new ModelLoader();
 	}
 
 	@Test
