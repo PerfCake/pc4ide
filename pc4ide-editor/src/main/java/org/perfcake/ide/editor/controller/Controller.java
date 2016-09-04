@@ -24,6 +24,12 @@ public interface Controller extends MouseListener {
 	public Controller getParent();
 
 	/**
+	 *
+	 * @return root of the whole controller hierarchy
+	 */
+	public RootController getRoot();
+
+	/**
 	 * Sets parent controller of this controller. This method should be called only when
 	 * the controller is added/removed as children view to other view.
 	 */

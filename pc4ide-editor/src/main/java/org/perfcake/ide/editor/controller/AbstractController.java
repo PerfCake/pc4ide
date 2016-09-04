@@ -42,6 +42,17 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
+	public RootController getRoot() {
+		Controller root;
+		root = this;
+		while (this.getParent() != null) {
+			root = this.getParent();
+		}
+
+		return (RootController) root;
+	}
+
+	@Override
 	public void setParent(Controller parent) {
 		this.parent = parent;
 	}

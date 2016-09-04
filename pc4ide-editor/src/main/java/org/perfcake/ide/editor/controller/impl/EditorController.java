@@ -7,6 +7,7 @@ import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.core.model.SenderModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
+import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
@@ -14,16 +15,17 @@ import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.icons.GeneratorIcon;
+import org.perfcake.ide.editor.view.icons.ReporterIcon;
+import org.perfcake.ide.editor.view.icons.SenderIcon;
 import org.perfcake.ide.editor.view.impl.EditorView;
 
 import javax.swing.JComponent;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.Iterator;
 
-public class EditorController extends AbstractController {
+public class EditorController extends AbstractController implements RootController {
 
 	private static final int DEFAULT_ANGLE_EXTENT = 180;
 	private static final int DEFAULT_START_ANGLE = 0;
@@ -31,7 +33,6 @@ public class EditorController extends AbstractController {
 
 	private JComponent jComponent;
 	private EditorView view;
-	private Point2D center;
 
 	private ScenarioModel scenarioModel;
 
@@ -41,8 +42,6 @@ public class EditorController extends AbstractController {
 		this.layoutManager = new SimpleCircularLayoutManager(this);
 		this.scenarioModel = model;
 		this.jComponent = jComponent;
-//		final int numOfSectors = 4;
-//		final int angleExtent = 180/numOfSectors;
 		view = new EditorView(null);
 
 		for (final AbstractModel child : scenarioModel.getModelChildren()){
@@ -50,22 +49,14 @@ public class EditorController extends AbstractController {
 				final Controller generator = new SectionController("Generator", new GeneratorIcon(), child);
 				addChild(generator);
 			} else if (child instanceof SenderModel) {
-				final Controller sender = new SectionController("Sender", new GeneratorIcon(), child);
+				final Controller sender = new SectionController("Sender", new SenderIcon(), child);
 				addChild(sender);
 			} else if (child instanceof ReportingModel) {
-				final Controller reporting = new SectionController("Reporting", new GeneratorIcon(), child);
+				final Controller reporting = new SectionController("Reporting", new ReporterIcon(), child);
 				addChild(reporting);
 
 			}
 		}
-		//		for (int i = 0; i < numOfSectors; i++){
-		//			final LayoutData childData = new LayoutData(data);
-		//			childData.getAngularData().setStartAngle(data.getAngularData().getStartAngle() + i * angleExtent);
-		//			childData.getAngularData().setAngleExtent(angleExtent);
-		//			final SectionController section = new SectionController("Section", new GeneratorIcon(), childData);
-		//			addChild(section);
-		//			invalidate();
-		//		}
 	}
 
 	@Override
@@ -139,5 +130,10 @@ public class EditorController extends AbstractController {
 				child.invalidate();
 			}
 		}
+	}
+
+	@Override
+	public JComponent getJComponent() {
+		return this.jComponent;
 	}
 }

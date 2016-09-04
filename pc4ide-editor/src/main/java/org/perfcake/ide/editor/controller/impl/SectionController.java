@@ -7,9 +7,8 @@ import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.impl.SectorView;
-
-import javax.swing.Icon;
 
 import java.awt.Graphics;
 
@@ -22,7 +21,7 @@ public class SectionController extends AbstractController {
 	private ComponentView view;
 	private AbstractModel model;
 
-	public SectionController(String sectionName, Icon icon, AbstractModel model) {
+	public SectionController(String sectionName, ResizableIcon icon, AbstractModel model) {
 		super();
 		this.model = model;
 		this.layoutManager = new SimpleCircularLayoutManager(this);
