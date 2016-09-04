@@ -1,0 +1,9 @@
+<project name="PerfCake IDE icons">
+<taskdef name="svg2java"
+         classname="org.pushingpixels.flamingo.api.svg.SvgTranscoderTask"
+		 classpath="lib/flamingo-svg-transcoder-ant-1.2.jar"/>
+
+<svg2java todir="swing-icons" verbose="true" namingStrategy="camelcaseicon" template="icon">
+  <fileset dir="svg-icons" includes="**/*.svg*"/>
+</svg2java>
+</project>
