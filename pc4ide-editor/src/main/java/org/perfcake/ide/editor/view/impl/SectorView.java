@@ -7,9 +7,7 @@ import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
-
-import javax.swing.Icon;
-import javax.swing.JPanel;
+import org.perfcake.ide.editor.view.icons.ResizableIcon;
 
 import java.awt.BasicStroke;
 import java.awt.Font;
@@ -38,12 +36,12 @@ public class SectorView extends AbstractView {
 	}
 
 	private String componentName;
-	private Icon icon;
+	private ResizableIcon icon;
 
 	private Shape bounds;
 
 
-	public SectorView(ComponentView parent, String componentName, Icon icon) {
+	public SectorView(ComponentView parent, String componentName, ResizableIcon icon) {
 		super(parent);
 		this.componentName = componentName;
 		this.icon = icon;
@@ -119,19 +117,17 @@ public class SectorView extends AbstractView {
 
 		drawSectorName(g2d);
 
-		//		drawSectionName(g2d, endOuterArcPoint);
-
 	}
 
 	private void drawIcon(Graphics2D g2d) {
 		if (icon != null) {
 			final double iconX = (layoutData.getCenter().getX() - icon.getIconWidth() / 2)
-					+ (1.15 * layoutData.getRadiusData().getInnerRadius() + icon.getIconWidth() / 2) * Math.cos(Math.toRadians(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent() / 2));
+					+ (1.5 * layoutData.getRadiusData().getInnerRadius() + icon.getIconWidth() / 2) * Math.cos(Math.toRadians(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent() / 2));
 			final double iconY = (layoutData.getCenter().getY() - icon.getIconHeight() / 2)
-					- (1.15 * layoutData.getRadiusData().getInnerRadius() + icon.getIconHeight() / 2) * Math.sin(Math.toRadians(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent() / 2));
+					- (1.5 * layoutData.getRadiusData().getInnerRadius() + icon.getIconHeight() / 2) * Math.sin(Math.toRadians(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent() / 2));
 
-			//TODO(jknetl): don't create new Jpanel but rather access existing one!
-			icon.paintIcon(new JPanel(), g2d, (int) iconX, (int) iconY);
+			// we may pass null as component since our icon implementation completely ignores this argument
+			icon.paintIcon(null, g2d, (int) iconX, (int) iconY);
 		}
 	}
 

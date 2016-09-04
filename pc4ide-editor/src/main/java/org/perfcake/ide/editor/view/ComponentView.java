@@ -17,8 +17,7 @@ import java.util.List;
  * @author jknetl
  *
  */
-public interface ComponentView{
-
+public interface ComponentView {
 
 	/**
 	 * @return true if the view is currently selected
@@ -45,7 +44,7 @@ public interface ComponentView{
 
 	/**
 	 *
-	 * Get view preferd angular extent.
+	 * Get view prefferd angular extent.
 	 *
 	 * @param radius The radiuses which will be used.
 	 *
