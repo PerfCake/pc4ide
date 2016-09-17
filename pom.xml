@@ -16,15 +16,16 @@
 	<properties>
 		<perfcake.version>7.0-SNAPSHOT</perfcake.version>
 		<slf4j.version>1.7.21</slf4j.version>
+		<reflections.version>0.9.10</reflections.version>
 		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-			<groupId>org.perfcake</groupId>
-			<artifactId>perfcake</artifactId>
-			<version>${perfcake.version}</version>
+				<groupId>org.perfcake</groupId>
+				<artifactId>perfcake</artifactId>
+				<version>${perfcake.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -35,6 +36,11 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>${reflections.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

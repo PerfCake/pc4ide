@@ -11,7 +11,11 @@ import java.util.Properties;
 
 public class JavadocComponentParser {
 
-	private static final String JAVADOC_PROPERTIES_FILE = "perfcake-comment.properties";
+	/**
+	 * Properties file.
+	 */
+	public static final String JAVADOC_PROPERTIES_FILE = "perfcake-comment.properties";
+
 	private static final String JAVADOC_PROPERTIES_COMMENT = "Javadoc for the perfcake components fields.";
 
 	public static boolean start(RootDoc root) {
@@ -23,6 +27,10 @@ public class JavadocComponentParser {
 
 		for (final ClassDoc classDoc : classes) {
 			if (isPerfcakeComponent(classDoc)) {
+
+				if (classDoc.commentText() != null && !classDoc.commentText().isEmpty()) {
+					properties.setProperty(classDoc.qualifiedName(), classDoc.commentText());
+				}
 				for (final FieldDoc field : classDoc.fields()) {
 					if (field.commentText() != null && !field.commentText().isEmpty()) {
 						properties.setProperty(field.qualifiedName(), field.commentText());
