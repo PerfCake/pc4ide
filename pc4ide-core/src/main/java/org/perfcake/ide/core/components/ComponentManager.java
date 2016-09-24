@@ -31,7 +31,7 @@ public class ComponentManager {
 	 */
 	public static final String JAVADOC_LOCATION_CLASSPATH = "/" + JavadocComponentParser.JAVADOC_PROPERTIES_FILE;
 
-	public static final Object[] PACKAGES_WITH_COMPONENTS = new String[] {"org.perfcake"};
+	public static final String[] PACKAGES_WITH_COMPONENTS = new String[] {"org.perfcake"};
 
 	/**
 	 * Mapping between componentKind and particular component implementations.

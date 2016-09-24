@@ -27,7 +27,7 @@ public class ComponentParsingSmokeTest {
 
 	@Before
 	public void setUp() throws FileNotFoundException {
-		manager = new ComponentManager(new FileInputStream("target/perfcake-comment.properties"), Arrays.asList(new String[] {"org.perfcake"}));
+		manager = new ComponentManager(new FileInputStream("target/classes/perfcake-comment.properties"), Arrays.asList(new String[] {"org.perfcake"}));
 	}
 	@Test
 	public void testParsingComponents() {

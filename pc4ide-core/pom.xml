@@ -106,7 +106,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 
 							<resources>
 								<resource>
