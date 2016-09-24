@@ -21,12 +21,11 @@ public interface FormElement {
 	List<JComponent> getGraphicalComponents();
 
 	/**
-	 *
-	 * This methods is hint for layout manager. If the manager needs to expand some component it may
+	 * This methods is hint for layout manager. If the manager needs to enlarge some component it may
 	 * take a hint from this method.
 	 *
 	 * @return index of component in the {@link #getGraphicalComponents()} list which should be
 	 * expanded by the layout manager if required.
 	 */
-	int indexOfExpandableComponent();
+	int getMainComponent();
 }

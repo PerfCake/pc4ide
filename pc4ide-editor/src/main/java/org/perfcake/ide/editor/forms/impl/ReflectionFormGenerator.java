@@ -7,6 +7,7 @@ import org.perfcake.ide.editor.forms.FormBuilder;
 import org.perfcake.ide.editor.forms.FormElement;
 import org.perfcake.ide.editor.forms.FormGenerator;
 import org.perfcake.ide.editor.forms.FormPageDirector;
+import org.perfcake.ide.editor.forms.impl.elements.ChoiceElement;
 import org.perfcake.ide.editor.forms.impl.elements.TextElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 public class ReflectionFormGenerator implements FormGenerator {
 
+	private static final int MAIN_COLUMN = 1;
 	private static final int DEFAULT_MAX_COMPONETNS_IN_ROW = 3;
 
 	static final Logger logger = LoggerFactory.getLogger(ReflectionFormGenerator.class);
@@ -38,14 +40,13 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 	private FormBuilder formBuilder;
 
-
 	public ReflectionFormGenerator(Object model, FormPageDirector director, ComponentManager componentManager, JPanel form) {
 		super();
 		this.model = model;
 		this.director = director;
 		this.componentManager = componentManager;
 		this.form = form;
-		formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONETNS_IN_ROW);
+		formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONETNS_IN_ROW, MAIN_COLUMN);
 	}
 
 	void setModel(Object model, FormPageDirector formDirector) {
@@ -78,32 +79,18 @@ public class ReflectionFormGenerator implements FormGenerator {
 				if (method.getParameterCount() == 1) {
 					final Class<?> argumentType = method.getParameterTypes()[0];
 					if (argumentType.isPrimitive() || String.class.equals(argumentType)) {
-						final String name = method.getName().substring(3);
-						String defaultValue = "";
+						final String fieldName = getFieldName(method);
+						final String defaultValue = getFormElementDefaultValue(fieldName);
+						final String docs = getElementDocumentation(fieldName);
 
-						Method getMethod = null;
-						final String getMethodName = "get" + name;
-						try {
-							getMethod = modelClazz.getMethod(getMethodName);
-							defaultValue = String.valueOf(getMethod.invoke(model, new Object[] {}));
-
-						} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-							logger.warn("Cannot obtain value using method {}()", getMethodName);
+						final FormElement element;
+						if ("clazz".equals(fieldName)) {
+							final List<String> values = getImplementationNames(modelClazz);
+							element = new ChoiceElement(fieldName, docs, defaultValue, values);
+						} else {
+							element = new TextElement(fieldName, docs, defaultValue);
 						}
-
-						String docs = null;
-
-						final ComponentKind kind = ComponentKind.getComponentKindByClazz(modelClazz);
-						if (kind != null) {
-							final Component component = componentManager.getComponent(kind);
-							if (component != null) {
-								final String fieldName = name.substring(0, 1).toLowerCase() + name.substring(1);
-								docs = componentManager.getFieldDocumentation(component, fieldName);
-							}
-
-						}
-
-						elements.add(new TextElement(name, defaultValue, docs));
+						elements.add(element);
 					}
 				}
 			}
@@ -116,4 +103,87 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 		return elements;
 	}
+
+	private String getElementDocumentation(final String fieldName) {
+		String docs = null;
+		final Class<?> modelClazz = model.getClass();
+		final ComponentKind kind = ComponentKind.getComponentKindByModelClazz(modelClazz);
+		if (kind != null) {
+			final Component component = componentManager.getComponent(kind);
+			if (component != null) {
+				docs = componentManager.getFieldDocumentation(component, fieldName);
+			}
+		}
+
+		return docs;
+	}
+
+	private String getFormElementDefaultValue(String fieldName) {
+		String defaultValue = "";
+
+		Method getMethod = null;
+		final String getMethodName = "get" + firstToUpperCase(fieldName);
+		final Class<?> modelClazz = model.getClass();
+		try {
+			getMethod = modelClazz.getMethod(getMethodName);
+			defaultValue = String.valueOf(getMethod.invoke(model, new Object[] {}));
+
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			logger.warn("Cannot obtain value using method {}()", getMethodName);
+		}
+		return defaultValue;
+	}
+
+	/**
+	 *
+	 * @param method
+	 * @return FieldName derived from the get method
+	 */
+	private String getFieldName(final Method method) {
+		final String name = firstToLowerCase(method.getName().substring(3));
+		return name;
+	}
+
+	private List<String> getImplementationNames(Class<?> modelClazz) {
+		final List<String> list = new ArrayList<>();
+
+		final ComponentKind kind = ComponentKind.getComponentKindByModelClazz(modelClazz);
+
+		final List<Component> implementations = componentManager.getComponentImplementations(kind);
+
+		for (final Component c : implementations){
+			list.add(c.getImplementation().getSimpleName());
+		}
+
+		return list;
+	}
+
+	private String firstToUpperCase(String s) {
+		if (s == null || s.isEmpty()) {
+			return s;
+		}
+
+		final StringBuilder builder = new StringBuilder()
+				.append(Character.toUpperCase(s.charAt(0)));
+		if (s.length() > 1) {
+			builder.append(s.substring(1));
+		}
+
+		return builder.toString();
+	}
+
+	private String firstToLowerCase(String s) {
+		if (s == null || s.isEmpty()) {
+			return s;
+		}
+
+		final StringBuilder builder = new StringBuilder()
+				.append(Character.toLowerCase(s.charAt(0)));
+		if (s.length() > 1) {
+			builder.append(s.substring(1));
+		}
+
+		return builder.toString();
+	}
+
 }

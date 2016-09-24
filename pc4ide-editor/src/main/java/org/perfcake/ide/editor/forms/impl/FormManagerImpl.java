@@ -82,11 +82,17 @@ public class FormManagerImpl implements FormManager {
 			throw new IllegalArgumentException("Page cannot be null");
 		}
 
+		// if page is first page then it should be immediately displayed
+		if (pages.isEmpty()) {
+			container.add(page.getContentPanel(), BorderLayout.CENTER);
+		}
+
 		pages.add(page);
 	}
 
 	@Override
 	public boolean removePage(FormPage page) {
+		//TODO(jknetl) handle the situation when the page is actually displayed!
 		return pages.remove(page);
 	}
 

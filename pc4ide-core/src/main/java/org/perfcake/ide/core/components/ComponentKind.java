@@ -132,7 +132,7 @@ public enum ComponentKind {
 		return componentClazz;
 	}
 
-	public static ComponentKind getComponentKindByClazz(Class<?> modelClazz) {
+	public static ComponentKind getComponentKindByModelClazz(Class<?> modelClazz) {
 		ComponentKind kind = null;
 
 		for (final ComponentKind k : values()) {
