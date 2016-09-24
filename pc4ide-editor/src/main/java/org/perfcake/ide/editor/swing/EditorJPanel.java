@@ -1,17 +1,25 @@
 package org.perfcake.ide.editor.swing;
 
+import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.forms.FormPage;
+import org.perfcake.ide.editor.forms.impl.FormManagerImpl;
+import org.perfcake.ide.editor.forms.impl.SimpleFormPage;
 
 import javax.swing.JSplitPane;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 public class EditorJPanel extends JSplitPane {
 
 	private ScenarioModel scenario;
 	private GraphicalEditorJPanel graphicalEditorPanel;
-	private FormPanel formPanel;
+	private FormManager formManager;
 
 	public EditorJPanel(ScenarioModel scenario) {
 		super(JSplitPane.HORIZONTAL_SPLIT);
@@ -20,10 +28,16 @@ public class EditorJPanel extends JSplitPane {
 		this.scenario = scenario;
 
 		graphicalEditorPanel = new GraphicalEditorJPanel(scenario);
-		formPanel = new FormPanel();
+
+		final InputStream javadocStream = this.getClass().getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
+		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
+		final ComponentManager componentManager = new ComponentManager(javadocStream, packagesList);
+		formManager = new FormManagerImpl(componentManager);
+		final FormPage generatorPage = new SimpleFormPage(formManager, scenario.getGenerator());
+		formManager.addFormPage(generatorPage);
 
 		setLeftComponent(graphicalEditorPanel);
-		setRightComponent(formPanel);
+		setRightComponent(formManager.getContainerPanel());
 
 		setDividerLocation(getWidth() - 100);
 		//		this.add(graphicalEditorPanel, BorderLayout.CENTER);

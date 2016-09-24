@@ -1,10 +1,8 @@
 package org.perfcake.ide.editor.forms;
 
-import javax.swing.JComponent;
-
 /**
  *
- * FormBuilder incrementally builds a from by adding/removing the components. It should manage layout
+ * FormBuilder incrementally builds a from by adding/removing the form elements. It should manage layout
  * of the components by its own.
  *
  * @author jknetl
@@ -13,14 +11,14 @@ import javax.swing.JComponent;
 public interface FormBuilder {
 
 	/**
-	 * Adds component in the form.
-	 * @param component
+	 * Adds form element into the form.
+	 * @param element
 	 */
-	void addComponent(JComponent component);
+	void addElement(FormElement element);
 
 	/**
-	 * Remove component from the form.
-	 * @param component
+	 * Remove form element from the form.
+	 * @param element
 	 */
-	boolean removeComponent(JComponent component);
+	boolean removeElement(FormElement element);
 }

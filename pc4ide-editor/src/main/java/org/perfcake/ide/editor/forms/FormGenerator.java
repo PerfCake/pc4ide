@@ -1,7 +1,5 @@
 package org.perfcake.ide.editor.forms;
 
-import javax.swing.JPanel;
-
 /**
  * FormGenerator serves as tool for creating a forms dynamically.
  *
@@ -11,9 +9,8 @@ import javax.swing.JPanel;
 public interface FormGenerator {
 
 	/**
-	 * Generate form elements and fill them into the JPanel.
+	 * Generates form with appropriate elements.
 	 *
-	 * @param jPanel
 	 */
-	void createForm(JPanel jPanel);
+	void createForm();
 }
