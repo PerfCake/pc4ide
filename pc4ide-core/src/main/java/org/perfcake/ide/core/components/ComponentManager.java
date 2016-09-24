@@ -142,7 +142,6 @@ public class ComponentManager {
 		return Collections.unmodifiableMap(componentsMap);
 	}
 
-
 	/**
 	 *
 	 * @param kind
@@ -159,5 +158,38 @@ public class ComponentManager {
 	 */
 	public List<Component> getComponentImplementations(ComponentKind kind) {
 		return componentImplementationsMap.get(kind);
+	}
+
+	/**
+	 * @param component
+	 * @param fieldName simple name of the field
+	 * @return Field of the component with given name or null if field or component cannot be found.
+	 */
+	public PropertyField getPropertyField(Component component, String fieldName) {
+		PropertyField field = null;
+		if (component != null) {
+			field = component.getPropertyField(fieldName);
+		}
+
+		return field;
+	}
+
+	/**
+	 * Locates documentation of the field in given component.
+	 *
+	 * @param component
+	 * @param fieldName name of the field (just a simple name, not fully qualified)
+	 *
+	 * @return field documentation or null if cannot be found.
+	 */
+	public String getFieldDocumentation(Component component, String fieldName) {
+		String docs = null;
+		final PropertyField field = getPropertyField(component, fieldName);
+
+		if (field != null) {
+			docs = field.getDocumentation();
+		}
+
+		return docs;
 	}
 }

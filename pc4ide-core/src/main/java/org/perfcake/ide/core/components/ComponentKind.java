@@ -120,7 +120,7 @@ public enum ComponentKind {
 	 * @param modelClazz
 	 * @return PerfCake component class or null if no component is binded to the modelClazz
 	 */
-	public static Class<?> getComonentClazz(Class<?> modelClazz) {
+	public static Class<?> getComponentClazz(Class<?> modelClazz) {
 		Class<?> componentClazz = null;
 		for (final ComponentKind kind : values()) {
 			if (kind.getModelClazz().equals(modelClazz)) {
@@ -130,6 +130,20 @@ public enum ComponentKind {
 		}
 
 		return componentClazz;
+	}
+
+	public static ComponentKind getComponentKindByClazz(Class<?> modelClazz) {
+		ComponentKind kind = null;
+
+		for (final ComponentKind k : values()) {
+			if (k.getModelClazz().equals(modelClazz)) {
+				kind = k;
+				break;
+			}
+		}
+
+		return kind;
+
 	}
 
 	private boolean isAbstract(Class<?> clazz) {

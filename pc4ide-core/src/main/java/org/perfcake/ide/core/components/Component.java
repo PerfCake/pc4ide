@@ -70,4 +70,25 @@ public class Component {
 	public String getDocumentation() {
 		return documentation;
 	}
+
+	/**
+	 * @param fieldName simple name of the field
+	 * @return PropertyField with given name or null if no such field can be found.
+	 */
+	public PropertyField getPropertyField(String fieldName) {
+
+		if (fieldName == null) {
+			return null;
+		}
+
+		PropertyField result = null;
+
+		for (final PropertyField field : propertyFields){
+			if (fieldName.equals(field.getName())) {
+				result = field;
+			}
+		}
+
+		return result;
+	}
 }
