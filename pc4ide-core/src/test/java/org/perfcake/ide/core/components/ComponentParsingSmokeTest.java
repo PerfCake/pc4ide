@@ -1,5 +1,11 @@
 package org.perfcake.ide.core.components;
 
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.notNullValue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,6 +71,20 @@ public class ComponentParsingSmokeTest {
 		final PropertyField urlField = getPropertyField(httpSender, "url");
 		Assert.assertNotNull(urlField);
 		Assert.assertTrue(urlField.getDocumentation().length() > 0);
+	}
+
+	@Test
+	public void testAbstractComponentLoading() {
+		//test that some javadoc is loaded
+
+		//Assert abstract sender has a documentation
+		final Component generatorInterface = manager.getComponent(ComponentKind.GENERATOR);
+		assertThat(generatorInterface.getDocumentation(), not(isEmptyOrNullString()));
+
+		//Assert that generator has thread and clazz fields
+		final PropertyField urlField = getPropertyField(generatorInterface, "threads");
+		assertThat(urlField, notNullValue());
+		assertThat(urlField.getDocumentation(), not(isEmptyOrNullString()));
 	}
 
 	/**

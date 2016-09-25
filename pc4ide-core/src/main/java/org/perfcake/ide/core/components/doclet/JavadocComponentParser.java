@@ -1,7 +1,10 @@
 package org.perfcake.ide.core.components.doclet;
 
+import org.perfcake.ide.core.utils.StringUtils;
+
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 
 import java.io.FileNotFoundException;
@@ -34,6 +37,18 @@ public class JavadocComponentParser {
 				for (final FieldDoc field : classDoc.fields()) {
 					if (field.commentText() != null && !field.commentText().isEmpty()) {
 						properties.setProperty(field.qualifiedName(), field.commentText());
+					}
+				}
+
+				/* if the class is abstract then we want to derive field documentation using set methods
+				 * defined in the interface */
+				if (classDoc.isInterface()) {
+					for (final MethodDoc method : classDoc.methods()) {
+						if (method.name().startsWith("set")) {
+							final String fieldName = StringUtils.firstToLowerCase(method.name().substring(3));
+							final String documentation = method.commentText();
+							properties.setProperty(classDoc.qualifiedName() + "." + fieldName, documentation);
+						}
 					}
 				}
 			}

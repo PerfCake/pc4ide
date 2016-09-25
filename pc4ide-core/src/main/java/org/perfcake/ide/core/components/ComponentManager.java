@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,20 +82,51 @@ public class ComponentManager {
 	public void discoverComponents() {
 		for (final ComponentKind kind : ComponentKind.values()) {
 			// parse component
-			final Component component = parseComponent(kind, kind.getComponentClazz());
-			componentsMap.put(kind, component);
-			// user can change implementation then scan for the implementations
+
+			Component component;
 			if (kind.isAbstract()) {
+				component = parseInterface(kind, kind.getComponentClazz());
+
+				// if component is abstract then we want to search for its implementations
 				final List<Component> componentsList = new ArrayList<>();
 				final Reflections reflections = new Reflections(packagesToScan);
 				for (final Class<?> clazz : reflections.getSubTypesOf(kind.getComponentClazz())) {
 					final Component c = parseComponent(kind, clazz);
 					componentsList.add(c);
-
 				}
+
 				componentImplementationsMap.put(kind, componentsList);
+			} else {
+				component = parseComponent(kind, kind.getComponentClazz());
 			}
+
+			componentsMap.put(kind, component);
 		}
+	}
+
+	private Component parseInterface(ComponentKind kind, Class<?> clazz) {
+		final String clazzDoc = javadocCatalogue.getProperty(clazz.getName());
+
+		//scan the fields
+		final List<PropertyField> fields = new ArrayList<>();
+		for (final Method m : clazz.getDeclaredMethods()) {
+
+			if (m.getName().startsWith("set") && m.getName().length() > 3) {
+				final StringBuilder nameBuilder = new StringBuilder();
+				nameBuilder.append(Character.toLowerCase(m.getName().charAt(3)));
+				if (m.getName().length() > 4) {
+					nameBuilder.append(m.getName().substring(4));
+				}
+				final String fieldName = nameBuilder.toString();
+				final String fieldDocKey = clazz.getName() + "." + fieldName;
+				final String fieldDoc = javadocCatalogue.getProperty(fieldDocKey);
+				// we can't get information whether the field is mandatory here
+				final PropertyField field = new PropertyField(fieldName, fieldDoc, false);
+				fields.add(field);
+			}
+
+		}
+		return new Component(kind, clazz, fields, clazzDoc);
 	}
 
 	private Component parseComponent(final ComponentKind kind, final Class<?> clazz) {
