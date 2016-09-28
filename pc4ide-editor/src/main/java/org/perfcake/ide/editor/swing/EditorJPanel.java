@@ -33,13 +33,13 @@ public class EditorJPanel extends JSplitPane {
 		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
 		final ComponentManager componentManager = new ComponentManager(javadocStream, packagesList);
 		formManager = new FormManagerImpl(componentManager);
-		final FormPage generatorPage = new SimpleFormPage(formManager, scenario.getGenerator());
+		final FormPage generatorPage = new SimpleFormPage(formManager, scenario.getReporting());
 		formManager.addFormPage(generatorPage);
 
 		setLeftComponent(graphicalEditorPanel);
 		setRightComponent(formManager.getContainerPanel());
 
-		setDividerLocation(getWidth() - 100);
+		//		setDividerLocation(getWidth() - 200);
 		//		this.add(graphicalEditorPanel, BorderLayout.CENTER);
 		//		this.add(formPanel, BorderLayout.LINE_END);
 		//		formPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -49,7 +49,7 @@ public class EditorJPanel extends JSplitPane {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				super.componentResized(e);
-				setDividerLocation(0.9);
+				setDividerLocation(0.7);
 			}
 		});
 	}

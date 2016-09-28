@@ -8,6 +8,7 @@ import org.perfcake.ide.editor.forms.FormElement;
 import org.perfcake.ide.editor.forms.FormGenerator;
 import org.perfcake.ide.editor.forms.FormPageDirector;
 import org.perfcake.ide.editor.forms.impl.elements.ChoiceElement;
+import org.perfcake.ide.editor.forms.impl.elements.ReflectiveTabularElement;
 import org.perfcake.ide.editor.forms.impl.elements.TextElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,7 +61,7 @@ public class ReflectionFormGenerator implements FormGenerator {
 	@Override
 	public void createForm() {
 
-		final List<FormElement> elements = inspectModelFields();
+		final List<FormElement> elements = createFormElements();
 
 		for (final FormElement element : elements) {
 			formBuilder.addElement(element);
@@ -67,7 +69,7 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 	}
 
-	private List<FormElement> inspectModelFields() {
+	private List<FormElement> createFormElements() {
 
 		final List<FormElement> elements = new ArrayList<>();
 
@@ -75,33 +77,59 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 		for (final Method method : modelClazz.getMethods()) {
 
-			if (method.getName().startsWith("set")) {
-				if (method.getParameterCount() == 1) {
-					final Class<?> argumentType = method.getParameterTypes()[0];
-					if (argumentType.isPrimitive() || String.class.equals(argumentType)) {
-						final String fieldName = getFieldName(method);
-						final String defaultValue = getFormElementDefaultValue(fieldName);
-						final String docs = getElementDocumentation(fieldName);
+			if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
+				final Class<?> argumentType = method.getParameterTypes()[0];
+				if (argumentType.isPrimitive() || String.class.equals(argumentType)) {
+					final String fieldName = getFieldName(method);
+					final String defaultValue = getFormElementDefaultValue(fieldName);
+					final String docs = getElementDocumentation(fieldName);
 
-						final FormElement element;
-						if ("clazz".equals(fieldName)) {
-							final List<String> values = getImplementationNames(modelClazz);
-							element = new ChoiceElement(fieldName, docs, defaultValue, values);
-						} else {
-							element = new TextElement(fieldName, docs, defaultValue);
-						}
-						elements.add(element);
+					final FormElement element;
+					if ("clazz".equals(fieldName)) {
+						final List<String> values = getImplementationNames(modelClazz);
+						element = new ChoiceElement(fieldName, docs, defaultValue, values);
+					} else {
+						element = new TextElement(fieldName, docs, defaultValue);
 					}
+					elements.add(element);
 				}
 			}
 
-			if (method.getName().startsWith("add") && method.getParameterCount() == 1) {
+			if (method.getName().startsWith("add") && method.getParameterCount() == 1
+					&& !method.getName().equals("addPropertyChangeListener")
+					&& !method.getName().equals("addProperty")) {
+				final String fieldName = getFieldName(method);
+				final List<Object> rows = getListValues(fieldName);
 
+				final FormElement element = new ReflectiveTabularElement(fieldName, model, rows);
+
+				elements.add(element);
 			}
 
 		}
 
 		return elements;
+	}
+
+	private List<Object> getListValues(String fieldName) {
+		List<Object> rows = null;
+		final String methodName = "get" + firstToUpperCase(fieldName);
+		try {
+			final Method getMethod = model.getClass().getMethod(methodName, null);
+			final Object returnValue = getMethod.invoke(model, null);
+			if (returnValue instanceof List<?>) {
+				rows = castToList(returnValue);
+				if (rows == null) {
+					rows = Collections.emptyList();
+				}
+			}
+
+		} catch (NoSuchMethodException | SecurityException e) {
+			logger.warn("Cannot obtains list containing rows for table using method: {}", methodName, e);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			logger.warn("Cannot invoke method: {}", methodName, e);
+		}
+		return rows;
 	}
 
 	private String getElementDocumentation(final String fieldName) {
@@ -151,7 +179,7 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 		final List<Component> implementations = componentManager.getComponentImplementations(kind);
 
-		for (final Component c : implementations){
+		for (final Component c : implementations) {
 			list.add(c.getImplementation().getSimpleName());
 		}
 
@@ -184,6 +212,11 @@ public class ReflectionFormGenerator implements FormGenerator {
 		}
 
 		return builder.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends List<?>> T castToList(Object obj) {
+		return (T) obj;
 	}
 
 }
