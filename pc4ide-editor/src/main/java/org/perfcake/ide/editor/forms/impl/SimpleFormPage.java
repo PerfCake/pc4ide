@@ -1,5 +1,6 @@
 package org.perfcake.ide.editor.forms.impl;
 
+import org.perfcake.ide.core.model.director.ModelDirector;
 import org.perfcake.ide.editor.forms.FormGenerator;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
@@ -15,13 +16,13 @@ import javax.swing.JPanel;
  */
 public class SimpleFormPage implements FormPage {
 
-	private Object model;
+	private ModelDirector model;
 	private FormPageDirector pageDirector;
 	private JPanel form;
 	private FormGenerator formGenerator;
 	private FormManager formManager;
 
-	public SimpleFormPage(FormManager formManager, Object model) {
+	public SimpleFormPage(FormManager formManager, ModelDirector model) {
 		super();
 		if (formManager == null) {
 			throw new IllegalArgumentException("formManager cannot be null");

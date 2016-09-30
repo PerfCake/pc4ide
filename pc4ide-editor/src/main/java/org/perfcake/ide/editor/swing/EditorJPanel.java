@@ -2,6 +2,7 @@ package org.perfcake.ide.editor.swing;
 
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.model.director.ReflectiveModelDirector;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
 import org.perfcake.ide.editor.forms.impl.FormManagerImpl;
@@ -33,7 +34,7 @@ public class EditorJPanel extends JSplitPane {
 		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
 		final ComponentManager componentManager = new ComponentManager(javadocStream, packagesList);
 		formManager = new FormManagerImpl(componentManager);
-		final FormPage generatorPage = new SimpleFormPage(formManager, scenario.getReporting());
+		final FormPage generatorPage = new SimpleFormPage(formManager, new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
 		formManager.addFormPage(generatorPage);
 
 		setLeftComponent(graphicalEditorPanel);

@@ -3,6 +3,9 @@ package org.perfcake.ide.editor.forms.impl;
 import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.model.director.FieldType;
+import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.model.director.ModelField;
 import org.perfcake.ide.editor.forms.FormBuilder;
 import org.perfcake.ide.editor.forms.FormElement;
 import org.perfcake.ide.editor.forms.FormGenerator;
@@ -35,27 +38,20 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 	static final Logger logger = LoggerFactory.getLogger(ReflectionFormGenerator.class);
 
-	private Object model;
+	private ModelDirector model;
 	private FormPageDirector director;
 	private ComponentManager componentManager;
 	private JPanel form;
 
 	private FormBuilder formBuilder;
 
-	public ReflectionFormGenerator(Object model, FormPageDirector director, ComponentManager componentManager, JPanel form) {
+	public ReflectionFormGenerator(ModelDirector model, FormPageDirector director, ComponentManager componentManager, JPanel form) {
 		super();
 		this.model = model;
 		this.director = director;
 		this.componentManager = componentManager;
 		this.form = form;
 		formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONETNS_IN_ROW, MAIN_COLUMN);
-	}
-
-	void setModel(Object model, FormPageDirector formDirector) {
-		if (model == null) {
-			throw new IllegalArgumentException("Model cannot be null");
-		}
-		this.model = model;
 	}
 
 	@Override
@@ -75,33 +71,15 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 		final Class<?> modelClazz = model.getClass();
 
-		for (final Method method : modelClazz.getMethods()) {
+		for (ModelField f : model.getModelFields()){
 
-			if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
-				final Class<?> argumentType = method.getParameterTypes()[0];
-				if (argumentType.isPrimitive() || String.class.equals(argumentType)) {
-					final String fieldName = getFieldName(method);
-					final String defaultValue = getFormElementDefaultValue(fieldName);
-					final String docs = getElementDocumentation(fieldName);
-
-					final FormElement element;
-					if ("clazz".equals(fieldName)) {
-						final List<String> values = getImplementationNames(modelClazz);
-						element = new ChoiceElement(fieldName, docs, defaultValue, values);
-					} else {
-						element = new TextElement(fieldName, docs, defaultValue);
-					}
-					elements.add(element);
+			if (f.getFieldType() == FieldType.SIMPLE){
+				FormElement element;
+				if ("clazz".equals(f.getName())){
+					element = new ChoiceElement(f.getName(), f.getDocs(), String.valueOf(model.getModelFieldValue(f)), getImplementationNames(model.getModel().getClass()));
+				} else {
+					element = new TextElement(f.getName(), f.getDocs(), String.valueOf(model.getModelFieldValue(f)));
 				}
-			}
-
-			if (method.getName().startsWith("add") && method.getParameterCount() == 1
-					&& !method.getName().equals("addPropertyChangeListener")
-					&& !method.getName().equals("addProperty")) {
-				final String fieldName = getFieldName(method);
-				final List<Object> rows = getListValues(fieldName);
-
-				final FormElement element = new ReflectiveTabularElement(fieldName, model, rows);
 
 				elements.add(element);
 			}
@@ -111,66 +89,6 @@ public class ReflectionFormGenerator implements FormGenerator {
 		return elements;
 	}
 
-	private List<Object> getListValues(String fieldName) {
-		List<Object> rows = null;
-		final String methodName = "get" + firstToUpperCase(fieldName);
-		try {
-			final Method getMethod = model.getClass().getMethod(methodName, null);
-			final Object returnValue = getMethod.invoke(model, null);
-			if (returnValue instanceof List<?>) {
-				rows = castToList(returnValue);
-				if (rows == null) {
-					rows = Collections.emptyList();
-				}
-			}
-
-		} catch (NoSuchMethodException | SecurityException e) {
-			logger.warn("Cannot obtains list containing rows for table using method: {}", methodName, e);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			logger.warn("Cannot invoke method: {}", methodName, e);
-		}
-		return rows;
-	}
-
-	private String getElementDocumentation(final String fieldName) {
-		String docs = null;
-		final Class<?> modelClazz = model.getClass();
-		final ComponentKind kind = ComponentKind.getComponentKindByModelClazz(modelClazz);
-		if (kind != null) {
-			final Component component = componentManager.getComponent(kind);
-			if (component != null) {
-				docs = componentManager.getFieldDocumentation(component, fieldName);
-			}
-		}
-
-		return docs;
-	}
-
-	private String getFormElementDefaultValue(String fieldName) {
-		String defaultValue = "";
-
-		Method getMethod = null;
-		final String getMethodName = "get" + firstToUpperCase(fieldName);
-		final Class<?> modelClazz = model.getClass();
-		try {
-			getMethod = modelClazz.getMethod(getMethodName);
-			defaultValue = String.valueOf(getMethod.invoke(model, new Object[] {}));
-
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			logger.warn("Cannot obtain value using method {}()", getMethodName);
-		}
-		return defaultValue;
-	}
-
-	/**
-	 *
-	 * @param method
-	 * @return FieldName derived from the get method
-	 */
-	private String getFieldName(final Method method) {
-		final String name = firstToLowerCase(method.getName().substring(3));
-		return name;
-	}
 
 	private List<String> getImplementationNames(Class<?> modelClazz) {
 		final List<String> list = new ArrayList<>();
@@ -185,38 +103,4 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 		return list;
 	}
-
-	private String firstToUpperCase(String s) {
-		if (s == null || s.isEmpty()) {
-			return s;
-		}
-
-		final StringBuilder builder = new StringBuilder()
-				.append(Character.toUpperCase(s.charAt(0)));
-		if (s.length() > 1) {
-			builder.append(s.substring(1));
-		}
-
-		return builder.toString();
-	}
-
-	private String firstToLowerCase(String s) {
-		if (s == null || s.isEmpty()) {
-			return s;
-		}
-
-		final StringBuilder builder = new StringBuilder()
-				.append(Character.toLowerCase(s.charAt(0)));
-		if (s.length() > 1) {
-			builder.append(s.substring(1));
-		}
-
-		return builder.toString();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T extends List<?>> T castToList(Object obj) {
-		return (T) obj;
-	}
-
 }
