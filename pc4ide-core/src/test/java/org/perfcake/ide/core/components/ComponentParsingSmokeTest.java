@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.perfcake.ide.core.utils.TestUtils;
 import org.perfcake.message.generator.DefaultMessageGenerator;
 import org.perfcake.message.receiver.HttpReceiver;
 import org.perfcake.message.sender.HttpSender;
@@ -33,7 +34,7 @@ public class ComponentParsingSmokeTest {
 
 	@Before
 	public void setUp() throws FileNotFoundException {
-		manager = new ComponentManager(new FileInputStream("target/classes/perfcake-comment.properties"), Arrays.asList(new String[] {"org.perfcake"}));
+		manager = TestUtils.createComponentManager();
 	}
 	@Test
 	public void testParsingComponents() {

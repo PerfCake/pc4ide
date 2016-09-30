@@ -21,7 +21,6 @@ import java.util.Properties;
  * Manages PerfCake components and its binding to model classes.
  *
  * @author jknetl
- *
  */
 public class ComponentManager {
 
@@ -124,7 +123,6 @@ public class ComponentManager {
 				final PropertyField field = new PropertyField(fieldName, fieldDoc, false);
 				fields.add(field);
 			}
-
 		}
 		return new Component(kind, clazz, fields, clazzDoc);
 	}
@@ -141,24 +139,20 @@ public class ComponentManager {
 			final boolean isFieldMandatory = isMandatory(f);
 			final PropertyField field = new PropertyField(f.getName(), fieldDoc, isFieldMandatory);
 			fields.add(field);
-
 		}
 		return new Component(kind, clazz, fields, clazzDoc);
 	}
 
 	private boolean isMandatory(java.lang.reflect.Field f) {
 		boolean isMandatory = false;
-		for (final Annotation annotation : f.getAnnotations()) {
-			if (MandatoryProperty.class.equals(annotation.getClass())) {
-				isMandatory = true;
-				break;
-			}
+		Annotation mandatoryAnnotation = f.getAnnotation(MandatoryProperty.class);
+		if (mandatoryAnnotation != null) {
+			isMandatory = true;
 		}
 		return isMandatory;
 	}
 
 	/**
-	 *
 	 * @return unmodifiable Mapping between componentKind and component implmentations
 	 */
 	public Map<ComponentKind, List<Component>> getComponentImplementationsMap() {
@@ -166,7 +160,6 @@ public class ComponentManager {
 	}
 
 	/**
-	 *
 	 * @return unmodifiable Mapping between componentKind and component interface in perfcake (note that interface for
 	 * component may be also particular class, not only the interface)
 	 */
@@ -175,7 +168,6 @@ public class ComponentManager {
 	}
 
 	/**
-	 *
 	 * @param kind
 	 * @return PerfCake component based on the type or null if no component is found
 	 */
@@ -184,7 +176,6 @@ public class ComponentManager {
 	}
 
 	/**
-	 *
 	 * @param kind
 	 * @return PerfCake component implementations list based on the type or null if no implementation is found.
 	 */
@@ -211,7 +202,6 @@ public class ComponentManager {
 	 *
 	 * @param component
 	 * @param fieldName name of the field (just a simple name, not fully qualified)
-	 *
 	 * @return field documentation or null if cannot be found.
 	 */
 	public String getFieldDocumentation(Component component, String fieldName) {
