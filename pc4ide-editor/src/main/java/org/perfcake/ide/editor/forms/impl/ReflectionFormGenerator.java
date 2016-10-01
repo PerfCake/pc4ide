@@ -76,9 +76,9 @@ public class ReflectionFormGenerator implements FormGenerator {
 			if (f.getFieldType() == FieldType.SIMPLE){
 				FormElement element;
 				if ("clazz".equals(f.getName())){
-					element = new ChoiceElement(f.getName(), f.getDocs(), String.valueOf(model.getModelFieldValue(f)), getImplementationNames(model.getModel().getClass()));
+					element = new ChoiceElement(model, f, getImplementationNames(model.getModel().getClass()));
 				} else {
-					element = new TextElement(f.getName(), f.getDocs(), String.valueOf(model.getModelFieldValue(f)));
+					element = new TextElement(model, f);
 				}
 
 				elements.add(element);

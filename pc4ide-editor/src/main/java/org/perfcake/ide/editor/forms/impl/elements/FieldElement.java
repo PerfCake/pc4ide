@@ -3,6 +3,10 @@
  */
 package org.perfcake.ide.editor.forms.impl.elements;
 
+import static org.eclipse.jdt.internal.compiler.parser.Parser.name;
+
+import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.model.director.ModelField;
 import org.perfcake.ide.editor.forms.FormElement;
 
 import javax.swing.JComponent;
@@ -24,26 +28,25 @@ import java.util.List;
  * @author jknetl
  *
  */
-public abstract class NamedDocumentedElement implements FormElement {
+public abstract class FieldElement implements FormElement {
 
-	protected String name;
-	protected String documentation;
-	protected String defaultValue;
+	protected ModelDirector director;
+	protected ModelField field;
 
 	protected JLabel label;
 	protected JComponent component;
 	protected JLabel docsLabel;
 
-	public NamedDocumentedElement(String name, String documentation, String defaultValue) {
-		this.name = name;
-		this.documentation = documentation;
-		this.defaultValue = defaultValue;
+	public FieldElement(ModelDirector director, ModelField field) {
 
-		label = new JLabel(name);
+		this.director = director;
+		this.field = field;
+
+		label = new JLabel(field.getName());
 
 		//TODO(jknetl) change for icon
 		docsLabel = new JLabel("<info>");
-		docsLabel.setToolTipText(documentation);
+		docsLabel.setToolTipText(field.getDocs());
 	}
 
 	/**

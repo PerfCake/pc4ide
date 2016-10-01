@@ -1,15 +1,22 @@
 package org.perfcake.ide.editor.forms.impl.elements;
 
+import org.perfcake.ide.core.command.Command;
+import org.perfcake.ide.core.command.impl.DirectedSetCommand;
+import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.model.director.ModelField;
+
 import javax.swing.JComboBox;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ChoiceElement extends NamedDocumentedElement {
+public class ChoiceElement extends FieldElement {
 
 	private List<String> values;
 
-	public ChoiceElement(String name, String documentation, String defaultValue, List<String> values) {
-		super(name, documentation, defaultValue);
+	public ChoiceElement(ModelDirector director, ModelField field, List<String> values) {
+		super(director, field);
 		if (values == null || values.isEmpty()){
 			throw new IllegalArgumentException("values must not be neither null or empty.");
 		}
@@ -20,7 +27,17 @@ public class ChoiceElement extends NamedDocumentedElement {
 
 	@Override
 	void createMainComponent() {
-		this.component = new JComboBox<>(values.toArray(new String[values.size()]));
+		JComboBox<String> comboBox = new JComboBox<>(values.toArray(new String[values.size()]));
+		this.component = comboBox;
+
+		comboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Command command = new DirectedSetCommand(director, field, String.valueOf(comboBox.getSelectedItem()));
+				command.execute();
+			}
+		});
+
 	}
 
 }
