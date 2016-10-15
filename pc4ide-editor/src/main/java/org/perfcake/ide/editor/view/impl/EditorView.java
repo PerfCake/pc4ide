@@ -19,15 +19,12 @@ import java.awt.Shape;
 
 /**
  * @author jknetl
- *
  */
 public class EditorView extends AbstractView {
 
-
-
-	private static final int DEFAULT_ANGLE_EXTENT = 340;
+	private static final int DEFAULT_ANGLE_EXTENT = 120;
 	private static final int DEFAULT_START_ANGLE = -80;
-	private static final int MAXIMUM_INNER_RADIUS = 50;
+	private static final int MAXIMUM_INNER_RADIUS = 150;
 
 	private JComponent jComponent;
 
@@ -43,10 +40,9 @@ public class EditorView extends AbstractView {
 	 */
 	@Override
 	public void draw(Graphics2D g2d) {
-		for (ComponentView child : getChildren()){
+		for (ComponentView child : getChildren()) {
 			child.draw(g2d);
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -59,18 +55,21 @@ public class EditorView extends AbstractView {
 
 	@Override
 	public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
-
-//		TODO: Compute size from the content (+ child)
-		LayoutData minimumSize = new LayoutData();
-		minimumSize.setAngularData(new AngularData(0,30));
+		LayoutData minimumSize = new LayoutData(constraint);
+		double angularExtent = 0.0;
+		for (ComponentView child : getChildren()) {
+			angularExtent += child.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
+		}
+		minimumSize.getAngularData().setAngleExtent(angularExtent);
 		return minimumSize;
 	}
 
-	public void invalidate(){
+	public void invalidate() {
 		//EditorView is a root so it may trigger validation
 		Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
 		validate(g2d);
 	}
+
 	@Override
 	public void validate(Graphics2D g2d) {
 		// get drawing surface constraints
