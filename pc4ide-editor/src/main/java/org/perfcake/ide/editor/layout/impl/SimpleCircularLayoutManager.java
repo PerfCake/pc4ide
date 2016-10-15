@@ -10,6 +10,7 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,17 +22,14 @@ import java.util.List;
  *
  * @author jknetl
  */
-public class SimpleCircularLayoutManager implements LayoutManager {
-
-	private LayoutData constraints;
-	private List<ComponentView> children;
+public class SimpleCircularLayoutManager extends org.perfcake.ide.editor.layout.AbstractLayoutManager {
 
 	public SimpleCircularLayoutManager() {
-		children = new ArrayList<>();
+		super();
 	}
 
 	@Override
-	public void layout() {
+	public void layout(Graphics2D g2d) {
 
 		final int numOfChildren = computeChildren();
 
@@ -53,25 +51,5 @@ public class SimpleCircularLayoutManager implements LayoutManager {
 
 	private int computeChildren() {
 		return (getChildren() == null) ? 0 : getChildren().size();
-	}
-
-	@Override
-	public void setConstraint(LayoutData constraint) {
-		this.constraints = constraint;
-	}
-
-	@Override
-	public void add(ComponentView component) {
-		children.add(component);
-	}
-
-	@Override
-	public boolean remove(ComponentView component) {
-		return children.remove(component);
-	}
-
-	@Override
-	public List<ComponentView> getChildren() {
-		return Collections.unmodifiableList(children);
 	}
 }

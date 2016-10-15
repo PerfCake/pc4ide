@@ -29,6 +29,11 @@ public class GraphicalEditorJPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
+		// first paint of the editor happens before the views are validated
+		// so we need to validate them first if they are invalid
+		if (!editorController.getView().isValid()){
+			editorController.getView().validate((Graphics2D) getGraphics());
+		}
 		editorController.getView().draw((Graphics2D) g);
 	}
 

@@ -30,6 +30,7 @@ public abstract class AbstractView implements ComponentView {
 	public AbstractView(ComponentView parent) {
 		super();
 		this.parent = parent;
+		isValid = false;
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public abstract class AbstractView implements ComponentView {
 	@Override
 	public void validate(Graphics2D g2d) {
 		if (layoutManager != null) {
-			layoutManager.layout();
+			layoutManager.layout(g2d);
 		}
 		for (final ComponentView view : children) {
 			view.validate(g2d);

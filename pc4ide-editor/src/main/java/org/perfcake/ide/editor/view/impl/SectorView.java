@@ -145,7 +145,7 @@ public class SectorView extends AbstractView {
 
 		Rectangle2D iconBounds = getIconBounds(constraint);
 
-		Double minAngularExtent = 2*Math.atan((iconBounds.getHeight()/2)/constraint.getRadiusData().getInnerRadius());
+		Double minAngularExtent = Math.toDegrees(2*Math.atan((iconBounds.getHeight()/2)/constraint.getRadiusData().getInnerRadius()));
 		LayoutData minimumSize = new LayoutData(constraint);
 		minimumSize.getAngularData().setAngleExtent(minAngularExtent);
 		return minimumSize;

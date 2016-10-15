@@ -6,6 +6,7 @@ package org.perfcake.ide.editor.view.impl;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
+import org.perfcake.ide.editor.layout.impl.PerfCakeEditorLayoutManager;
 import org.perfcake.ide.editor.layout.impl.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
@@ -29,7 +30,7 @@ public class EditorView extends AbstractView {
 	public EditorView(JComponent jComponent) {
 		super(null);
 		this.jComponent = jComponent;
-		layoutManager = new SimpleCircularLayoutManager();
+		layoutManager = new PerfCakeEditorLayoutManager();
 		layoutManager.setConstraint(getConstraints());
 	}
 

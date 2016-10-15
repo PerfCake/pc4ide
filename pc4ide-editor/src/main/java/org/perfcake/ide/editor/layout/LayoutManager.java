@@ -6,6 +6,7 @@ package org.perfcake.ide.editor.layout;
 import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.editor.view.ComponentView;
 
+import java.awt.Graphics2D;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public interface LayoutManager {
 	 * Sets layout data to all children views. It may or may not take into consideration
 	 * the preferred layout data of the children views.
 	 */
-	void layout();
+	void layout(Graphics2D g2d);
 
 	/**
 	 * Sets {@link LayoutData} constraint for the layoutManager. This indicates what part of drawing surface
