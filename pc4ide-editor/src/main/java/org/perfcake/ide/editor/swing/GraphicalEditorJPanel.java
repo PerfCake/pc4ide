@@ -5,6 +5,7 @@ import org.perfcake.ide.editor.controller.impl.EditorController;
 
 import javax.swing.JPanel;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -20,20 +21,21 @@ public class GraphicalEditorJPanel extends JPanel {
 		addMouseListener(new EditorMouseListener());
 		addComponentListener(new EditorComponentListener());
 		editorController = new EditorController(this, scenarioModel);
+		this.setBackground(Color.WHITE);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		editorController.drawView(g);
+		editorController.getView().draw(g);
 	}
 
 	private class EditorComponentListener implements ComponentListener {
 
 		@Override
 		public void componentResized(ComponentEvent e) {
-			editorController.validate();
+			editorController.getView().validate();
 		}
 
 		@Override

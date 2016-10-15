@@ -3,6 +3,11 @@
  */
 package org.perfcake.ide.editor.layout;
 
+import org.perfcake.ide.core.components.Component;
+import org.perfcake.ide.editor.view.ComponentView;
+
+import java.util.List;
+
 /**
  * Layout manger computes {@link LayoutData} for children components.
  *
@@ -15,18 +20,35 @@ public interface LayoutManager {
 	 * Sets layout data to all children views. It may or may not take into consideration
 	 * the preferred layout data of the children views.
 	 */
-	void layoutChildren();
+	void layout();
 
 	/**
-	 * Sets {@link LayoutData} for the layoutManager. This indicates what part of drawing surface may
-	 * be used for the children
-	 * @param data
+	 * Sets {@link LayoutData} constraint for the layoutManager. This indicates what part of drawing surface
+	 * may be used by this LayoutManager. If some dimension of constraint is zero then it means there is
+	 * no constraint on that dimension.
+	 * @param constraint
 	 */
-	public void setLayoutData(LayoutData data);
+	void setConstraint(LayoutData constraint);
 
 	/**
+	 * Adds a graphical component to the layout so that this layout manager can manage the component.
 	 *
-	 * @return LayoutData which this component is using.
+	 * @param component component to be managed by this layout manager
 	 */
-	public LayoutData getLayoutData();
+	void add(ComponentView component);
+
+	/**
+	 * Removes a graphical component from the layout so that this layout manager won't manager component
+	 * anymore.
+	 *
+	 * @param component component to be removed from this layout manager
+	 * @return  true if the component was removed, or false if component couldn't be found.
+	 */
+	boolean remove(ComponentView component);
+
+	/**
+	 * @return <b>Unmodifiable List</b> of all managed component views
+	 */
+	List<ComponentView> getChildren();
+
 }

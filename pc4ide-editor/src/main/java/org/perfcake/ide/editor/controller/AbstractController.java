@@ -30,8 +30,6 @@ public abstract class AbstractController implements Controller {
 	private List<Controller> children = new ArrayList<>();
 	private Controller parent = null;
 
-	protected LayoutManager layoutManager;
-
 	public AbstractController() {
 		super();
 	}
@@ -61,7 +59,9 @@ public abstract class AbstractController implements Controller {
 	public void addChild(Controller child) throws UnsupportedChildViewException {
 		children.add(child);
 		child.setParent(this);
-		invalidate();
+		getView().addChild(child.getView());
+		child.getView().setParent(this.getView());
+		child.getView().invalidate();
 	}
 
 	@Override
@@ -73,46 +73,14 @@ public abstract class AbstractController implements Controller {
 	public boolean removeChild(Controller child) {
 		final boolean removed = children.remove(child);
 		if (removed) {
+			child.getView().setParent(null);
+			getView().removeChild(getView());
 			child.setParent(null);
-			invalidate();
+			getView().invalidate();
 		}
 		return removed;
 	}
 
-	@Override
-	public boolean isValid() {
-		return isValid;
-	}
-
-	@Override
-	public void invalidate() {
-		isValid = false;
-		if (parent != null) {
-			// indicate to parent that this controller needs validation
-			parent.invalidate();
-		} else {
-			// if this controller is root then perform validation
-			validate();
-		}
-	}
-
-	@Override
-	public void validate() {
-		layoutManager.layoutChildren();
-		for (final Controller controller : children) {
-			controller.validate();
-		}
-	}
-
-	@Override
-	public LayoutData getLayoutData() {
-		return layoutManager.getLayoutData();
-	}
-
-	@Override
-	public void setLayoutData(LayoutData layoutData) {
-		layoutManager.setLayoutData(layoutData);
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {

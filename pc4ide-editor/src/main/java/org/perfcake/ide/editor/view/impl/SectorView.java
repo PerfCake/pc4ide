@@ -4,6 +4,7 @@
 package org.perfcake.ide.editor.view.impl;
 
 import org.perfcake.ide.editor.layout.AngularData;
+import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
@@ -189,9 +190,10 @@ public class SectorView extends AbstractView {
 	}
 
 	@Override
-	public AngularData getPrefferedAngularData(RadiusData radius) {
-		//TODO(jknetl): implement it
-		throw new UnsupportedOperationException("It is not implmeneted yet");
+	public LayoutData getMinimumSize(LayoutData constraint) {
+//		TODO: Compute size from the content (+ child)
+		LayoutData minimumSize = new LayoutData();
+		minimumSize.setAngularData(new AngularData(0,30));
+		return minimumSize;
 	}
-
 }

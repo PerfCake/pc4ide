@@ -57,45 +57,7 @@ public interface Controller extends MouseListener {
 
 	/**
 	 *
-	 * @return true if the view is valid (up to date)
-	 */
-	public boolean isValid();
-
-	/**
-	 * Invalidates view to indicate that it needs to be redrawn
-	 */
-	public void invalidate();
-
-	/**
-	 * Validates the views of the children. It means that it sets view sizes and positions so that consequent draw operation
-	 * will draw it on proper place with proper size.
-	 */
-	public void validate();
-
-
-	/**
-	 * Draws the corresponding view.
-	 * @param g
-	 */
-	public void drawView(Graphics g);
-
-	/**
-	 *
 	 * @return associated view
 	 */
 	public ComponentView getView();
-
-	/**
-	 * Sets {@link LayoutData} for the controller. This indicates what part of drawing surface may
-	 * be used for the controller.
-	 * @param data
-	 */
-	public void setLayoutData(LayoutData data);
-
-	/**
-	 *
-	 * @return LayoutData which this component is using.
-	 */
-	public LayoutData getLayoutData();
-
 }

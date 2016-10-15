@@ -24,14 +24,8 @@ public class SectionController extends AbstractController {
 	public SectionController(String sectionName, ResizableIcon icon, AbstractModel model) {
 		super();
 		this.model = model;
-		this.layoutManager = new SimpleCircularLayoutManager(this);
 		final ComponentView parentView = (getParent() == null) ? null : getParent().getView();
 		view = new SectorView(parentView, sectionName, icon);
-	}
-
-	@Override
-	public void drawView(Graphics g) {
-		view.draw(g);
 	}
 
 	@Override

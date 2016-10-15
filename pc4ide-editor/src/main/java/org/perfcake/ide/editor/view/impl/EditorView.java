@@ -3,10 +3,15 @@
  */
 package org.perfcake.ide.editor.view.impl;
 
+import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.editor.layout.AngularData;
+import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
+import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
+
+import javax.swing.JComponent;
 
 import java.awt.Graphics;
 import java.awt.Shape;
@@ -19,9 +24,17 @@ public class EditorView extends AbstractView {
 
 
 
+	private static final int DEFAULT_ANGLE_EXTENT = 340;
+	private static final int DEFAULT_START_ANGLE = -80;
+	private static final int MAXIMUM_INNER_RADIUS = 50;
 
-	public EditorView(ComponentView parent) {
-		super(parent);
+	private JComponent jComponent;
+
+	public EditorView(JComponent jComponent) {
+		super(null);
+		this.jComponent = jComponent;
+		layoutManager = new SimpleCircularLayoutManager();
+		layoutManager.setConstraint(getConstraints());
 	}
 
 	/* (non-Javadoc)
@@ -29,6 +42,10 @@ public class EditorView extends AbstractView {
 	 */
 	@Override
 	public void draw(Graphics g) {
+		for (ComponentView child : getChildren()){
+			child.draw(g);
+		}
+
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +57,30 @@ public class EditorView extends AbstractView {
 	}
 
 	@Override
-	public AngularData getPrefferedAngularData(RadiusData radius) {
-		return new AngularData();
+	public LayoutData getMinimumSize(LayoutData constraint) {
+
+//		TODO: Compute size from the content (+ child)
+		LayoutData minimumSize = new LayoutData();
+		minimumSize.setAngularData(new AngularData(0,30));
+		return minimumSize;
+	}
+
+	@Override
+	public void validate() {
+		final LayoutData data = getConstraints();
+
+		layoutManager.setConstraint(data);
+
+		super.validate();
+
+		jComponent.repaint();
+	}
+
+	private LayoutData getConstraints() {
+		final double outerRadius = (0.9 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2;
+		final double innerRadius = Math.min(MAXIMUM_INNER_RADIUS, (0.2 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2);
+		final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
+		final AngularData angularData = new AngularData(DEFAULT_START_ANGLE, DEFAULT_ANGLE_EXTENT);
+		return new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
 	}
 }

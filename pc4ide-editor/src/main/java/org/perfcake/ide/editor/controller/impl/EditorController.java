@@ -8,10 +8,6 @@ import org.perfcake.ide.core.model.SenderModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
-import org.perfcake.ide.editor.layout.AngularData;
-import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.layout.RadiusData;
-import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.icons.GeneratorIcon;
@@ -27,25 +23,19 @@ import java.util.Iterator;
 
 public class EditorController extends AbstractController implements RootController {
 
-	private static final int DEFAULT_ANGLE_EXTENT = 180;
-	private static final int DEFAULT_START_ANGLE = 0;
-	private static final int MAXIMUM_INNER_RADIUS = 50;
-
 	private JComponent jComponent;
 	private EditorView view;
 
 	private ScenarioModel scenarioModel;
 
-
 	public EditorController(JComponent jComponent, ScenarioModel model) {
 		super();
-		this.layoutManager = new SimpleCircularLayoutManager(this);
 		this.scenarioModel = model;
 		this.jComponent = jComponent;
-		view = new EditorView(null);
+		view = new EditorView(jComponent);
 
-		for (final AbstractModel child : scenarioModel.getModelChildren()){
-			if (child instanceof GeneratorModel){
+		for (final AbstractModel child : scenarioModel.getModelChildren()) {
+			if (child instanceof GeneratorModel) {
 				final Controller generator = new SectionController("Generator", new GeneratorIcon(), child);
 				addChild(generator);
 			} else if (child instanceof SenderModel) {
@@ -54,52 +44,17 @@ public class EditorController extends AbstractController implements RootControll
 			} else if (child instanceof ReportingModel) {
 				final Controller reporting = new SectionController("Reporting", new ReporterIcon(), child);
 				addChild(reporting);
-
 			}
 		}
 	}
 
 	@Override
 	public void addChild(Controller child) throws UnsupportedChildViewException {
-		if (child instanceof SectionController){
+		if (child instanceof SectionController) {
 			super.addChild(child);
 		} else {
 			throw new UnsupportedChildViewException("Editor controller can accept only SectorController object as child");
 		}
-	}
-
-
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-	}
-
-	@Override
-	public void validate() {
-		final double outerRadius = (0.9 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2;
-		final double innerRadius = Math.min(MAXIMUM_INNER_RADIUS, (0.2 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2);
-		final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
-		final AngularData angularData = new AngularData(DEFAULT_START_ANGLE, DEFAULT_ANGLE_EXTENT);
-		final LayoutData data = new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
-
-		setLayoutData(data);
-
-		super.validate();
-
-		jComponent.repaint();
-	}
-
-	@Override
-	public void drawView(Graphics g) {
-		view.draw(g);
-
-		final Iterator<Controller> it = getChildrenIterator();
-		while (it.hasNext()){
-			final Controller child = it.next();
-			child.drawView(g);
-		}
-
 	}
 
 	@Override
@@ -107,27 +62,26 @@ public class EditorController extends AbstractController implements RootControll
 		return view;
 	}
 
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		final Iterator<Controller> iterator = getChildrenIterator();
-		while (iterator.hasNext()){
+		while (iterator.hasNext()) {
 			final Controller child = iterator.next();
-			if (child.getView().getViewBounds().contains(e.getX(), e.getY())){
+			if (child.getView().getViewBounds().contains(e.getX(), e.getY())) {
 				unselectOthers();
 				child.getView().setSelected(true);
-				child.invalidate();
+				child.getView().invalidate();
 			}
 		}
 	}
 
 	private void unselectOthers() {
 		final Iterator<Controller> it = getChildrenIterator();
-		while (it.hasNext()){
+		while (it.hasNext()) {
 			final Controller child = it.next();
-			if (child.getView().isSelected()){
+			if (child.getView().isSelected()) {
 				child.getView().setSelected(false);
-				child.invalidate();
+				child.getView().invalidate();
 			}
 		}
 	}

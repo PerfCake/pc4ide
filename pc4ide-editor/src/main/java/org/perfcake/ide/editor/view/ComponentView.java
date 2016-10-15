@@ -43,18 +43,17 @@ public interface ComponentView {
 	public Shape getViewBounds();
 
 	/**
-	 *
-	 * Get view prefferd angular extent.
-	 *
-	 * @param radius The radiuses which will be used.
-	 *
-	 * @return {@link AngularData} as a hint for layout manager. If some field is zero then it means no preference.
+	 * Computes a minimum size of the view. The constraint argument is used as a constraint for the size. So if
+	 * some dimension of constraint argument is N, then returned value in that dimension cannot be larger than N.
+	 * If some dimension of constraint argument is zero then there is no constraint on that dimension
+	 * @param constraint constraint
+	 * @return Minimum size of the component according to given constraints.
 	 */
-	public AngularData getPrefferedAngularData(RadiusData radius);
+	public LayoutData getMinimumSize(LayoutData constraint);
 
 	/**
 	 *
-	 * @return Actual layoutData assigned by LayoutManager.
+	 * @return Actual layoutData of the view.
 	 */
 	public LayoutData getLayoutData();
 
@@ -67,21 +66,44 @@ public interface ComponentView {
 
 	/**
 	 *
-	 * @return Views that acts as a child of current view (they are inside of the view)
+	 * @return <b>unmodifiable list of</b> views that acts as a child of current view (they are inside of the view)
 	 */
 	public List<ComponentView> getChildren();
 
 	/**
-	 *
 	 * @return the view which is parent of the view. Root view will return null.
 	 */
 	public ComponentView getParent();
+
+	/**
+	 *  Sets a parent of this view.
+	 * @param parent
+	 */
+	public void setParent(ComponentView parent);
 
 	/**
 	 * Adds child view
 	 * @param view
 	 */
 	public void addChild(ComponentView view);
+
+	/**
+	 *
+	 * @return true if the view is valid (up to date)
+	 */
+	public boolean isValid();
+
+	/**
+	 * Invalidates view to indicate that it needs to be redrawn
+	 */
+	public void invalidate();
+
+	/**
+	 * Validates the view and the view of the children. It means that it sets view sizes and positions so that consequent draw operation
+	 * will draw it on proper place with proper size.
+	 */
+	public void validate();
+
 
 	/**
 	 * Remove child view
