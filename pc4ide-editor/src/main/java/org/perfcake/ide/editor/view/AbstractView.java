@@ -7,6 +7,7 @@ import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,19 +55,16 @@ public abstract class AbstractView implements ComponentView {
 		if (parent != null) {
 			// indicate to parent that this controller needs validation
 			parent.invalidate();
-		} else {
-			// if this controller is root then perform validation
-			validate();
 		}
 	}
 
 	@Override
-	public void validate() {
+	public void validate(Graphics2D g2d) {
 		if (layoutManager != null) {
 			layoutManager.layout();
 		}
 		for (final ComponentView view : children) {
-			view.validate();
+			view.validate(g2d);
 		}
 		isValid = true;
 	}

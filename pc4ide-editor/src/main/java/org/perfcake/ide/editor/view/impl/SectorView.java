@@ -52,9 +52,7 @@ public class SectorView extends AbstractView {
 	 * @see org.perfcake.ide.editor.view.ComponentView#draw(java.awt.Graphics)
 	 */
 	@Override
-	public void draw(Graphics g) {
-		final Graphics2D g2d = (Graphics2D) g;
-
+	public void draw(Graphics2D g2d) {
 		//antialiasing
 		final Map<Object, Object> hints = new HashMap<>();
 		hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -190,7 +188,7 @@ public class SectorView extends AbstractView {
 	}
 
 	@Override
-	public LayoutData getMinimumSize(LayoutData constraint) {
+	public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
 //		TODO: Compute size from the content (+ child)
 		LayoutData minimumSize = new LayoutData();
 		minimumSize.setAngularData(new AngularData(0,30));

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -28,14 +29,14 @@ public class GraphicalEditorJPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		editorController.getView().draw(g);
+		editorController.getView().draw((Graphics2D) g);
 	}
 
 	private class EditorComponentListener implements ComponentListener {
 
 		@Override
 		public void componentResized(ComponentEvent e) {
-			editorController.getView().validate();
+			editorController.getView().validate((Graphics2D) getGraphics());
 		}
 
 		@Override

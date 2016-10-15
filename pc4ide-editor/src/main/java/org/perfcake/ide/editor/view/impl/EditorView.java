@@ -14,6 +14,7 @@ import org.perfcake.ide.editor.view.ComponentView;
 import javax.swing.JComponent;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 
 /**
@@ -41,9 +42,9 @@ public class EditorView extends AbstractView {
 	 * @see org.perfcake.ide.editor.view.ComponentView#draw(java.awt.Graphics)
 	 */
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g2d) {
 		for (ComponentView child : getChildren()){
-			child.draw(g);
+			child.draw(g2d);
 		}
 
 	}
@@ -57,7 +58,7 @@ public class EditorView extends AbstractView {
 	}
 
 	@Override
-	public LayoutData getMinimumSize(LayoutData constraint) {
+	public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
 
 //		TODO: Compute size from the content (+ child)
 		LayoutData minimumSize = new LayoutData();
@@ -65,13 +66,18 @@ public class EditorView extends AbstractView {
 		return minimumSize;
 	}
 
+	public void invalidate(){
+		//EditorView is a root so it may trigger validation
+		Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
+		validate(g2d);
+	}
 	@Override
-	public void validate() {
+	public void validate(Graphics2D g2d) {
+		// get drawing surface constraints
 		final LayoutData data = getConstraints();
-
 		layoutManager.setConstraint(data);
 
-		super.validate();
+		super.validate(g2d);
 
 		jComponent.repaint();
 	}

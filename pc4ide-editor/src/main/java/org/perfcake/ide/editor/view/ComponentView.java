@@ -8,6 +8,7 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.util.List;
 
@@ -32,9 +33,10 @@ public interface ComponentView {
 
 	/**
 	 * draw view on the surface.
+	 * @param g2d Graphics context
 	 *
 	 */
-	public void draw(Graphics g);
+	public void draw(Graphics2D g2d);
 
 	/**
 	 *
@@ -47,9 +49,10 @@ public interface ComponentView {
 	 * some dimension of constraint argument is N, then returned value in that dimension cannot be larger than N.
 	 * If some dimension of constraint argument is zero then there is no constraint on that dimension
 	 * @param constraint constraint
+	 * @param  g2d Graphics context
 	 * @return Minimum size of the component according to given constraints.
 	 */
-	public LayoutData getMinimumSize(LayoutData constraint);
+	public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
 
 	/**
 	 *
@@ -101,8 +104,9 @@ public interface ComponentView {
 	/**
 	 * Validates the view and the view of the children. It means that it sets view sizes and positions so that consequent draw operation
 	 * will draw it on proper place with proper size.
+	 * @param g2d Graphics context
 	 */
-	public void validate();
+	public void validate(Graphics2D g2d);
 
 
 	/**
