@@ -5,12 +5,9 @@ package org.perfcake.ide.editor.controller.impl;
 
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.editor.controller.AbstractController;
-import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.impl.SectorView;
-
-import java.awt.Graphics;
 
 /**
  * @author jknetl

@@ -3,17 +3,15 @@
  */
 package org.perfcake.ide.editor.view.impl;
 
-import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
-import org.perfcake.ide.editor.layout.SimpleCircularLayoutManager;
+import org.perfcake.ide.editor.layout.impl.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
 
 import javax.swing.JComponent;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 

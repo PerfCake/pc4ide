@@ -1,11 +1,13 @@
 /**
  *
  */
-package org.perfcake.ide.editor.layout;
+package org.perfcake.ide.editor.layout.impl;
 
 import static org.kie.api.runtime.rule.Variable.v;
 
 import org.perfcake.ide.editor.controller.Controller;
+import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 
 import java.util.ArrayList;
