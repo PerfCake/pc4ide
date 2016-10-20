@@ -15,6 +15,8 @@ import java.util.Map;
  * Created by jknetl on 10/15/16.
  */
 public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
+	public static final int DEFAULT_START_ANGLE = 225;
+
 	@Override
 	public void layout(Graphics2D g2d) {
 
@@ -28,15 +30,15 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
 			requestedExtentByChildren += extent;
 		}
 
-		double startAngle = constraints.getAngularData().getStartAngle();
+		double startAngle = DEFAULT_START_ANGLE;
 
 		if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
 			for (ComponentView v : children) {
+				startAngle -= extentMap.get(v);
 				final LayoutData data = new LayoutData(constraints);
 				data.getAngularData().setAngleExtent(extentMap.get(v));
 				data.getAngularData().setStartAngle(startAngle);
 				v.setLayoutData(data);
-				startAngle += extentMap.get(v);
 			}
 		} else {
 			// TODO: component requested larger angular extent than is available

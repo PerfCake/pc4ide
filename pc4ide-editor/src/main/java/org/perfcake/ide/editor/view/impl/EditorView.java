@@ -7,7 +7,6 @@ import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.layout.impl.PerfCakeEditorLayoutManager;
-import org.perfcake.ide.editor.layout.impl.SimpleCircularLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
 
@@ -21,8 +20,7 @@ import java.awt.Shape;
  */
 public class EditorView extends AbstractView {
 
-	private static final int DEFAULT_ANGLE_EXTENT = 120;
-	private static final int DEFAULT_START_ANGLE = -80;
+	private static final int MAXIMUM_ANGLE_EXTENT = 340;
 	private static final int MAXIMUM_INNER_RADIUS = 150;
 
 	private JComponent jComponent;
@@ -84,7 +82,7 @@ public class EditorView extends AbstractView {
 		final double outerRadius = (0.9 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2;
 		final double innerRadius = Math.min(MAXIMUM_INNER_RADIUS, (0.2 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2);
 		final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
-		final AngularData angularData = new AngularData(DEFAULT_START_ANGLE, DEFAULT_ANGLE_EXTENT);
+		final AngularData angularData = new AngularData(0, MAXIMUM_ANGLE_EXTENT);
 		return new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
 	}
 }
