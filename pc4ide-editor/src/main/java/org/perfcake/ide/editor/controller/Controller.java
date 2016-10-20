@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
@@ -60,4 +61,11 @@ public interface Controller extends MouseListener {
 	 * @return associated view
 	 */
 	public ComponentView getView();
+
+	/**
+	 * Accepts a visitor to visit this node.
+	 *
+	 * @param visitor
+	 */
+	public void accept(ControllerVisitor visitor);
 }

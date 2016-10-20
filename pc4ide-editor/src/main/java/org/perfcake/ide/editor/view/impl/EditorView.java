@@ -3,6 +3,11 @@
  */
 package org.perfcake.ide.editor.view.impl;
 
+import static org.kie.api.runtime.rule.Variable.v;
+
+import static javafx.scene.input.KeyCode.V;
+
+import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
@@ -14,6 +19,8 @@ import javax.swing.JComponent;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Area;
+import java.util.Iterator;
 
 /**
  * @author jknetl
@@ -47,7 +54,13 @@ public class EditorView extends AbstractView {
 	 */
 	@Override
 	public Shape getViewBounds() {
-		return null;
+		Area area = new Area();
+		for (ComponentView v : getChildren()) {
+			Area childArea = new Area(v.getViewBounds());
+			area.add(childArea);
+		}
+
+		return area;
 	}
 
 	@Override

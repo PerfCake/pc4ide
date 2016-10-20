@@ -42,6 +42,7 @@ public abstract class AbstractView implements ComponentView {
 	public void setSelected(boolean selected) {
 		if (this.isSelected != selected) {
 			this.isSelected = selected;
+			invalidate();
 		}
 	}
 

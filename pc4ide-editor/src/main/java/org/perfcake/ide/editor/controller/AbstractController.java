@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
@@ -107,4 +108,8 @@ public abstract class AbstractController implements Controller {
 		//empty on purpose
 	}
 
+	@Override
+	public void accept(ControllerVisitor visitor) {
+		visitor.visit(this);
+	}
 }

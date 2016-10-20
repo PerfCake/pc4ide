@@ -8,6 +8,8 @@ import org.perfcake.ide.core.model.SenderModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
+import org.perfcake.ide.editor.controller.visitor.SelectVisitor;
+import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.icons.GeneratorIcon;
@@ -19,6 +21,7 @@ import javax.swing.JComponent;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 
 public class EditorController extends AbstractController implements RootController {
@@ -64,26 +67,14 @@ public class EditorController extends AbstractController implements RootControll
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		final Iterator<Controller> iterator = getChildrenIterator();
-		while (iterator.hasNext()) {
-			final Controller child = iterator.next();
-			if (child.getView().getViewBounds().contains(e.getX(), e.getY())) {
-				unselectOthers();
-				child.getView().setSelected(true);
-				child.getView().invalidate();
-			}
-		}
-	}
 
-	private void unselectOthers() {
-		final Iterator<Controller> it = getChildrenIterator();
-		while (it.hasNext()) {
-			final Controller child = it.next();
-			if (child.getView().isSelected()) {
-				child.getView().setSelected(false);
-				child.getView().invalidate();
-			}
-		}
+		UnselectVisitor unselectVisitor = new UnselectVisitor();
+		unselectVisitor.visit(this);
+
+		Point2D point = new Point2D.Double(e.getX(), e.getY());
+		SelectVisitor selectVisitor = new SelectVisitor(point);
+		selectVisitor.visit(this);
+
 	}
 
 	@Override
