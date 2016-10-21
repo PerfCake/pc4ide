@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.ComponentView;
@@ -17,6 +18,11 @@ import java.util.Iterator;
  *
  */
 public interface Controller extends MouseListener {
+
+	/**
+	 * @return Return model object which is managed by this controller.
+	 */
+	AbstractModel getModel();
 
 	/**
 	 *

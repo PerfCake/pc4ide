@@ -10,6 +10,7 @@ import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.SelectVisitor;
 import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
+import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.icons.GeneratorIcon;
@@ -28,16 +29,16 @@ public class EditorController extends AbstractController implements RootControll
 
 	private JComponent jComponent;
 	private EditorView view;
+	private FormManager formManager;
 
-	private ScenarioModel scenarioModel;
 
-	public EditorController(JComponent jComponent, ScenarioModel model) {
-		super();
-		this.scenarioModel = model;
+	public EditorController(JComponent jComponent, ScenarioModel model, FormManager formManager) {
+		super(model);
 		this.jComponent = jComponent;
+		this.formManager = formManager;
 		view = new EditorView(jComponent);
 
-		for (final AbstractModel child : scenarioModel.getModelChildren()) {
+		for (final AbstractModel child : model.getModelChildren()) {
 			if (child instanceof GeneratorModel) {
 				final Controller generator = new SectionController("Generator", new GeneratorIcon(), child);
 				addChild(generator);
@@ -72,7 +73,7 @@ public class EditorController extends AbstractController implements RootControll
 		unselectVisitor.visit(this);
 
 		Point2D point = new Point2D.Double(e.getX(), e.getY());
-		SelectVisitor selectVisitor = new SelectVisitor(point);
+		SelectVisitor selectVisitor = new SelectVisitor(point, formManager);
 		selectVisitor.visit(this);
 
 	}

@@ -2,6 +2,7 @@ package org.perfcake.ide.editor.swing;
 
 import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.controller.impl.EditorController;
+import org.perfcake.ide.editor.forms.FormManager;
 
 import javax.swing.JPanel;
 
@@ -17,11 +18,11 @@ public class GraphicalEditorJPanel extends JPanel {
 
 	private EditorController editorController;
 
-	public GraphicalEditorJPanel(ScenarioModel scenarioModel) {
+	public GraphicalEditorJPanel(ScenarioModel scenarioModel, FormManager formManager) {
 		super();
 		addMouseListener(new EditorMouseListener());
 		addComponentListener(new EditorComponentListener());
-		editorController = new EditorController(this, scenarioModel);
+		editorController = new EditorController(this, scenarioModel, formManager);
 		this.setBackground(Color.WHITE);
 	}
 

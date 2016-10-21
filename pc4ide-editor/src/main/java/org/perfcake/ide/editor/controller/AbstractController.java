@@ -3,6 +3,7 @@
  */
 package org.perfcake.ide.editor.controller;
 
+import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
@@ -27,12 +28,13 @@ import java.util.List;
 */
 public abstract class AbstractController implements Controller {
 
-	private boolean isValid = false;
+	private AbstractModel model;
 	private List<Controller> children = new ArrayList<>();
 	private Controller parent = null;
 
-	public AbstractController() {
+	public AbstractController(AbstractModel model) {
 		super();
+		this.model = model;
 	}
 
 	@Override
@@ -111,5 +113,10 @@ public abstract class AbstractController implements Controller {
 	@Override
 	public void accept(ControllerVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public AbstractModel getModel() {
+		return model;
 	}
 }

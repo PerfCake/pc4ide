@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ import java.util.List;
 public class FormManagerImpl implements FormManager {
 
 	private List<FormPage> pages;
-	private int currentPage;
+	private FormPage currentPage;
 	private JPanel container;
 	private JPanel headerPanel;
 	private JPanel contentPanel;
@@ -85,6 +86,8 @@ public class FormManagerImpl implements FormManager {
 		// if page is first page then it should be immediately displayed
 		if (pages.isEmpty()) {
 			container.add(page.getContentPanel(), BorderLayout.CENTER);
+			container.updateUI();
+			currentPage = page;
 		}
 
 		pages.add(page);
@@ -93,7 +96,27 @@ public class FormManagerImpl implements FormManager {
 	@Override
 	public boolean removePage(FormPage page) {
 		//TODO(jknetl) handle the situation when the page is actually displayed!
+		if (currentPage == page){
+			container.remove(page.getContentPanel());
+		}
 		return pages.remove(page);
+	}
+
+	@Override
+	public void removeAllPages() {
+		Iterator<FormPage> it = pages.iterator();
+		while (it.hasNext()){
+			FormPage p = it.next();
+			if (currentPage == p) {
+				container.remove(p.getContentPanel());
+			}
+			it.remove();
+		}
+	}
+
+	@Override
+	public List<FormPage> getFormPages() {
+		return null;
 	}
 
 	@Override

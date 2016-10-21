@@ -16,11 +16,9 @@ import org.perfcake.ide.editor.view.impl.SectorView;
 public class SectionController extends AbstractController {
 
 	private ComponentView view;
-	private AbstractModel model;
 
 	public SectionController(String sectionName, ResizableIcon icon, AbstractModel model) {
-		super();
-		this.model = model;
+		super(model);
 		final ComponentView parentView = (getParent() == null) ? null : getParent().getView();
 		view = new SectorView(parentView, sectionName, icon);
 	}

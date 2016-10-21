@@ -28,14 +28,15 @@ public class EditorJPanel extends JSplitPane {
 		//		setLayout(layout);
 		this.scenario = scenario;
 
-		graphicalEditorPanel = new GraphicalEditorJPanel(scenario);
 
 		final InputStream javadocStream = this.getClass().getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
 		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
 		final ComponentManager componentManager = new ComponentManager(javadocStream, packagesList);
 		formManager = new FormManagerImpl(componentManager);
-		final FormPage generatorPage = new SimpleFormPage(formManager, new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
-		formManager.addFormPage(generatorPage);
+
+		graphicalEditorPanel = new GraphicalEditorJPanel(scenario, formManager);
+//		final FormPage generatorPage = new SimpleFormPage(formManager, new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
+//		formManager.addFormPage(generatorPage);
 
 		setLeftComponent(graphicalEditorPanel);
 		setRightComponent(formManager.getContainerPanel());

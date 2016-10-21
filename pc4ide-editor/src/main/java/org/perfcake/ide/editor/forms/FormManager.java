@@ -4,6 +4,8 @@ import org.perfcake.ide.core.components.ComponentManager;
 
 import javax.swing.JPanel;
 
+import java.util.List;
+
 /**
  * FormManger serves as container for the actual forms. Actual forms with text fields and buttons
  * are represented by {@link FormPage}. FormManager aggregates these pages and adds control for whole
@@ -54,6 +56,18 @@ public interface FormManager {
 	 *
 	 */
 	boolean removePage(FormPage page);
+
+	/**
+	 * Removes all pages from the manager.
+	 */
+	void removeAllPages();
+
+	/**
+	 * Return <b>unmodifiable</b> collection of form pages.
+	 * @return
+	 */
+	List<FormPage> getFormPages();
+
 
 	/**
 	 * Apply changes in the all form pages to the model of the data.
