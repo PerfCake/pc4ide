@@ -13,6 +13,7 @@
 
 	<properties>
 		<ij.plugin>true</ij.plugin>  <!--Enables "Intellij plugin development with Maven" to detect that this is plugin module -->
+		<intellij.version>2016.2.5</intellij.version>
 	</properties>
 
 	<dependencies>
@@ -27,5 +28,85 @@
 			<artifactId>pc4ide-editor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- IntelliJ Dependencies -->
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>openapi</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/openapi.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>annotations</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/annotations.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>util</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/util.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>extensions</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/extensions.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>jdom</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/jdom.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>idea</artifactId>
+			<version>${intellij.version}</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/idea.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>idea_rt</artifactId>
+			<version>4.11</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/idea_rt.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>intellijSources</groupId>
+			<artifactId>trove4j</artifactId>
+			<version>4.11</version>
+			<scope>system</scope>
+			<systemPath>${intellij.home}/lib/trove4j.jar</systemPath>
+		</dependency>
+
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptor>assembly.xml</descriptor>
+					<finalName>pc4ide-intellij-plugin</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
