@@ -51,7 +51,7 @@
 								<id>prepare-javadoc-properites</id>
 								<phase>process-classes</phase>
 								<goals>
-									<goal>aggregate</goal>
+									<goal>javadoc</goal>
 								</goals>
 								<inherited>false</inherited>
 								<configuration>
@@ -73,6 +73,29 @@
 							</execution>
 						</executions>
 					</plugin>
+					<plugin>
+						<!-- we need to copy resources after the documentation properties is built -->
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>copy-perfcake-docs</id>
+								<phase>process-classes</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+
+									<resources>
+										<resource>
+											<directory>${perfcake.javadoc.folder}</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -80,11 +103,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-			</plugin>
 			<plugin>
 				<!-- Is this required (mentioned in maven-javadoc-plugin example) ? -->
 				<artifactId>maven-source-plugin</artifactId>
@@ -96,29 +114,6 @@
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- we need to copy resources after the documentation properties is built -->
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>copy-perfcake-docs</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-
-							<resources>
-								<resource>
-									<directory>${perfcake.javadoc.folder}</directory>
-								</resource>
-							</resources>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

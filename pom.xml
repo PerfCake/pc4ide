@@ -9,8 +9,8 @@
 	<description>pc4ide is project that brings scenario editor to IDEs.</description>
 
 	<modules>
-		<module>pc4ide-editor</module>
 		<module>pc4ide-core</module>
+		<module>pc4ide-editor</module>
 	</modules>
 
 	<properties>
