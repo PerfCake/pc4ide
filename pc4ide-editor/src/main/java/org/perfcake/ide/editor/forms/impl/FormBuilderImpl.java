@@ -1,5 +1,7 @@
 package org.perfcake.ide.editor.forms.impl;
 
+import static com.sun.tools.doclint.Entity.nu;
+
 import org.perfcake.ide.editor.forms.FormBuilder;
 import org.perfcake.ide.editor.forms.FormElement;
 import org.slf4j.Logger;
@@ -23,36 +25,43 @@ public class FormBuilderImpl implements FormBuilder {
 	private JPanel panel;
 	private GridBagLayout layout;
 
-	// represents how many columns are in the layout
-	int columns;
+	// represents how many components are in the layout
+	private int maxComponents;
 
-	// main column will be expanded horizontally
-	int mainColumn;
+	// column with a main component will be expanded
+	private int mainComponentIndex;
 
 	// weight of the column except the main
-	double weightOfColumn;
+	private double weightOfColumn;
+
+	// number of columns
+	private int columns;
+
+	private int nextLine = 0;
 
 	private List<FormElement> elements;
 
-	public FormBuilderImpl(JPanel panel, int columns, int mainColumn) {
+
+	public FormBuilderImpl(JPanel panel, int maxComponents, int columns, int mainComponentIndex) {
 		if (panel == null) {
 			throw new IllegalArgumentException("Panel must not be null");
 		}
-		if (columns <= 0) {
-			throw new IllegalArgumentException("Max components in row must be positive");
+		if (maxComponents <= 0) {
+			throw new IllegalArgumentException("Maximum number of elements must be positive");
 		}
-		if (mainColumn < 0 || mainColumn >= columns) {
-			throw new IllegalArgumentException("Main column must be in range [0,columns).");
+		if (mainComponentIndex < 0 || mainComponentIndex >= maxComponents) {
+			throw new IllegalArgumentException("Main column must be in range [0,maxComponents).");
 		}
 
-		this.panel = panel;
 		this.columns = columns;
-		this.mainColumn = mainColumn;
+		this.panel = panel;
+		this.maxComponents = maxComponents;
+		this.mainComponentIndex = mainComponentIndex;
 
-		elements = new ArrayList<>();
+		this.elements = new ArrayList<>();
 		layout = new GridBagLayout();
-		if (columns > 1) {
-			this.weightOfColumn = WEIGHT_OF_OTHER_COLUMNS / (columns - 1);
+		if (maxComponents > 1) {
+			this.weightOfColumn = WEIGHT_OF_OTHER_COLUMNS / (maxComponents - 1);
 		} else {
 			//there is only one column so that it must be the main one
 			weightOfColumn = WEIGHT_OF_MAIN_COLUMN;
@@ -61,35 +70,60 @@ public class FormBuilderImpl implements FormBuilder {
 		panel.setLayout(layout);
 	}
 
+
 	@Override
 	public void addElement(FormElement element) {
 		elements.add(element);
 
 		final int componentsInElement = element.getGraphicalComponents().size();
 
+		// integer division rounded up
+//		int mod = (maxComponents % columns);
+//		int emptyCellsInLastRow = (mod == 0) ? 0 : columns - mod;
+		int neededRows = (maxComponents + (columns - 1)) / columns;
+
+
 		int i = 0;
 		for (final JComponent component : element.getGraphicalComponents()) {
-			if (i == columns) {
+			if (i == maxComponents) {
 				logger.warn("Form elements contains {} components while the Form can handle only {}."
-						+ " Some components will not be displayed", componentsInElement, columns);
+						+ " Some components will not be displayed", componentsInElement, maxComponents);
 				break;
 			}
 
+			int x = 0;
+
+			// compute x position
+			if (i != 0 && columns > 1) {
+				x = (x % (columns - 1)) + 1;
+			}
+
+			int y = 0;
+			//compute y position
+			if ((i / columns) != 0 && columns > 1){
+				y = (i - 1) / (columns - 1);
+			}
+
+
 			final GridBagConstraints constraints = new GridBagConstraints();
-			constraints.gridx = i;
-			constraints.gridy = elements.size();
-			constraints.anchor = GridBagConstraints.CENTER;
+			constraints.gridx = x;
+			constraints.gridy = nextLine + y;
+			constraints.anchor = GridBagConstraints.LINE_START;
 			constraints.weightx = weightOfColumn;
 
-			if (i == mainColumn) {
+			if (i == 0){
+				constraints.anchor = GridBagConstraints.CENTER;
+			}
+
+			if (i == mainComponentIndex) {
 				constraints.weightx = WEIGHT_OF_MAIN_COLUMN;
 				constraints.fill = GridBagConstraints.HORIZONTAL;
 			}
 
 			// if there is not enough components then span main one over free components
 			if (i == element.getMainComponent()) {
-				if (componentsInElement < columns) {
-					constraints.gridwidth = columns - componentsInElement;
+				if (componentsInElement < maxComponents) {
+					constraints.gridwidth = maxComponents - componentsInElement;
 					i += (constraints.gridwidth - 1);
 				}
 			}
@@ -97,6 +131,7 @@ public class FormBuilderImpl implements FormBuilder {
 			panel.add(component, constraints);
 			i++;
 		}
+		nextLine += neededRows;
 	}
 
 	@Override

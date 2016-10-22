@@ -11,17 +11,13 @@ import org.perfcake.ide.editor.forms.FormElement;
 import org.perfcake.ide.editor.forms.FormGenerator;
 import org.perfcake.ide.editor.forms.FormPageDirector;
 import org.perfcake.ide.editor.forms.impl.elements.ChoiceElement;
-import org.perfcake.ide.editor.forms.impl.elements.ReflectiveTabularElement;
 import org.perfcake.ide.editor.forms.impl.elements.TextElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JPanel;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +30,8 @@ import java.util.List;
 public class ReflectionFormGenerator implements FormGenerator {
 
 	private static final int MAIN_COLUMN = 1;
-	private static final int DEFAULT_MAX_COMPONETNS_IN_ROW = 3;
+	private static final int DEFAULT_MAX_COMPONENTS = 3;
+	private static final int COLUMNS = 2;
 
 	static final Logger logger = LoggerFactory.getLogger(ReflectionFormGenerator.class);
 
@@ -51,7 +48,7 @@ public class ReflectionFormGenerator implements FormGenerator {
 		this.director = director;
 		this.componentManager = componentManager;
 		this.form = form;
-		formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONETNS_IN_ROW, MAIN_COLUMN);
+		formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONENTS, COLUMNS, MAIN_COLUMN);
 	}
 
 	@Override
