@@ -5,6 +5,7 @@ package org.perfcake.ide.editor.forms.impl.elements;
 
 import static org.eclipse.jdt.internal.compiler.parser.Parser.name;
 
+import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.model.director.ModelDirector;
 import org.perfcake.ide.core.model.director.ModelField;
 import org.perfcake.ide.editor.forms.FormElement;
@@ -34,13 +35,13 @@ public abstract class FieldElement implements FormElement {
 	private static final int DEFAULT_DOCS_MIN_WIDTH = 200;
 
 	protected ModelDirector director;
-	protected ModelField field;
+	protected Field field;
 
 	protected JLabel label;
 	protected JComponent component;
 	protected JLabel docsLabel;
 
-	public FieldElement(ModelDirector director, ModelField field) {
+	public FieldElement(ModelDirector director, Field field) {
 
 		this.director = director;
 		this.field = field;

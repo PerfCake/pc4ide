@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.components.PropertyField;
 import org.perfcake.ide.core.model.director.FieldType;
@@ -23,6 +24,8 @@ import org.perfcake.ide.core.model.director.ModelDirector;
 import org.perfcake.ide.core.model.director.ModelField;
 import org.perfcake.ide.core.model.director.ReflectiveModelDirector;
 import org.perfcake.ide.core.utils.TestUtils;
+
+import com.thoughtworks.xstream.core.util.Fields;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,38 +62,41 @@ public class ReflectiveModelDirectorTest {
 		assertThat(validatorDirector.getModelFields(), Matchers.containsInAnyOrder(
 				new ModelField(FieldType.SIMPLE, "id", null), new ModelField(FieldType.SIMPLE, "clazz", null)));
 
-		ModelField idField = validatorDirector.getModelFieldByName("id");
+		Field idField = validatorDirector.getFieldByName("id");
 		assertThat(idField, CoreMatchers.notNullValue());
 		assertThat(idField.getFieldType(), is(FieldType.SIMPLE));
 		// documentation is null since there is no documentation for it in perfcake
 		// assertThat(idField.getDocs(), CoreMatchers.not(Matchers.isEmptyOrNullString()));
 
-		assertThat(validatorDirector.getCustomProperty(),
+		assertThat(validatorDirector.getCustomPropertyFields(),
 				allOf(hasItem(new PropertyField("engine", null, true)), hasItem(new PropertyField("script", null, false))));
 	}
 
 	@Test
 	public void setFieldsTest(){
-		ModelField idField = validatorDirector.getModelFieldByName("id");
+		Field idField = validatorDirector.getFieldByName("id");
 		assertThat(idField, notNullValue());
 		String newId1 = "newId";
-		validatorDirector.setModelField(idField, newId1);
+		validatorDirector.setField(idField, newId1);
 		assertThat(validator.getId(), equalTo(newId1));
 
-		PropertyField engineProperty = validatorDirector.getCustomPropertyByName("engine");
-		validatorDirector.setCustomProperty(engineProperty, newId1);
+		Field engineProperty = validatorDirector.getFieldByName("engine");
+		validatorDirector.setField(engineProperty, newId1);
 
 		List<PropertyModel> propertyModel = filterPropertiesByName(validator.getProperty(), "engine");
 		assertThat(propertyModel, hasSize(1));
 		assertThat(propertyModel.get(0).getValue(), is(newId1));
-		assertThat(validatorDirector.getCustomPropertyValue("engine"), is(newId1));
+		Field engineField = validatorDirector.getFieldByName("engine");
+		assertThat(validatorDirector.getFieldValue(engineField), is(newId1));
 
 		String newId2 = "newId2";
-		validatorDirector.setCustomProperty(engineProperty, newId2);
+		validatorDirector.setField(engineProperty, newId2);
 		propertyModel = filterPropertiesByName(validator.getProperty(), "engine");
 		assertThat(propertyModel, hasSize(1));
 		assertThat(propertyModel.get(0).getValue(), is(newId2));
-		assertThat(validatorDirector.getCustomPropertyValue("engine"), is(newId2));
+
+		Field engineField2 = validatorDirector.getFieldByName("engine");
+		assertThat(validatorDirector.getFieldValue(engineField2), is(newId2));
 
 
 		//test boolean value on validation
@@ -99,15 +105,15 @@ public class ReflectiveModelDirectorTest {
 		validation.setEnabled(true);
 		ModelDirector validationDirector = new ReflectiveModelDirector(validation, componentManager);
 
-		ModelField fastForwad = validationDirector.getModelFieldByName("fastForward");
+		Field fastForwad = validationDirector.getFieldByName("fastForward");
 		assertThat(fastForwad, notNullValue());
-		assertThat(validationDirector.getModelFieldValue(fastForwad), is(false));
+		assertThat(validationDirector.getFieldValue(fastForwad), is(false));
 
-		ModelField enabled = validationDirector.getModelFieldByName("enabled");
+		Field enabled = validationDirector.getFieldByName("enabled");
 		assertThat(enabled, notNullValue());
-		assertThat(validationDirector.getModelFieldValue(enabled), is(true));
+		assertThat(validationDirector.getFieldValue(enabled), is(true));
 
-		validationDirector.setModelField(enabled, false);
+		validationDirector.setField(enabled, false);
 		assertThat(validation.isEnabled(), is(false));
 
 	}

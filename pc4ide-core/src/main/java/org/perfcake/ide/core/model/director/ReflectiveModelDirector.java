@@ -1,5 +1,8 @@
 package org.perfcake.ide.core.model.director;
 
+import static org.eclipse.jdt.internal.compiler.parser.Parser.name;
+
+import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
@@ -10,7 +13,6 @@ import org.perfcake.ide.core.model.PropertyModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -62,6 +64,14 @@ public class ReflectiveModelDirector implements ModelDirector {
 	}
 
 	@Override
+	public List<Field> getAllFields() {
+		List<Field> result = new ArrayList<Field>(getModelFields());
+		result.addAll(getCustomPropertyFields());
+
+		return result;
+	}
+
+	@Override
 	public List<ModelField> getModelFields() {
 		List<ModelField> fields = new ArrayList<>();
 
@@ -77,7 +87,7 @@ public class ReflectiveModelDirector implements ModelDirector {
 
 					Class<?> parameter = method.getParameterTypes()[0];
 					FieldType type;
-					if (!parameter.isPrimitive() && parameter.getCanonicalName().startsWith("org.perfcake")){
+					if (!parameter.isPrimitive() && parameter.getCanonicalName().startsWith("org.perfcake")) {
 						type = FieldType.PERFCAKE;
 					} else {
 						type = FieldType.SIMPLE;
@@ -102,18 +112,27 @@ public class ReflectiveModelDirector implements ModelDirector {
 	}
 
 	@Override
-	public ModelField getModelFieldByName(String name) {
-		if (name == null || name.isEmpty()){
+	public Field getFieldByName(String name) {
+		if (name == null || name.isEmpty()) {
 			return null;
 		}
 
 		List<ModelField> fields = getModelFields();
-		ModelField result = null;
+		Field result = null;
 
-		for (ModelField field : fields){
-			if (name.equals(field.getName())){
+		for (ModelField field : fields) {
+			if (name.equals(field.getName())) {
 				result = field;
 				break;
+			}
+		}
+
+		if (result == null) {
+			for (PropertyField field : getCustomPropertyFields()) {
+				if (name.equals(field.getName())) {
+					result = field;
+					break;
+				}
 			}
 		}
 
@@ -121,98 +140,86 @@ public class ReflectiveModelDirector implements ModelDirector {
 	}
 
 	@Override
-	public Object getModelFieldValue(ModelField field) throws ModelDirectorException {
-		String getMethodName = "get" + firstToUpperCase(field.getName());
-		String isMethodName = "is" + firstToUpperCase(field.getName());
-		Method getMethod = findMethod(model.getClass(), getMethodName, 0);
-		Method isMethod = findMethod(model.getClass(), isMethodName, 0);
-		Method method = (getMethod != null) ? getMethod : isMethod;
-
-		if (method == null){
-			logger.warn("Cannot find get method for the field: {}", getMethodName + " or " + isMethodName);
-			throw new ModelDirectorException("Cannot find getter for field: " + field);
-		}
-
+	public Object getFieldValue(Field field) throws ModelDirectorException {
 		Object value = null;
-		try {
-			value = method.invoke(model);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			logger.warn("Cannot invoke method: {}, object: {} ", method.getName(), model);
+		if (field.getFieldType() == FieldType.PROPERTY) {
+			value = getCustomPropertyValue(field.getName());
+		} else {
+			String getMethodName = "get" + firstToUpperCase(field.getName());
+			String isMethodName = "is" + firstToUpperCase(field.getName());
+			Method getMethod = findMethod(model.getClass(), getMethodName, 0);
+			Method isMethod = findMethod(model.getClass(), isMethodName, 0);
+			Method method = (getMethod != null) ? getMethod : isMethod;
+
+			if (method == null) {
+				logger.warn("Cannot find get method for the field: {}", getMethodName + " or " + isMethodName);
+				throw new ModelDirectorException("Cannot find getter for field: " + field);
+			}
+
+			try {
+				value = method.invoke(model);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				logger.warn("Cannot invoke method: {}, object: {} ", method.getName(), model);
+			}
+		}
+			return value;
 		}
 
-		return value;
-	}
+		@Override
+		public void setField(Field field, Object value) throws ModelDirectorException {
+			if (field.getFieldType() == FieldType.PROPERTY){
+				setCustomProperty((PropertyField) field, String.valueOf(value));
+			} else {
+				String setMethodName = "set" + firstToUpperCase(field.getName());
+				Method method = findMethod(model.getClass(), setMethodName, 1);
 
-	@Override
-	public void setModelField(ModelField field, Object value) throws ModelDirectorException {
-		String setMethodName = "set" + firstToUpperCase(field.getName());
-		Method method = findMethod(model.getClass(), setMethodName, 1);
+				if (method == null) {
+					logger.warn("Cannot find set method for the field: {}", setMethodName);
+					throw new ModelDirectorException("Cannot find setter for field: " + field);
+				}
 
-		if (method == null){
-			logger.warn("Cannot find set method for the field: {}", setMethodName);
-			throw new ModelDirectorException("Cannot find setter for field: " + field);
-		}
-
-		try {
-			method.invoke(model, value);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			logger.warn("Cannot invoke method: {}, object: {}, value: {}", method.getName(), model, value);
-		}
-	}
-
-
-
-	@Override
-	public List<PropertyField> getCustomProperty() {
-		ComponentKind kind = ComponentKind.getComponentKindByModelClazz(model.getClass());
-
-		ModelField clazzField = getModelFieldByName(CLAZZ_FIELD);
-		String currentClazz = String.valueOf(getModelFieldValue(clazzField));
-
-		if (clazzField == null) {
-			return Collections.emptyList();
-		}
-
-		if (!kind.isAbstract()) {
-			return Collections.emptyList();
-		}
-
-		List<Component> componentImplementations = componentManager.getComponentImplementations(kind);
-		Component currentComponent = null;
-
-		for (Component c : componentImplementations) {
-			if (c.getImplementation().getSimpleName().equals(currentClazz)) {
-				currentComponent = c;
-				break;
+				try {
+					method.invoke(model, value);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					logger.warn("Cannot invoke method: {}, object: {}, value: {}", method.getName(), model, value);
+				}
 			}
 		}
 
-		if (currentComponent == null) {
-			return Collections.emptyList();
-		}
+		@Override
+		public List<PropertyField> getCustomPropertyFields(){
+			ComponentKind kind = ComponentKind.getComponentKindByModelClazz(model.getClass());
 
-		return currentComponent.getPropertyFields();
+			Field clazzField = getFieldByName(CLAZZ_FIELD);
+			String currentClazz = String.valueOf(getFieldValue(clazzField));
 
-	}
-
-	@Override
-	public PropertyField getCustomPropertyByName(String name) {
-		List<PropertyField> properties = getCustomProperty();
-		PropertyField property = null;
-		
-		for (PropertyField p : properties){
-			if (p.getName().equals(name)){
-				property = p;
-				break;
+			if (clazzField == null) {
+				return Collections.emptyList();
 			}
-		}
-		
-		return property;
-	}
 
-	@Override
-	public String getCustomPropertyValue(String name) {
-		List<PropertyField> properties = getCustomProperty();
+			if (!kind.isAbstract()) {
+				return Collections.emptyList();
+			}
+
+			List<Component> componentImplementations = componentManager.getComponentImplementations(kind);
+			Component currentComponent = null;
+
+			for (Component c : componentImplementations) {
+				if (c.getImplementation().getSimpleName().equals(currentClazz)) {
+					currentComponent = c;
+					break;
+				}
+			}
+
+			if (currentComponent == null) {
+				return Collections.emptyList();
+			}
+
+			return currentComponent.getPropertyFields();
+		}
+
+	private String getCustomPropertyValue(String name) {
+		List<PropertyField> properties = getCustomPropertyFields();
 		PropertyField property = null;
 
 		for (PropertyField p : properties) {
@@ -246,9 +253,8 @@ public class ReflectiveModelDirector implements ModelDirector {
 		return value;
 	}
 
-	@Override
-	public void setCustomProperty(PropertyField property, String value) throws ModelDirectorException {
-		List<PropertyField> properties = getCustomProperty();
+	private void setCustomProperty(PropertyField property, String value) throws ModelDirectorException {
+		List<PropertyField> properties = getCustomPropertyFields();
 
 		Method getPropertyModelMethod = findMethod(model.getClass(), GET_PROPERTY_METHOD, 0);
 
@@ -272,7 +278,7 @@ public class ReflectiveModelDirector implements ModelDirector {
 		if (pModel == null) {
 			// property wasn't set before => add new
 			Method m = findMethod(model.getClass(), ADD_PROPERTY_METHOD, 1);
-			if (m == null){
+			if (m == null) {
 				return;
 			}
 			pModel = new PropertyModel();
@@ -309,9 +315,9 @@ public class ReflectiveModelDirector implements ModelDirector {
 		return name;
 	}
 
-
 	/**
 	 * Finds method in the clazz with defined name and parameter count.
+	 *
 	 * @param clazz
 	 * @param name
 	 * @param parameterCount
@@ -319,8 +325,8 @@ public class ReflectiveModelDirector implements ModelDirector {
 	 */
 	private Method findMethod(Class<?> clazz, String name, int parameterCount) {
 		Method result = null;
-		for (Method m : clazz.getMethods()){
-			if (m.getName().equals(name) && m.getParameterCount() == parameterCount){
+		for (Method m : clazz.getMethods()) {
+			if (m.getName().equals(name) && m.getParameterCount() == parameterCount) {
 				result = m;
 				break;
 			}
@@ -328,6 +334,7 @@ public class ReflectiveModelDirector implements ModelDirector {
 
 		return result;
 	}
+
 	private List<String> getImplementationNames(Class<?> modelClazz) {
 		final List<String> list = new ArrayList<>();
 

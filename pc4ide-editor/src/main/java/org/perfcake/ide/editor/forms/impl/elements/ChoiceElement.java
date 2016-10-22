@@ -28,7 +28,7 @@ public class ChoiceElement extends FieldElement {
 	@Override
 	void createMainComponent() {
 		JComboBox<String> comboBox = new JComboBox<>(values.toArray(new String[values.size()]));
-		comboBox.setSelectedItem(director.getModelFieldValue(field));
+		comboBox.setSelectedItem(director.getFieldValue(field));
 		this.component = comboBox;
 
 		comboBox.addActionListener(new ActionListener() {

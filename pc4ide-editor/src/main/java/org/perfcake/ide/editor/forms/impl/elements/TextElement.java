@@ -1,5 +1,6 @@
 package org.perfcake.ide.editor.forms.impl.elements;
 
+import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.impl.DirectedSetCommand;
 import org.perfcake.ide.core.model.director.ModelDirector;
@@ -17,14 +18,14 @@ import java.awt.event.KeyEvent;
  */
 public class TextElement extends FieldElement {
 
-	public TextElement(ModelDirector director, ModelField field) {
+	public TextElement(ModelDirector director, Field field) {
 		super(director, field);
 		createMainComponent();
 	}
 
 	@Override
 	void createMainComponent() {
-		this.component = new JTextField(String.valueOf(director.getModelFieldValue(field)));
+		this.component = new JTextField(String.valueOf(director.getFieldValue(field)));
 		component.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {

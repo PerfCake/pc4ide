@@ -1,5 +1,6 @@
 package org.perfcake.ide.core.command.impl;
 
+import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.exception.CommandExecutionException;
 import org.perfcake.ide.core.exception.ModelDirectorException;
@@ -15,11 +16,11 @@ public class DirectedSetCommand implements Command {
 	static final Logger logger = LoggerFactory.getLogger(DirectedSetCommand.class);
 
 	private ModelDirector director;
-	private ModelField field;
+	private Field field;
 	private Object oldValue;
 	private Object newValue;
 
-	public DirectedSetCommand(ModelDirector director, ModelField field, Object newValue) {
+	public DirectedSetCommand(ModelDirector director, Field field, Object newValue) {
 		this.director = director;
 		this.field = field;
 		this.newValue = newValue;
@@ -28,8 +29,8 @@ public class DirectedSetCommand implements Command {
 	@Override
 	public void execute() {
 		try {
-			oldValue = director.getModelFieldValue(field);
-			director.setModelField(field, newValue);
+			oldValue = director.getFieldValue(field);
+			director.setField(field, newValue);
 		} catch (ModelDirectorException e) {
 			logger.info("Cannot execute command: " + this, e);
 		}
@@ -38,7 +39,7 @@ public class DirectedSetCommand implements Command {
 	@Override
 	public void undo() {
 		try {
-			director.setModelField(field, oldValue);
+			director.setField(field, oldValue);
 		} catch (ModelDirectorException e) {
 			logger.info("Cannot execute command: " + this, e);
 		}

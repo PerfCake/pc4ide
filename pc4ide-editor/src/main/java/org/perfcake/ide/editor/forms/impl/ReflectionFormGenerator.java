@@ -3,6 +3,7 @@ package org.perfcake.ide.editor.forms.impl;
 import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.components.PropertyField;
 import org.perfcake.ide.core.model.director.FieldType;
 import org.perfcake.ide.core.model.director.ModelDirector;
 import org.perfcake.ide.core.model.director.ModelField;
@@ -80,8 +81,13 @@ public class ReflectionFormGenerator implements FormGenerator {
 
 				elements.add(element);
 			}
-
 		}
+
+		for (PropertyField f : model.getCustomPropertyFields()){
+			FormElement element = new TextElement(model, f);
+			elements.add(element);
+		}
+
 
 		return elements;
 	}

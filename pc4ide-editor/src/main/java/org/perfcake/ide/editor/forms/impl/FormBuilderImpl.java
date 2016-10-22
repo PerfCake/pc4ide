@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,7 +114,9 @@ public class FormBuilderImpl implements FormBuilder {
 			constraints.fill = GridBagConstraints.HORIZONTAL;
 
 			if (i == 0){
-				constraints.anchor = GridBagConstraints.CENTER;
+//				constraints.anchor = GridBagConstraints.LINE_cEND;
+				constraints.fill = GridBagConstraints.NONE;
+				constraints.insets = new Insets(0,5,0,0);
 			}
 
 			if (i == mainComponentIndex) {
