@@ -71,7 +71,7 @@ public class ComponentParsingSmokeTest {
 		Assert.assertNotNull(httpSender);
 		final PropertyField urlField = getPropertyField(httpSender, "url");
 		Assert.assertNotNull(urlField);
-		Assert.assertTrue(urlField.getDocumentation().length() > 0);
+		Assert.assertTrue(urlField.getDocs().length() > 0);
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class ComponentParsingSmokeTest {
 		//Assert that generator has thread and clazz fields
 		final PropertyField urlField = getPropertyField(generatorInterface, "threads");
 		assertThat(urlField, notNullValue());
-		assertThat(urlField.getDocumentation(), not(isEmptyOrNullString()));
+		assertThat(urlField.getDocs(), not(isEmptyOrNullString()));
 	}
 
 	/**

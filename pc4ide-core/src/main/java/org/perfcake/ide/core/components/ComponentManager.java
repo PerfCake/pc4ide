@@ -209,7 +209,7 @@ public class ComponentManager {
 		final PropertyField field = getPropertyField(component, fieldName);
 
 		if (field != null) {
-			docs = field.getDocumentation();
+			docs = field.getDocs();
 		}
 
 		return docs;
