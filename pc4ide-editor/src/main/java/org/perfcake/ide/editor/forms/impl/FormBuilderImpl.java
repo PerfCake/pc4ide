@@ -110,6 +110,7 @@ public class FormBuilderImpl implements FormBuilder {
 			constraints.gridy = nextLine + y;
 			constraints.anchor = GridBagConstraints.LINE_START;
 			constraints.weightx = weightOfColumn;
+			constraints.fill = GridBagConstraints.HORIZONTAL;
 
 			if (i == 0){
 				constraints.anchor = GridBagConstraints.CENTER;
@@ -117,7 +118,6 @@ public class FormBuilderImpl implements FormBuilder {
 
 			if (i == mainComponentIndex) {
 				constraints.weightx = WEIGHT_OF_MAIN_COLUMN;
-				constraints.fill = GridBagConstraints.HORIZONTAL;
 			}
 
 			// if there is not enough components then span main one over free components

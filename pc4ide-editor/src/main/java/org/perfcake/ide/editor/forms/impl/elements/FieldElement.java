@@ -12,6 +12,7 @@ import org.perfcake.ide.editor.forms.FormElement;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,8 @@ import java.util.List;
  */
 public abstract class FieldElement implements FormElement {
 
+	private static final int DEFAULT_DOCS_MIN_WIDTH = 200;
+
 	protected ModelDirector director;
 	protected ModelField field;
 
@@ -45,7 +48,13 @@ public abstract class FieldElement implements FormElement {
 		label = new JLabel(field.getName());
 
 		//TODO(jknetl) change for icon
-		docsLabel = new JLabel("<info>");
+		String label;
+		if (field.getDocs() != null && !field.getDocs().isEmpty()){
+			label = field.getDocs();
+		} else {
+			label = "Documentation is not available.";
+		}
+		docsLabel = new JLabel("<html>" + label + "</html>");
 		docsLabel.setToolTipText(field.getDocs());
 	}
 
