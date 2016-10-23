@@ -13,6 +13,7 @@
 	<artifactId>pc4ide-eclipse</artifactId>
 
 	<modules>
+		<module>pc4ide-eclipse-libs</module>
 		<module>pc4ide-eclipse-plugin</module>
 		<module>pc4ide-eclipse-feature</module>
 		<module>pc4ide-eclipse-repo</module>
