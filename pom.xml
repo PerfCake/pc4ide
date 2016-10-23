@@ -33,6 +33,17 @@
 				</property>
 			</activation>
 		</profile>
+		<profile>
+			<id>eclipse-plugin</id>
+			<modules>
+				<module>pc4ide-eclipse</module>
+			</modules>
+			<activation>
+				<property>
+					<name>eclipse</name>
+				</property>
+			</activation>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
