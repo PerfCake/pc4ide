@@ -31,7 +31,6 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<profiles>
