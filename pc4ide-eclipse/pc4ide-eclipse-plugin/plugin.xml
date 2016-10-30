@@ -5,12 +5,11 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Sample XML Editor"
+            name="SCENARIO EDITOR"
             extensions="xml"
             icon="icons/sample.gif"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="pc4ideeclipseplugin.editors.XMLEditor"
-            id="pc4ideeclipseplugin.editors.XMLEditor">
+            class="org.perfcake.pc4ide.eclipse.editor.ScenarioMultiPageEditor"
+            id="org.perfcake.pc4ide.eclipse.scenario.editor">
       </editor>
    </extension>
 
