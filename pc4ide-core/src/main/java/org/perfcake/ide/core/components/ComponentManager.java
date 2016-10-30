@@ -88,7 +88,7 @@ public class ComponentManager {
 
 				// if component is abstract then we want to search for its implementations
 				final List<Component> componentsList = new ArrayList<>();
-				final Reflections reflections = new Reflections(packagesToScan);
+				final Reflections reflections = createReflections();
 				for (final Class<?> clazz : reflections.getSubTypesOf(kind.getComponentClazz())) {
 					final Component c = parseComponent(kind, clazz);
 					componentsList.add(c);
@@ -101,6 +101,14 @@ public class ComponentManager {
 
 			componentsMap.put(kind, component);
 		}
+	}
+
+	/**
+	 * Creates and configure instance of {@link Reflections} which will be used for scanning.
+	 * @return
+	 */
+	protected Reflections createReflections() {
+		return new Reflections(packagesToScan);
 	}
 
 	private Component parseInterface(ComponentKind kind, Class<?> clazz) {
