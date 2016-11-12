@@ -52,6 +52,21 @@
         </repository>
     </repositories>
     <dependencies>
+
+        <dependency>
+            <groupId>org.perfcake</groupId>
+            <artifactId>pc4ide-editor</artifactId>
+            <version>${project.version}</version>
+
+        </dependency>
+
+	<!-- NBM maven plugins verifies the classpath and complants about missing asm; so it needs to be there -->
+<dependency>
+    <groupId>asm</groupId>
+    <artifactId>asm</artifactId>
+    <version>3.3.1</version>
+</dependency>
+        <!-- NETBEANS dependencies -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
@@ -82,7 +97,6 @@
             <artifactId>org-netbeans-modules-settings</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>

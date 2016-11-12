@@ -26,6 +26,13 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
+import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.model.ModelLoader;
+import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.editor.swing.EditorJPanel;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,11 +46,15 @@ import org.openide.windows.TopComponent;
         position = 1000
 )
 public class MultiViewScenarioEditor extends JPanel implements MultiViewElement {
-    
+
+private static final Logger logger = Logger.getLogger(MultiViewScenarioEditor.class.getName());
+
     private JToolBar toolBar = new JToolBar();
 
     private PerfCakeScenarioDataObject dataObject;
-        private PaletteController paletteController = null;
+    private PaletteController paletteController = null;
+    private MultiViewElementCallback callback;
+	private EditorJPanel pc4ideEditor;
 
     public MultiViewScenarioEditor(Lookup lookup) {
         dataObject = lookup.lookup(PerfCakeScenarioDataObject.class);
@@ -51,34 +62,19 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
         JLabel label = new JLabel("Hello world");
         add(label);
         setVisible(true);
+
+		ModelLoader loader = new ModelLoader();
+		ScenarioModel model = null;
+		try {
+			model = loader.loadModel(dataObject.getPrimaryFile().toURL());
+		} catch (PerfCakeException e) {
+			logger.log(Level.SEVERE, "Cannot open scenario", e);
+		}
+
+		pc4ideEditor = new EditorJPanel(model);
         
         Node palette =new AbstractNode(Children.LEAF);
-        paletteController = PaletteFactory.createPalette(palette, new PaletteActions() {
-            @Override
-            public Action[] getImportActions() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Action[] getCustomPaletteActions() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Action[] getCustomCategoryActions(Lookup lkp) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Action[] getCustomItemActions(Lookup lkp) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Action getPreferredAction(Lookup lkp) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
+        paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());
 
         dataObject.getPrimaryFile().addFileChangeListener(new FileChangeAdapter() {
             @Override
@@ -90,12 +86,12 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
     }
 
     private void refreshUI() {
-
+		//pc4ideEditor.repaint();
     }
 
     @Override
     public JComponent getVisualRepresentation() {
-        return this;
+        return pc4ideEditor;
     }
 
     @Override
@@ -105,61 +101,51 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
 
     @Override
     public Action[] getActions() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return new Action[0];
     }
 
     @Override
     public Lookup getLookup() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return new ProxyLookup(dataObject.getLookup(), Lookups.fixed(paletteController));
     }
 
     @Override
     public void componentOpened() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void componentClosed() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void componentShowing() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void componentHidden() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void componentActivated() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void componentDeactivated() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public UndoRedo getUndoRedo() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return UndoRedo.NONE;
     }
 
     @Override
     public void setMultiViewCallback(MultiViewElementCallback callback) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		this.callback = callback;
 
     }
 
     @Override
     public CloseOperationState canCloseElement() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return CloseOperationState.STATE_OK;
     }
 
