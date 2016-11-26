@@ -1,5 +1,6 @@
 package org.perfcake.ide.editor.swing;
 
+import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.core.model.director.ReflectiveModelDirector;
@@ -23,17 +24,20 @@ public class EditorJPanel extends JSplitPane {
 	private FormManager formManager;
 
 	public EditorJPanel(ScenarioModel scenario) {
+		this(scenario, null);
+	}
+
+	public EditorJPanel(ScenarioModel scenario, ComponentManager componentManager) {
 		super(JSplitPane.HORIZONTAL_SPLIT);
 		//		final BorderLayout layout = new BorderLayout();
 		//		setLayout(layout);
 		this.scenario = scenario;
 
-
-		final InputStream javadocStream = this.getClass().getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
-		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
-		final ComponentManager componentManager = new ComponentManager(javadocStream, packagesList);
-		formManager = new FormManagerImpl(componentManager);
-
+		if (componentManager == null){
+			formManager = new FormManagerImpl(createComponentManager());
+		} else {
+			formManager = new FormManagerImpl(componentManager);
+		}
 		graphicalEditorPanel = new GraphicalEditorJPanel(scenario, formManager);
 //		final FormPage generatorPage = new SimpleFormPage(formManager, new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
 //		formManager.addFormPage(generatorPage);
@@ -54,6 +58,12 @@ public class EditorJPanel extends JSplitPane {
 				setDividerLocation(0.7);
 			}
 		});
+	}
+
+	private ComponentManager createComponentManager() {
+		final InputStream javadocStream = this.getClass().getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
+		final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
+		return new ComponentManager(javadocStream, packagesList);
 	}
 
 

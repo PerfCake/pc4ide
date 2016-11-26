@@ -5,6 +5,9 @@
  */
 package org.perfcake.pc4ide.netbeans;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,35 +36,36 @@ import org.perfcake.ide.editor.swing.EditorJPanel;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.perfcake.ide.core.components.ComponentManager;
 
 /**
  *
  * @author jknetl
  */
 @MultiViewElement.Registration(
-        displayName = "Scenario designer",
-        mimeType = "text/perfcake+xml",
-        persistenceType = TopComponent.PERSISTENCE_NEVER,
-        preferredID = "org.perfcake.pc4ide.netbeans.MultiViewScenarioEditor",
-        position = 1000
+	displayName = "Scenario designer",
+	mimeType = "text/perfcake+xml",
+	persistenceType = TopComponent.PERSISTENCE_NEVER,
+	preferredID = "org.perfcake.pc4ide.netbeans.MultiViewScenarioEditor",
+	position = 1000
 )
 public class MultiViewScenarioEditor extends JPanel implements MultiViewElement {
 
-private static final Logger logger = Logger.getLogger(MultiViewScenarioEditor.class.getName());
+	private static final Logger logger = Logger.getLogger(MultiViewScenarioEditor.class.getName());
 
-    private JToolBar toolBar = new JToolBar();
+	private JToolBar toolBar = new JToolBar();
 
-    private PerfCakeScenarioDataObject dataObject;
-    private PaletteController paletteController = null;
-    private MultiViewElementCallback callback;
+	private PerfCakeScenarioDataObject dataObject;
+	private PaletteController paletteController = null;
+	private MultiViewElementCallback callback;
 	private EditorJPanel pc4ideEditor;
 
-    public MultiViewScenarioEditor(Lookup lookup) {
-        dataObject = lookup.lookup(PerfCakeScenarioDataObject.class);
-        assert dataObject != null;
-        JLabel label = new JLabel("Hello world");
-        add(label);
-        setVisible(true);
+	public MultiViewScenarioEditor(Lookup lookup) {
+		dataObject = lookup.lookup(PerfCakeScenarioDataObject.class);
+		assert dataObject != null;
+		JLabel label = new JLabel("Hello world");
+		add(label);
+		setVisible(true);
 
 		ModelLoader loader = new ModelLoader();
 		ScenarioModel model = null;
@@ -71,82 +75,85 @@ private static final Logger logger = Logger.getLogger(MultiViewScenarioEditor.cl
 			logger.log(Level.SEVERE, "Cannot open scenario", e);
 		}
 
-		pc4ideEditor = new EditorJPanel(model);
-        
-        Node palette =new AbstractNode(Children.LEAF);
-        paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());
+		final InputStream javadocStream = EditorJPanel.class.getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
+		List<String> packages = Arrays.asList(new String[]{"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"});
+		ComponentManager manager = new ComponentManager(javadocStream, packages);
+		pc4ideEditor = new EditorJPanel(model, manager);
 
-        dataObject.getPrimaryFile().addFileChangeListener(new FileChangeAdapter() {
-            @Override
-            public void fileChanged(FileEvent fe) {
-                refreshUI();
-            }
+		Node palette = new AbstractNode(Children.LEAF);
+		paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());
 
-        });
-    }
+		dataObject.getPrimaryFile().addFileChangeListener(new FileChangeAdapter() {
+			@Override
+			public void fileChanged(FileEvent fe) {
+				refreshUI();
+			}
 
-    private void refreshUI() {
+		});
+	}
+
+	private void refreshUI() {
 		//pc4ideEditor.repaint();
-    }
+	}
 
-    @Override
-    public JComponent getVisualRepresentation() {
-        return pc4ideEditor;
-    }
+	@Override
+	public JComponent getVisualRepresentation() {
+		return pc4ideEditor;
+	}
 
-    @Override
-    public JComponent getToolbarRepresentation() {
-        return toolBar;
-    }
+	@Override
+	public JComponent getToolbarRepresentation() {
+		return toolBar;
+	}
 
-    @Override
-    public Action[] getActions() {
-        return new Action[0];
-    }
+	@Override
+	public Action[] getActions() {
+		return new Action[0];
+	}
 
-    @Override
-    public Lookup getLookup() {
-        return new ProxyLookup(dataObject.getLookup(), Lookups.fixed(paletteController));
-    }
+	@Override
+	public Lookup getLookup() {
+		return new ProxyLookup(dataObject.getLookup(), Lookups.fixed(paletteController));
+	}
 
-    @Override
-    public void componentOpened() {
-    }
+	@Override
+	public void componentOpened() {
+	}
 
-    @Override
-    public void componentClosed() {
-    }
+	@Override
+	public void componentClosed() {
+	}
 
-    @Override
-    public void componentShowing() {
-    }
+	@Override
+	public void componentShowing() {
+	}
 
-    @Override
-    public void componentHidden() {
-    }
+	@Override
+	public void componentHidden() {
+	}
 
-    @Override
-    public void componentActivated() {
-    }
+	@Override
+	public void componentActivated() {
+	}
 
-    @Override
-    public void componentDeactivated() {
-    }
+	@Override
+	public void componentDeactivated() {
+	}
 
-    @Override
-    public UndoRedo getUndoRedo() {
-        return UndoRedo.NONE;
-    }
+	@Override
+	public UndoRedo getUndoRedo() {
+		return UndoRedo.NONE;
+	}
 
-    @Override
-    public void setMultiViewCallback(MultiViewElementCallback callback) {
+	@Override
+	public void setMultiViewCallback(MultiViewElementCallback callback) {
 		this.callback = callback;
 
-    }
+	}
 
-    @Override
-    public CloseOperationState canCloseElement() {
-        return CloseOperationState.STATE_OK;
-    }
+	@Override
+	public CloseOperationState canCloseElement() {
+		return CloseOperationState.STATE_OK;
+	}
 
 }
