@@ -45,6 +45,30 @@
 				</property>
 			</activation>
 		</profile>
+		<profile>
+			<id>netbeans-plugin</id>
+			<modules>
+				<module>pc4ide-netbeans</module>
+			</modules>
+			<activation>
+				<property>
+					<name>netbeans</name>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>all-plugins</id>
+			<modules>
+				<module>pc4ide-intellij</module>
+				<module>pc4ide-eclipse</module>
+				<module>pc4ide-netbeans</module>
+			</modules>
+			<activation>
+				<property>
+					<name>all.plugins</name>
+				</property>
+			</activation>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>

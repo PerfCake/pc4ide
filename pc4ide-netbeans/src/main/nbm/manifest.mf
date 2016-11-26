@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Layer: org/perfcake/pc4ide/netbeans/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/perfcake/pc4ide/netbeans/Bundle.properties
+OpenIDE-Module-Requires: org.openide.windows.WindowManager
+

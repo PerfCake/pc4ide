@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Manages PerfCake components and its binding to model classes.
@@ -89,7 +90,8 @@ public class ComponentManager {
 				// if component is abstract then we want to search for its implementations
 				final List<Component> componentsList = new ArrayList<>();
 				final Reflections reflections = createReflections();
-				for (final Class<?> clazz : reflections.getSubTypesOf(kind.getComponentClazz())) {
+				Set<Class<?>> subTypesOf = (Set<Class<?>>) reflections.getSubTypesOf(kind.getComponentClazz());
+				for (final Class<?> clazz : subTypesOf) {
 					final Component c = parseComponent(kind, clazz);
 					componentsList.add(c);
 				}
