@@ -1,49 +1,66 @@
+/*
+ *-----------------------------------------------------------------------------
+ * pc4ide
+ *
+ * Copyright 2017 Jakub Knetl
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-----------------------------------------------------------------------------
+ */
+
 package org.perfcake.ide.editor.layout.impl;
+
+import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.perfcake.ide.editor.layout.AbstractLayoutManager;
 import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.ComponentView;
 
-import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Created by jknetl on 10/15/16.
+ * PerfCakeEditorLayoutManager manages the layout of graphical part of PerfCake editor.
  */
 public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
-	public static final int DEFAULT_START_ANGLE = 225;
+    public static final int DEFAULT_START_ANGLE = 225;
 
-	@Override
-	public void layout(Graphics2D g2d) {
+    @Override
+    public void layout(Graphics2D g2d) {
 
-		Map<ComponentView,Double> extentMap = new HashMap<>();
+        Map<ComponentView, Double> extentMap = new HashMap<>();
 
-		double requestedExtentByChildren = 0.0;
+        double requestedExtentByChildren = 0.0;
 
-		for (ComponentView child : children){
-			double extent = child.getMinimumSize(constraints, g2d).getAngularData().getAngleExtent();
-			extentMap.put(child, extent);
-			requestedExtentByChildren += extent;
-		}
+        for (ComponentView child : children) {
+            double extent = child.getMinimumSize(constraints, g2d).getAngularData().getAngleExtent();
+            extentMap.put(child, extent);
+            requestedExtentByChildren += extent;
+        }
 
-		double startAngle = DEFAULT_START_ANGLE;
+        double startAngle = DEFAULT_START_ANGLE;
 
-		if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
-			for (ComponentView v : children) {
-				startAngle -= extentMap.get(v);
-				final LayoutData data = new LayoutData(constraints);
-				data.getAngularData().setAngleExtent(extentMap.get(v));
-				data.getAngularData().setStartAngle(startAngle);
-				v.setLayoutData(data);
-			}
-		} else {
-			// TODO: component requested larger angular extent than is available
-			// we need to somehow implement shirnking of some views!
-		}
-	}
+        if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
+            for (ComponentView v : children) {
+                startAngle -= extentMap.get(v);
+                final LayoutData data = new LayoutData(constraints);
+                data.getAngularData().setAngleExtent(extentMap.get(v));
+                data.getAngularData().setStartAngle(startAngle);
+                v.setLayoutData(data);
+            }
+        } else {
+            // TODO: component requested larger angular extent than is available
+            // we need to somehow implement shirnking of some views!
+        }
+    }
 
 }

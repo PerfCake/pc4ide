@@ -1,4 +1,23 @@
 /*
+ *-----------------------------------------------------------------------------
+ * pc4ide
+ *
+ * Copyright 2017 Jakub Knetl
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-----------------------------------------------------------------------------
+ */
+/*
  * PerfClispe
  *
  *
@@ -26,54 +45,61 @@ import java.util.List;
 
 /**
  * Abstract PerfClipse model representation of PerfCake model.
- * @author Jakub Knetl
  *
+ * @author Jakub Knetl
  */
 public abstract class AbstractModel {
 
-	private PropertyChangeSupport propertyChangeSupport;
-	private final Mapper mapper;
+    private PropertyChangeSupport propertyChangeSupport;
+    private final Mapper mapper;
 
-	public AbstractModel() {
-		mapper = new SimpleMapper();
-		propertyChangeSupport = new PropertyChangeSupport(this);
-	}
+    /**
+     * Constructor instantiates mapper and property change support.
+     */
+    public AbstractModel() {
+        mapper = new SimpleMapper();
+        propertyChangeSupport = new PropertyChangeSupport(this);
+    }
 
 
-	/**
-	 * @return ModelMapper object.
-	 */
-	protected Mapper getMapper() {
-		return mapper;
-	}
+    /**
+     * Gets the mapper.
+     *
+     * @return ModelMapper object.
+     */
+    protected Mapper getMapper() {
+        return mapper;
+    }
 
-	/**
-	 *
-	 * @return listeners
-	 */
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return propertyChangeSupport;
-	}
+    /**
+     * Gets the property change support class.
+     *
+     * @return listeners
+     */
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
 
-	/**
-	 * Adds listener
-	 * @param listener
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener){
-		propertyChangeSupport.addPropertyChangeListener(listener);
-	}
+    /**
+     * Adds a listener.
+     *
+     * @param listener listener to be added.
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
 
-	/**
-	 * Remove listener
-	 * @param listener
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener){
-		propertyChangeSupport.removePropertyChangeListener(listener);
-	}
+    /**
+     * Remove a listener.
+     *
+     * @param listener listener to be removed
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
 
-	/**
-	 *
-	 * @return List of children which has own model. If there are no children, then empty list is returned.
-	 */
-	public abstract List<AbstractModel> getModelChildren();
+    /**
+     * @return List of children which has own model. If there are no children, then empty list is returned.
+     */
+    public abstract List<AbstractModel> getModelChildren();
 }
