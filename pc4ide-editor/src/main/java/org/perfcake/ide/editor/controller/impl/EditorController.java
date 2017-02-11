@@ -22,18 +22,18 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-
+import java.util.List;
 import javax.swing.JComponent;
-
 import org.perfcake.ide.core.model.AbstractModel;
-import org.perfcake.ide.core.model.GeneratorModel;
-import org.perfcake.ide.core.model.MessagesModel;
-import org.perfcake.ide.core.model.ReceiverModel;
-import org.perfcake.ide.core.model.ReportingModel;
-import org.perfcake.ide.core.model.ScenarioModel;
-import org.perfcake.ide.core.model.SenderModel;
-import org.perfcake.ide.core.model.SequencesModel;
-import org.perfcake.ide.core.model.ValidationModel;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.PropertyInfo;
+import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.components.GeneratorModel;
+import org.perfcake.ide.core.model.components.ReceiverModel;
+import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
+import org.perfcake.ide.core.model.components.SenderModel;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
@@ -52,7 +52,6 @@ import org.perfcake.ide.editor.view.icons.ValidatorIcon;
 import org.perfcake.ide.editor.view.impl.EditorView;
 
 
-
 /**
  * Controler of the editor.
  */
@@ -66,9 +65,9 @@ public class EditorController extends AbstractController implements RootControll
     /**
      * Creates new editor controller.
      *
-     * @param jComponent Swing component used as a container for editor visuals
-     * @param model model of scenario managed by controller
-     * @param formManager manager of forms to modify component properties
+     * @param jComponent  Swing inspector used as a container for editor visuals
+     * @param model       model of scenario managed by controller
+     * @param formManager manager of forms to modify inspector properties
      */
     public EditorController(JComponent jComponent, ScenarioModel model, FormManager formManager) {
         super(model);
@@ -76,28 +75,43 @@ public class EditorController extends AbstractController implements RootControll
         this.formManager = formManager;
         view = new EditorView(jComponent);
 
-        for (final AbstractModel child : model.getModelChildren()) {
-            if (child instanceof GeneratorModel) {
-                final Controller generator = new SectionController("Generator", new GeneratorIcon(), child);
-                addChild(generator);
-            } else if (child instanceof SenderModel) {
-                final Controller sender = new SectionController("Sender", new SenderIcon(), child);
-                addChild(sender);
-            } else if (child instanceof ReportingModel) {
-                final Controller reporting = new SectionController("Reporting", new ReporterIcon(), child);
-                addChild(reporting);
-            } else if (child instanceof SequencesModel) {
-                final Controller sequences = new SectionController("Sequences", new SequenceIcon(), child);
-                addChild(sequences);
-            } else if (child instanceof ReceiverModel) {
-                final Controller receiver = new SectionController("Receiver", new ReceiverIcon(), child);
-                addChild(receiver);
-            } else if (child instanceof MessagesModel) {
-                final Controller messages = new SectionController("MessagesModel", new MessageIcon(), child);
-                addChild(messages);
-            } else if (child instanceof ValidationModel) {
-                final Controller validation = new SectionController("ValidationModel", new ValidatorIcon(), child);
-                addChild(validation);
+        for (final PropertyInfo propertyInfo : model.getSupportedProperties()) {
+            List<Property> properties =  model.getProperties(propertyInfo);
+            if (propertyInfo.getType() == PropertyType.MODEL && properties != null && !properties.isEmpty()) {
+                if (PropertyNames.GENERATOR.toString().equals(propertyInfo.getName())) {
+                    Model generatorModel = properties.get(0).cast(Model.class);
+                    final Controller generator = new SectionController("Generator", new GeneratorIcon(), generatorModel);
+                    addChild(generator);
+                } else if (PropertyNames.SENDER.toString().equals(propertyInfo.getName())) {
+                    Model senderModel = properties.get(0).cast(Model.class);
+                    final Controller sender = new SectionController("Sender", new SenderIcon(), senderModel);
+                    addChild(sender);
+                } else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
+                    for (Property reporterModel : properties) {
+                        final Controller reporter = new SectionController("Reporter", new ReporterIcon(), reporterModel.cast(Model.class));
+                        addChild(reporter);
+                    }
+                } else if (PropertyNames.SEQUENCES.toString().equals(propertyInfo.getName())) {
+                    for (Property sequenceModel : properties) {
+                        final Controller sequence = new SectionController("Sequences", new SequenceIcon(), sequenceModel.cast(Model.class));
+                        addChild(sequence);
+                    }
+                } else if (PropertyNames.RECEIVER.toString().equals(propertyInfo)) {
+                    final Controller receiver = new SectionController("Receiver", new ReceiverIcon(), properties.get(0).cast(Model.class));
+                    addChild(receiver);
+                } else if (PropertyNames.MESSAGES.toString().equals(propertyInfo)) {
+                    for (Property messageModel : properties) {
+                        final Controller message
+                                = new SectionController("MessagesModel", new MessageIcon(), messageModel.cast(Model.class));
+                        addChild(message);
+                    }
+                } else if (PropertyNames.VALIDATORS.toString().equals(propertyInfo)) {
+                    for (Property validatorModel : properties) {
+                        final Controller validator
+                                = new SectionController("ValidationModel", new ValidatorIcon(), validatorModel.cast(Model.class));
+                        addChild(validator);
+                    }
+                }
             }
         }
     }

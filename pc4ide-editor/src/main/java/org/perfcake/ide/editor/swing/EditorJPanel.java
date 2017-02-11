@@ -25,11 +25,10 @@ import java.awt.event.ComponentEvent;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.JSplitPane;
-
-import org.perfcake.ide.core.components.ComponentManager;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.impl.FormManagerImpl;
 
@@ -49,17 +48,17 @@ public class EditorJPanel extends JSplitPane {
     /**
      * Creates new editor panel.
      *
-     * @param scenario Scenario edited by editor
-     * @param componentManager PerfCake component manager
+     * @param scenario         Scenario edited by editor
+     * @param componentManager PerfCake inspector manager
      */
-    public EditorJPanel(ScenarioModel scenario, ComponentManager componentManager) {
+    public EditorJPanel(ScenarioModel scenario, ComponentCatalogue componentManager) {
         super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
         this.scenario = scenario;
 
         if (componentManager == null) {
-            formManager = new FormManagerImpl(createComponentManager());
+            formManager = new FormManagerImpl(createComponentCatalogue());
         } else {
             formManager = new FormManagerImpl(componentManager);
         }
@@ -86,9 +85,8 @@ public class EditorJPanel extends JSplitPane {
         });
     }
 
-    private ComponentManager createComponentManager() {
-        final InputStream javadocStream = this.getClass().getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
-        final List<String> packagesList = Arrays.asList(ComponentManager.PACKAGES_WITH_COMPONENTS);
-        return new ComponentManager(javadocStream, packagesList);
+    private ComponentCatalogue createComponentCatalogue() {
+        final List<String> packagesList = Arrays.asList(ReflectionComponentCatalogue.PACKAGES_WITH_COMPONENTS);
+        return new ReflectionComponentCatalogue(packagesList);
     }
 }

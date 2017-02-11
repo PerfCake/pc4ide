@@ -29,7 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.editor.controller.impl.EditorController;
 import org.perfcake.ide.editor.forms.FormManager;
 

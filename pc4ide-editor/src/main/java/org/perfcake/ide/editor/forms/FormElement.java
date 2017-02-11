@@ -35,15 +35,15 @@ public interface FormElement {
     /**
      * Get all grapphical components representing the element.
      *
-     * @return Graphical component representing the element or EMPTY_LIST
+     * @return Graphical inspector representing the element or EMPTY_LIST
      */
     List<JComponent> getGraphicalComponents();
 
     /**
-     * This methods is hint for layout manager. If the manager needs to enlarge some component it may
+     * This methods is hint for layout manager. If the manager needs to enlarge some inspector it may
      * take a hint from this method.
      *
-     * @return index of component in the {@link #getGraphicalComponents()} list which should be
+     * @return index of inspector in the {@link #getGraphicalComponents()} list which should be
      *     expanded by the layout manager if required.
      */
     int getMainComponent();

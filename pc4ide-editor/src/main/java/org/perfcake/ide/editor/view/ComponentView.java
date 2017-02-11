@@ -31,7 +31,7 @@ import java.util.List;
 import org.perfcake.ide.editor.layout.LayoutData;
 
 /**
- * Base type for component view in editor MVC.
+ * Base type for inspector view in editor MVC.
  *
  * @author jknetl
  */
@@ -68,7 +68,7 @@ public interface ComponentView {
      *
      * @param constraint constraint
      * @param g2d        Graphics context
-     * @return Minimum size of the component according to given constraints.
+     * @return Minimum size of the inspector according to given constraints.
      */
     public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
 
@@ -78,7 +78,7 @@ public interface ComponentView {
     public LayoutData getLayoutData();
 
     /**
-     * Sets layout which will be used for the component on {@link #draw(Graphics)} method.
+     * Sets layout which will be used for the inspector on {@link #draw(Graphics)} method.
      *
      * @param data layout data to be set
      */

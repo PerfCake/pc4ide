@@ -58,7 +58,7 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
                 v.setLayoutData(data);
             }
         } else {
-            // TODO: component requested larger angular extent than is available
+            // TODO: inspector requested larger angular extent than is available
             // we need to somehow implement shirnking of some views!
         }
     }

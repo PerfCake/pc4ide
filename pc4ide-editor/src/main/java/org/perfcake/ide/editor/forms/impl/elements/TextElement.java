@@ -22,13 +22,12 @@ package org.perfcake.ide.editor.forms.impl.elements;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import javax.swing.JTextField;
-
-import org.perfcake.ide.core.Field;
 import org.perfcake.ide.core.command.Command;
-import org.perfcake.ide.core.command.impl.DirectedSetCommand;
-import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.command.SimplePropertyCommand;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.properties.Value;
 
 /**
  * Represents form element which expects text data.
@@ -39,22 +38,23 @@ public class TextElement extends FieldElement {
 
     /**
      * Create new text element.
-     * @param director Model director of managed object
-     * @param field field of the managed object
+     *
+     * @param model    Model model of managed object
+     * @param property property of the managed object
      */
-    public TextElement(ModelDirector director, Field field) {
-        super(director, field);
+    public TextElement(Model model, Property property) {
+        super(model, property);
         createMainComponent();
     }
 
     @Override
     void createMainComponent() {
-        this.component = new JTextField(String.valueOf(director.getFieldValue(field)));
+        this.component = new JTextField(String.valueOf(property.cast(Value.class).getValue()));
         component.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 JTextField tf = (JTextField) component;
-                Command command = new DirectedSetCommand(director, field, ((JTextField) component).getText());
+                Command command = new SimplePropertyCommand(property.cast(Value.class), ((JTextField) component).getText());
                 command.execute();
             }
         });

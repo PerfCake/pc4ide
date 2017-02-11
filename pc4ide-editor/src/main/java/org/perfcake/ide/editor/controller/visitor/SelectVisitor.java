@@ -21,8 +21,6 @@
 package org.perfcake.ide.editor.controller.visitor;
 
 import java.awt.geom.Point2D;
-
-import org.perfcake.ide.core.model.director.ReflectiveModelDirector;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
@@ -40,7 +38,8 @@ public class SelectVisitor extends ViewTargetedVisitor {
 
     /**
      * Creates new select visitor.
-     * @param location coordinates representing location to be visited.
+     *
+     * @param location    coordinates representing location to be visited.
      * @param formManager Form manager
      */
     public SelectVisitor(Point2D location, FormManager formManager) {
@@ -53,8 +52,7 @@ public class SelectVisitor extends ViewTargetedVisitor {
         controller.getView().setSelected(true);
         formManager.removeAllPages();
         //TODO: (you should have some kind of factory method for the creating directors!!!)
-        FormPage page = new SimpleFormPage(formManager, new ReflectiveModelDirector(controller.getModel(),
-                formManager.getComponentManager()));
+        FormPage page = new SimpleFormPage(formManager, controller.getModel());
         formManager.addFormPage(page);
     }
 }
