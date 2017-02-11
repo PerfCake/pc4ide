@@ -22,6 +22,7 @@ package org.perfcake.ide.core.components;
 
 import java.lang.reflect.Modifier;
 import java.time.Period;
+
 import org.perfcake.RunInfo;
 import org.perfcake.ide.core.model.CorrelatorModel;
 import org.perfcake.ide.core.model.DestinationModel;
@@ -51,7 +52,6 @@ import org.perfcake.reporting.reporter.Reporter;
 import org.perfcake.scenario.Scenario;
 import org.perfcake.validation.MessageValidator;
 import org.perfcake.validation.ValidationManager;
-
 
 /**
  * Represents type of the perfcake component.
@@ -111,6 +111,7 @@ public enum ComponentKind {
 
     /**
      * Gets class representing component kind.
+     *
      * @return Class which represents the component in the PerfCake
      */
     public Class<?> getComponentClazz() {
@@ -119,6 +120,7 @@ public enum ComponentKind {
 
     /**
      * Get class represinting model of the component.
+     *
      * @return Class which is used as model of the component in pc4ide
      */
     public Class<?> getModelClazz() {
@@ -127,6 +129,7 @@ public enum ComponentKind {
 
     /**
      * Is component abstract?
+     *
      * @return true if the component cannot be used in the scenario directly but some implementation must be provided. False otherwise.
      */
     public boolean isAbstract() {
@@ -169,6 +172,25 @@ public enum ComponentKind {
 
         return kind;
 
+    }
+
+    /**
+     * Gets component kind based on abstract component type.
+     *
+     * @param clazz clazz of the abstract interface of the component.
+     * @return Component kind or null if no such kind was found.
+     */
+    public static ComponentKind getComponentKindByComponentClass(Class<?> clazz) {
+        ComponentKind kind = null;
+
+        for (final ComponentKind k : values()) {
+            if (k.getComponentClazz().equals(clazz)) {
+                kind = k;
+                break;
+            }
+        }
+
+        return kind;
     }
 
     private boolean isClassAbstract(Class<?> clazz) {
