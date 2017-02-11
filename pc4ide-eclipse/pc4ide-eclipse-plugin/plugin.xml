@@ -2,15 +2,15 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            name="SCENARIO EDITOR"
-            extensions="xml"
-            icon="icons/sample.gif"
-            class="org.perfcake.pc4ide.eclipse.editor.ScenarioMultiPageEditor"
-            id="org.perfcake.pc4ide.eclipse.scenario.editor">
-      </editor>
-   </extension>
+    <extension
+            point="org.eclipse.ui.editors">
+        <editor
+                name="SCENARIO EDITOR"
+                extensions="xml"
+                icon="icons/sample.gif"
+                class="org.perfcake.pc4ide.eclipse.editor.ScenarioMultiPageEditor"
+                id="org.perfcake.pc4ide.eclipse.scenario.editor">
+        </editor>
+    </extension>
 
 </plugin>

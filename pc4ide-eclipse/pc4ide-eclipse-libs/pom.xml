@@ -1,86 +1,86 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.perfcake</groupId>
-		<artifactId>pc4ide-eclipse</artifactId>
-		<version>7.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>pc4ide-eclipse-libs</artifactId>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.perfcake</groupId>
+        <artifactId>pc4ide-eclipse</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>pc4ide-eclipse-libs</artifactId>
 
-	<properties>
-		<shaded.bundle.name>${project.artifactId}-shade</shaded.bundle.name>
-	</properties>
+    <properties>
+        <shaded.bundle.name>${project.artifactId}-shade</shaded.bundle.name>
+    </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${maven.shade.plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<finalName>${shaded.bundle.name}</finalName>
-							<!-- Workaround for Invalid signature file when using shaded plugin 
-							     (see: http://stackoverflow.com/questions/34855649/invalid-signature-file-digest-for-manifest-main-attributes-exception-while-tryin) -->
-							<filters>
-								<filter>
-									<!-- filter out signature files from signed dependencies, else repackaging fails with security ex -->
-									<artifact>*:*</artifact>
-									<excludes>
-										<exclude>META-INF/*.SF</exclude>
-										<exclude>META-INF/*.DSA</exclude>
-										<exclude>META-INF/*.RSA</exclude>
-									</excludes>
-								</filter>
-							</filters>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- we need to created uber-jar with dependencies to the library folder -->
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>copy-libs</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/../pc4ide-eclipse-plugin/lib/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${project.build.directory}</directory>
-									<includes>
-										<include>${shaded.bundle.name}.jar</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${shaded.bundle.name}</finalName>
+                            <!-- Workaround for Invalid signature file when using shaded plugin
+                                 (see: http://stackoverflow.com/questions/34855649/invalid-signature-file-digest-for-manifest-main-attributes-exception-while-tryin) -->
+                            <filters>
+                                <filter>
+                                    <!-- filter out signature files from signed dependencies, else repackaging fails with security ex -->
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- we need to created uber-jar with dependencies to the library folder -->
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-libs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/../pc4ide-eclipse-plugin/lib/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${shaded.bundle.name}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.perfcake</groupId>
-			<artifactId>pc4ide-editor</artifactId>
-			<version>7.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.perfcake</groupId>
-			<artifactId>pc4ide-core</artifactId>
-			<version>7.0.0-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.perfcake</groupId>
+            <artifactId>pc4ide-editor</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.perfcake</groupId>
+            <artifactId>pc4ide-core</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

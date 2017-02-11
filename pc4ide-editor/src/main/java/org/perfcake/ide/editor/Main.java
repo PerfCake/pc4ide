@@ -1,62 +1,86 @@
+/*
+ *-----------------------------------------------------------------------------
+ * pc4ide
+ *
+ * Copyright 2017 Jakub Knetl
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-----------------------------------------------------------------------------
+ */
 /**
  *
  */
+
 package org.perfcake.ide.editor;
+
+import java.awt.EventQueue;
+import java.io.File;
+import java.net.MalformedURLException;
+import javax.swing.JFrame;
 
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.model.ModelLoader;
 import org.perfcake.ide.core.model.ScenarioModel;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 
-import javax.swing.JFrame;
-
-import java.awt.EventQueue;
-import java.io.File;
-import java.net.MalformedURLException;
-
 /**
- * @author jknetl
+ * Main class. This class is intendet for testing purposes only. The program should
+ * run inside of IDE instead.
  *
+ * @author jknetl
  */
 public class Main {
 
-	/**
-	 * @param args
-	 * @throws PerfCakeException
-	 * @throws MalformedURLException
-	 */
-	public static void main(String[] args) throws MalformedURLException, PerfCakeException {
-		// TODO Auto-generated method stub
+    /**
+     * Main method for launching editor
+     * @param args arguments
+     * @throws PerfCakeException when scenario cannot be loaded.
+     * @throws MalformedURLException when URL to scenario file is illegal.
+     */
+    public static void main(String[] args) throws PerfCakeException, MalformedURLException {
+        // TODO Auto-generated method stub
 
-		final ModelLoader loader = new ModelLoader();
-		final File scenarioFile = new File("src/main/resources/scenario/http.xml");
-		final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
+        final ModelLoader loader = new ModelLoader();
+        final File scenarioFile = new File("src/main/resources/scenario/http.xml");
+        final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
 
-		EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
 
-			@Override
-			public void run() {
+            @Override
+            public void run() {
 
-				//				final PerfCakeScenarioParser parser = new PerfCakeScenarioParser();
-				//				ScenarioModel model = null;
-				//				try {
-				//					final Scenario s = parser.parse(new File("src/main/resources/scenario/http.xml").toURI().toURL());
-				//					model = ModelConverter.getPc4ideModel(s);
-				//				} catch (final PerfCakeException e) {
-				//					e.printStackTrace();
-				//				} catch (final MalformedURLException e) {
-				//					e.printStackTrace();
-				//				}
+                /*
+                final PerfCakeScenarioParser parser = new PerfCakeScenarioParser();
+                ScenarioModel model = null;
+                try {
+                    final Scenario s = parser.parse(new File("src/main/resources/scenario/http.xml").toURI().toURL());
+                    model = ModelConverter.getPc4ideModel(s);
+                } catch (final PerfCakeException e) {
+                    e.printStackTrace();
+                } catch (final MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                */
 
-				final JFrame frame = new JFrame();
-				frame.setTitle("Perfcake editor");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				//				final GraphicalEditorJPanel editor = new GraphicalEditorJPanel(model);
-				final EditorJPanel editor = new EditorJPanel(model);
-				frame.add(editor);
-				frame.setVisible(true);
-			}
-		});
-	}
+                final JFrame frame = new JFrame();
+                frame.setTitle("Perfcake editor");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                // final GraphicalEditorJPanel editor = new GraphicalEditorJPanel(model);
+                final EditorJPanel editor = new EditorJPanel(model);
+                frame.add(editor);
+                frame.setVisible(true);
+            }
+        });
+    }
 
 }
