@@ -50,20 +50,20 @@ public abstract class Model {
     /**
      * Map of the component properties.
      */
-    private HashMap<PropertyInfo<?>, List<Property<?>>> properties;
+    private HashMap<PropertyType<?>, List<Property<?>>> properties;
 
     /**
      * Component implementation class.
      */
-    private Class implementation;
+    private Class<?> implementation;
 
     /**
      * Component API (interface or abstract class).
      */
-    private Class api;
+    private Class<?> api;
 
     /**
-     * Component manager which is used for quering information about component.
+     * Component manager which is used for querying information about component.
      */
     private ComponentManager componentManager;
 
@@ -94,76 +94,76 @@ public abstract class Model {
     /**
      * @return Set of properties which are supported in this model.
      */
-    public Set<PropertyInfo<?>> getSupportedProperties() {
+    public Set<PropertyType<?>> getSupportedProperties() {
 
         return properties.keySet();
     }
 
     /**
-     * @param propertyInfo property to get
-     * @return List of properties in the component which has  given property info.
+     * @param propertyType property to get
+     * @return List of properties in the component which has given property type.
      */
-    public List<Property<?>> getProperty(PropertyInfo<?> propertyInfo) {
-        if (propertyInfo == null) {
-            throw new IllegalArgumentException("propertyInfo must not be null");
+    public List<Property<?>> getProperty(PropertyType<?> propertyType) {
+        if (propertyType == null) {
+            throw new IllegalArgumentException("propertyType must not be null");
         }
 
-        return properties.get(propertyInfo);
+        return properties.get(propertyType);
     }
 
     /**
      * Add new property.
      *
-     * @param propertyInfo type of a property
+     * @param propertyType type of a property
      * @param property     property To be added
      * @param <T> type of the property value
      * @throws PropertyLimitException if you try to add a property which has maximum number of occurrences used already.
      */
-    public <T> void addProperty(PropertyInfo<? extends T> propertyInfo, Property<? extends T> property) throws PropertyLimitException {
-        if (propertyInfo == null) {
-            throw new IllegalArgumentException("propertyInfo must not be null");
+    public <T> void addProperty(PropertyType<? extends T> propertyType, Property<? extends T> property) throws PropertyLimitException {
+        if (propertyType == null) {
+            throw new IllegalArgumentException("propertyType must not be null");
         }
         if (property == null) {
             throw new IllegalArgumentException("property must not be null");
         }
 
-        List<Property<?>> existingProperties = properties.get(propertyInfo);
+        List<Property<?>> existingProperties = properties.get(propertyType);
 
-        if (existingProperties.size() == propertyInfo.getMaxOccurs()) {
+        if (existingProperties.size() == propertyType.getMaxOccurs()) {
             throw new PropertyLimitException("Property limit exceeded.");
         }
 
         existingProperties.add(property);
-        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
+        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyType.getName(), null, property));
 
     }
 
     /**
      * Removes a property.
      *
-     * @param propertyInfo type of a property
+     * @param propertyType type of a property
      * @param property     property To be added
      * @param <T> type of the property value
      * @return true if the property was removed.
      * @throws PropertyLimitException if you try to remove property, which cannot be removed due to required minimum occurrences.
      */
-    public <T> boolean removeProperty(PropertyInfo<? extends T> propertyInfo, Property<? extends T> property)
+    public <T> boolean removeProperty(PropertyType<? extends T> propertyType, Property<? extends T> property)
             throws PropertyLimitException {
-        if (propertyInfo == null) {
-            throw new IllegalArgumentException("propertyInfo must not be null");
+        if (propertyType == null) {
+            throw new IllegalArgumentException("propertyType must not be null");
         }
         if (property == null) {
             throw new IllegalArgumentException("property must not be null");
         }
 
-        List<Property<?>> existingProperties = properties.get(propertyInfo);
+        List<Property<?>> existingProperties = properties.get(propertyType);
 
-        if (existingProperties.size() == propertyInfo.getMinOccurs()) {
+        if (existingProperties.size() == propertyType.getMinOccurs()) {
             throw new PropertyLimitException("Property limit decreased under minimum value.");
         }
 
         boolean removed = existingProperties.remove(property);
-        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
+        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyType.getName(), property, null));
 
         return removed;
     }
@@ -209,9 +209,9 @@ public abstract class Model {
 
 
         // remove old properties
-        Iterator<Entry<PropertyInfo<?>, List<Property<?>>>> it = properties.entrySet().iterator();
+        Iterator<Entry<PropertyType<?>, List<Property<?>>>> it = properties.entrySet().iterator();
         while (it.hasNext()) {
-            Entry<PropertyInfo<?>, List<Property<?>>> entry = it.next();
+            Entry<PropertyType<?>, List<Property<?>>> entry = it.next();
             if (IMPLEMENTATION_PROPERTY.equals(entry.getKey().getName())) {
                 it.remove();
             }
@@ -227,16 +227,25 @@ public abstract class Model {
                     int minOccurs = (f.isMandatory()) ? 1 : 0;
 
                     //TODO(jknetl): get default value!
-                    PropertyInfo<String> implementationPropertyInfo =
-                            new PropertyInfo<>(IMPLEMENTATION_PROPERTY, String.class, "", minOccurs, -1);
+                    PropertyType<String> implementationPropertyType =
+                            new PropertyType<>(IMPLEMENTATION_PROPERTY, String.class, "", minOccurs, -1);
 
                     List<Property<?>> values = Collections.emptyList();
 
-                    properties.put(implementationPropertyInfo, values);
+                    properties.put(implementationPropertyType, values);
 
                 }
                 break;
             }
         }
+
+        this.implementation = newImplementation;
+
     }
+
+    /**
+     * This method is called from constructor. It initializes supported properties defined in component type within the model. This
+     * method should not initialize implementation properties. These are handled automatically.
+     */
+    protected abstract void initializeSupportedProperties();
 }

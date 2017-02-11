@@ -27,12 +27,13 @@ import java.util.Objects;
  *
  * @author Jakub Knetl
  */
-public class PropertyInfo<T> {
+public class PropertyType<T> {
 
     /**
      * Name of the property.
      */
     private String name;
+
     /**
      * Class representing a value of the property.
      */
@@ -42,7 +43,6 @@ public class PropertyInfo<T> {
      * Default value of the property.
      */
     private T defaultValue;
-
 
     /**
      * Minimum number of required occurrences of this property.
@@ -63,7 +63,7 @@ public class PropertyInfo<T> {
      * @param minOccurs    minimum number of occurrences of this property.
      * @param maxOccurs    maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public PropertyInfo(String name, Class<T> clazz, T defaultValue, int minOccurs, int maxOccurs) {
+    public PropertyType(String name, Class<T> clazz, T defaultValue, int minOccurs, int maxOccurs) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
@@ -129,7 +129,7 @@ public class PropertyInfo<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PropertyInfo<?> that = (PropertyInfo<?>) o;
+        PropertyType<?> that = (PropertyType<?>) o;
         return minOccurs == that.minOccurs
                && maxOccurs == that.maxOccurs
                && Objects.equals(name, that.name)
@@ -144,7 +144,7 @@ public class PropertyInfo<T> {
 
     @Override
     public String toString() {
-        return "PropertyInfo{"
+        return "PropertyType{"
                + "name='" + name + '\''
                + ", clazz=" + clazz
                + ", defaultValue=" + defaultValue
