@@ -37,6 +37,13 @@ public interface Model {
     Set<PropertyType<?>> getSupportedProperties();
 
     /**
+     * Finds supported property type by name.
+     * @param name name of the property
+     * @return Type of the supported property with the name or null, if no property with the name was found.
+     */
+    PropertyType<?>  getSupportedProperty(String name);
+
+    /**
      * @param propertyType property to get
      * @return Container of properties for given type.
      */
@@ -49,6 +56,7 @@ public interface Model {
      * @return PropertyContainer which holds information about properties with given name, or null, if no such property can be found.
      */
     PropertyContainer<?> getProperty(String propertyName);
+
 
     /**
      * Gets the property change support class.

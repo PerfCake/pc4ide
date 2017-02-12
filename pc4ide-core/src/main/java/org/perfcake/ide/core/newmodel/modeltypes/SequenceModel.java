@@ -24,17 +24,17 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.ModelType;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.message.generator.MessageGenerator;
+import org.perfcake.message.sequence.Sequence;
 
 /**
- * Represents model of a generator.
+ * Model of a sequence component.
  *
  * @author Jakub Knetl
  */
-public class GeneratorModel extends AbstractModel {
+public class SequenceModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+        IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), ID("id");
 
         private final String propertyName;
 
@@ -49,21 +49,18 @@ public class GeneratorModel extends AbstractModel {
     }
 
     /**
-     * Creates new model of PerfCake Generator component.
+     * Creates new model of PerfCake Sequence component.
      *
      * @param componentManager PerfCake component manager
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public SequenceModel(ComponentManager componentManager) {
+        super(componentManager, Sequence.class);
     }
 
     @Override
     protected void initializeSupportedProperties() {
-
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.RUN.toString(), ModelType.KEY_VALUE, null, 1, 1),
                 new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, "1", 0, 1)
-        );
+                new PropertyType<>(PropertyNames.ID.toString() , ModelType.VALUE, null, 1, 1));
     }
 }

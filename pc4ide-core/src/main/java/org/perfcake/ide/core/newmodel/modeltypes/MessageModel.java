@@ -24,17 +24,19 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.ModelType;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.message.generator.MessageGenerator;
+import org.perfcake.message.Message;
 
 /**
- * Represents model of a generator.
+ * Model of PerfCake message.
  *
  * @author Jakub Knetl
  */
-public class GeneratorModel extends AbstractModel {
+public class MessageModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+
+        URI("URI"), CONTENT("Content"), MULTIPLICITY("Multiplicity"), HEADERS("Headers"),
+        PROPERTIES("Properties"), VALIDATOR_REFS("Validator references");
 
         private final String propertyName;
 
@@ -49,21 +51,24 @@ public class GeneratorModel extends AbstractModel {
     }
 
     /**
-     * Creates new model of PerfCake Generator component.
+     * Creates new model of PerfCake component.
      *
      * @param componentManager PerfCake component manager
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public MessageModel(ComponentManager componentManager) {
+        super(componentManager, Message.class);
     }
 
     @Override
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.RUN.toString(), ModelType.KEY_VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, "1", 0, 1)
+                new PropertyType<>(PropertyNames.URI.toString(), ModelType.VALUE, null, 0, 1),
+                new PropertyType<>(PropertyNames.CONTENT.toString(), ModelType.VALUE, null, 0, 1),
+                new PropertyType<>(PropertyNames.MULTIPLICITY.toString(), ModelType.VALUE, "1", 0, 1),
+                new PropertyType<>(PropertyNames.HEADERS.toString(), ModelType.KEY_VALUE, null, 0, -1),
+                new PropertyType<>(PropertyNames.PROPERTIES.toString(), ModelType.KEY_VALUE, null, 0, -1)
         );
     }
+
 }

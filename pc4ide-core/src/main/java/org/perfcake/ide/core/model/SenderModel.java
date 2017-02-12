@@ -79,10 +79,10 @@ public class SenderModel extends AbstractModel implements PropertyContainer {
     }
 
     /**
-     * This method should not be used for modifying Sender (in a way getSender().setClass()))
+     * This method should not be used for modifying SenderModel (in a way getSender().setClass()))
      * since these changes would not fire PropertyChange getListeners(). Use set methods of this class instead.
      *
-     * @return PerfCake model of Sender
+     * @return PerfCake model of SenderModel
      */
     Sender getSender() {
         return sender;

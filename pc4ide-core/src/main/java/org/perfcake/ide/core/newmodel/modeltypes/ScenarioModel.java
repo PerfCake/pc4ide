@@ -24,17 +24,19 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.ModelType;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.message.generator.MessageGenerator;
+import org.perfcake.scenario.Scenario;
 
 /**
- * Represents model of a generator.
- *
+ * Represents a PerfCake scenario model.
  * @author Jakub Knetl
  */
-public class GeneratorModel extends AbstractModel {
+public class ScenarioModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+
+        PROPERTIES("Properties"), GENERATOR("Generator"), SEQUENCES("Sequences"), SENDER("Sender"), RECEIVER("Receiver"),
+        REPORTERS("Reporters"), MESSAGES("Messages"), VALIDATORS("Validators"), VALIDATION_ENABLED("Validation enabled"),
+        VALIDATION_FAST_FORWARD("Validation fast forward");
 
         private final String propertyName;
 
@@ -49,21 +51,27 @@ public class GeneratorModel extends AbstractModel {
     }
 
     /**
-     * Creates new model of PerfCake Generator component.
+     * Creates new model of PerfCake component.
      *
      * @param componentManager PerfCake component manager
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public ScenarioModel(ComponentManager componentManager) {
+        super(componentManager, Scenario.class);
     }
 
     @Override
     protected void initializeSupportedProperties() {
-
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.RUN.toString(), ModelType.KEY_VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, "1", 0, 1)
+                new PropertyType<>(PropertyNames.PROPERTIES.toString(), ModelType.KEY_VALUE, null, 0, -1),
+                new PropertyType<>(PropertyNames.GENERATOR.toString(), ModelType.MODEL, null, 1, 1),
+                new PropertyType<>(PropertyNames.SENDER.toString(), ModelType.MODEL, null, 1, 1),
+                new PropertyType<>(PropertyNames.RECEIVER.toString(), ModelType.MODEL, null, 0, 1),
+                new PropertyType<>(PropertyNames.REPORTERS.toString(), ModelType.MODEL, null, 0, -1),
+                new PropertyType<>(PropertyNames.MESSAGES.toString(), ModelType.MODEL, null, 0, -1),
+                new PropertyType<>(PropertyNames.VALIDATORS.toString(), ModelType.MODEL, null, 0, -1),
+                new PropertyType<>(PropertyNames.VALIDATION_ENABLED.toString(), ModelType.VALUE, "true", 0, 1),
+                new PropertyType<>(PropertyNames.VALIDATION_FAST_FORWARD.toString(), ModelType.VALUE, "false", 0, 1)
         );
+
     }
 }

@@ -24,17 +24,16 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.ModelType;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.message.generator.MessageGenerator;
+import org.perfcake.message.correlator.Correlator;
 
 /**
- * Represents model of a generator.
- *
+ * Represents model of a Correlator.
  * @author Jakub Knetl
  */
-public class GeneratorModel extends AbstractModel {
+public class CorrelatorModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+        IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY);
 
         private final String propertyName;
 
@@ -49,21 +48,19 @@ public class GeneratorModel extends AbstractModel {
     }
 
     /**
-     * Creates new model of PerfCake Generator component.
+     * Creates new model of PerfCake Correlator component.
      *
      * @param componentManager PerfCake component manager
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public CorrelatorModel(ComponentManager componentManager) {
+        super(componentManager, Correlator.class);
     }
 
     @Override
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.RUN.toString(), ModelType.KEY_VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, "1", 0, 1)
+                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1)
         );
     }
 }

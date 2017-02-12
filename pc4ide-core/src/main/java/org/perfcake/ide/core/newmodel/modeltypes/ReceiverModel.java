@@ -24,17 +24,17 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.ModelType;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.message.generator.MessageGenerator;
+import org.perfcake.message.receiver.Receiver;
 
 /**
- * Represents model of a generator.
+ * Represents model of a Receiver.
  *
  * @author Jakub Knetl
  */
-public class GeneratorModel extends AbstractModel {
+public class ReceiverModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+        IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads"), SOURCE("Source"), CORRELATOR("Correlator");
 
         private final String propertyName;
 
@@ -49,21 +49,22 @@ public class GeneratorModel extends AbstractModel {
     }
 
     /**
-     * Creates new model of PerfCake Generator component.
+     * Creates new model of PerfCake Receiver component.
      *
      * @param componentManager PerfCake component manager
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public ReceiverModel(ComponentManager componentManager) {
+        super(componentManager, Receiver.class);
     }
 
     @Override
     protected void initializeSupportedProperties() {
-
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.RUN.toString(), ModelType.KEY_VALUE, null, 1, 1),
                 new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, "1", 0, 1)
+                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, null, 0, 1),
+                new PropertyType<>(PropertyNames.SOURCE.toString(), ModelType.VALUE, null, 0, 1),
+                new PropertyType<>(PropertyNames.CORRELATOR.toString(), ModelType.MODEL, null, 1, 1)
         );
+
     }
 }

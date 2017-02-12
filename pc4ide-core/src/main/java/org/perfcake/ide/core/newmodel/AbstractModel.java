@@ -47,7 +47,7 @@ public abstract class AbstractModel implements Model {
     /**
      * Map of the component properties.
      */
-    protected HashMap<PropertyType<?>, PropertyContainer<?>> properties;
+    private HashMap<PropertyType<?>, PropertyContainer<?>> properties;
 
     /**
      * Component API (interface or abstract class).
@@ -82,12 +82,32 @@ public abstract class AbstractModel implements Model {
         this.api = api;
         this.properties = new HashMap<>();
         this.pcs = new PropertyChangeSupport(this);
+        initializeSupportedProperties();
     }
 
     @Override
     public Set<PropertyType<?>> getSupportedProperties() {
 
         return properties.keySet();
+    }
+
+    @Override
+    public PropertyType<?> getSupportedProperty(String name) {
+
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null.");
+        }
+
+        PropertyType<?> result = null;
+
+        for (PropertyType<?> type : properties.keySet()) {
+            if (name.equals(type.getName())) {
+                result = type;
+                break;
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -175,4 +195,32 @@ public abstract class AbstractModel implements Model {
      * method should not initialize implementation properties. These are handled automatically.
      */
     protected abstract void initializeSupportedProperties();
+
+    /**
+     * Adds supported property.
+     *
+     * @param propertyType Property to be added as supported.
+     */
+    protected void addSupportedProperty(PropertyType<?> propertyType) {
+        if (propertyType == null) {
+            throw new IllegalArgumentException("Property type must not be null.");
+        }
+
+        properties.put(propertyType, new PropertyContainer<>(this, propertyType));
+    }
+
+    /**
+     * Adds multiple supported properties.
+     *
+     * @param propertyTypes Properties to be added as supported.
+     */
+    protected void addSupportedProperties(PropertyType<?>... propertyTypes) {
+        if (propertyTypes == null) {
+            throw new IllegalArgumentException("Property type must not be null.");
+        }
+
+        for (PropertyType<?> propertyType : propertyTypes) {
+            addSupportedProperty(propertyType);
+        }
+    }
 }
