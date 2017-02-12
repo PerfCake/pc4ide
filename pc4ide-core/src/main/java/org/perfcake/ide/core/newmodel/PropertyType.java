@@ -34,10 +34,11 @@ public class PropertyType<T> {
      */
     private String name;
 
+
     /**
-     * Class representing a value of the property.
+     * Represent which model is used in order to represent this property.
      */
-    private Class<T> clazz;
+    private ModelType modelType;
 
     /**
      * Default value of the property.
@@ -58,18 +59,18 @@ public class PropertyType<T> {
      * Creates new propertyInfo
      *
      * @param name         Name of the property
-     * @param clazz        Type which represents property value.
+     * @param modelType    Type which represents property value.
      * @param defaultValue default value of the property
      * @param minOccurs    minimum number of occurrences of this property.
      * @param maxOccurs    maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public PropertyType(String name, Class<T> clazz, T defaultValue, int minOccurs, int maxOccurs) {
+    public PropertyType(String name, ModelType modelType, T defaultValue, int minOccurs, int maxOccurs) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        if (clazz == null) {
-            throw new IllegalArgumentException("Class cannot be null.");
+        if (modelType == null) {
+            throw new IllegalArgumentException("ModelType cannot be null.");
         }
         if (minOccurs < 0) {
             throw new IllegalArgumentException("Minimum number of occurences must be positive.");
@@ -79,7 +80,7 @@ public class PropertyType<T> {
                                                + " number of occurences.");
         }
         this.name = name;
-        this.clazz = clazz;
+        this.modelType = modelType;
         this.defaultValue = defaultValue;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
@@ -92,11 +93,8 @@ public class PropertyType<T> {
         return name;
     }
 
-    /**
-     * @return Class representing property value.
-     */
-    public Class<T> getClazz() {
-        return clazz;
+    public ModelType getModelType() {
+        return modelType;
     }
 
     /**
@@ -133,20 +131,19 @@ public class PropertyType<T> {
         return minOccurs == that.minOccurs
                && maxOccurs == that.maxOccurs
                && Objects.equals(name, that.name)
-               && Objects.equals(clazz, that.clazz)
-               && Objects.equals(defaultValue, that.defaultValue);
+               && Objects.equals(modelType, that.modelType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, clazz, defaultValue, minOccurs, maxOccurs);
+        return Objects.hash(name, modelType, minOccurs, maxOccurs);
     }
 
     @Override
     public String toString() {
         return "PropertyType{"
                + "name='" + name + '\''
-               + ", clazz=" + clazz
+               + ", modelType=" + modelType
                + ", defaultValue=" + defaultValue
                + ", minOccurs=" + minOccurs
                + ", maxOccurs=" + maxOccurs

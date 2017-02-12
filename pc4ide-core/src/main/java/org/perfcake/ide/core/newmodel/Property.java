@@ -45,7 +45,6 @@ public class Property<T> {
      */
     private Model model;
 
-
     /**
      * Creates new property
      *
@@ -70,14 +69,14 @@ public class Property<T> {
         this.value = value;
 
         // if implementation changes it is required to update model to reflect supported properties by new implementation
-        if (Model.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyType.getName())) {
+        if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyType.getName()) && model != null) {
             model.updateImplementation(String.valueOf(value));
         }
 
         PropertyChangeEvent event = new PropertyChangeEvent(this, propertyType.getName(), oldValue, value);
         if (value instanceof Model) {
             ((Model) value).getPropertyChangeSupport().firePropertyChange(event);
-        } else {
+        } else if (model != null) {
             model.getPropertyChangeSupport().firePropertyChange(event);
         }
     }
@@ -86,12 +85,20 @@ public class Property<T> {
         return propertyType;
     }
 
+    public T getValue() {
+        return value;
+    }
+
     public void setPropertyType(PropertyType<T> propertyType) {
         this.propertyType = propertyType;
     }
 
-    public T getValue() {
-        return value;
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     @Override
