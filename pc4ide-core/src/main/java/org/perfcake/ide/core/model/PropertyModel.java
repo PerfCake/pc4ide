@@ -69,7 +69,7 @@ public class PropertyModel extends AbstractModel {
     }
 
     /**
-     * This method should not be used for modifying property (in a way getProperty().setName()))
+     * This method should not be used for modifying property (in a way getPropertyContainer().setName()))
      * since these changes would not fire PropertyChange getListeners(). Use set methods of this class instead.
      *
      * @return PerfCake model of Property

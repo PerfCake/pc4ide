@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.core.exception;
 
-import org.jetbrains.annotations.NonNls;
-
 /**
  * Represents exception in limits of property.
  *
@@ -29,7 +27,7 @@ import org.jetbrains.annotations.NonNls;
  */
 public class PropertyLimitException extends ModelException {
 
-    public PropertyLimitException(@NonNls String message) {
+    public PropertyLimitException(String message) {
         super(message);
     }
 

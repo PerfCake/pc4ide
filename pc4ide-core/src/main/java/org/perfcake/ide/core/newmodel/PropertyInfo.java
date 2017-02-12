@@ -42,7 +42,7 @@ public class PropertyInfo {
     /**
      * Represent which model is used in order to represent this property.
      */
-    private PropertyType propertyType;
+    private PropertyType type;
 
     /**
      * Default value of the property.
@@ -75,7 +75,7 @@ public class PropertyInfo {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        if (propertyType == null) {
+        if (type == null) {
             throw new IllegalArgumentException("PropertyType cannot be null.");
         }
 
@@ -93,10 +93,10 @@ public class PropertyInfo {
         }
 
         // Detects type of a property based on implementation class.
-        propertyType = detectPropertyType(defaultValueClazz);
+        type = detectPropertyType(defaultValueClazz);
 
         this.name = name;
-        this.propertyType = propertyType;
+        this.type = type;
         this.defaultValue = defaultValue;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
@@ -127,8 +127,8 @@ public class PropertyInfo {
         return name;
     }
 
-    public PropertyType getPropertyType() {
-        return propertyType;
+    public PropertyType getType() {
+        return type;
     }
 
     /**
@@ -180,19 +180,19 @@ public class PropertyInfo {
         return minOccurs == that.minOccurs
                && maxOccurs == that.maxOccurs
                && Objects.equals(name, that.name)
-               && Objects.equals(propertyType, that.propertyType);
+               && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, propertyType, minOccurs, maxOccurs);
+        return Objects.hash(name, type, minOccurs, maxOccurs);
     }
 
     @Override
     public String toString() {
         return "PropertyInfo{"
                + "name='" + name + '\''
-               + ", propertyType=" + propertyType
+               + ", type=" + type
                + ", defaultValue=" + defaultValue
                + ", minOccurs=" + minOccurs
                + ", maxOccurs=" + maxOccurs

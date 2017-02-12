@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.core.exception;
 
-import org.jetbrains.annotations.NonNls;
-
 /**
  * Represents exception in model.
  *
@@ -29,7 +27,7 @@ import org.jetbrains.annotations.NonNls;
  */
 public class ModelException extends RuntimeException {
 
-    public ModelException(@NonNls String message) {
+    public ModelException(String message) {
         super(message);
     }
 

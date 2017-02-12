@@ -147,6 +147,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <compilerArgument>${compilerArgument}</compilerArgument>
                 </configuration>
             </plugin>
             <!--Checkstyle plugin for build -->

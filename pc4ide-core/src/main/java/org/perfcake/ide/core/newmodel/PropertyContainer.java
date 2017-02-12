@@ -34,7 +34,7 @@ import org.perfcake.ide.core.exception.PropertyLimitException;
  *
  * @author Jakub Knetl
  */
-public class PropertyContainer<T extends PropertyRepresentation> implements Iterable<Property<? extends T>> {
+public class PropertyContainer implements Iterable<Property> {
 
     /**
      * Model which owns this container.
@@ -49,14 +49,14 @@ public class PropertyContainer<T extends PropertyRepresentation> implements Iter
     /**
      * Properties in the container.
      */
-    private List<Property<T>> properties;
+    private List<Property> properties;
 
     @Override
-    public Iterator<Property<? extends T>> iterator() {
+    public Iterator<Property> iterator() {
         return new PropertyIterator();
     }
 
-    public class PropertyIterator implements Iterator<Property<? extends T>> {
+    public class PropertyIterator implements Iterator<Property> {
 
         int index = 0;
 
@@ -66,7 +66,7 @@ public class PropertyContainer<T extends PropertyRepresentation> implements Iter
         }
 
         @Override
-        public Property<? extends T> next() {
+        public Property next() {
             return properties.get(index++);
         }
     }
@@ -96,7 +96,7 @@ public class PropertyContainer<T extends PropertyRepresentation> implements Iter
      * @param property property to be added
      * @throws PropertyLimitException if you try to add a property which has maximum number of occurrences used already.
      */
-    public void addProperty(Property<T> property) throws PropertyLimitException {
+    public void addProperty(Property property) throws PropertyLimitException {
         if (propertyInfo == null) {
             throw new IllegalArgumentException("propertyInfo must not be null");
         }
@@ -122,7 +122,7 @@ public class PropertyContainer<T extends PropertyRepresentation> implements Iter
      * @return true if the property was removed.
      * @throws PropertyLimitException if you try to remove property, which cannot be removed due to required minimum occurrences.
      */
-    public boolean removeProperty(Property<T> property)
+    public boolean removeProperty(Property property)
             throws PropertyLimitException {
         if (propertyInfo == null) {
             throw new IllegalArgumentException("propertyInfo must not be null");

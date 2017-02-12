@@ -48,7 +48,7 @@ public interface Model extends PropertyRepresentation {
      * @param propertyInfo property to get
      * @return Container of properties for given type.
      */
-    PropertyContainer<? extends PropertyRepresentation> getProperty(PropertyInfo propertyInfo);
+    PropertyContainer getPropertyContainer(PropertyInfo propertyInfo);
 
     /**
      * Finds a property based on its name.
@@ -56,7 +56,7 @@ public interface Model extends PropertyRepresentation {
      * @param propertyName Name of the property
      * @return PropertyContainer which holds information about properties with given name, or null, if no such property can be found.
      */
-    PropertyContainer<? extends PropertyRepresentation> getProperty(String propertyName);
+    PropertyContainer getPropertyContainer(String propertyName);
 
 
     /**
