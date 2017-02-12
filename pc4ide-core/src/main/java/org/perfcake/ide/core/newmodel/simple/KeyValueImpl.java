@@ -30,6 +30,7 @@ public class KeyValueImpl implements KeyValue {
 
     private String key;
     private String value;
+    private String any;
 
     /**
      * Constructs new key-value instance.
@@ -39,6 +40,19 @@ public class KeyValueImpl implements KeyValue {
     public KeyValueImpl(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * Constructs new key-value instance.
+     *
+     * @param key key of the instance
+     * @param value value of the instance
+     * @param any arbitrary value associated with key-value store
+     */
+    public KeyValueImpl(String key, String value, String any) {
+        this.key = key;
+        this.value = value;
+        this.any = any;
     }
 
     @Override
@@ -62,6 +76,16 @@ public class KeyValueImpl implements KeyValue {
     }
 
     @Override
+    public String getAny() {
+        return any;
+    }
+
+    @Override
+    public void setAny(String any) {
+        this.any = any;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -71,12 +95,13 @@ public class KeyValueImpl implements KeyValue {
         }
         KeyValueImpl keyValue = (KeyValueImpl) o;
         return Objects.equals(key, keyValue.key)
-               && Objects.equals(value, keyValue.value);
+               && Objects.equals(value, keyValue.value)
+               && Objects.equals(any, keyValue.any);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, value);
+        return Objects.hash(key, value, any);
     }
 
     @Override
@@ -84,6 +109,7 @@ public class KeyValueImpl implements KeyValue {
         return "KeyValueImpl{"
                + "key='" + key + '\''
                + ", value='" + value + '\''
+               + ", any='" + any + '\''
                + '}';
     }
 }

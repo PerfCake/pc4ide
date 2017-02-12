@@ -24,7 +24,7 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.ide.core.newmodel.simple.ValueImpl;
+import org.perfcake.ide.core.newmodel.simple.SimpleValue;
 import org.perfcake.message.generator.MessageGenerator;
 
 /**
@@ -64,7 +64,7 @@ public class GeneratorModel extends AbstractModel {
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.RUN.toString(), PropertyType.KEY_VALUE.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.THREADS.toString(), PropertyType.VALUE.getClazz(), new ValueImpl("1"), 0, 1)
+                new PropertyInfo(PropertyNames.THREADS.toString(), PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1)
         );
     }
 }

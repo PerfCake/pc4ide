@@ -25,11 +25,11 @@ package org.perfcake.ide.core.newmodel.simple;
  *
  * @author Jakub Knetl
  */
-public class ValueImpl implements Value {
+public class SimpleValue implements Value {
 
     private String value;
 
-    public ValueImpl(String value) {
+    public SimpleValue(String value) {
         this.value = value;
     }
 

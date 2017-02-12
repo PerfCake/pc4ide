@@ -24,7 +24,7 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.ide.core.newmodel.simple.ValueImpl;
+import org.perfcake.ide.core.newmodel.simple.SimpleValue;
 import org.perfcake.reporting.destination.Destination;
 
 /**
@@ -63,7 +63,7 @@ public class DestinationModel extends AbstractModel {
 
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1 , 1),
-                new PropertyInfo(PropertyNames.ENABLED.toString(), PropertyType.VALUE.getClazz(), new ValueImpl("true"), 0, 1),
+                new PropertyInfo(PropertyNames.ENABLED.toString(), PropertyType.VALUE.getClazz(), new SimpleValue("true"), 0, 1),
                 new PropertyInfo(PropertyNames.PERIOD.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
         );
 

@@ -18,27 +18,28 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.newmodel.simple;
-
-import org.perfcake.ide.core.newmodel.PropertyRepresentation;
+package org.perfcake.ide.core.exception;
 
 /**
- * Represents a store of key value pair. Additionally, key value pair may also
- * contain any String representation of another attribute, because some PerfCake key-value
- * tags such as property may have any embedded data.
+ *  Represent an Exception in converting model.
  *
  * @author Jakub Knetl
  */
-public interface KeyValue extends PropertyRepresentation {
-    String getKey();
+public class ModelConversionException extends Exception {
 
-    void setKey(String key);
+    public ModelConversionException(String message) {
+        super(message);
+    }
 
-    String getValue();
+    public ModelConversionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    void setValue(String value);
+    public ModelConversionException(Throwable cause) {
+        super(cause);
+    }
 
-    String getAny();
-
-    void setAny(String any);
+    public ModelConversionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

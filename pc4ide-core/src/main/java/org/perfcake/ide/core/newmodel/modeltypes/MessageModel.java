@@ -24,7 +24,7 @@ import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
-import org.perfcake.ide.core.newmodel.simple.ValueImpl;
+import org.perfcake.ide.core.newmodel.simple.SimpleValue;
 import org.perfcake.message.Message;
 
 /**
@@ -66,7 +66,7 @@ public class MessageModel extends AbstractModel {
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.URI.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
                 new PropertyInfo(PropertyNames.CONTENT.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), PropertyType.VALUE.getClazz(), new ValueImpl("1"), 0, 1),
+                new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1),
                 new PropertyInfo(PropertyNames.HEADERS.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
                 new PropertyInfo(PropertyNames.PROPERTIES.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
         );
