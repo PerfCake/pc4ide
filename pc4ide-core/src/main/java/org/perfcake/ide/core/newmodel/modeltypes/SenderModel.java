@@ -22,7 +22,7 @@ package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
-import org.perfcake.ide.core.newmodel.ModelType;
+import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
 import org.perfcake.message.sender.MessageSender;
 
@@ -59,8 +59,8 @@ public class SenderModel extends AbstractModel {
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.TARGET.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1 ,1)
+                new PropertyInfo(PropertyNames.TARGET.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1 ,1)
         );
     }
 

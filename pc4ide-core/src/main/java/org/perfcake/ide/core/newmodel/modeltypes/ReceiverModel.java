@@ -22,7 +22,7 @@ package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
-import org.perfcake.ide.core.newmodel.ModelType;
+import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
 import org.perfcake.message.receiver.Receiver;
 
@@ -60,10 +60,10 @@ public class ReceiverModel extends AbstractModel {
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.IMPLEMENTATION.toString(), ModelType.VALUE, null, 1, 1),
-                new PropertyType<>(PropertyNames.THREADS.toString(), ModelType.VALUE, null, 0, 1),
-                new PropertyType<>(PropertyNames.SOURCE.toString(), ModelType.VALUE, null, 0, 1),
-                new PropertyType<>(PropertyNames.CORRELATOR.toString(), ModelType.MODEL, null, 1, 1)
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.THREADS.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.SOURCE.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.CORRELATOR.toString(), PropertyType.MODEL.getClazz(), null, 1, 1)
         );
 
     }

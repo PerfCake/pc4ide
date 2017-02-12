@@ -29,25 +29,26 @@ import java.util.Set;
  *
  * @author Jakub Knetl
  */
-public interface Model {
+public interface Model extends PropertyRepresentation {
 
     /**
      * @return Set of properties which are supported in this model.
      */
-    Set<PropertyType<?>> getSupportedProperties();
+    Set<PropertyInfo> getSupportedProperties();
 
     /**
      * Finds supported property type by name.
+     *
      * @param name name of the property
      * @return Type of the supported property with the name or null, if no property with the name was found.
      */
-    PropertyType<?>  getSupportedProperty(String name);
+    PropertyInfo getSupportedProperty(String name);
 
     /**
-     * @param propertyType property to get
+     * @param propertyInfo property to get
      * @return Container of properties for given type.
      */
-    PropertyContainer<?> getProperty(PropertyType<?> propertyType);
+    PropertyContainer<? extends PropertyRepresentation> getProperty(PropertyInfo propertyInfo);
 
     /**
      * Finds a property based on its name.
@@ -55,7 +56,7 @@ public interface Model {
      * @param propertyName Name of the property
      * @return PropertyContainer which holds information about properties with given name, or null, if no such property can be found.
      */
-    PropertyContainer<?> getProperty(String propertyName);
+    PropertyContainer<? extends PropertyRepresentation> getProperty(String propertyName);
 
 
     /**

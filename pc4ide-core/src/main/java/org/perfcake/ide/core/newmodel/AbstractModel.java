@@ -31,6 +31,7 @@ import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.components.PropertyField;
+import org.perfcake.ide.core.newmodel.simple.Value;
 
 
 /**
@@ -47,12 +48,12 @@ public abstract class AbstractModel implements Model {
     /**
      * Map of the component properties.
      */
-    private HashMap<PropertyType<?>, PropertyContainer<?>> properties;
+    private HashMap<PropertyInfo, PropertyContainer<? extends PropertyRepresentation>> properties;
 
     /**
      * Component API (interface or abstract class).
      */
-    private Class<?> api;
+    private Class<? extends PropertyRepresentation> api;
 
     /**
      * Component manager which is used for querying information about component.
@@ -86,21 +87,21 @@ public abstract class AbstractModel implements Model {
     }
 
     @Override
-    public Set<PropertyType<?>> getSupportedProperties() {
+    public Set<PropertyInfo> getSupportedProperties() {
 
         return properties.keySet();
     }
 
     @Override
-    public PropertyType<?> getSupportedProperty(String name) {
+    public PropertyInfo getSupportedProperty(String name) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
 
-        PropertyType<?> result = null;
+        PropertyInfo result = null;
 
-        for (PropertyType<?> type : properties.keySet()) {
+        for (PropertyInfo type : properties.keySet()) {
             if (name.equals(type.getName())) {
                 result = type;
                 break;
@@ -111,24 +112,24 @@ public abstract class AbstractModel implements Model {
     }
 
     @Override
-    public PropertyContainer<?> getProperty(PropertyType<?> propertyType) {
-        if (propertyType == null) {
-            throw new IllegalArgumentException("propertyType must not be null");
+    public PropertyContainer<? extends PropertyRepresentation> getProperty(PropertyInfo propertyInfo) {
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("propertyInfo must not be null");
         }
 
-        return properties.get(propertyType);
+        return properties.get(propertyInfo);
     }
 
     @Override
-    public PropertyContainer<?> getProperty(String propertyName) {
+    public PropertyContainer<? extends PropertyRepresentation> getProperty(String propertyName) {
 
         if (propertyName == null) {
             throw new IllegalArgumentException("Property name cannot be null.");
         }
 
-        PropertyContainer<?> result = null;
+        PropertyContainer<? extends PropertyRepresentation> result = null;
 
-        for (PropertyType<?> type : properties.keySet()) {
+        for (PropertyInfo type : properties.keySet()) {
             if (propertyName.equals(type.getName())) {
                 result = properties.get(type);
                 break;
@@ -161,9 +162,9 @@ public abstract class AbstractModel implements Model {
 
 
         // remove old properties
-        Iterator<Entry<PropertyType<?>, PropertyContainer<?>>> it = properties.entrySet().iterator();
+        Iterator<Entry<PropertyInfo, PropertyContainer<? extends PropertyRepresentation>>> it = properties.entrySet().iterator();
         while (it.hasNext()) {
-            Entry<PropertyType<?>, PropertyContainer<?>> entry = it.next();
+            Entry<PropertyInfo, PropertyContainer<? extends PropertyRepresentation>> entry = it.next();
             if (IMPLEMENTATION_PROPERTY.equals(entry.getKey().getName())) {
                 it.remove();
             }
@@ -179,10 +180,10 @@ public abstract class AbstractModel implements Model {
                     int minOccurs = (f.isMandatory()) ? 1 : 0;
 
                     //TODO(jknetl): get default value!
-                    PropertyType<String> implementationPropertyType =
-                            new PropertyType<>(IMPLEMENTATION_PROPERTY, ModelType.VALUE, "", minOccurs, -1);
+                    PropertyInfo implementationPropertyInfo =
+                            new PropertyInfo(IMPLEMENTATION_PROPERTY, Value.class, null, minOccurs, -1);
 
-                    properties.put(implementationPropertyType, new PropertyContainer<>(this, implementationPropertyType));
+                    properties.put(implementationPropertyInfo, new PropertyContainer<>(this, implementationPropertyInfo));
 
                 }
                 break;
@@ -199,28 +200,28 @@ public abstract class AbstractModel implements Model {
     /**
      * Adds supported property.
      *
-     * @param propertyType Property to be added as supported.
+     * @param propertyInfo Property to be added as supported.
      */
-    protected void addSupportedProperty(PropertyType<?> propertyType) {
-        if (propertyType == null) {
+    protected void addSupportedProperty(PropertyInfo propertyInfo) {
+        if (propertyInfo == null) {
             throw new IllegalArgumentException("Property type must not be null.");
         }
 
-        properties.put(propertyType, new PropertyContainer<>(this, propertyType));
+        properties.put(propertyInfo, new PropertyContainer<>(this, propertyInfo));
     }
 
     /**
      * Adds multiple supported properties.
      *
-     * @param propertyTypes Properties to be added as supported.
+     * @param propertyInfos Properties to be added as supported.
      */
-    protected void addSupportedProperties(PropertyType<?>... propertyTypes) {
-        if (propertyTypes == null) {
+    protected void addSupportedProperties(PropertyInfo... propertyInfos) {
+        if (propertyInfos == null) {
             throw new IllegalArgumentException("Property type must not be null.");
         }
 
-        for (PropertyType<?> propertyType : propertyTypes) {
-            addSupportedProperty(propertyType);
+        for (PropertyInfo propertyInfo : propertyInfos) {
+            addSupportedProperty(propertyInfo);
         }
     }
 }

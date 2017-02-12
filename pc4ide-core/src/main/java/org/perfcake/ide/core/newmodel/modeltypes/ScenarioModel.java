@@ -22,8 +22,9 @@ package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.newmodel.AbstractModel;
-import org.perfcake.ide.core.newmodel.ModelType;
+import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
+import org.perfcake.ide.core.newmodel.simple.ValueImpl;
 import org.perfcake.scenario.Scenario;
 
 /**
@@ -62,15 +63,17 @@ public class ScenarioModel extends AbstractModel {
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyType<>(PropertyNames.PROPERTIES.toString(), ModelType.KEY_VALUE, null, 0, -1),
-                new PropertyType<>(PropertyNames.GENERATOR.toString(), ModelType.MODEL, null, 1, 1),
-                new PropertyType<>(PropertyNames.SENDER.toString(), ModelType.MODEL, null, 1, 1),
-                new PropertyType<>(PropertyNames.RECEIVER.toString(), ModelType.MODEL, null, 0, 1),
-                new PropertyType<>(PropertyNames.REPORTERS.toString(), ModelType.MODEL, null, 0, -1),
-                new PropertyType<>(PropertyNames.MESSAGES.toString(), ModelType.MODEL, null, 0, -1),
-                new PropertyType<>(PropertyNames.VALIDATORS.toString(), ModelType.MODEL, null, 0, -1),
-                new PropertyType<>(PropertyNames.VALIDATION_ENABLED.toString(), ModelType.VALUE, "true", 0, 1),
-                new PropertyType<>(PropertyNames.VALIDATION_FAST_FORWARD.toString(), ModelType.VALUE, "false", 0, 1)
+                new PropertyInfo(PropertyNames.PROPERTIES.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.GENERATOR.toString(), PropertyType.MODEL.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.SENDER.toString(), PropertyType.MODEL.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.RECEIVER.toString(), PropertyType.MODEL.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.REPORTERS.toString(), PropertyType.MODEL.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.MESSAGES.toString(), PropertyType.MODEL.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.VALIDATORS.toString(), PropertyType.MODEL.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.VALIDATION_ENABLED.toString(), PropertyType.VALUE.getClazz(),
+                        new ValueImpl("true"), 0, 1),
+                new PropertyInfo(PropertyNames.VALIDATION_FAST_FORWARD.toString(), PropertyType.VALUE.getClazz(),
+                        new ValueImpl("false"), 0, 1)
         );
 
     }

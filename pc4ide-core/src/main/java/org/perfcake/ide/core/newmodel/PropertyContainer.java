@@ -30,11 +30,11 @@ import org.perfcake.ide.core.exception.PropertyLimitException;
 /**
  * Property container manages one type of property for given model. Property container may be container
  * for single-value only, as well as the collection of the properties. The number of properties in container
- * must be within a bounds of {@link PropertyType#getMinOccurs()} and {@link PropertyType#getMaxOccurs()}.
+ * must be within a bounds of {@link PropertyInfo#getMinOccurs()} and {@link PropertyInfo#getMaxOccurs()}.
  *
  * @author Jakub Knetl
  */
-public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
+public class PropertyContainer<T extends PropertyRepresentation> implements Iterable<Property<? extends T>> {
 
     /**
      * Model which owns this container.
@@ -44,7 +44,7 @@ public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
     /**
      * Type of contained properties.
      */
-    private PropertyType<T> propertyType;
+    private PropertyInfo propertyInfo;
 
     /**
      * Properties in the container.
@@ -75,16 +75,16 @@ public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
      * Creates container for given property type.
      *
      * @param model        model which owns this property container.
-     * @param propertyType type of the properties in this container.
+     * @param propertyInfo type of the properties in this container.
      */
-    public PropertyContainer(Model model, PropertyType<T> propertyType) {
+    public PropertyContainer(Model model, PropertyInfo propertyInfo) {
         if (model == null) {
             throw new IllegalArgumentException("Model must not be null.");
         }
-        if (propertyType == null) {
-            throw new IllegalArgumentException("PropertyType must not be null.");
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("PropertyInfo must not be null.");
         }
-        this.propertyType = propertyType;
+        this.propertyInfo = propertyInfo;
         this.model = model;
         properties = new ArrayList<>();
     }
@@ -97,21 +97,21 @@ public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
      * @throws PropertyLimitException if you try to add a property which has maximum number of occurrences used already.
      */
     public void addProperty(Property<T> property) throws PropertyLimitException {
-        if (propertyType == null) {
-            throw new IllegalArgumentException("propertyType must not be null");
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("propertyInfo must not be null");
         }
         if (property == null) {
             throw new IllegalArgumentException("property must not be null");
         }
 
-        if (properties.size() == propertyType.getMaxOccurs()) {
+        if (properties.size() == propertyInfo.getMaxOccurs()) {
             throw new PropertyLimitException("Property limit exceeded.");
         }
 
         properties.add(property);
         property.setModel(model);
         model.getPropertyChangeSupport()
-                .firePropertyChange(new PropertyChangeEvent(this, propertyType.getName(), null, property));
+                .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
 
     }
 
@@ -124,15 +124,15 @@ public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
      */
     public boolean removeProperty(Property<T> property)
             throws PropertyLimitException {
-        if (propertyType == null) {
-            throw new IllegalArgumentException("propertyType must not be null");
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("propertyInfo must not be null");
         }
         if (property == null) {
             throw new IllegalArgumentException("property must not be null");
         }
 
 
-        if (properties.size() == propertyType.getMinOccurs()) {
+        if (properties.size() == propertyInfo.getMinOccurs()) {
             throw new PropertyLimitException("Property limit decreased under minimum value.");
         }
 
@@ -142,7 +142,7 @@ public class PropertyContainer<T> implements Iterable<Property<? extends T>> {
             property.setModel(null);
 
             model.getPropertyChangeSupport()
-                    .firePropertyChange(new PropertyChangeEvent(this, propertyType.getName(), property, null));
+                    .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
 
         }
         return removed;

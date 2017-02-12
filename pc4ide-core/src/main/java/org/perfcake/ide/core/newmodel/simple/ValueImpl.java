@@ -20,24 +20,26 @@
 
 package org.perfcake.ide.core.newmodel.simple;
 
-import org.perfcake.ide.core.newmodel.PropertyRepresentation;
-
 /**
- * Represents a simple store of a value.
+ * Represents simple value in model.
  *
  * @author Jakub Knetl
  */
-public interface Value extends PropertyRepresentation {
+public class ValueImpl implements Value {
 
-    /**
-     * @return current value.
-     */
-    String getValue();
+    private String value;
 
-    /**
-     * Sets a new value.
-     *
-     * @param value new value
-     */
-    void setValue(String value);
+    public ValueImpl(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return null;
+    }
+
+    @Override
+    public void setValue(String value) {
+
+    }
 }

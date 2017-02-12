@@ -20,23 +20,10 @@
 
 package org.perfcake.ide.core.newmodel;
 
-import org.perfcake.ide.core.newmodel.simple.KeyValue;
-
 /**
- * Represents a model type of a property.
+ * Class which implements this interface can be used as representation of a property.
+ *
  * @author Jakub Knetl
  */
-public enum ModelType {
-
-    VALUE(String.class), KEY_VALUE(KeyValue.class), MODEL(Model.class);
-
-    private final Class<?> modelClazz;
-
-    ModelType(Class<?> modelClazz) {
-        this.modelClazz = modelClazz;
-    }
-
-    public Class<?> getModelClazz() {
-        return modelClazz;
-    }
+public interface PropertyRepresentation {
 }

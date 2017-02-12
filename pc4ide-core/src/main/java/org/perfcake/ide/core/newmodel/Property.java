@@ -28,12 +28,12 @@ import java.util.Objects;
  *
  * @author Jakub Knetl
  */
-public class Property<T> {
+public class Property<T extends PropertyRepresentation> {
 
     /**
      * Info about this property type.
      */
-    private PropertyType<T> propertyType;
+    private PropertyInfo<T> propertyInfo;
 
     /**
      * current value of the property.
@@ -49,12 +49,12 @@ public class Property<T> {
      * Creates new property
      *
      * @param model        model which owns the property
-     * @param propertyType information about property type
+     * @param propertyInfo information about property type
      * @param value        property value.
      */
-    public Property(Model model, PropertyType<T> propertyType, T value) {
+    public Property(Model model, PropertyInfo<T> propertyInfo, T value) {
         this.model = model;
-        this.propertyType = propertyType;
+        this.propertyInfo = propertyInfo;
         this.value = value;
     }
 
@@ -69,11 +69,11 @@ public class Property<T> {
         this.value = value;
 
         // if implementation changes it is required to update model to reflect supported properties by new implementation
-        if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyType.getName()) && model != null) {
+        if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName()) && model != null) {
             model.updateImplementation(String.valueOf(value));
         }
 
-        PropertyChangeEvent event = new PropertyChangeEvent(this, propertyType.getName(), oldValue, value);
+        PropertyChangeEvent event = new PropertyChangeEvent(this, propertyInfo.getName(), oldValue, value);
         if (value instanceof Model) {
             ((Model) value).getPropertyChangeSupport().firePropertyChange(event);
         } else if (model != null) {
@@ -81,16 +81,16 @@ public class Property<T> {
         }
     }
 
-    public PropertyType<T> getPropertyType() {
-        return propertyType;
+    public PropertyInfo<T> getPropertyInfo() {
+        return propertyInfo;
     }
 
     public T getValue() {
         return value;
     }
 
-    public void setPropertyType(PropertyType<T> propertyType) {
-        this.propertyType = propertyType;
+    public void setPropertyInfo(PropertyInfo<T> propertyInfo) {
+        this.propertyInfo = propertyInfo;
     }
 
     public Model getModel() {
@@ -110,20 +110,20 @@ public class Property<T> {
             return false;
         }
         Property<?> property = (Property<?>) o;
-        return Objects.equals(propertyType, property.propertyType)
+        return Objects.equals(propertyInfo, property.propertyInfo)
                && Objects.equals(value, property.value)
                && Objects.equals(model, property.model);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(propertyType, value, model);
+        return Objects.hash(propertyInfo, value, model);
     }
 
     @Override
     public String toString() {
         return "Property{"
-               + "propertyType=" + propertyType
+               + "propertyInfo=" + propertyInfo
                + ", value=" + value
                + ", model=" + model
                + '}';

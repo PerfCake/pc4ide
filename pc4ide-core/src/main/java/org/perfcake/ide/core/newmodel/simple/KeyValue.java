@@ -20,12 +20,14 @@
 
 package org.perfcake.ide.core.newmodel.simple;
 
+import org.perfcake.ide.core.newmodel.PropertyRepresentation;
+
 /**
  * Represents a store of key value pair.
  *
  * @author Jakub Knetl
  */
-public interface KeyValue {
+public interface KeyValue extends PropertyRepresentation {
     String getKey();
 
     void setKey(String key);
