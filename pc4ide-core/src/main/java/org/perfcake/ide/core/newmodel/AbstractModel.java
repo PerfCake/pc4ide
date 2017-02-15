@@ -31,6 +31,8 @@ import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.components.PropertyField;
+import org.perfcake.ide.core.exception.PropertyLimitException;
+import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.newmodel.simple.Value;
 
 
@@ -112,31 +114,52 @@ public abstract class AbstractModel implements Model {
     }
 
     @Override
-    public PropertyContainer getPropertyContainer(PropertyInfo propertyInfo) {
+    public void addProperty(PropertyInfo propertyInfo, Property property) throws PropertyLimitException, UnsupportedPropertyException {
         if (propertyInfo == null) {
-            throw new IllegalArgumentException("propertyInfo must not be null");
+            throw new IllegalArgumentException("Property info must not be null.");
+        }
+        if (property == null) {
+            throw new IllegalArgumentException("Property must not be null.");
         }
 
-        return properties.get(propertyInfo);
+        PropertyContainer container = getPropertyContainer(propertyInfo);
+        if (container == null) {
+            throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
+        }
+
+        container.addProperty(property);
     }
 
     @Override
-    public PropertyContainer getPropertyContainer(String propertyName) {
-
-        if (propertyName == null) {
-            throw new IllegalArgumentException("Property name cannot be null.");
+    public boolean removeProperty(PropertyInfo propertyInfo, Property property)
+            throws PropertyLimitException, UnsupportedPropertyException {
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("Property info must not be null.");
         }
 
-        PropertyContainer result = null;
-
-        for (PropertyInfo type : properties.keySet()) {
-            if (propertyName.equals(type.getName())) {
-                result = properties.get(type);
-                break;
-            }
+        if (property == null) {
+            throw new IllegalArgumentException("Property must not be null.");
         }
 
-        return result;
+        PropertyContainer container = getPropertyContainer(propertyInfo);
+        if (container == null) {
+            throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
+        }
+
+        return container.removeProperty(property);
+    }
+
+    @Override
+    public Iterator<Property> propertyIterator(PropertyInfo propertyInfo) {
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("Property info must not be null.");
+        }
+
+        PropertyContainer container = getPropertyContainer(propertyInfo);
+        if (container == null) {
+            throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
+        }
+        return container.iterator();
     }
 
     @Override
@@ -183,7 +206,7 @@ public abstract class AbstractModel implements Model {
                     PropertyInfo implementationPropertyInfo =
                             new PropertyInfo(IMPLEMENTATION_PROPERTY, Value.class, null, minOccurs, -1);
 
-                    properties.put(implementationPropertyInfo, new PropertyContainer(this, implementationPropertyInfo));
+                    properties.put(implementationPropertyInfo, new PropertyContainerImpl(this, implementationPropertyInfo));
 
                 }
                 break;
@@ -207,7 +230,7 @@ public abstract class AbstractModel implements Model {
             throw new IllegalArgumentException("Property type must not be null.");
         }
 
-        properties.put(propertyInfo, new PropertyContainer(this, propertyInfo));
+        properties.put(propertyInfo, new PropertyContainerImpl(this, propertyInfo));
     }
 
     /**
@@ -223,5 +246,41 @@ public abstract class AbstractModel implements Model {
         for (PropertyInfo propertyInfo : propertyInfos) {
             addSupportedProperty(propertyInfo);
         }
+    }
+
+    /**
+     * Finds a property based on its name.
+     *
+     * @param propertyName Name of the property
+     * @return PropertyContainer which holds information about properties with given name, or null, if no such property can be found.
+     */
+    protected PropertyContainer getPropertyContainer(String propertyName) {
+
+        if (propertyName == null) {
+            throw new IllegalArgumentException("Property name cannot be null.");
+        }
+
+        PropertyContainer result = null;
+
+        for (PropertyInfo type : properties.keySet()) {
+            if (propertyName.equals(type.getName())) {
+                result = properties.get(type);
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @param propertyInfo property to get
+     * @return Container of properties for given type or null, if no such propertyInfo can be found in this model.
+     */
+    protected PropertyContainer getPropertyContainer(PropertyInfo propertyInfo) {
+        if (propertyInfo == null) {
+            throw new IllegalArgumentException("propertyInfo must not be null");
+        }
+
+        return properties.get(propertyInfo);
     }
 }

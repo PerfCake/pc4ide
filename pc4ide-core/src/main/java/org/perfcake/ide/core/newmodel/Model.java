@@ -22,10 +22,14 @@ package org.perfcake.ide.core.newmodel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Iterator;
 import java.util.Set;
+import org.perfcake.ide.core.exception.PropertyLimitException;
+import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.newmodel.PropertyContainerImpl.PropertyIterator;
 
 /**
- * Represents a model object of a PerfCake component.
+ * Represents a model object of a PerfCake component. Model maintains supported properties and their values.
  *
  * @author Jakub Knetl
  */
@@ -45,19 +49,33 @@ public interface Model extends PropertyRepresentation {
     PropertyInfo getSupportedProperty(String name);
 
     /**
-     * @param propertyInfo property to get
-     * @return Container of properties for given type.
+     * Adds property to the model.
+     *
+     * @param propertyInfo metadata about type of the property to be added
+     * @param property     Property to be added
+     * @throws PropertyLimitException       If the maximum number of properties for given type are present in the model.
+     * @throws UnsupportedPropertyException If the property is not supported by this model.
      */
-    PropertyContainer getPropertyContainer(PropertyInfo propertyInfo);
+    void addProperty(PropertyInfo propertyInfo, Property property) throws PropertyLimitException, UnsupportedPropertyException;
 
     /**
-     * Finds a property based on its name.
+     * Removes property to the model.
      *
-     * @param propertyName Name of the property
-     * @return PropertyContainer which holds information about properties with given name, or null, if no such property can be found.
+     * @param propertyInfo metadata about type of the property to be removed.
+     * @param property     the property to be removed.
+     * @return true if the property was removed, false if no such property has been found.
+     * @throws PropertyLimitException       If the minimum number of properties of this type are in the model.
+     * @throws UnsupportedPropertyException If the property is not supported by this model.
      */
-    PropertyContainer getPropertyContainer(String propertyName);
+    boolean removeProperty(PropertyInfo propertyInfo, Property property) throws PropertyLimitException, UnsupportedPropertyException;
 
+    /**
+     * Gets an iterator for properties of given type.
+     *
+     * @param propertyInfo Metadata about type of the properties for which iterator should be returned.
+     * @return Iterator over the properties, or null if no such propertyInfo is supported by this model.
+     */
+    Iterator<Property> propertyIterator(PropertyInfo propertyInfo);
 
     /**
      * Gets the property change support class.

@@ -94,7 +94,7 @@ public class XmlConverter {
             for (PropertyType xmlProperty : xmlModel.getProperties().getProperty()) {
                 KeyValue propertyContent = new KeyValueImpl(xmlProperty.getName(), xmlProperty.getValue());
                 Property pc4ideProperty = new Property(propertyInfo, propertyContent);
-                pc4ideModel.getPropertyContainer(PropertyNames.PROPERTIES.toString()).addProperty(pc4ideProperty);
+                pc4ideModel.addProperty(propertyInfo, pc4ideProperty);
             }
         }
 
@@ -128,7 +128,7 @@ public class XmlConverter {
             for (PropertyType xmlProperty : xmlModel.getReporting().getProperty()) {
                 Property property = new Property(propertyInfo,
                         new KeyValueImpl(xmlProperty.getName(), xmlProperty.getValue()));
-                pc4ideModel.getPropertyContainer(propertyInfo).addProperty(property);
+                pc4ideModel.addProperty(propertyInfo, property);
             }
         }
 
@@ -146,12 +146,12 @@ public class XmlConverter {
             PropertyInfo enabledInfo = pc4ideModel.getSupportedProperty(PropertyNames.VALIDATION_ENABLED.toString());
             Property enabled = new Property(enabledInfo,
                     new SimpleValue(String.valueOf(xmlModel.getValidation().isEnabled())));
-            pc4ideModel.getPropertyContainer(enabledInfo).addProperty(enabled);
+            pc4ideModel.addProperty(enabledInfo, enabled);
 
             PropertyInfo fastForwardInfo = pc4ideModel.getSupportedProperty(PropertyNames.VALIDATION_FAST_FORWARD.toString());
             Property fastForward = new Property(fastForwardInfo,
                     new SimpleValue(String.valueOf(xmlModel.getValidation().isFastForward())));
-            pc4ideModel.getPropertyContainer(fastForwardInfo).addProperty(fastForward);
+            pc4ideModel.addProperty(fastForwardInfo, fastForward);
         }
 
         return pc4ideModel;
@@ -166,7 +166,7 @@ public class XmlConverter {
         if (xmlModel.getGenerator().getClazz() != null) {
             PropertyInfo implInfo = generatorModel.getSupportedProperty(GeneratorModel.PropertyNames.IMPLEMENTATION.toString());
             Property impl = new Property(implInfo, new SimpleValue(xmlModel.getGenerator().getClazz()));
-            generatorModel.getPropertyContainer(implInfo).addProperty(impl);
+            generatorModel.addProperty(implInfo, impl);
         }
 
         // convert run
@@ -174,14 +174,14 @@ public class XmlConverter {
             PropertyInfo runInfo = generatorModel.getSupportedProperty(GeneratorModel.PropertyNames.RUN.toString());
             KeyValue run = new KeyValueImpl(xmlModel.getRun().getType(), xmlModel.getRun().getValue());
             Property runProperty = new Property(runInfo, run);
-            generatorModel.getPropertyContainer(runInfo).addProperty(runProperty);
+            generatorModel.addProperty(runInfo, runProperty);
         }
 
         // convert threads
         if (xmlModel.getGenerator().getThreads() != null) {
             PropertyInfo threadsInfo = generatorModel.getSupportedProperty(GeneratorModel.PropertyNames.THREADS.toString());
             Property threads = new Property(threadsInfo, new SimpleValue(xmlModel.getGenerator().getThreads()));
-            generatorModel.getPropertyContainer(threadsInfo).addProperty(threads);
+            generatorModel.addProperty(threadsInfo, threads);
         }
 
         //convert implementation specific properties
@@ -190,7 +190,7 @@ public class XmlConverter {
         }
 
         Property generatorProperty = new Property(generatorInfo, generatorModel);
-        pc4ideModel.getPropertyContainer(generatorInfo).addProperty(generatorProperty);
+        pc4ideModel.addProperty(generatorInfo, generatorProperty);
 
         return pc4ideModel;
     }
@@ -203,14 +203,14 @@ public class XmlConverter {
         if (xmlModel.getSender().getClazz() != null) {
             PropertyInfo implInfo = senderModel.getSupportedProperty(SenderModel.PropertyNames.IMPLEMENTATION.toString());
             Property impl = new Property(implInfo, new SimpleValue(xmlModel.getSender().getClazz()));
-            senderModel.getPropertyContainer(implInfo).addProperty(impl);
+            senderModel.addProperty(implInfo, impl);
         }
 
         // Convert target
         if (xmlModel.getSender().getTarget() != null) {
             PropertyInfo targetInfo = senderModel.getSupportedProperty(SenderModel.PropertyNames.TARGET.toString());
             Property target = new Property(targetInfo, new SimpleValue(xmlModel.getSender().getTarget()));
-            senderModel.getPropertyContainer(targetInfo).addProperty(target);
+            senderModel.addProperty(targetInfo, target);
         }
 
         // convert implementation properties
@@ -219,7 +219,7 @@ public class XmlConverter {
         }
 
         Property senderProperty = new Property(senderInfo, senderModel);
-        pc4ideModel.getPropertyContainer(senderInfo).addProperty(senderProperty);
+        pc4ideModel.addProperty(senderInfo, senderProperty);
     }
 
     private void convertSequences(List<Sequence> sequences, ScenarioModel pc4ideModel) {
@@ -230,20 +230,20 @@ public class XmlConverter {
             if (xmlSequence.getClazz() != null) {
                 PropertyInfo implInfo = sequenceModel.getSupportedProperty(SequenceModel.PropertyNames.IMPLEMENTATION.toString());
                 Property implProperty = new Property(implInfo, new SimpleValue(xmlSequence.getClazz()));
-                sequenceModel.getPropertyContainer(implInfo).addProperty(implProperty);
+                sequenceModel.addProperty(implInfo, implProperty);
             }
 
             if (xmlSequence.getId() != null) {
                 PropertyInfo idInfo = sequenceModel.getSupportedProperty(SequenceModel.PropertyNames.ID.toString());
                 Property idProperty = new Property(idInfo, new SimpleValue(xmlSequence.getId()));
-                sequenceModel.getPropertyContainer(idInfo).addProperty(idProperty);
+                sequenceModel.addProperty(idInfo, idProperty);
             }
 
             if (xmlSequence.getProperty() != null) {
                 convertImplementationProperties(xmlSequence.getProperty(), sequenceModel);
             }
 
-            pc4ideModel.getPropertyContainer(sequenceInfo).addProperty(new Property(sequenceInfo, sequenceModel));
+            pc4ideModel.addProperty(sequenceInfo, new Property(sequenceInfo, sequenceModel));
         }
 
     }
@@ -256,13 +256,13 @@ public class XmlConverter {
         if (xmlReceiver.getClazz() != null) {
             PropertyInfo implInfo = receiverModel.getSupportedProperty(ReceiverModel.PropertyNames.IMPLEMENTATION.toString());
             Property impl = new Property(implInfo, new SimpleValue(xmlReceiver.getClazz()));
-            receiverModel.getPropertyContainer(implInfo).addProperty(impl);
+            receiverModel.addProperty(implInfo, impl);
         }
 
         if (xmlReceiver.getThreads() != null) {
             PropertyInfo threadsInfo = receiverModel.getSupportedProperty(ReceiverModel.PropertyNames.THREADS.toString());
             Property threads = new Property(threadsInfo, new SimpleValue(xmlReceiver.getThreads()));
-            receiverModel.getPropertyContainer(threadsInfo).addProperty(threads);
+            receiverModel.addProperty(threadsInfo, threads);
         }
 
         if (xmlReceiver.getSource() != null) {
@@ -278,7 +278,7 @@ public class XmlConverter {
             convertCorrelator(xmlReceiver.getCorrelator(), receiverModel);
         }
 
-        pc4ideModel.getPropertyContainer(receiverInfo).addProperty(new Property(receiverInfo, receiverModel));
+        pc4ideModel.addProperty(receiverInfo, new Property(receiverInfo, receiverModel));
     }
 
     private void convertCorrelator(Correlator xmlCorrelator, Model receiverModel) {
@@ -288,14 +288,14 @@ public class XmlConverter {
         if (xmlCorrelator.getClazz() != null) {
             PropertyInfo implInfo = correlatorModel.getSupportedProperty(ReceiverModel.PropertyNames.IMPLEMENTATION.toString());
             Property impl = new Property(implInfo, new SimpleValue(xmlCorrelator.getClazz()));
-            correlatorModel.getPropertyContainer(implInfo).addProperty(impl);
+            correlatorModel.addProperty(implInfo, impl);
         }
 
         if (xmlCorrelator.getProperty() != null) {
             convertImplementationProperties(xmlCorrelator.getProperty(), correlatorModel);
         }
 
-        receiverModel.getPropertyContainer(correlatorInfo).addProperty(new Property(correlatorInfo, correlatorModel));
+        receiverModel.addProperty(correlatorInfo, new Property(correlatorInfo, correlatorModel));
     }
 
     private void convertReporters(List<Reporter> xmlReporters, ScenarioModel pc4ideModel) {
@@ -307,13 +307,13 @@ public class XmlConverter {
             if (xmlReporter.getClazz() != null) {
                 PropertyInfo implInfo = reporterModel.getSupportedProperty(ReporterModel.PropertyNames.IMPLEMENTATION.toString());
                 Property impl = new Property(implInfo, new SimpleValue(xmlReporter.getClazz()));
-                reporterModel.getPropertyContainer(implInfo).addProperty(impl);
+                reporterModel.addProperty(implInfo, impl);
             }
 
             if (xmlReporter.isEnabled()) {
                 PropertyInfo enabledInfo = reporterModel.getSupportedProperty(ReporterModel.PropertyNames.ENABLED.toString());
                 Property enabled = new Property(enabledInfo, new SimpleValue("true"));
-                reporterModel.getPropertyContainer(enabledInfo).addProperty(enabled);
+                reporterModel.addProperty(enabledInfo, enabled);
             }
 
             if (xmlReporter.getDestination() != null) {
@@ -324,7 +324,7 @@ public class XmlConverter {
                 convertImplementationProperties(xmlReporter.getProperty(), reporterModel);
             }
 
-            pc4ideModel.getPropertyContainer(reporterInfo).addProperty(new Property(reporterInfo, reporterModel));
+            pc4ideModel.addProperty(reporterInfo, new Property(reporterInfo, reporterModel));
         }
 
     }
@@ -338,7 +338,7 @@ public class XmlConverter {
             if (xmlDestination.getClazz() != null) {
                 PropertyInfo implInfo = destinationModel.getSupportedProperty(DestinationModel.PropertyNames.IMPLEMENTATION.toString());
                 Property impl = new Property(implInfo, new SimpleValue(xmlDestination.getClazz()));
-                destinationModel.getPropertyContainer(implInfo).addProperty(impl);
+                destinationModel.addProperty(implInfo, impl);
             }
 
             if (xmlDestination.getPeriod() != null) {
@@ -346,7 +346,7 @@ public class XmlConverter {
                 for (Period xmlPeriod : xmlDestination.getPeriod()) {
                     final Property period = new Property(periodInfo,
                             new KeyValueImpl(xmlPeriod.getType(), xmlPeriod.getValue()));
-                    destinationModel.getPropertyContainer(periodInfo).addProperty(period);
+                    destinationModel.addProperty(periodInfo, period);
                 }
             }
 
@@ -354,7 +354,7 @@ public class XmlConverter {
                 convertImplementationProperties(xmlDestination.getProperty(), destinationModel);
             }
 
-            reporterModel.getPropertyContainer(destinationInfo).addProperty(new Property(destinationInfo, destinationModel));
+            reporterModel.addProperty(destinationInfo, new Property(destinationInfo, destinationModel));
         }
     }
 
@@ -367,19 +367,19 @@ public class XmlConverter {
             if (xmlMessage.getContent() != null) {
                 PropertyInfo contentInfo = messageModel.getSupportedProperty(MessageModel.PropertyNames.CONTENT.toString());
                 Property content = new Property(contentInfo, new SimpleValue(xmlMessage.getContent()));
-                messageModel.getPropertyContainer(contentInfo).addProperty(content);
+                messageModel.addProperty(contentInfo, content);
             }
 
             if (xmlMessage.getUri() != null) {
                 PropertyInfo uriInfo = messageModel.getSupportedProperty(MessageModel.PropertyNames.URI.toString());
                 Property uri = new Property(uriInfo, new SimpleValue(xmlMessage.getUri()));
-                messageModel.getPropertyContainer(uriInfo).addProperty(uri);
+                messageModel.addProperty(uriInfo, uri);
             }
 
             if (xmlMessage.getMultiplicity() != null) {
                 PropertyInfo multiplicityInfo = messageModel.getSupportedProperty(MessageModel.PropertyNames.MULTIPLICITY.toString());
                 Property multiplicity = new Property(multiplicityInfo, new SimpleValue(xmlMessage.getMultiplicity()));
-                messageModel.getPropertyContainer(multiplicityInfo).addProperty(multiplicity);
+                messageModel.addProperty(multiplicityInfo, multiplicity);
             }
 
             if (xmlMessage.getProperty() != null) {
@@ -388,7 +388,7 @@ public class XmlConverter {
                 for (PropertyType xmlProperty : xmlMessage.getProperty()) {
                     Property message = new Property(propertyInfo,
                             new KeyValueImpl(xmlProperty.getName(), xmlProperty.getValue()));
-                    messageModel.getPropertyContainer(propertyInfo).addProperty(message);
+                    messageModel.addProperty(propertyInfo, message);
                 }
             }
 
@@ -397,7 +397,7 @@ public class XmlConverter {
 
                 for (HeaderType xmlHeader : xmlMessage.getHeader()) {
                     Property header = new Property(headerInfo, new KeyValueImpl(xmlHeader.getName(), xmlHeader.getValue()));
-                    messageModel.getPropertyContainer(headerInfo).addProperty(header);
+                    messageModel.addProperty(headerInfo, header);
                 }
             }
 
@@ -406,11 +406,11 @@ public class XmlConverter {
 
                 for (ValidatorRef xmlValidatorRef : xmlMessage.getValidatorRef()) {
                     Property validatorRef = new Property(validatorRefInfo, new SimpleValue(xmlValidatorRef.getId()));
-                    messageModel.getPropertyContainer(validatorRefInfo).addProperty(validatorRef);
+                    messageModel.addProperty(validatorRefInfo, validatorRef);
                 }
             }
 
-            pc4ideModel.getPropertyContainer(messageInfo).addProperty(new Property(messageInfo, messageModel));
+            pc4ideModel.addProperty(messageInfo, new Property(messageInfo, messageModel));
         }
     }
 
@@ -423,16 +423,16 @@ public class XmlConverter {
             if (xmlValidator.getClazz() != null) {
                 PropertyInfo implInfo = validatorModel.getSupportedProperty(ValidatorModel.PropertyNames.IMPLEMENTATION.toString());
                 Property impl = new Property(implInfo, new SimpleValue(xmlValidator.getClazz()));
-                validatorModel.getPropertyContainer(implInfo).addProperty(impl);
+                validatorModel.addProperty(implInfo, impl);
             }
 
             if (xmlValidator.getId() != null) {
                 PropertyInfo idInfo = validatorModel.getSupportedProperty(ValidatorModel.PropertyNames.ID.toString());
                 Property id = new Property(idInfo, new SimpleValue(xmlValidator.getId()));
-                validatorModel.getPropertyContainer(idInfo).addProperty(id);
+                validatorModel.addProperty(idInfo, id);
             }
 
-            pc4ideModel.getPropertyContainer(validatorInfo).addProperty(new Property(validatorInfo, validatorModel));
+            pc4ideModel.addProperty(validatorInfo, new Property(validatorInfo, validatorModel));
         }
     }
 
@@ -444,9 +444,10 @@ public class XmlConverter {
             if (propertyInfo != null) {
                 Property property = new Property(propertyInfo,
                         new KeyValueImpl(xmlProperty.getName(), xmlProperty.getValue()));
-                componentModel.getPropertyContainer(AbstractModel.IMPLEMENTATION_PROPERTY).addProperty(property);
+                componentModel.addProperty(propertyInfo, property);
             } else {
-                Iterator<Property> iterator = componentModel.getPropertyContainer(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY).iterator();
+                PropertyInfo implInfo = componentModel.getSupportedProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY);
+                Iterator<Property> iterator = componentModel.propertyIterator(implInfo);
                 Property currentImplementation = iterator.next();
 
                 logger.warn("Ignoring property {} which is not supported by current component ({})",
