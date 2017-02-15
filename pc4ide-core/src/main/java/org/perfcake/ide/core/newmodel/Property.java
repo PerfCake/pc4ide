@@ -50,16 +50,12 @@ public class Property {
      * Creates new property
      *
      * @param <T>          Type of a property value, the value type must be compatible with type defined in propertyInfo
-     * @param model        model which owns the property
      * @param propertyInfo information about property type
      * @param value        property value.
      * @throws ModelException if you try to assign value which is different from expected value which is defined in propertyInfo parameter.
      */
-    public <T extends PropertyRepresentation> Property(Model model, PropertyInfo propertyInfo, T value)
+    public <T extends PropertyRepresentation> Property(PropertyInfo propertyInfo, T value)
             throws ModelException {
-        if (model == null) {
-            throw new IllegalArgumentException("Model must not be null");
-        }
         if (propertyInfo == null) {
             throw new IllegalArgumentException("PropertyInfo must not be null");
         }
@@ -71,7 +67,6 @@ public class Property {
             throw new ModelException(String.format("Type of property value (%s) does not conform property type (%s)",
                     value.getClass().getCanonicalName(), propertyInfo.getType().getClazz().getCanonicalName()));
         }
-        this.model = model;
         this.propertyInfo = propertyInfo;
         this.value = value;
     }
