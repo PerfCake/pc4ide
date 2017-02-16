@@ -100,14 +100,12 @@ public class PropertyContainerImpl implements PropertyContainer {
      */
     @Override
     public void addProperty(Property property) throws PropertyLimitException, UnsupportedPropertyException {
-        if (propertyInfo == null) {
-            throw new IllegalArgumentException("propertyInfo must not be null");
-        }
         if (property == null) {
             throw new IllegalArgumentException("property must not be null");
         }
 
-        if (!propertyInfo.equals(property.getPropertyInfo())) {
+        PropertyType propertyType = PropertyInfo.detectPropertyType(property.getValue(PropertyRepresentation.class).getClass());
+        if (!propertyInfo.getType().equals(propertyType)) {
             throw new ModelException(String.format("Invalid property type. This container supports %s, but added property was %s ",
                     propertyInfo.getType().getClazz().getCanonicalName(), property.getPropertyInfo().getType().getClazz()));
         }
@@ -116,8 +114,9 @@ public class PropertyContainerImpl implements PropertyContainer {
             throw new PropertyLimitException("Property limit exceeded.");
         }
 
-        properties.add(property);
         property.setModel(model);
+        property.setPropertyInfo(propertyInfo);
+        properties.add(property);
         model.getPropertyChangeSupport()
                 .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
 
@@ -141,6 +140,7 @@ public class PropertyContainerImpl implements PropertyContainer {
 
         if (removed) {
             property.setModel(null);
+            property.setPropertyInfo(null);
 
             model.getPropertyChangeSupport()
                     .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));

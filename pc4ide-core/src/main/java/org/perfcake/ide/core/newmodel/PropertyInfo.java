@@ -62,12 +62,12 @@ public class PropertyInfo {
     /**
      * Creates new propertyInfo
      *
-     * @param <T> Type of property value.
-     * @param name         Name of the property
+     * @param <T>               Type of property value.
+     * @param name              Name of the property
      * @param defaultValueClazz class of a default value
-     * @param defaultValue default value of the property
-     * @param minOccurs    minimum number of occurrences of this property.
-     * @param maxOccurs    maximum number of occurrences of this property. Use -1 for unlimited.
+     * @param defaultValue      default value of the property
+     * @param minOccurs         minimum number of occurrences of this property.
+     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
     public <T extends PropertyRepresentation> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
                                                            T defaultValue, int minOccurs, int maxOccurs) {
@@ -102,7 +102,14 @@ public class PropertyInfo {
         this.maxOccurs = maxOccurs;
     }
 
-    private <T extends PropertyRepresentation> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
+    /**
+     * Detects type of the property based on Class which represents property value.
+     *
+     * @param defaultValueClazz Class representing property value class.
+     * @param <T>               type of the property value
+     * @return PropertyType which is can contain value of the type defaultValueClazz, or null if no such property type exists.
+     */
+    public static <T extends PropertyRepresentation> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
         PropertyType result = null;
 
         for (PropertyType type : PropertyType.values()) {
@@ -110,11 +117,6 @@ public class PropertyInfo {
                 result = type;
                 break;
             }
-        }
-
-        if (result == null) {
-            throw new IllegalArgumentException(String.format("Class %s is not supported type of property.",
-                    defaultValueClazz.getCanonicalName()));
         }
 
         return result;
@@ -132,7 +134,7 @@ public class PropertyInfo {
     }
 
     /**
-     * @param <T> Type of property value.
+     * @param <T>  Type of property value.
      * @param type expected type of default value
      * @return Property default value or null, if property has no default value.
      * @throws ModelException when the default value cannot be cast to expected type

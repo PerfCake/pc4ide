@@ -32,7 +32,7 @@ import org.perfcake.ide.core.exception.ModelException;
 public class Property {
 
     /**
-     * Info about this property type.
+     * Info about this property type. This field is filled in only when property is being added into some {@link PropertyContainer}.
      */
     private PropertyInfo propertyInfo;
 
@@ -42,68 +42,68 @@ public class Property {
     private Object value;
 
     /**
-     * Model object which owns this property value.
+     * Model object which owns this property value. This field is set by adding Property into {@link PropertyContainer} which is part
+     * of some model.
      */
     private Model model;
 
     /**
      * Creates new property
      *
-     * @param <T>          Type of a property value, the value type must be compatible with type defined in propertyInfo
-     * @param propertyInfo information about property type
-     * @param value        property value.
+     * @param <T>   Type of a property value.
+     * @param value property value.
      * @throws ModelException if you try to assign value which is different from expected value which is defined in propertyInfo parameter.
      */
-    public <T extends PropertyRepresentation> Property(PropertyInfo propertyInfo, T value)
+    public <T extends PropertyRepresentation> Property(T value)
             throws ModelException {
-        if (propertyInfo == null) {
-            throw new IllegalArgumentException("PropertyInfo must not be null");
-        }
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");
         }
 
-        if (!propertyInfo.getType().getClazz().isAssignableFrom(value.getClass())) {
-            throw new ModelException(String.format("Type of property value (%s) does not conform property type (%s)",
-                    value.getClass().getCanonicalName(), propertyInfo.getType().getClazz().getCanonicalName()));
-        }
-        this.propertyInfo = propertyInfo;
         this.value = value;
     }
 
     /**
-     * Sets a new value of the property.
+     * Sets a new value of the property. If this property is part of some {@link PropertyContainer} and therefore,
+     * it has non null propertyInfo, then the value of the property must be compoatible with propertyInfo.
      *
      * @param <T>   type of the property
      * @param value new value to be set
      * @throws ClassNotFoundException if implementation class is changed by property and it cannot be found.
      */
-    public <T> void setValue(T value) throws ClassNotFoundException {
+    public <T extends PropertyRepresentation> void setValue(T value) throws ClassNotFoundException {
 
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");
         }
 
-        if (!propertyInfo.getType().getClazz().isAssignableFrom(value.getClass())) {
+        if (propertyInfo != null && !propertyInfo.getType().getClazz().isAssignableFrom(value.getClass())) {
             throw new ModelException(String.format("Type of property value (%s) does not conform property type (%s)",
                     value.getClass().getCanonicalName(), propertyInfo.getType().getClazz().getCanonicalName()));
         }
         Object oldValue = this.value;
         this.value = value;
 
-        // if implementation changes it is required to update model to reflect supported properties by new implementation
-        if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName()) && model != null) {
-            model.updateImplementation(String.valueOf(value));
-        }
+        if (model != null && propertyInfo != null) {
+            // if implementation changes it is required to update model to reflect supported properties by new implementation
+            if (propertyInfo != null && AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName()) && model != null) {
+                model.updateImplementation(String.valueOf(value));
+            }
 
-        PropertyChangeEvent event = new PropertyChangeEvent(this, propertyInfo.getName(), oldValue, value);
-        if (value instanceof Model) {
-            ((Model) value).getPropertyChangeSupport().firePropertyChange(event);
-        } else if (model != null) {
-            model.getPropertyChangeSupport().firePropertyChange(event);
+            PropertyChangeEvent event = new PropertyChangeEvent(this, propertyInfo.getName(), oldValue, value);
+            if (value instanceof Model) {
+                ((Model) value).getPropertyChangeSupport().firePropertyChange(event);
+            } else if (model != null) {
+                model.getPropertyChangeSupport().firePropertyChange(event);
+            }
         }
     }
 
+    /**
+     * Gets propertyInfo of this property.
+     *
+     * @return PropertyInfo or null, if the preperty is not part of any model; and thus it has no info associated
+     */
     public PropertyInfo getPropertyInfo() {
         return propertyInfo;
     }
@@ -115,7 +115,7 @@ public class Property {
      * @param clazz clazz which represents type of a property value
      * @return property value
      */
-    public <T> T getValue(Class<T> clazz) {
+    public <T extends PropertyRepresentation> T getValue(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("Class cannot be null.");
         }
@@ -131,6 +131,11 @@ public class Property {
         this.propertyInfo = propertyInfo;
     }
 
+    /**
+     * Gets Model which owns this property.
+     *
+     * @return Model which owns this property or null, if the preperty is not part of any model; and thus it has no model associated.
+     */
     public Model getModel() {
         return model;
     }
