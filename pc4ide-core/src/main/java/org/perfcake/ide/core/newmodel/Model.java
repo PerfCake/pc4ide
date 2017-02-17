@@ -26,14 +26,13 @@ import java.util.Iterator;
 import java.util.Set;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
-import org.perfcake.ide.core.newmodel.PropertyContainerImpl.PropertyIterator;
 
 /**
  * Represents a model object of a PerfCake component. Model maintains supported properties and their values.
  *
  * @author Jakub Knetl
  */
-public interface Model extends PropertyRepresentation {
+public interface Model extends PropertyValue {
 
     /**
      * @return Set of properties which are supported in this model.

@@ -69,8 +69,8 @@ public class PropertyInfo {
      * @param minOccurs         minimum number of occurrences of this property.
      * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public <T extends PropertyRepresentation> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
-                                                           T defaultValue, int minOccurs, int maxOccurs) {
+    public <T extends PropertyValue> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
+                                                  T defaultValue, int minOccurs, int maxOccurs) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
@@ -109,7 +109,7 @@ public class PropertyInfo {
      * @param <T>               type of the property value
      * @return PropertyType which is can contain value of the type defaultValueClazz, or null if no such property type exists.
      */
-    public static <T extends PropertyRepresentation> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
+    public static <T extends PropertyValue> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
         PropertyType result = null;
 
         for (PropertyType type : PropertyType.values()) {
@@ -139,7 +139,7 @@ public class PropertyInfo {
      * @return Property default value or null, if property has no default value.
      * @throws ModelException when the default value cannot be cast to expected type
      */
-    public <T extends PropertyRepresentation> T getDefaultValue(Class<T> type) throws ModelException {
+    public <T extends PropertyValue> T getDefaultValue(Class<T> type) throws ModelException {
         if (type == null) {
             throw new IllegalArgumentException("DefaultValueClazz cannot be null.");
         }

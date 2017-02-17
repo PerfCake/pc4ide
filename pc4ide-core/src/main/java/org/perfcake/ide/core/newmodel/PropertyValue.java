@@ -25,5 +25,5 @@ package org.perfcake.ide.core.newmodel;
  *
  * @author Jakub Knetl
  */
-public interface PropertyRepresentation {
+public interface PropertyValue {
 }

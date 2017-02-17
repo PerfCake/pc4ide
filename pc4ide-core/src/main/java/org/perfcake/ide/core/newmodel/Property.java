@@ -54,7 +54,7 @@ public class Property {
      * @param value property value.
      * @throws ModelException if you try to assign value which is different from expected value which is defined in propertyInfo parameter.
      */
-    public <T extends PropertyRepresentation> Property(T value)
+    public <T extends PropertyValue> Property(T value)
             throws ModelException {
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");
@@ -71,7 +71,7 @@ public class Property {
      * @param value new value to be set
      * @throws ClassNotFoundException if implementation class is changed by property and it cannot be found.
      */
-    public <T extends PropertyRepresentation> void setValue(T value) throws ClassNotFoundException {
+    public <T extends PropertyValue> void setValue(T value) throws ClassNotFoundException {
 
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");
@@ -115,7 +115,7 @@ public class Property {
      * @param clazz clazz which represents type of a property value
      * @return property value
      */
-    public <T extends PropertyRepresentation> T getValue(Class<T> clazz) {
+    public <T extends PropertyValue> T getValue(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("Class cannot be null.");
         }

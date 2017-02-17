@@ -35,13 +35,13 @@ public enum PropertyType {
      */
     VALUE(Value.class), KEY_VALUE(KeyValue.class), MODEL(Model.class);
 
-    private final Class<? extends PropertyRepresentation> clazz;
+    private final Class<? extends PropertyValue> clazz;
 
-    PropertyType(Class<? extends PropertyRepresentation> clazz) {
+    PropertyType(Class<? extends PropertyValue> clazz) {
         this.clazz = clazz;
     }
 
-    public Class<? extends PropertyRepresentation> getClazz() {
+    public Class<? extends PropertyValue> getClazz() {
         return clazz;
     }
 }
