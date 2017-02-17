@@ -35,7 +35,7 @@ public class SimpleValue implements Value {
 
     @Override
     public String getValue() {
-        return null;
+        return value;
     }
 
     @Override
