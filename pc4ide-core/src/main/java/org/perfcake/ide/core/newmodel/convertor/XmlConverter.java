@@ -23,6 +23,7 @@ package org.perfcake.ide.core.newmodel.convertor;
 import java.util.Iterator;
 import java.util.List;
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.AbstractProperty;
@@ -69,6 +70,7 @@ public class XmlConverter {
     static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
 
     private ComponentManager manager;
+    private DocsService docsService;
 
     public XmlConverter(ComponentManager manager) {
         this.manager = manager;
@@ -87,7 +89,7 @@ public class XmlConverter {
             throw new IllegalArgumentException("Model can't be null.");
         }
 
-        ScenarioModel pc4ideModel = new ScenarioModel(manager);
+        ScenarioModel pc4ideModel = new ScenarioModel(manager, docsService);
 
         // Convert scenario properties
         if (xmlModel.getProperties() != null) {
@@ -157,7 +159,7 @@ public class XmlConverter {
 
     private ScenarioModel convertGenerator(Scenario xmlModel, ScenarioModel pc4ideModel) {
         final PropertyInfo generatorInfo = pc4ideModel.getSupportedProperty(PropertyNames.GENERATOR.toString());
-        Model generatorModel = new GeneratorModel(manager);
+        Model generatorModel = new GeneratorModel(manager, docsService);
 
         // convert implementation
         if (xmlModel.getGenerator().getClazz() != null) {
@@ -192,7 +194,7 @@ public class XmlConverter {
 
     private void convertSender(Scenario xmlModel, ScenarioModel pc4ideModel) {
         final PropertyInfo senderInfo = pc4ideModel.getSupportedProperty(PropertyNames.SENDER.toString());
-        Model senderModel = new SenderModel(manager);
+        Model senderModel = new SenderModel(manager, docsService);
 
         // Convert implementation
         if (xmlModel.getSender().getClazz() != null) {
@@ -219,7 +221,7 @@ public class XmlConverter {
     private void convertSequences(List<Sequence> sequences, ScenarioModel pc4ideModel) {
         for (Sequence xmlSequence : sequences) {
             final PropertyInfo sequenceInfo = pc4ideModel.getSupportedProperty(PropertyNames.SEQUENCES.toString());
-            Model sequenceModel = new SequenceModel(manager);
+            Model sequenceModel = new SequenceModel(manager, docsService);
 
             if (xmlSequence.getClazz() != null) {
                 PropertyInfo implInfo = sequenceModel.getSupportedProperty(SequenceModel.PropertyNames.IMPLEMENTATION.toString());
@@ -245,7 +247,7 @@ public class XmlConverter {
     private void convertReceiver(Receiver xmlReceiver, ScenarioModel pc4ideModel) {
 
         final PropertyInfo receiverInfo = pc4ideModel.getSupportedProperty(PropertyNames.RECEIVER.toString());
-        Model receiverModel = new ReceiverModel(manager);
+        Model receiverModel = new ReceiverModel(manager, docsService);
 
         if (xmlReceiver.getClazz() != null) {
             PropertyInfo implInfo = receiverModel.getSupportedProperty(ReceiverModel.PropertyNames.IMPLEMENTATION.toString());
@@ -277,7 +279,7 @@ public class XmlConverter {
 
     private void convertCorrelator(Correlator xmlCorrelator, Model receiverModel) {
         PropertyInfo correlatorInfo = receiverModel.getSupportedProperty(ReceiverModel.PropertyNames.CORRELATOR.toString());
-        Model correlatorModel = new CorrelatorModel(manager);
+        Model correlatorModel = new CorrelatorModel(manager, docsService);
 
         if (xmlCorrelator.getClazz() != null) {
             PropertyInfo implInfo = correlatorModel.getSupportedProperty(ReceiverModel.PropertyNames.IMPLEMENTATION.toString());
@@ -296,7 +298,7 @@ public class XmlConverter {
         PropertyInfo reporterInfo = pc4ideModel.getSupportedProperty(PropertyNames.REPORTERS.toString());
 
         for (Reporter xmlReporter : xmlReporters) {
-            Model reporterModel = new ReporterModel(manager);
+            Model reporterModel = new ReporterModel(manager, docsService);
 
             if (xmlReporter.getClazz() != null) {
                 PropertyInfo implInfo = reporterModel.getSupportedProperty(ReporterModel.PropertyNames.IMPLEMENTATION.toString());
@@ -327,7 +329,7 @@ public class XmlConverter {
         PropertyInfo destinationInfo = reporterModel.getSupportedProperty(ReporterModel.PropertyNames.DESTINATION.toString());
 
         for (Destination xmlDestination : xmlDestinations) {
-            Model destinationModel = new DestinationModel(manager);
+            Model destinationModel = new DestinationModel(manager, docsService);
 
             if (xmlDestination.getClazz() != null) {
                 PropertyInfo implInfo = destinationModel.getSupportedProperty(DestinationModel.PropertyNames.IMPLEMENTATION.toString());
@@ -355,7 +357,7 @@ public class XmlConverter {
         PropertyInfo messageInfo = pc4ideModel.getSupportedProperty(PropertyNames.MESSAGES.toString());
 
         for (Message xmlMessage : xmlMessages) {
-            Model messageModel = new MessageModel(manager);
+            Model messageModel = new MessageModel(manager, docsService);
 
             if (xmlMessage.getContent() != null) {
                 PropertyInfo contentInfo = messageModel.getSupportedProperty(MessageModel.PropertyNames.CONTENT.toString());
@@ -410,7 +412,7 @@ public class XmlConverter {
         PropertyInfo validatorInfo = pc4ideModel.getSupportedProperty(PropertyNames.VALIDATORS.toString());
 
         for (Validator xmlValidator : xmlValidators) {
-            Model validatorModel = new ValidatorModel(manager);
+            Model validatorModel = new ValidatorModel(manager, docsService);
 
             if (xmlValidator.getClazz() != null) {
                 PropertyInfo implInfo = validatorModel.getSupportedProperty(ValidatorModel.PropertyNames.IMPLEMENTATION.toString());

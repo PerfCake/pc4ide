@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
@@ -52,15 +53,16 @@ public class SequenceModel extends AbstractModel {
      * Creates new model of PerfCake Sequence component.
      *
      * @param componentManager PerfCake component manager
+     * @param docsService Documentation service
      */
-    public SequenceModel(ComponentManager componentManager) {
-        super(componentManager, Sequence.class);
+    public SequenceModel(ComponentManager componentManager, DocsService docsService) {
+        super(componentManager, Sequence.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.ID.toString() , PropertyType.VALUE.getClazz(), null, 1, 1));
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.ID.toString(),  this, PropertyType.VALUE.getClazz(), null, 1, 1));
     }
 }

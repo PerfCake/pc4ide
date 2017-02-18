@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
@@ -53,18 +54,19 @@ public class GeneratorModel extends AbstractModel {
      * Creates new model of PerfCake Generator component.
      *
      * @param componentManager PerfCake component manager
+     * @param docsService Documentation service
      */
-    public GeneratorModel(ComponentManager componentManager) {
-        super(componentManager, MessageGenerator.class);
+    public GeneratorModel(ComponentManager componentManager, DocsService docsService) {
+        super(componentManager, MessageGenerator.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.RUN.toString(), PropertyType.KEY_VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.THREADS.toString(), PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1)
+                new PropertyInfo(PropertyNames.RUN.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.THREADS.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1)
         );
     }
 }

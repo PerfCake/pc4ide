@@ -24,6 +24,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 
@@ -76,6 +78,13 @@ public interface Model extends Property {
      */
     Iterator<Property> propertyIterator(PropertyInfo propertyInfo);
 
+
+    /**
+     * Obtains a documentation service.
+     * @return Documentation service.
+     */
+    DocsService getDocsService();
+
     /**
      * Gets the property change support class.
      *
@@ -96,6 +105,11 @@ public interface Model extends Property {
      * @param listener listener to be removed
      */
     void removePropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * @return return an API type of the component which is represented by this model.
+     */
+    Class<?> getApi();
 
     /**
      * Updates implementation class of given model. This method is intended to update list

@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
@@ -51,16 +52,17 @@ public class ValidatorModel extends AbstractModel {
      * Creates new model of PerfCake component.
      *
      * @param componentManager PerfCake component manager
+     * @param docsService Documentation service
      */
-    public ValidatorModel(ComponentManager componentManager) {
-        super(componentManager, MessageValidator.class);
+    public ValidatorModel(ComponentManager componentManager, DocsService docsService) {
+        super(componentManager, MessageValidator.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.ID.toString(), PropertyType.VALUE.getClazz(), null, 1 ,1)
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
+                new PropertyInfo(PropertyNames.ID.toString(), this, PropertyType.VALUE.getClazz(), null, 1 ,1)
         );
 
     }

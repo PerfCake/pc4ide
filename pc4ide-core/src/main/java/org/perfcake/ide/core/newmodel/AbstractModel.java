@@ -27,10 +27,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.perfcake.ide.core.components.Component;
 import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.components.PropertyField;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.newmodel.simple.Value;
@@ -63,6 +65,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     private ComponentManager componentManager;
 
     /**
+     * Documentation service for obtaining properties documentation.
+     */
+    private DocsService docsService;
+
+    /**
      * Support for sending property change events.
      */
     private PropertyChangeSupport pcs;
@@ -72,8 +79,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
      *
      * @param componentManager PerfCake component manager
      * @param api              Interface or abstract class of PerfCake component
+     * @param docsService      Documentation service
      */
-    public AbstractModel(ComponentManager componentManager, Class<?> api) {
+    public AbstractModel(ComponentManager componentManager, Class<?> api, DocsService docsService) {
         super(PropertyType.MODEL);
         if (componentManager == null) {
             throw new IllegalArgumentException("componentManager must not be null");
@@ -81,11 +89,15 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
         if (api == null) {
             throw new IllegalArgumentException("API must not be null");
         }
+        if (docsService == null) {
+            throw new IllegalArgumentException("Documentation service must not be null.");
+        }
 
         this.componentManager = componentManager;
         this.api = api;
         this.properties = new HashMap<>();
         this.pcs = new PropertyChangeSupport(this);
+        this.docsService = docsService;
         initializeSupportedProperties();
     }
 
@@ -169,6 +181,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     }
 
     @Override
+    public DocsService getDocsService() {
+        return this.docsService;
+    }
+
+    @Override
     public PropertyChangeSupport getPropertyChangeSupport() {
         return pcs;
     }
@@ -181,6 +198,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public Class<?> getApi() {
+        return api;
     }
 
     @Override
@@ -210,7 +232,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
 
                     //TODO(jknetl): get default value!
                     PropertyInfo implementationPropertyInfo =
-                            new PropertyInfo(IMPLEMENTATION_PROPERTY, Value.class, null, minOccurs, -1);
+                            new PropertyInfo(IMPLEMENTATION_PROPERTY, this, Value.class, null, minOccurs, -1);
 
                     properties.put(implementationPropertyInfo, new PropertyContainerImpl(this, implementationPropertyInfo));
 

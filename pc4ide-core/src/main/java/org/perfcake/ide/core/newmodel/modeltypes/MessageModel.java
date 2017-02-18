@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.newmodel.modeltypes;
 
 import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
 import org.perfcake.ide.core.newmodel.PropertyType;
@@ -55,20 +56,21 @@ public class MessageModel extends AbstractModel {
      * Creates new model of PerfCake component.
      *
      * @param componentManager PerfCake component manager
+     * @param docsService Documentation service
      */
-    public MessageModel(ComponentManager componentManager) {
-        super(componentManager, Message.class);
+    public MessageModel(ComponentManager componentManager, DocsService docsService) {
+        super(componentManager, Message.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.URI.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.CONTENT.toString(), PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1),
-                new PropertyInfo(PropertyNames.HEADERS.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.PROPERTIES.toString(), PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
+                new PropertyInfo(PropertyNames.URI.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.CONTENT.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1),
+                new PropertyInfo(PropertyNames.HEADERS.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
         );
     }
 

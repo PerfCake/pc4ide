@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.newmodel;
 
 import java.util.Objects;
+import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,16 @@ public class PropertyInfo {
      * Name of the property.
      */
     private String name;
+
+    /**
+     * Name of the property to be displayed in UI. If this value is null, then name field is used.
+     */
+    private String displayName;
+
+    /**
+     * Model to which property described by this propertyInfo instance belongs.
+     */
+    private Model model;
 
     /**
      * Represent which model is used in order to represent this property.
@@ -64,19 +75,24 @@ public class PropertyInfo {
      *
      * @param <T>               Type of property value.
      * @param name              Name of the property
+     * @param displayName       Name to be displayed in the UI
+     * @param model             Model to which this property belongs
      * @param defaultValueClazz class of a default value
      * @param defaultValue      default value of the property
      * @param minOccurs         minimum number of occurrences of this property.
      * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public <T extends Property> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
-                                                  T defaultValue, int minOccurs, int maxOccurs) {
+    public <T extends Property> PropertyInfo(String name, String displayName, Model model, Class<? extends T> defaultValueClazz,
+                                             T defaultValue, int minOccurs, int maxOccurs) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        if (type == null) {
-            throw new IllegalArgumentException("PropertyType cannot be null.");
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty.");
+        }
+        if (model == null) {
+            throw new IllegalArgumentException("Model cannot be null.");
         }
 
         if (defaultValueClazz == null) {
@@ -89,18 +105,36 @@ public class PropertyInfo {
 
         if (maxOccurs >= 0 && minOccurs > maxOccurs) {
             throw new IllegalArgumentException("If maximum occurs is not unlimeted, then it must not be lower than minimum"
-                                               + " number of occurences.");
+                    + " number of occurences.");
         }
 
         // Detects type of a property based on implementation class.
         type = PropertyType.detectPropertyType(defaultValueClazz);
 
         this.name = name;
-        this.type = type;
         this.defaultValue = defaultValue;
+        this.displayName = displayName;
+        this.model = model;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
     }
+
+    /**
+     * Creates new propertyInfo
+     *
+     * @param <T>               Type of property value.
+     * @param name              Name of the property
+     * @param model             Model to which this property belongs
+     * @param defaultValueClazz class of a default value
+     * @param defaultValue      default value of the property
+     * @param minOccurs         minimum number of occurrences of this property.
+     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
+     */
+    public <T extends Property> PropertyInfo(String name, Model model, Class<? extends T> defaultValueClazz,
+                                             T defaultValue, int minOccurs, int maxOccurs) {
+        this(name, null, model, defaultValueClazz, defaultValue, minOccurs, maxOccurs);
+    }
+
 
     /**
      * @return Property name.
@@ -135,6 +169,35 @@ public class PropertyInfo {
         return result;
     }
 
+    /**
+     * @return returns name to be displayed in the UI.
+     */
+    public String getDisplayName() {
+        if (displayName == null || displayName.isEmpty()) {
+            return name;
+        } else {
+            return displayName;
+        }
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    /**
+     * @return Documentation of this property.
+     */
+    public String getDocs() {
+        DocsService docsService = model.getDocsService();
+        String docs;
+        if (type == PropertyType.MODEL) {
+            docs = docsService.getDocs(model.getApi());
+        } else {
+            docs = model.getDocsService().getFieldDocs(model.getApi(), name);
+        }
+        return docs;
+    }
+
 
     /**
      * @return Minimum number of occurrences of this property.
@@ -160,24 +223,28 @@ public class PropertyInfo {
         }
         PropertyInfo that = (PropertyInfo) o;
         return minOccurs == that.minOccurs
-               && maxOccurs == that.maxOccurs
-               && Objects.equals(name, that.name)
-               && Objects.equals(type, that.type);
+                && maxOccurs == that.maxOccurs
+                && Objects.equals(name, that.name)
+                && Objects.equals(model, that.model)
+                && type == that.type
+                && Objects.equals(defaultValue, that.defaultValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type, minOccurs, maxOccurs);
+        return Objects.hash(name, model, type, defaultValue, minOccurs, maxOccurs);
     }
 
     @Override
     public String toString() {
         return "PropertyInfo{"
-               + "name='" + name + '\''
-               + ", type=" + type
-               + ", defaultValue=" + defaultValue
-               + ", minOccurs=" + minOccurs
-               + ", maxOccurs=" + maxOccurs
-               + '}';
+                + "name='" + name + '\''
+                + ", displayName='" + displayName + '\''
+                + ", model=" + model
+                + ", type=" + type
+                + ", defaultValue=" + defaultValue
+                + ", minOccurs=" + minOccurs
+                + ", maxOccurs=" + maxOccurs
+                + '}';
     }
 }
