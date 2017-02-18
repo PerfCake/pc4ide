@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.core.newmodel;
 
-import java.beans.PropertyChangeEvent;
-import java.util.Objects;
 import org.perfcake.ide.core.exception.ModelException;
 
 /**
@@ -50,9 +48,10 @@ public class AbstractProperty implements Property {
 
     /**
      * Creates new property.
+     *
      * @param type type of the property
      */
-    public  AbstractProperty(PropertyType type) {
+    public AbstractProperty(PropertyType type) {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
@@ -127,5 +126,38 @@ public class AbstractProperty implements Property {
     @Override
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    /**
+     * Notifies listeners about property change.
+     *
+     * @param oldValue    old value of property
+     * @param newValue    new value of property
+     */
+    protected void fireChangeEvent(Object oldValue, Object newValue) {
+        this.fireChangeEvent(null, oldValue, newValue);
+
+    }
+
+    /**
+     * Notifies listeners about property change.
+     *
+     * @param eventSuffix event name will be fetched from propertyInfo and it will be suffixed by this value.
+     * @param oldValue    old value of property
+     * @param newValue    new value of property
+     */
+    protected void fireChangeEvent(String eventSuffix, Object oldValue, Object newValue) {
+        if (model != null) {
+
+            String eventName;
+            if (eventSuffix == null || eventSuffix.isEmpty()) {
+                eventName = propertyInfo.getName();
+            } else {
+                eventName = String.format("%s-%s", propertyInfo.getName());
+            }
+
+            model.getPropertyChangeSupport().firePropertyChange(eventName, oldValue, newValue);
+        }
+
     }
 }

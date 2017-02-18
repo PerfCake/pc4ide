@@ -129,6 +129,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
         }
 
         container.addProperty(property);
+        fireChangeEvent(null, property);
     }
 
     @Override
@@ -147,7 +148,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
             throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
         }
 
-        return container.removeProperty(property);
+        boolean removed = container.removeProperty(property);
+        if (removed) {
+            fireChangeEvent(property, null);
+        }
+        return removed;
     }
 
     @Override

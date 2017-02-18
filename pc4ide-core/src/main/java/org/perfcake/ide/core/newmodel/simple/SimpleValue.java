@@ -49,6 +49,9 @@ public class SimpleValue extends AbstractProperty implements Value {
 
     @Override
     public void setValue(String value) {
+        String oldValue = this.value;
         this.value = value;
+
+        fireChangeEvent(oldValue, value);
     }
 }

@@ -30,6 +30,9 @@ import org.perfcake.ide.core.newmodel.PropertyType;
  */
 public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
+    public static final String KEY_EVENT_SUFFIX = "key";
+    public static final String VALUE_EVENT_SUFFIX = "value";
+    public static final String ANY_EVENT_SUFFIX = "any";
     private String key;
     private String value;
     private String any;
@@ -66,7 +69,9 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
     @Override
     public void setKey(String key) {
+        String oldKey = this.key;
         this.key = key;
+        fireChangeEvent(KEY_EVENT_SUFFIX, oldKey, key);
     }
 
     @Override
@@ -76,7 +81,10 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
     @Override
     public void setValue(String value) {
+        String oldValue = this.value;
         this.value = value;
+
+        fireChangeEvent(VALUE_EVENT_SUFFIX, oldValue, value);
     }
 
     @Override
@@ -86,7 +94,9 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
     @Override
     public void setAny(String any) {
+        String oldAny = this.any;
         this.any = any;
+        fireChangeEvent(ANY_EVENT_SUFFIX, oldAny, any);
     }
 
     @Override
