@@ -30,19 +30,19 @@ public class ImplementationField {
 
     private String name;
     private String value;
-    private boolean manadatory;
+    private boolean mandatory;
 
     /**
      * Creates description of a field.
      *
      * @param name name of the field
      * @param value value of the field
-     * @param manadatory is field mandatory?
+     * @param mandatory is field mandatory?
      */
-    public ImplementationField(String name, String value, boolean manadatory) {
+    public ImplementationField(String name, String value, boolean mandatory) {
         this.name = name;
         this.value = value;
-        this.manadatory = manadatory;
+        this.mandatory = mandatory;
     }
 
     public String getName() {
@@ -53,8 +53,8 @@ public class ImplementationField {
         return value;
     }
 
-    public boolean isManadatory() {
-        return manadatory;
+    public boolean isMandatory() {
+        return mandatory;
     }
 
     @Override
@@ -66,14 +66,14 @@ public class ImplementationField {
             return false;
         }
         ImplementationField that = (ImplementationField) o;
-        return manadatory == that.manadatory
+        return mandatory == that.mandatory
                 && Objects.equals(name, that.name)
                 && Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, value, manadatory);
+        return Objects.hash(name, value, mandatory);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ImplementationField {
         return "ImplementationField{"
                 + "name='" + name + '\''
                 + ", value='" + value + '\''
-                + ", manadatory=" + manadatory
+                + ", mandatory=" + mandatory
                 + '}';
     }
 }

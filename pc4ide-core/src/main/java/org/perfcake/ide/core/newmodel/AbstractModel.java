@@ -22,19 +22,20 @@ package org.perfcake.ide.core.newmodel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
-
-import org.perfcake.ide.core.components.Component;
-import org.perfcake.ide.core.components.ComponentKind;
 import org.perfcake.ide.core.components.ComponentManager;
-import org.perfcake.ide.core.components.PropertyField;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.newmodel.component.ImplementationField;
+import org.perfcake.ide.core.newmodel.component.PropertyInspector;
+import org.perfcake.ide.core.newmodel.component.PropertyUtilsInspector;
+import org.perfcake.ide.core.newmodel.simple.SimpleValue;
 import org.perfcake.ide.core.newmodel.simple.Value;
 
 
@@ -45,14 +46,12 @@ import org.perfcake.ide.core.newmodel.simple.Value;
  */
 public abstract class AbstractModel extends AbstractProperty implements Model {
 
-    public static final String IMPLEMENTATION_CLASS_PROPERTY = "Implementation";
-
-    public static final String IMPLEMENTATION_PROPERTY = "implementation-property";
+    public static final String IMPLEMENTATION_CLASS_PROPERTY = "class";
 
     /**
      * Map of the component properties.
      */
-    private HashMap<PropertyInfo, PropertyContainer> properties;
+    private Map<PropertyInfo, PropertyContainer> properties;
 
     /**
      * Component API (interface or abstract class).
@@ -75,6 +74,13 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     private PropertyChangeSupport pcs;
 
     /**
+     * List of properties, which are specific for current component implementation. This list should never be accessible to
+     * the client code. All implementation properties should be contained also in properties Map. This list only points to the keys
+     * in the map to be able to recognize which properties were added on implementation class change.
+     */
+    private List<PropertyInfo> implementationProperties;
+
+    /**
      * Creates new model of PerfCake component.
      *
      * @param componentManager PerfCake component manager
@@ -93,6 +99,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
             throw new IllegalArgumentException("Documentation service must not be null.");
         }
 
+        this.implementationProperties = new ArrayList<>();
         this.componentManager = componentManager;
         this.api = api;
         this.properties = new HashMap<>();
@@ -207,38 +214,26 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
 
     @Override
     public void updateImplementation(String clazz) throws ClassNotFoundException {
-        Class newImplementation = Class.forName(clazz);
-        ComponentKind kind = ComponentKind.getComponentKindByComponentClass(api);
-        List<Component> components = componentManager.getComponentImplementations(kind);
-
 
         // remove old properties
-        Iterator<Entry<PropertyInfo, PropertyContainer>> it = properties.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<PropertyInfo, PropertyContainer> entry = it.next();
-            if (IMPLEMENTATION_PROPERTY.equals(entry.getKey().getName())) {
-                it.remove();
-            }
+        for (PropertyInfo property : implementationProperties) {
+            properties.remove(property);
         }
+        implementationProperties.clear();
 
-        // add new properties
-        List<PropertyField> newImplementationProperties;
-        for (Component c : components) {
-            if (newImplementation.equals(c.getImplementation())) {
-                newImplementationProperties = c.getPropertyFields();
 
-                for (PropertyField f : newImplementationProperties) {
-                    int minOccurs = (f.isMandatory()) ? 1 : 0;
+        Class<?> newImplementation = Class.forName(clazz);
+        PropertyInspector inspector = new PropertyUtilsInspector();
+        List<ImplementationField> fields = inspector.getProperties(newImplementation, api);
 
-                    //TODO(jknetl): get default value!
-                    PropertyInfo implementationPropertyInfo =
-                            new PropertyInfo(IMPLEMENTATION_PROPERTY, this, Value.class, null, minOccurs, -1);
+        for (ImplementationField f : fields) {
+            int minOccurs = (f.isMandatory()) ? 1 : 0;
+            SimpleValue value = (f.getValue() == null) ? null : new SimpleValue(f.getValue());
+            PropertyInfo implementationPropertyInfo =
+                    new PropertyInfo(f.getName(), this, Value.class, value, minOccurs, 1);
 
-                    properties.put(implementationPropertyInfo, new PropertyContainerImpl(this, implementationPropertyInfo));
-
-                }
-                break;
-            }
+            properties.put(implementationPropertyInfo, new PropertyContainerImpl(this, implementationPropertyInfo));
+            implementationProperties.add(implementationPropertyInfo);
         }
     }
 
