@@ -20,16 +20,25 @@
 
 package org.perfcake.ide.core.newmodel.simple;
 
+import org.perfcake.ide.core.newmodel.AbstractProperty;
+import org.perfcake.ide.core.newmodel.PropertyType;
+
 /**
  * Represents simple value in model.
  *
  * @author Jakub Knetl
  */
-public class SimpleValue implements Value {
+public class SimpleValue extends AbstractProperty implements Value {
 
     private String value;
 
+    /**
+     * Creates new simple value.
+     *
+     * @param value value of the property
+     */
     public SimpleValue(String value) {
+        super(PropertyType.VALUE);
         this.value = value;
     }
 
@@ -40,6 +49,6 @@ public class SimpleValue implements Value {
 
     @Override
     public void setValue(String value) {
-
+        this.value = value;
     }
 }

@@ -20,14 +20,14 @@
 
 package org.perfcake.ide.core.newmodel.simple;
 
-import org.perfcake.ide.core.newmodel.PropertyValue;
+import org.perfcake.ide.core.newmodel.Property;
 
 /**
  * Represents a simple store of a value.
  *
  * @author Jakub Knetl
  */
-public interface Value extends PropertyValue {
+public interface Value extends Property {
 
     /**
      * @return current value.

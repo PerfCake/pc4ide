@@ -32,7 +32,7 @@ import org.perfcake.ide.core.exception.UnsupportedPropertyException;
  *
  * @author Jakub Knetl
  */
-public interface Model extends PropertyValue {
+public interface Model extends Property {
 
     /**
      * @return Set of properties which are supported in this model.

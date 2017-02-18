@@ -41,7 +41,7 @@ import org.perfcake.ide.core.newmodel.simple.Value;
  *
  * @author Jakub Knetl
  */
-public abstract class AbstractModel implements Model {
+public abstract class AbstractModel extends AbstractProperty implements Model {
 
     public static final String IMPLEMENTATION_CLASS_PROPERTY = "Implementation";
 
@@ -74,6 +74,7 @@ public abstract class AbstractModel implements Model {
      * @param api              Interface or abstract class of PerfCake component
      */
     public AbstractModel(ComponentManager componentManager, Class<?> api) {
+        super(PropertyType.MODEL);
         if (componentManager == null) {
             throw new IllegalArgumentException("componentManager must not be null");
         }

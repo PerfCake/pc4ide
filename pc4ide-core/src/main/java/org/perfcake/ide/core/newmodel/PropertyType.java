@@ -35,13 +35,33 @@ public enum PropertyType {
      */
     VALUE(Value.class), KEY_VALUE(KeyValue.class), MODEL(Model.class);
 
-    private final Class<? extends PropertyValue> clazz;
+    private final Class<? extends Property> clazz;
 
-    PropertyType(Class<? extends PropertyValue> clazz) {
+    PropertyType(Class<? extends Property> clazz) {
         this.clazz = clazz;
     }
 
-    public Class<? extends PropertyValue> getClazz() {
+    public Class<? extends Property> getClazz() {
         return clazz;
+    }
+
+    /**
+     * Detects type of the property based on Class which represents property value.
+     *
+     * @param defaultValueClazz Class representing property value class.
+     * @param <T>               type of the property value
+     * @return PropertyType which is can contain value of the type defaultValueClazz, or null if no such property type exists.
+     */
+    public static <T extends Property> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
+        PropertyType result = null;
+
+        for (PropertyType type : values()) {
+            if (type.getClazz().isAssignableFrom(defaultValueClazz)) {
+                result = type;
+                break;
+            }
+        }
+
+        return result;
     }
 }

@@ -20,7 +20,7 @@
 
 package org.perfcake.ide.core.newmodel.simple;
 
-import org.perfcake.ide.core.newmodel.PropertyValue;
+import org.perfcake.ide.core.newmodel.Property;
 
 /**
  * Represents a store of key value pair. Additionally, key value pair may also
@@ -29,7 +29,7 @@ import org.perfcake.ide.core.newmodel.PropertyValue;
  *
  * @author Jakub Knetl
  */
-public interface KeyValue extends PropertyValue {
+public interface KeyValue extends Property {
     String getKey();
 
     void setKey(String key);

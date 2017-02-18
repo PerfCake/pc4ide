@@ -69,7 +69,7 @@ public class PropertyInfo {
      * @param minOccurs         minimum number of occurrences of this property.
      * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public <T extends PropertyValue> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
+    public <T extends Property> PropertyInfo(String name, Class<? extends T> defaultValueClazz,
                                                   T defaultValue, int minOccurs, int maxOccurs) {
 
         if (name == null) {
@@ -93,33 +93,13 @@ public class PropertyInfo {
         }
 
         // Detects type of a property based on implementation class.
-        type = detectPropertyType(defaultValueClazz);
+        type = PropertyType.detectPropertyType(defaultValueClazz);
 
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Detects type of the property based on Class which represents property value.
-     *
-     * @param defaultValueClazz Class representing property value class.
-     * @param <T>               type of the property value
-     * @return PropertyType which is can contain value of the type defaultValueClazz, or null if no such property type exists.
-     */
-    public static <T extends PropertyValue> PropertyType detectPropertyType(Class<T> defaultValueClazz) {
-        PropertyType result = null;
-
-        for (PropertyType type : PropertyType.values()) {
-            if (type.getClazz().isAssignableFrom(defaultValueClazz)) {
-                result = type;
-                break;
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -139,7 +119,7 @@ public class PropertyInfo {
      * @return Property default value or null, if property has no default value.
      * @throws ModelException when the default value cannot be cast to expected type
      */
-    public <T extends PropertyValue> T getDefaultValue(Class<T> type) throws ModelException {
+    public <T extends Property> T getDefaultValue(Class<T> type) throws ModelException {
         if (type == null) {
             throw new IllegalArgumentException("DefaultValueClazz cannot be null.");
         }

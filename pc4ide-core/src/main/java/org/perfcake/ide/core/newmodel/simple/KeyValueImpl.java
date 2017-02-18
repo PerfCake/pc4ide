@@ -21,12 +21,14 @@
 package org.perfcake.ide.core.newmodel.simple;
 
 import java.util.Objects;
+import org.perfcake.ide.core.newmodel.AbstractProperty;
+import org.perfcake.ide.core.newmodel.PropertyType;
 
 /**
  * Represents a key-value object.
  * @author Jakub Knetl
  */
-public class KeyValueImpl implements KeyValue {
+public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
     private String key;
     private String value;
@@ -38,6 +40,7 @@ public class KeyValueImpl implements KeyValue {
      * @param value value of the instance
      */
     public KeyValueImpl(String key, String value) {
+        super(PropertyType.KEY_VALUE);
         this.key = key;
         this.value = value;
     }
@@ -50,6 +53,7 @@ public class KeyValueImpl implements KeyValue {
      * @param any arbitrary value associated with key-value store
      */
     public KeyValueImpl(String key, String value, String any) {
+        super(PropertyType.KEY_VALUE);
         this.key = key;
         this.value = value;
         this.any = any;
