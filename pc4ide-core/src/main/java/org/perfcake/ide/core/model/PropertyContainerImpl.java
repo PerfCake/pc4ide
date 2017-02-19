@@ -109,10 +109,10 @@ public class PropertyContainerImpl implements PropertyContainer {
             throw new IllegalArgumentException("property must not be null");
         }
 
-        PropertyType propertyType = PropertyType.detectPropertyType(property.cast(Property.class).getClass());
+        PropertyType propertyType = PropertyType.detectPropertyType(property.getClass());
         if (!propertyInfo.getType().equals(propertyType)) {
             throw new ModelException(String.format("Invalid property type. This container supports %s, but added property was %s ",
-                    propertyInfo.getType().getClazz().getCanonicalName(), property.getPropertyInfo().getType().getClazz()));
+                    propertyInfo.getType().getClazz().getCanonicalName(), propertyType.getClazz()));
         }
 
         if (properties.size() == propertyInfo.getMaxOccurs()) {

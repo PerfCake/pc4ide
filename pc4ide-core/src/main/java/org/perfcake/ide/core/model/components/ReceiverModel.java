@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.components;
 
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -54,7 +55,7 @@ public class ReceiverModel extends AbstractModel {
      * @param docsService Documentation service
      */
     public ReceiverModel(DocsService docsService) {
-        super(Receiver.class, docsService);
+        super(PerfCakeComponent.RECEIVER, docsService);
     }
 
     @Override

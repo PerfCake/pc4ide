@@ -46,7 +46,7 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
     /**
      * Map of componets type and their implementations.
      */
-    private Map<PerfCakeComponents, List<String>> components;
+    private Map<PerfCakeComponent, List<String>> components;
 
     /**
      * List of packages prefixes where to search for the components.
@@ -66,7 +66,7 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
     @Override
     public void update() {
-        for (final PerfCakeComponents componentApi : PerfCakeComponents.values()) {
+        for (final PerfCakeComponent componentApi : PerfCakeComponent.values()) {
             final Reflections reflections = createReflections();
             Set<Class<? extends MessageGenerator>> subTypesOf = reflections.getSubTypesOf(MessageGenerator.class);
 
@@ -82,7 +82,7 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
     }
 
     @Override
-    public List<String> list(PerfCakeComponents component) {
+    public List<String> list(PerfCakeComponent component) {
         return Collections.unmodifiableList(components.get(component));
 
     }

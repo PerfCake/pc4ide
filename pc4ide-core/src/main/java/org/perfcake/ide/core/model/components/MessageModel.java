@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.components;
 
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -57,7 +58,7 @@ public class MessageModel extends AbstractModel {
      * @param docsService Documentation service
      */
     public MessageModel(DocsService docsService) {
-        super(Message.class, docsService);
+        super(PerfCakeComponent.MESSAGE, docsService);
     }
 
     @Override

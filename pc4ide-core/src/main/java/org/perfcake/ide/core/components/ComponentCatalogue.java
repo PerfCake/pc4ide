@@ -39,5 +39,5 @@ public interface ComponentCatalogue {
      * @param component PerfCake comonent type whose implementations should be returned.
      * @return Unmodifiable List of implementation classes. If no implementation is found, then empty list is returned.
      */
-    List<String> list(PerfCakeComponents component);
+    List<String> list(PerfCakeComponent component);
 }

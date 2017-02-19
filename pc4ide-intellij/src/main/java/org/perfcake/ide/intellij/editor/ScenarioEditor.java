@@ -44,8 +44,9 @@ import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.model.ModelLoader;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.loader.ModelLoader;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 
 
@@ -119,6 +120,8 @@ public class ScenarioEditor implements FileEditor {
         } catch (PerfCakeException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ModelConversionException e) {
             e.printStackTrace();
         }
         editorGui = new EditorJPanel(model);

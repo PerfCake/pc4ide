@@ -24,8 +24,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
+import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 
@@ -80,9 +81,10 @@ public interface Model extends Property {
 
     /**
      * Returns an unmodifiable list of properties of given type in this model.
+     *
      * @param propertyInfo type of the properties
      * @return <em>unmodifiable list</em> of properties of given type in this model. If given propertyInfo is not supported,
-     *      then null is returned.
+     *     then null is returned.
      */
     List<Property> getProperties(PropertyInfo propertyInfo);
 
@@ -107,6 +109,7 @@ public interface Model extends Property {
 
     /**
      * Obtains a documentation service.
+     *
      * @return Documentation service.
      */
     DocsService getDocsService();
@@ -126,16 +129,16 @@ public interface Model extends Property {
     void removeModelListener(PropertyChangeListener listener);
 
     /**
-     * @return return an API type of the inspector which is represented by this model.
+     * @return return kind of PerfCake component which is represented by this model.
      */
-    Class<?> getApi();
+    PerfCakeComponent getComponent();
 
     /**
      * Updates implementation class of given model. This method is intended to update list
      * of supported properties, because different implementation can support different properties.
      *
      * @param clazz fully qualified name of the new implementation class.
-     * @throws ClassNotFoundException if implementation cannot cannot be found.
+     * @throws ImplementationNotFoundException if implementation cannot cannot be found.
      */
-    void updateImplementation(String clazz) throws ClassNotFoundException;
+    void updateImplementation(String clazz) throws ImplementationNotFoundException;
 }

@@ -18,24 +18,20 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.inspector;
-
-import java.util.List;
-import org.perfcake.ide.core.components.PerfCakeComponent;
+package org.perfcake.ide.core.exception;
 
 /**
- * Property inspector enables to find properties specific to implementation class of a PerfCake inspector.
+ * This exception indicates, that implementation of PerfCake component cannot be found.
  *
  * @author Jakub Knetl
  */
-public interface PropertyInspector {
+public class ImplementationNotFoundException extends ClassNotFoundException {
 
-    /**
-     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake inspector.
-     * @param implementation Clazz for which properties should be detected
-     * @param component kind of a PerfCake component
-     * @return Map of property name and its default value.
-     */
-    List<ImplementationField> getProperties(Class<?> implementation, PerfCakeComponent component);
+    public ImplementationNotFoundException(String s) {
+        super(s);
+    }
 
+    public ImplementationNotFoundException(String s, Throwable ex) {
+        super(s, ex);
+    }
 }

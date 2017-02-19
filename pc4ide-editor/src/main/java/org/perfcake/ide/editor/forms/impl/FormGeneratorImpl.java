@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.PerfCakeComponents;
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -103,7 +103,7 @@ public class FormGeneratorImpl implements FormGenerator {
                 for (Property p : model.getProperties(propertyInfo)) {
                     FormElement element;
                     if ("clazz".equals(propertyInfo.getName())) {
-                        element = new ChoiceElement(model, p, getImplementationNames(model.getApi()));
+                        element = new ChoiceElement(model, p, getImplementationNames(model.getComponent().getApi()));
                     } else {
                         element = new TextElement(model, p);
                     }
@@ -119,8 +119,8 @@ public class FormGeneratorImpl implements FormGenerator {
 
     private List<String> getImplementationNames(Class<?> modelClazz) {
 
-        PerfCakeComponents component = null;
-        for (PerfCakeComponents c : PerfCakeComponents.values()) {
+        PerfCakeComponent component = null;
+        for (PerfCakeComponent c : PerfCakeComponent.values()) {
             if (c.getApi().equals(modelClazz)) {
                 component = c;
             }

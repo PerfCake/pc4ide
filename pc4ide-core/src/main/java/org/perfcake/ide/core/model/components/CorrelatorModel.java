@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.components;
 
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -53,7 +54,7 @@ public class CorrelatorModel extends AbstractModel {
      * @param docsService Documentation service
      */
     public CorrelatorModel(DocsService docsService) {
-        super(Correlator.class, docsService);
+        super(PerfCakeComponent.CORRELATOR, docsService);
     }
 
     @Override

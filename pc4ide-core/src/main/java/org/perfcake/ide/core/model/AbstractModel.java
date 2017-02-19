@@ -29,7 +29,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.perfcake.ide.core.components.ComponentLoader;
+import org.perfcake.ide.core.components.ComponentLoaderImpl;
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
+import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.inspector.ImplementationField;
@@ -59,9 +63,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     private Map<PropertyInfo, PropertyContainer> properties;
 
     /**
-     * Component API (interface or abstract class).
+     * PerfCakeComponet kind, which is represented by this model.
      */
-    private Class<?> api;
+    private PerfCakeComponent component;
 
     /**
      * Documentation service for obtaining properties documentation.
@@ -83,12 +87,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     /**
      * Creates new model of PerfCake inspector.
      *
-     * @param api         Interface or abstract class of PerfCake inspector
+     * @param component   kind of the PerfCake component which is represented by this model.
      * @param docsService Documentation service
      */
-    public AbstractModel(Class<?> api, DocsService docsService) {
+    public AbstractModel(PerfCakeComponent component, DocsService docsService) {
         super(PropertyType.MODEL);
-        if (api == null) {
+        if (component == null) {
             throw new IllegalArgumentException("API must not be null");
         }
         if (docsService == null) {
@@ -96,7 +100,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         }
 
         this.implementationProperties = new ArrayList<>();
-        this.api = api;
+        this.component = component;
         this.properties = new HashMap<>();
         this.pcs = new PropertyChangeSupport(this);
         this.docsService = docsService;
@@ -228,13 +232,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         pcs.removePropertyChangeListener(listener);
     }
 
-    @Override
-    public Class<?> getApi() {
-        return api;
+    public PerfCakeComponent getComponent() {
+        return component;
     }
 
     @Override
-    public void updateImplementation(String clazz) throws ClassNotFoundException {
+    public void updateImplementation(String clazz) throws ImplementationNotFoundException {
 
         // remove old properties
         for (PropertyInfo property : implementationProperties) {
@@ -245,9 +248,10 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         implementationProperties.clear();
 
 
-        Class<?> newImplementation = Class.forName(clazz);
+        ComponentLoader loader = new ComponentLoaderImpl();
+        Class<?> newImplementation = loader.loadComponent(clazz, component);
         PropertyInspector inspector = new PropertyUtilsInspector();
-        List<ImplementationField> fields = inspector.getProperties(newImplementation, api);
+        List<ImplementationField> fields = inspector.getProperties(newImplementation, component);
 
         for (ImplementationField f : fields) {
             int minOccurs = (f.isMandatory()) ? 1 : 0;
@@ -345,7 +349,14 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         // update implementation class if the implementation of this model has been changed
         if (IMPLEMENTATION_CLASS_PROPERTY.equals(evt.getPropertyName())) {
             try {
-                updateImplementation(String.valueOf(evt.getNewValue()));
+                String clazz;
+                if (evt.getNewValue() instanceof Value) {
+                    clazz = ((Value) evt.getNewValue()).getValue();
+                } else {
+                    clazz = String.valueOf(evt.getNewValue());
+                }
+
+                updateImplementation(String.valueOf(clazz));
             } catch (ClassNotFoundException e) {
                 logger.warn(String.format("Cannot update implementation properties of a inspector %s", evt.getNewValue()), e);
             }

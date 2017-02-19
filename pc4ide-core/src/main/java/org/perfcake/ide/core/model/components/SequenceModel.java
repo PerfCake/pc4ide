@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.components;
 
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -54,7 +55,7 @@ public class SequenceModel extends AbstractModel {
      * @param docsService Documentation service
      */
     public SequenceModel(DocsService docsService) {
-        super(Sequence.class, docsService);
+        super(PerfCakeComponent.SEQUENCE, docsService);
     }
 
     @Override

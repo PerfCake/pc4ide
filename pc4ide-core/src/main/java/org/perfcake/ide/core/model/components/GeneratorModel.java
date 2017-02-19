@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.components;
 
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -55,7 +56,7 @@ public class GeneratorModel extends AbstractModel {
      * @param docsService Documentation service
      */
     public GeneratorModel(DocsService docsService) {
-        super(MessageGenerator.class, docsService);
+        super(PerfCakeComponent.GENERATOR, docsService);
     }
 
     @Override

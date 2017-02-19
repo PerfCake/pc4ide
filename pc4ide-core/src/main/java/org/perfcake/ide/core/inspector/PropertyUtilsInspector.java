@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.commons.beanutils.FluentPropertyBeanIntrospector;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.util.properties.MandatoryProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,11 +44,11 @@ public class PropertyUtilsInspector implements PropertyInspector {
     static final Logger logger = LoggerFactory.getLogger(PropertyUtilsInspector.class);
 
     @Override
-    public List<ImplementationField> getProperties(Class<?> implementation, Class<?> api) {
+    public List<ImplementationField> getProperties(Class<?> implementation, PerfCakeComponent component) {
         PropertyUtilsBean propertyUtils = new PropertyUtilsBean();
         propertyUtils.addBeanIntrospector(new FluentPropertyBeanIntrospector()); // also parse beans with fluent setters
         propertyUtils.addBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS); // do not parse class field
-        List<String> apiProperties = getApiProperties(propertyUtils.getPropertyDescriptors(api));
+        List<String> apiProperties = getApiProperties(propertyUtils.getPropertyDescriptors(component.getApi()));
         propertyUtils.addBeanIntrospector(new SuppressPropertiesBeanIntrospector(apiProperties)); // do not parse fields from api
 
         PropertyDescriptor[] implementationDescriptors = propertyUtils.getPropertyDescriptors(implementation);
@@ -67,7 +68,7 @@ public class PropertyUtilsInspector implements PropertyInspector {
             // skip property which has no setter, since it is useless to tweak its value
             if (descriptor.getWriteMethod() != null) {
                 String value = getDefaultValue(implementation, propertyUtils, instance, descriptor);
-                boolean isMandatory = hasMandatoryAnnotation(descriptor, implementation, api);
+                boolean isMandatory = hasMandatoryAnnotation(descriptor, implementation, component.getApi());
                 ImplementationField field = new ImplementationField(descriptor.getName(), value, isMandatory);
                 fields.add(field);
             }

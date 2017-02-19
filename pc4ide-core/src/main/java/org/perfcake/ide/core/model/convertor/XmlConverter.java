@@ -434,7 +434,7 @@ public class XmlConverter {
 
             // if the defined property is supported by current implementation
             if (propertyInfo != null) {
-                Property property = new KeyValueImpl(xmlProperty.getName(), xmlProperty.getValue());
+                Property property = new SimpleValue(xmlProperty.getValue());
                 componentModel.addProperty(propertyInfo, property);
             } else {
                 PropertyInfo implInfo = componentModel.getSupportedProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY);

@@ -18,24 +18,24 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.inspector;
+package org.perfcake.ide.core.components;
 
-import java.util.List;
-import org.perfcake.ide.core.components.PerfCakeComponent;
+import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 
 /**
- * Property inspector enables to find properties specific to implementation class of a PerfCake inspector.
+ * Component loader enables to get component clazz from classpath.
  *
  * @author Jakub Knetl
  */
-public interface PropertyInspector {
+public interface ComponentLoader {
 
     /**
-     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake inspector.
-     * @param implementation Clazz for which properties should be detected
-     * @param component kind of a PerfCake component
-     * @return Map of property name and its default value.
+     * Loads a componetn class by its name. If name is not FQDN, then default packages for given component type are used
+     * as defined in {@link org.perfcake.scenario.ScenarioFactory}.
+     * @param name Name of the component.
+     * @param component type of the perfcake component.
+     * @return Class of the component implementation.
+     * @throws ImplementationNotFoundException if implementation cannot be found.
      */
-    List<ImplementationField> getProperties(Class<?> implementation, PerfCakeComponent component);
-
+    Class<?> loadComponent(String name, PerfCakeComponent component) throws ImplementationNotFoundException;
 }

@@ -191,9 +191,9 @@ public class PropertyInfo {
         DocsService docsService = model.getDocsService();
         String docs;
         if (type == PropertyType.MODEL) {
-            docs = docsService.getDocs(model.getApi());
+            docs = docsService.getDocs(model.getComponent().getApi());
         } else {
-            docs = model.getDocsService().getFieldDocs(model.getApi(), name);
+            docs = model.getDocsService().getFieldDocs(model.getComponent().getApi(), name);
         }
         return docs;
     }

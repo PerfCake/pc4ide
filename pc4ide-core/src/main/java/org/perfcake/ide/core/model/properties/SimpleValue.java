@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.model.properties;
 
+import java.util.Objects;
 import org.perfcake.ide.core.model.AbstractProperty;
 import org.perfcake.ide.core.model.PropertyType;
 
@@ -53,5 +54,29 @@ public class SimpleValue extends AbstractProperty implements Value {
         this.value = value;
 
         fireChangeEvent(oldValue, value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SimpleValue that = (SimpleValue) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleValue{"
+                + "value='" + value + '\''
+                + "} " + super.toString();
     }
 }
