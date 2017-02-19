@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.newmodel;
 
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
@@ -52,4 +53,16 @@ public interface PropertyContainer extends Iterable<Property> {
      */
     boolean removeProperty(Property property)
             throws PropertyLimitException;
+
+    /**
+     * Removes a listener for adding/removing property.
+     * @param listener listener to be added
+     */
+    void addListener(PropertyChangeListener listener);
+
+    /**
+     * Removes a listener.
+     * @param listener listener to be removed.
+     */
+    void removeListener(PropertyChangeListener listener);
 }

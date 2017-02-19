@@ -51,6 +51,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
     public static final String IMPLEMENTATION_CLASS_PROPERTY = "class";
+    public static final String SUPPORTED_PROPERTIES_PROPERTY = "supported-properties";
 
     /**
      * Map of the component properties.
@@ -143,7 +144,6 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
         property.addPropertyListener(this);
         container.addProperty(property);
-        pcs.firePropertyChange("property", null, property);
     }
 
     @Override
@@ -165,7 +165,6 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         boolean removed = container.removeProperty(property);
         if (removed) {
             property.removePropertyListener(this);
-            pcs.firePropertyChange("property", property, null);
         }
         return removed;
     }
@@ -208,6 +207,8 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
         // remove old properties
         for (PropertyInfo property : implementationProperties) {
+            PropertyContainer container = properties.get(property);
+            container.removeListener(this);
             properties.remove(property);
         }
         implementationProperties.clear();
@@ -223,7 +224,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
             PropertyInfo implementationPropertyInfo =
                     new PropertyInfo(f.getName(), this, Value.class, value, minOccurs, 1);
 
-            properties.put(implementationPropertyInfo, new PropertyContainerImpl(this, implementationPropertyInfo));
+            PropertyContainer propertyContainer = new PropertyContainerImpl(this, implementationPropertyInfo);
+            propertyContainer.addListener(this);
+            properties.put(implementationPropertyInfo, propertyContainer);
             implementationProperties.add(implementationPropertyInfo);
         }
     }
@@ -244,7 +247,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
             throw new IllegalArgumentException("Property type must not be null.");
         }
 
-        properties.put(propertyInfo, new PropertyContainerImpl(this, propertyInfo));
+        PropertyContainer container = new PropertyContainerImpl(this, propertyInfo);
+        container.addListener(this);
+        properties.put(propertyInfo, container);
+        pcs.firePropertyChange(SUPPORTED_PROPERTIES_PROPERTY, null, propertyInfo);
+
     }
 
     /**

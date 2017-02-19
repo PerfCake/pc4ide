@@ -21,6 +21,8 @@
 package org.perfcake.ide.core.newmodel;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +53,8 @@ public class PropertyContainerImpl implements PropertyContainer {
      * Properties in the container.
      */
     private List<Property> properties;
+
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     @Override
     public Iterator<Property> iterator() {
@@ -117,8 +121,7 @@ public class PropertyContainerImpl implements PropertyContainer {
         property.setModel(model);
         property.setPropertyInfo(propertyInfo);
         properties.add(property);
-        model.getPropertyChangeSupport()
-                .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
+        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
 
     }
 
@@ -142,11 +145,20 @@ public class PropertyContainerImpl implements PropertyContainer {
             property.setModel(null);
             property.setPropertyInfo(null);
 
-            model.getPropertyChangeSupport()
-                    .firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
+            pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
 
         }
         return removed;
+    }
+
+    @Override
+    public void addListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
     }
 
 }
