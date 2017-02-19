@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.perfcake.ide.core.exception.ModelException;
@@ -149,6 +150,21 @@ public class PropertyContainerImpl implements PropertyContainer {
 
         }
         return removed;
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        return Collections.unmodifiableList(properties);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return properties.isEmpty();
+    }
+
+    @Override
+    public int size() {
+        return properties.size();
     }
 
     @Override

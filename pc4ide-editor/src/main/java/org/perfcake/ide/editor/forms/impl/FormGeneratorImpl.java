@@ -22,15 +22,14 @@ package org.perfcake.ide.editor.forms.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
-
-import org.perfcake.ide.core.components.Component;
-import org.perfcake.ide.core.components.ComponentKind;
-import org.perfcake.ide.core.components.ComponentManager;
-import org.perfcake.ide.core.components.PropertyField;
-import org.perfcake.ide.core.model.director.FieldType;
-import org.perfcake.ide.core.model.director.ModelDirector;
-import org.perfcake.ide.core.model.director.ModelField;
+import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.components.PerfCakeComponents;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.PropertyInfo;
+import org.perfcake.ide.core.model.PropertyType;
 import org.perfcake.ide.editor.forms.FormBuilder;
 import org.perfcake.ide.editor.forms.FormElement;
 import org.perfcake.ide.editor.forms.FormGenerator;
@@ -41,22 +40,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ReflectionFormGenerator reflectively inspects the model of the form and creates
+ * FormGeneratorImpl reflectively inspects the model of the form and creates
  * graphical control elements based on its inspection.
  *
  * @author jknetl
  */
-public class ReflectionFormGenerator implements FormGenerator {
+public class FormGeneratorImpl implements FormGenerator {
 
     private static final int MAIN_COLUMN = 1;
     private static final int DEFAULT_MAX_COMPONENTS = 3;
     private static final int COLUMNS = 2;
 
-    static final Logger logger = LoggerFactory.getLogger(ReflectionFormGenerator.class);
+    static final Logger logger = LoggerFactory.getLogger(FormGeneratorImpl.class);
 
-    private ModelDirector model;
+    private Model model;
     private FormPageDirector director;
-    private ComponentManager componentManager;
+    private ComponentCatalogue componentCatalogue;
     private JPanel form;
 
     private FormBuilder formBuilder;
@@ -64,16 +63,16 @@ public class ReflectionFormGenerator implements FormGenerator {
     /**
      * Creates new reflective form generator.
      *
-     * @param model model for which form will be generated
-     * @param director director of the form page
-     * @param componentManager PerfCake component manager
-     * @param form Swing container of a node.
+     * @param model              model for which form will be generated
+     * @param director           model of the form page
+     * @param componentCatalogue PerfCake components catalogue
+     * @param form               Swing container of a node.
      */
-    public ReflectionFormGenerator(ModelDirector model, FormPageDirector director, ComponentManager componentManager, JPanel form) {
+    public FormGeneratorImpl(Model model, FormPageDirector director, ComponentCatalogue componentCatalogue, JPanel form) {
         super();
         this.model = model;
         this.director = director;
-        this.componentManager = componentManager;
+        this.componentCatalogue = componentCatalogue;
         this.form = form;
         formBuilder = new FormBuilderImpl(form, DEFAULT_MAX_COMPONENTS, COLUMNS, MAIN_COLUMN);
     }
@@ -95,40 +94,39 @@ public class ReflectionFormGenerator implements FormGenerator {
 
         final Class<?> modelClazz = model.getClass();
 
-        for (ModelField f : model.getModelFields()) {
+        Set<PropertyInfo> supportedProperties = model.getSupportedProperties();
 
-            if (f.getFieldType() == FieldType.SIMPLE) {
-                FormElement element;
-                if ("clazz".equals(f.getName())) {
-                    element = new ChoiceElement(model, f, getImplementationNames(model.getModel().getClass()));
-                } else {
-                    element = new TextElement(model, f);
+        for (PropertyInfo propertyInfo : supportedProperties) {
+
+
+            if (propertyInfo.getType() == PropertyType.VALUE) {
+                for (Property p : model.getProperties(propertyInfo)) {
+                    FormElement element;
+                    if ("clazz".equals(propertyInfo.getName())) {
+                        element = new ChoiceElement(model, p, getImplementationNames(model.getApi()));
+                    } else {
+                        element = new TextElement(model, p);
+                    }
+                    elements.add(element);
                 }
-
-                elements.add(element);
             }
-        }
 
-        for (PropertyField f : model.getCustomPropertyFields()) {
-            FormElement element = new TextElement(model, f);
-            elements.add(element);
+            //TODO: display other types
         }
-
 
         return elements;
     }
 
     private List<String> getImplementationNames(Class<?> modelClazz) {
-        final List<String> list = new ArrayList<>();
 
-        final ComponentKind kind = ComponentKind.getComponentKindByModelClazz(modelClazz);
+        PerfCakeComponents component = null;
+        for (PerfCakeComponents c : PerfCakeComponents.values()) {
+            if (c.getApi().equals(modelClazz)) {
+                component = c;
+            }
 
-        final List<Component> implementations = componentManager.getComponentImplementations(kind);
-
-        for (final Component c : implementations) {
-            list.add(c.getImplementation().getSimpleName());
         }
+        return componentCatalogue.list(component);
 
-        return list;
     }
 }

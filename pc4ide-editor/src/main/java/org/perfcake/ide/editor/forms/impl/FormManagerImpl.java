@@ -29,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
 
@@ -46,14 +46,14 @@ public class FormManagerImpl implements FormManager {
     private JPanel headerPanel;
     private JPanel contentPanel;
     private JPanel controlPanel;
-    private ComponentManager componentManager;
+    private ComponentCatalogue componentManager;
 
     /**
      * Creates new form manager.
      *
-     * @param componentManager component manager
+     * @param componentManager inspector manager
      */
-    public FormManagerImpl(ComponentManager componentManager) {
+    public FormManagerImpl(ComponentCatalogue componentManager) {
         super();
         pages = new ArrayList<FormPage>();
 
@@ -88,7 +88,7 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
-    public ComponentManager getComponentManager() {
+    public ComponentCatalogue getComponentManager() {
         return componentManager;
     }
 

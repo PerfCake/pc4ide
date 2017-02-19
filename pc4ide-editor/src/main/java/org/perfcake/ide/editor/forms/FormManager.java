@@ -22,7 +22,7 @@ package org.perfcake.ide.editor.forms;
 
 import java.util.List;
 import javax.swing.JPanel;
-import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.components.ComponentCatalogue;
 
 /**
  * FormManger serves as container for the actual forms. Actual forms with text fields and buttons
@@ -44,11 +44,11 @@ public interface FormManager {
     boolean isValid();
 
     /**
-     * Returns component manager.
+     * Returns inspector manager.
      *
      * @return Component manager used in program.
      */
-    ComponentManager getComponentManager();
+    ComponentCatalogue getComponentManager();
 
     /**
      * ContainerPanel contains all form including its control and its content.

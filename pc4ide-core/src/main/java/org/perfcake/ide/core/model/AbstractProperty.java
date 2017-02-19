@@ -29,7 +29,7 @@ import org.perfcake.ide.core.exception.ModelException;
  *
  * @author Jakub Knetl
  */
-public class AbstractProperty implements Property {
+public abstract class AbstractProperty implements Property {
 
     /**
      * Type of this property.

@@ -25,19 +25,17 @@ package org.perfcake.ide.editor.forms.impl.elements;
 
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-
-import org.perfcake.ide.core.Field;
-import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.editor.forms.FormElement;
 
 /**
  * Abstract class for the element which consists of three components.:
  * <ol>
  * <li>label with name</li>
- * <li>specific component defined by subclass</li>
+ * <li>specific inspector defined by subclass</li>
  * <li>hint or help for the user </li>
  * </ol>
  * <p>Subclasses are required to override {@link #createMainComponent()} and call this method  at the end of initialization</p>
@@ -48,39 +46,40 @@ public abstract class FieldElement implements FormElement {
 
     private static final int DEFAULT_DOCS_MIN_WIDTH = 200;
 
-    protected ModelDirector director;
-    protected Field field;
+    protected Model model;
+    protected Property property;
 
     protected JLabel label;
     protected JComponent component;
     protected JLabel docsLabel;
 
     /**
-     * Creates a new form field element.
+     * Creates a new form property element.
      *
-     * @param director model director of managed model
-     * @param field    field managed by this element
+     * @param model model model of managed model
+     * @param property    property managed by this element
      */
-    public FieldElement(ModelDirector director, Field field) {
+    public FieldElement(Model model, Property property) {
 
-        this.director = director;
-        this.field = field;
+        this.model = model;
+        this.property = property;
 
-        label = new JLabel(field.getName());
+        label = new JLabel(property.getPropertyInfo().getDisplayName());
 
         //TODO(jknetl) change for icon
         String label;
-        if (field.getDocs() != null && !field.getDocs().isEmpty()) {
-            label = field.getDocs();
+        String docs = property.getPropertyInfo().getDocs();
+        if (docs != null && !docs.isEmpty()) {
+            label = docs;
         } else {
             label = "Documentation is not available.";
         }
         docsLabel = new JLabel("<html>" + label + "</html>");
-        docsLabel.setToolTipText(field.getDocs());
+        docsLabel.setToolTipText(docs);
     }
 
     /**
-     * Creates main component of the element ans stores it into {@link #component} field. This method is
+     * Creates main inspector of the element ans stores it into {@link #component} property. This method is
      * not called automatically so the subclass must call this method on its own.
      */
     abstract void createMainComponent();

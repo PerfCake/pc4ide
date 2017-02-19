@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.perfcake.ide.core.model.AbstractModel;
+import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
@@ -45,7 +45,7 @@ import org.perfcake.ide.editor.view.UnsupportedChildViewException;
  */
 public abstract class AbstractController implements Controller {
 
-    private AbstractModel model;
+    private Model model;
     private List<Controller> children = new ArrayList<>();
     private Controller parent = null;
 
@@ -53,7 +53,7 @@ public abstract class AbstractController implements Controller {
      * Creates abstract controller which will manage a model.
      * @param model model to be managed
      */
-    public AbstractController(AbstractModel model) {
+    public AbstractController(Model model) {
         super();
         this.model = model;
     }
@@ -136,7 +136,7 @@ public abstract class AbstractController implements Controller {
     }
 
     @Override
-    public AbstractModel getModel() {
+    public Model getModel() {
         return model;
     }
 }

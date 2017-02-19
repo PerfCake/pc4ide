@@ -22,7 +22,7 @@ package org.perfcake.ide.editor.forms.impl;
 
 import javax.swing.JPanel;
 
-import org.perfcake.ide.core.model.director.ModelDirector;
+import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.forms.FormGenerator;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
@@ -35,19 +35,19 @@ import org.perfcake.ide.editor.forms.FormPageDirector;
  */
 public class SimpleFormPage implements FormPage {
 
-    private ModelDirector model;
+    private Model model;
     private FormPageDirector pageDirector;
     private JPanel form;
     private FormGenerator formGenerator;
     private FormManager formManager;
 
     /**
-     * Creates new simple form page.
+     * Creates new properties form page.
      *
      * @param formManager form manager which manages the page
-     * @param model model director of model edited by this form page
+     * @param model model model of model edited by this form page
      */
-    public SimpleFormPage(FormManager formManager, ModelDirector model) {
+    public SimpleFormPage(FormManager formManager, Model model) {
         super();
         if (formManager == null) {
             throw new IllegalArgumentException("formManager cannot be null");
@@ -59,7 +59,7 @@ public class SimpleFormPage implements FormPage {
         this.model = model;
 
         form = new JPanel();
-        formGenerator = new ReflectionFormGenerator(model, pageDirector, formManager.getComponentManager(), form);
+        formGenerator = new FormGeneratorImpl(model, pageDirector, formManager.getComponentManager(), form);
         formGenerator.createForm();
     }
 

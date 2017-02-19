@@ -183,6 +183,37 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
+    public List<Property> getProperties(PropertyInfo propertyInfo) {
+        if (propertyInfo == null || !getSupportedProperties().contains(propertyInfo)) {
+            return null;
+        }
+
+        return getPropertyContainer(propertyInfo).getProperties();
+    }
+
+    @Override
+    public boolean isEmpty(PropertyInfo propertyInfo) throws UnsupportedPropertyException {
+        PropertyContainer container = getPropertyContainer(propertyInfo);
+        if (propertyInfo == null || container == null) {
+            throw new UnsupportedPropertyException(String.format("Property info %s is not supported by this model (%s).",
+                    propertyInfo, this.getClass().getCanonicalName()));
+        }
+
+        return container.isEmpty();
+    }
+
+    @Override
+    public int size(PropertyInfo propertyInfo) throws UnsupportedPropertyException {
+        PropertyContainer container = getPropertyContainer(propertyInfo);
+        if (propertyInfo == null || container == null) {
+            throw new UnsupportedPropertyException(String.format("Property info %s is not supported by this model (%s).",
+                    propertyInfo, this.getClass().getCanonicalName()));
+        }
+
+        return container.size();
+    }
+
+    @Override
     public DocsService getDocsService() {
         return this.docsService;
     }

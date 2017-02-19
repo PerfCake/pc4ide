@@ -22,6 +22,7 @@ package org.perfcake.ide.core.model;
 
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.perfcake.ide.core.docs.DocsService;
@@ -77,6 +78,32 @@ public interface Model extends Property {
      */
     Iterator<Property> propertyIterator(PropertyInfo propertyInfo);
 
+    /**
+     * Returns an unmodifiable list of properties of given type in this model.
+     * @param propertyInfo type of the properties
+     * @return <em>unmodifiable list</em> of properties of given type in this model. If given propertyInfo is not supported,
+     *      then null is returned.
+     */
+    List<Property> getProperties(PropertyInfo propertyInfo);
+
+
+    /**
+     * Determines whether the properties for given property info is empty.
+     *
+     * @param propertyInfo type of supported property
+     * @return True if there is no property for given supported property type
+     * @throws UnsupportedPropertyException if the property is not supported
+     */
+    boolean isEmpty(PropertyInfo propertyInfo) throws UnsupportedPropertyException;
+
+    /**
+     * Determines number of properties of given type in the model.
+     *
+     * @param propertyInfo type of supported property
+     * @return number of properties of given type in the model
+     * @throws UnsupportedPropertyException if the property is not supported
+     */
+    int size(PropertyInfo propertyInfo) throws UnsupportedPropertyException;
 
     /**
      * Obtains a documentation service.
