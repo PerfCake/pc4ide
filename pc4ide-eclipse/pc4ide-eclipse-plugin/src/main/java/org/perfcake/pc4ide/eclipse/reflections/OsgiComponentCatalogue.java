@@ -20,18 +20,19 @@
 
 package org.perfcake.pc4ide.eclipse.reflections;
 
-import java.io.InputStream;
 import java.util.List;
-
 import org.osgi.framework.Bundle;
-import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.reflections.Reflections;
 import org.reflections.vfs.Vfs;
 
-public class OsgiComponentManager extends ComponentManager {
+/**
+ * OsgiComponentCatalog enables reflections to search classes through the bundles by resolving their url type.
+ */
+public class OsgiComponentCatalogue extends ReflectionComponentCatalogue {
 
-    public OsgiComponentManager(InputStream javadocStream, List<String> packagesToScan) {
-        super(javadocStream, packagesToScan);
+    public OsgiComponentCatalogue(List<String> packagesToScan) {
+        super(packagesToScan);
     }
 
     @Override

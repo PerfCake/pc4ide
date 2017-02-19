@@ -30,7 +30,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 import org.perfcake.pc4ide.eclipse.Activator;
 import org.perfcake.pc4ide.eclipse.EclipseLogger;

@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top inspector which displays something.
  */
 @ConvertAsProperties(
         dtd = "-//org.perfcake.pc4ide.netbeans//PerfCakeEditor//EN",
@@ -64,7 +64,7 @@ import org.openide.windows.TopComponent;
 public final class PerfCakeEditorTopComponent extends TopComponent {
 
     /**
-     * Creates new PerfCake Editor's top component.
+     * Creates new PerfCake Editor's top inspector.
      */
     public PerfCakeEditorTopComponent() {
         initComponents();
@@ -111,12 +111,12 @@ public final class PerfCakeEditorTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        // TODO add custom code on inspector opening
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        // TODO add custom code on inspector closing
     }
 
     void writeProperties(java.util.Properties p) {
