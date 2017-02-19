@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.newmodel.modeltypes;
 
-import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
@@ -29,6 +28,7 @@ import org.perfcake.message.sender.MessageSender;
 
 /**
  * Model of a Sender PerfCake component.
+ *
  * @author Jakub Knetl
  */
 public class SenderModel extends AbstractModel {
@@ -51,18 +51,17 @@ public class SenderModel extends AbstractModel {
     /**
      * Creates new model of PerfCake Sender component.
      *
-     * @param componentManager PerfCake component manager
      * @param docsService Documentation service
      */
-    public SenderModel(ComponentManager componentManager, DocsService docsService) {
-        super(componentManager, MessageSender.class, docsService);
+    public SenderModel(DocsService docsService) {
+        super(MessageSender.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.TARGET.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1 ,1)
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1)
         );
     }
 

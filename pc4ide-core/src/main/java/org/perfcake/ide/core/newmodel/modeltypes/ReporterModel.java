@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.newmodel.modeltypes;
 
-import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
@@ -52,11 +51,10 @@ public class ReporterModel extends AbstractModel {
     /**
      * Creates new model of PerfCake Reporter component.
      *
-     * @param componentManager PerfCake component manager
      * @param docsService Documentation service
      */
-    public ReporterModel(ComponentManager componentManager, DocsService docsService) {
-        super(componentManager, Reporter.class, docsService);
+    public ReporterModel(DocsService docsService) {
+        super(Reporter.class, docsService);
     }
 
     @Override

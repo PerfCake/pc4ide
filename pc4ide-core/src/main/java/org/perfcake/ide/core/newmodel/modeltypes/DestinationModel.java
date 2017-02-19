@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.newmodel.modeltypes;
 
-import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
@@ -53,18 +52,17 @@ public class DestinationModel extends AbstractModel {
     /**
      * Creates new model of PerfCake Destination component.
      *
-     * @param componentManager PerfCake component manager
      * @param docsService Documentation service
      */
-    public DestinationModel(ComponentManager componentManager, DocsService docsService) {
-        super(componentManager, Destination.class, docsService);
+    public DestinationModel(DocsService docsService) {
+        super(Destination.class, docsService);
     }
 
     @Override
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1 , 1),
+                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.ENABLED.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("true"), 0, 1),
                 new PropertyInfo(PropertyNames.PERIOD.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
         );

@@ -59,11 +59,6 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     private Class<?> api;
 
     /**
-     * Component manager which is used for querying information about component.
-     */
-    private ComponentManager componentManager;
-
-    /**
      * Documentation service for obtaining properties documentation.
      */
     private DocsService docsService;
@@ -83,15 +78,11 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     /**
      * Creates new model of PerfCake component.
      *
-     * @param componentManager PerfCake component manager
      * @param api              Interface or abstract class of PerfCake component
      * @param docsService      Documentation service
      */
-    public AbstractModel(ComponentManager componentManager, Class<?> api, DocsService docsService) {
+    public AbstractModel(Class<?> api, DocsService docsService) {
         super(PropertyType.MODEL);
-        if (componentManager == null) {
-            throw new IllegalArgumentException("componentManager must not be null");
-        }
         if (api == null) {
             throw new IllegalArgumentException("API must not be null");
         }
@@ -100,7 +91,6 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
         }
 
         this.implementationProperties = new ArrayList<>();
-        this.componentManager = componentManager;
         this.api = api;
         this.properties = new HashMap<>();
         this.pcs = new PropertyChangeSupport(this);

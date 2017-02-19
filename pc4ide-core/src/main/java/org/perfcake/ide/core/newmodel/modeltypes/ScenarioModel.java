@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.newmodel.modeltypes;
 
-import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.newmodel.AbstractModel;
 import org.perfcake.ide.core.newmodel.PropertyInfo;
@@ -56,11 +55,10 @@ public class ScenarioModel extends AbstractModel {
     /**
      * Creates new model of PerfCake component.
      *
-     * @param componentManager PerfCake component manager
      * @param docsService Documentation service
      */
-    public ScenarioModel(ComponentManager componentManager, DocsService docsService) {
-        super(componentManager, Scenario.class, docsService);
+    public ScenarioModel(DocsService docsService) {
+        super(Scenario.class, docsService);
     }
 
     @Override

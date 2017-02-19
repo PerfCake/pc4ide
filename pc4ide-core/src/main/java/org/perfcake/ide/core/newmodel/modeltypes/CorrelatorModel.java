@@ -51,11 +51,10 @@ public class CorrelatorModel extends AbstractModel {
     /**
      * Creates new model of PerfCake Correlator component.
      *
-     * @param componentManager PerfCake component manager
      * @param docsService Documentation service
      */
-    public CorrelatorModel(ComponentManager componentManager, DocsService docsService) {
-        super(componentManager, Correlator.class, docsService);
+    public CorrelatorModel(DocsService docsService) {
+        super(Correlator.class, docsService);
     }
 
     @Override

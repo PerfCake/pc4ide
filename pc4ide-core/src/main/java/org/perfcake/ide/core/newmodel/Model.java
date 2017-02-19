@@ -25,6 +25,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
