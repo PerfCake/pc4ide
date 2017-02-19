@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.newmodel;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.perfcake.ide.core.components.ComponentManager;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
@@ -37,6 +37,8 @@ import org.perfcake.ide.core.newmodel.component.PropertyInspector;
 import org.perfcake.ide.core.newmodel.component.PropertyUtilsInspector;
 import org.perfcake.ide.core.newmodel.simple.SimpleValue;
 import org.perfcake.ide.core.newmodel.simple.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,7 +46,9 @@ import org.perfcake.ide.core.newmodel.simple.Value;
  *
  * @author Jakub Knetl
  */
-public abstract class AbstractModel extends AbstractProperty implements Model {
+public abstract class AbstractModel extends AbstractProperty implements Model, PropertyChangeListener {
+
+    static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
     public static final String IMPLEMENTATION_CLASS_PROPERTY = "class";
 
@@ -78,8 +82,8 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     /**
      * Creates new model of PerfCake component.
      *
-     * @param api              Interface or abstract class of PerfCake component
-     * @param docsService      Documentation service
+     * @param api         Interface or abstract class of PerfCake component
+     * @param docsService Documentation service
      */
     public AbstractModel(Class<?> api, DocsService docsService) {
         super(PropertyType.MODEL);
@@ -137,8 +141,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
             throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
         }
 
+        property.addPropertyListener(this);
         container.addProperty(property);
-        fireChangeEvent(null, property);
+        pcs.firePropertyChange("property", null, property);
     }
 
     @Override
@@ -159,7 +164,8 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
 
         boolean removed = container.removeProperty(property);
         if (removed) {
-            fireChangeEvent(property, null);
+            property.removePropertyListener(this);
+            pcs.firePropertyChange("property", property, null);
         }
         return removed;
     }
@@ -183,17 +189,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
     }
 
     @Override
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return pcs;
-    }
-
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addModelListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    public void removeModelListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 
@@ -295,5 +296,26 @@ public abstract class AbstractModel extends AbstractProperty implements Model {
         }
 
         return properties.get(propertyInfo);
+    }
+
+    /*
+     * implementation of PropertyChangeListener in order to be able to get notification from properties
+     * about their changes.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // update implementation class if the implementation of this model has been changed
+        if (IMPLEMENTATION_CLASS_PROPERTY.equals(evt.getPropertyName())) {
+            try {
+                updateImplementation(String.valueOf(evt.getNewValue()));
+            } catch (ClassNotFoundException e) {
+                logger.warn(String.format("Cannot update implementation properties of a component %s", evt.getNewValue()), e);
+            }
+        }
+
+        // forward events to model listeners
+        pcs.firePropertyChange(evt);
+
+
     }
 }

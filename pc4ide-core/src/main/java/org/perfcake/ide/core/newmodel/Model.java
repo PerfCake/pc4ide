@@ -87,25 +87,18 @@ public interface Model extends Property {
     DocsService getDocsService();
 
     /**
-     * Gets the property change support class.
-     *
-     * @return listeners
-     */
-    PropertyChangeSupport getPropertyChangeSupport();
-
-    /**
-     * Adds a listener.
+     * Adds a listener to the model.
      *
      * @param listener listener to be added.
      */
-    void addPropertyChangeListener(PropertyChangeListener listener);
+    void addModelListener(PropertyChangeListener listener);
 
     /**
-     * Remove a listener.
+     * Remove a listener to the model.
      *
      * @param listener listener to be removed
      */
-    void removePropertyChangeListener(PropertyChangeListener listener);
+    void removeModelListener(PropertyChangeListener listener);
 
     /**
      * @return return an API type of the component which is represented by this model.

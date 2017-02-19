@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.core.newmodel;
 
+import java.beans.PropertyChangeListener;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 
 /**
@@ -55,5 +56,21 @@ public interface Property {
      */
     Model getModel();
 
+    /**
+     * Sets a model which owns this property.
+     * @param model model which owns this property.
+     */
     void setModel(Model model);
+
+    /**
+     * Adds a listener for this property.
+     * @param listener listener of the property.
+     */
+    void addPropertyListener(PropertyChangeListener listener);
+
+    /**
+     * Removes a listener for this property.
+     * @param listener listener to be removed
+     */
+    void removePropertyListener(PropertyChangeListener listener);
 }

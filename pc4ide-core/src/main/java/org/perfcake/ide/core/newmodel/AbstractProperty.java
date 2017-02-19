@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.core.newmodel;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import org.perfcake.ide.core.exception.ModelException;
 
 /**
@@ -47,6 +49,11 @@ public class AbstractProperty implements Property {
     private Model model;
 
     /**
+     * Manages listeners and enables to fire events.
+     */
+    private PropertyChangeSupport pcs;
+
+    /**
      * Creates new property.
      *
      * @param type type of the property
@@ -55,45 +62,9 @@ public class AbstractProperty implements Property {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
-
+        pcs = new PropertyChangeSupport(this);
         this.type = type;
     }
-
-    ///**
-    // * Sets a new value of the property. If this property is part of some {@link PropertyContainer} and therefore,
-    // * it has non null propertyInfo, then the value of the property must be compoatible with propertyInfo.
-    // *
-    // * @param <T>   type of the property
-    // * @param value new value to be set
-    // * @throws ClassNotFoundException if implementation class is changed by property and it cannot be found.
-    // */
-    //public <T extends PropertyValue> void setValue(T value) throws ClassNotFoundException {
-    //
-    //    if (value == null) {
-    //        throw new IllegalArgumentException("value must not be null");
-    //    }
-    //
-    //    if (propertyInfo != null && !propertyInfo.getType().getClazz().isAssignableFrom(value.getClass())) {
-    //        throw new ModelException(String.format("Type of property value (%s) does not conform property type (%s)",
-    //                value.getClass().getCanonicalName(), propertyInfo.getType().getClazz().getCanonicalName()));
-    //    }
-    //    Object oldValue = this.value;
-    //    this.value = value;
-    //
-    //    if (model != null && propertyInfo != null) {
-    //        // if implementation changes it is required to update model to reflect supported properties by new implementation
-    //        if (propertyInfo != null && AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName()) && model != null) {
-    //            model.updateImplementation(String.valueOf(value));
-    //        }
-    //
-    //        PropertyChangeEvent event = new PropertyChangeEvent(this, propertyInfo.getName(), oldValue, value);
-    //        if (value instanceof Model) {
-    //            ((Model) value).getPropertyChangeSupport().firePropertyChange(event);
-    //        } else if (model != null) {
-    //            model.getPropertyChangeSupport().firePropertyChange(event);
-    //        }
-    //    }
-    //}
 
     @Override
     public PropertyInfo getPropertyInfo() {
@@ -128,6 +99,16 @@ public class AbstractProperty implements Property {
         this.model = model;
     }
 
+    @Override
+    public void addPropertyListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
     /**
      * Notifies listeners about property change.
      *
@@ -156,7 +137,7 @@ public class AbstractProperty implements Property {
                 eventName = String.format("%s-%s", propertyInfo.getName());
             }
 
-            model.getPropertyChangeSupport().firePropertyChange(eventName, oldValue, newValue);
+            pcs.firePropertyChange(eventName, oldValue, newValue);
         }
 
     }
