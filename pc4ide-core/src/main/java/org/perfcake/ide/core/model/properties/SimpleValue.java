@@ -18,28 +18,40 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.ide.core.model.properties;
 
-import java.util.Arrays;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.model.AbstractProperty;
+import org.perfcake.ide.core.model.PropertyType;
 
 /**
- * Created by jknetl on 9/30/16.
+ * Represents properties value in model.
+ *
+ * @author Jakub Knetl
  */
-public class TestUtils {
+public class SimpleValue extends AbstractProperty implements Value {
 
-    private TestUtils() {
-    }
+    private String value;
 
     /**
-     * Creates new inspector manager.
+     * Creates new properties value.
      *
-     * @return PerfCake inspector manager
+     * @param value value of the property
      */
-    public static ComponentCatalogue createCatalogue() {
-        ComponentCatalogue componentManager = null;
-        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
-        return componentManager;
+    public SimpleValue(String value) {
+        super(PropertyType.VALUE);
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(String value) {
+        String oldValue = this.value;
+        this.value = value;
+
+        fireChangeEvent(oldValue, value);
     }
 }

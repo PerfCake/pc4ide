@@ -18,28 +18,26 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.ide.core.components;
 
-import java.util.Arrays;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import java.util.List;
 
 /**
- * Created by jknetl on 9/30/16.
+ * ComponentCatalogue enables to obtain a list of PerfCake component implementations.
+ *
+ * @author Jakub Knetl
  */
-public class TestUtils {
-
-    private TestUtils() {
-    }
+public interface ComponentCatalogue {
+    /**
+     * Updates a catalogue in order to find new implementations.
+     */
+    void update();
 
     /**
-     * Creates new inspector manager.
+     * Lists a PerfCake component implementations for a given inspector type.
      *
-     * @return PerfCake inspector manager
+     * @param component PerfCake comonent type whose implementations should be returned.
+     * @return Unmodifiable List of implementation classes. If no implementation is found, then empty list is returned.
      */
-    public static ComponentCatalogue createCatalogue() {
-        ComponentCatalogue componentManager = null;
-        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
-        return componentManager;
-    }
+    List<String> list(PerfCakeComponents component);
 }

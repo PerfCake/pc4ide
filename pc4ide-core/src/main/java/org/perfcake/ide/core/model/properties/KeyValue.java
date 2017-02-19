@@ -18,28 +18,27 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.ide.core.model.properties;
 
-import java.util.Arrays;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.model.Property;
 
 /**
- * Created by jknetl on 9/30/16.
+ * Represents a store of key value pair. Additionally, key value pair may also
+ * contain any String representation of another attribute, because some PerfCake key-value
+ * tags such as property may have any embedded data.
+ *
+ * @author Jakub Knetl
  */
-public class TestUtils {
+public interface KeyValue extends Property {
+    String getKey();
 
-    private TestUtils() {
-    }
+    void setKey(String key);
 
-    /**
-     * Creates new inspector manager.
-     *
-     * @return PerfCake inspector manager
-     */
-    public static ComponentCatalogue createCatalogue() {
-        ComponentCatalogue componentManager = null;
-        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
-        return componentManager;
-    }
+    String getValue();
+
+    void setValue(String value);
+
+    String getAny();
+
+    void setAny(String any);
 }

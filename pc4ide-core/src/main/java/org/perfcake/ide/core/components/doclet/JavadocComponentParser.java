@@ -24,12 +24,10 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import org.perfcake.ide.core.utils.StringUtils;
 
 /**
@@ -47,6 +45,7 @@ public class JavadocComponentParser {
 
     /**
      * Parses perfcake components javadoc.
+     *
      * @param root Root of the program structure.
      * @return true if parsing ended successfully
      */

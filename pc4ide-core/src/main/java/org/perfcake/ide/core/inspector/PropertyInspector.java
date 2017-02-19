@@ -18,28 +18,23 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.ide.core.inspector;
 
-import java.util.Arrays;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import java.util.List;
 
 /**
- * Created by jknetl on 9/30/16.
+ * Property inspector enables to find properties specific to implementation class of a PerfCake inspector.
+ *
+ * @author Jakub Knetl
  */
-public class TestUtils {
-
-    private TestUtils() {
-    }
+public interface PropertyInspector {
 
     /**
-     * Creates new inspector manager.
-     *
-     * @return PerfCake inspector manager
+     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake inspector.
+     * @param implementation Clazz for which properties should be detected
+     * @param api Abstract API of the inspector
+     * @return Map of property name and its default value.
      */
-    public static ComponentCatalogue createCatalogue() {
-        ComponentCatalogue componentManager = null;
-        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
-        return componentManager;
-    }
+    List<ImplementationField> getProperties(Class<?> implementation, Class<?> api);
+
 }

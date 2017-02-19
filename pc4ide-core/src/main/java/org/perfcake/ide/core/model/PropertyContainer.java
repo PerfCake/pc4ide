@@ -17,64 +17,52 @@
  * limitations under the License.
  *-----------------------------------------------------------------------------
  */
-/*
- * PerfClispe
- *
- *
- * Copyright (c) 2014 Jakub Knetl
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package org.perfcake.ide.core.model;
 
-import java.util.List;
+import java.beans.PropertyChangeListener;
+import java.util.Iterator;
+import org.perfcake.ide.core.exception.PropertyLimitException;
+import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 
 /**
- * Class implementing this interface is able to have PerfCake properties.
+ * Property container maintains collection of properties.
  *
  * @author Jakub Knetl
  */
-public interface PropertyContainer {
+public interface PropertyContainer extends Iterable<Property> {
+
+    @Override
+    Iterator<Property> iterator();
 
     /**
-     * Adds property to component on last position.
+     * Adds  new property into the container.
      *
-     * @param newProperty property to add
+     * @param property property to be added
+     * @throws PropertyLimitException       if you try to add a property which has maximum number of occurrences used already.
+     * @throws UnsupportedPropertyException If the property is not supported by this container.
      */
-    public void addProperty(PropertyModel newProperty);
+    void addProperty(Property property) throws PropertyLimitException, UnsupportedPropertyException;
 
     /**
-     * Adds property to component on given position.
+     * Removes a property from the container.
      *
-     * @param index       position where this property will be placed
-     * @param newProperty property to add
+     * @param property property To be added
+     * @return true if the property was removed.
+     * @throws PropertyLimitException if you try to remove property, which cannot be removed due to required minimum occurrences.
      */
-    public void addProperty(int index, PropertyModel newProperty);
+    boolean removeProperty(Property property)
+            throws PropertyLimitException;
 
     /**
-     * Remove property from component. If such property does not exits
-     * then this mehtod does nothing.
-     *
-     * @param property property to remove.
+     * Removes a listener for adding/removing property.
+     * @param listener listener to be added
      */
-    public void removeProperty(PropertyModel property);
+    void addListener(PropertyChangeListener listener);
 
     /**
-     * Gets a list of properties.
-     *
-     * @return Return list of PerfCake Properties
+     * Removes a listener.
+     * @param listener listener to be removed.
      */
-    public List<PropertyModel> getProperty();
-
+    void removeListener(PropertyChangeListener listener);
 }
