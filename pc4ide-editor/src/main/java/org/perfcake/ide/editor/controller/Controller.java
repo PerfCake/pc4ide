@@ -26,13 +26,13 @@ package org.perfcake.ide.editor.controller;
 import java.awt.event.MouseListener;
 import java.util.Iterator;
 
-import org.perfcake.ide.core.model.AbstractModel;
+import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 
 /**
- * Represents a controller of some PerfCake component.
+ * Represents a controller of some PerfCake inspector.
  * @author jknetl
  */
 public interface Controller extends MouseListener {
@@ -40,10 +40,10 @@ public interface Controller extends MouseListener {
     /**
      * @return Return model object which is managed by this controller.
      */
-    AbstractModel getModel();
+    Model getModel();
 
     /**
-     * @return controller of the parent component. The root controller returns null.
+     * @return controller of the parent inspector. The root controller returns null.
      */
     public Controller getParent();
 

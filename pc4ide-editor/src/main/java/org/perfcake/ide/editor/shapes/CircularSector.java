@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 /**
- * Represents a component view by circular sector.
+ * Represents a inspector view by circular sector.
  */
 public class CircularSector extends JPanel {
 

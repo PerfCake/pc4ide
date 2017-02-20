@@ -52,23 +52,23 @@ public interface LayoutManager {
     void setConstraint(LayoutData constraint);
 
     /**
-     * Adds a graphical component to the layout so that this layout manager can manage the component.
+     * Adds a graphical inspector to the layout so that this layout manager can manage the inspector.
      *
-     * @param component component to be managed by this layout manager
+     * @param component inspector to be managed by this layout manager
      */
     void add(ComponentView component);
 
     /**
-     * Removes a graphical component from the layout so that this layout manager won't manager component
+     * Removes a graphical inspector from the layout so that this layout manager won't manager inspector
      * anymore.
      *
-     * @param component component to be removed from this layout manager
-     * @return true if the component was removed, or false if component couldn't be found.
+     * @param component inspector to be removed from this layout manager
+     * @return true if the inspector was removed, or false if inspector couldn't be found.
      */
     boolean remove(ComponentView component);
 
     /**
-     * @return <b>Unmodifiable List</b> of all managed component views.
+     * @return <b>Unmodifiable List</b> of all managed inspector views.
      */
     List<ComponentView> getChildren();
 

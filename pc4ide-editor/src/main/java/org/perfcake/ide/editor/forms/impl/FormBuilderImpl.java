@@ -51,7 +51,7 @@ public class FormBuilderImpl implements FormBuilder {
     // represents how many components are in the layout
     private int maxComponents;
 
-    // column with a main component will be expanded
+    // column with a main inspector will be expanded
     private int mainComponentIndex;
 
     // weight of the column except the main

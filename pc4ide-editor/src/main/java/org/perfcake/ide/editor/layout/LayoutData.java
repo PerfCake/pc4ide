@@ -26,7 +26,7 @@ package org.perfcake.ide.editor.layout;
 import java.awt.geom.Point2D;
 
 /**
- * This class holds information about the plane (canvas, component, drawing surface) which can be used for editor.
+ * This class holds information about the plane (canvas, inspector, drawing surface) which can be used for editor.
  *
  * @author jknetl
  */

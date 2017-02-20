@@ -62,8 +62,8 @@ public class SectorView extends AbstractView {
     /**
      * creates new sector view.
      * @param parent parent view
-     * @param componentName name of the component in the sector
-     * @param icon icon of the component in the sector
+     * @param componentName name of the inspector in the sector
+     * @param icon icon of the inspector in the sector
      */
     public SectorView(ComponentView parent, String componentName, ResizableIcon icon) {
         super(parent);
@@ -118,7 +118,7 @@ public class SectorView extends AbstractView {
         if (icon != null) {
             Rectangle2D iconBounds = getIconBounds(layoutData);
 
-            // we may pass null as component since our icon implementation completely ignores this argument
+            // we may pass null as inspector since our icon implementation completely ignores this argument
             // icon.paintIcon(null, g2d, (int) iconX, (int) iconY);
             icon.paintIcon(null, g2d, (int) iconBounds.getX(), (int) iconBounds.getY());
         }

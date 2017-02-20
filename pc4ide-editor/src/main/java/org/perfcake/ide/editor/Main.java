@@ -27,10 +27,10 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.JFrame;
-
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.model.ModelLoader;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.loader.ModelLoader;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 
 /**
@@ -43,15 +43,17 @@ public class Main {
 
     /**
      * Main method for launching editor
+     *
      * @param args arguments
-     * @throws PerfCakeException when scenario cannot be loaded.
+     * @throws PerfCakeException     when scenario cannot be loaded.
      * @throws MalformedURLException when URL to scenario file is illegal.
+     * @throws ModelConversionException when model cannot be converted
      */
-    public static void main(String[] args) throws PerfCakeException, MalformedURLException {
+    public static void main(String[] args) throws PerfCakeException, MalformedURLException, ModelConversionException {
         // TODO Auto-generated method stub
 
-        final ModelLoader loader = new ModelLoader();
         final File scenarioFile = new File("src/main/resources/scenario/http.xml");
+        ModelLoader loader = new ModelLoader();
         final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
 
         EventQueue.invokeLater(new Runnable() {

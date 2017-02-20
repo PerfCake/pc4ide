@@ -20,11 +20,9 @@
 
 package org.perfcake.ide.core.utils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
-
-import org.perfcake.ide.core.components.ComponentManager;
+import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 
 /**
  * Created by jknetl on 9/30/16.
@@ -35,17 +33,13 @@ public class TestUtils {
     }
 
     /**
-     * Creates new component manager.
-     * @return PerfCake component manager
+     * Creates new inspector manager.
+     *
+     * @return PerfCake inspector manager
      */
-    public static ComponentManager createComponentManager() {
-        ComponentManager componentManager = null;
-        try {
-            componentManager = new ComponentManager(new FileInputStream("target/classes/perfcake-comment.properties"),
-                    Arrays.asList(new String[] {"org.perfcake"}));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static ComponentCatalogue createCatalogue() {
+        ComponentCatalogue componentManager = null;
+        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
         return componentManager;
     }
 }

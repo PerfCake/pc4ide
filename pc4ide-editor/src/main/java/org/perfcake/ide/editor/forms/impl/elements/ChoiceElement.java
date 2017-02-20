@@ -23,13 +23,12 @@ package org.perfcake.ide.editor.forms.impl.elements;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
 import javax.swing.JComboBox;
-
 import org.perfcake.ide.core.command.Command;
-import org.perfcake.ide.core.command.impl.DirectedSetCommand;
-import org.perfcake.ide.core.model.director.ModelDirector;
-import org.perfcake.ide.core.model.director.ModelField;
+import org.perfcake.ide.core.command.SimplePropertyCommand;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.properties.Value;
 
 /**
  * Represents a choice in a form.
@@ -41,12 +40,12 @@ public class ChoiceElement extends FieldElement {
     /**
      * Creates new choice element.
      *
-     * @param director Director of managed model
-     * @param field field of the model which is represented as a choice
-     * @param values possible values for the field
+     * @param model    Director of managed model
+     * @param property property of the model which is represented as a choice
+     * @param values   possible values for the property
      */
-    public ChoiceElement(ModelDirector director, ModelField field, List<String> values) {
-        super(director, field);
+    public ChoiceElement(Model model, Property property, List<String> values) {
+        super(model, property);
         if (values == null || values.isEmpty()) {
             throw new IllegalArgumentException("values must not be neither null or empty.");
         }
@@ -58,13 +57,13 @@ public class ChoiceElement extends FieldElement {
     @Override
     void createMainComponent() {
         JComboBox<String> comboBox = new JComboBox<>(values.toArray(new String[values.size()]));
-        comboBox.setSelectedItem(director.getFieldValue(field));
+        comboBox.setSelectedItem(property.cast(Value.class).getValue());
         this.component = comboBox;
 
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Command command = new DirectedSetCommand(director, field, String.valueOf(comboBox.getSelectedItem()));
+                Command command = new SimplePropertyCommand(property.cast(Value.class), String.valueOf(comboBox.getSelectedItem()));
                 command.execute();
             }
         });

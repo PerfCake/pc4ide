@@ -25,18 +25,15 @@
 
 package org.perfcake.pc4ide.netbeans;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
@@ -53,13 +50,16 @@ import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.components.ComponentManager;
-import org.perfcake.ide.core.model.ModelLoader;
-import org.perfcake.ide.core.model.ScenarioModel;
+import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.loader.ModelLoader;
 import org.perfcake.ide.editor.swing.EditorJPanel;
 
 /**
  * Netbeans PerfCake editor with multiple views.
+ *
  * @author jknetl
  */
 @MultiViewElement.Registration(
@@ -82,6 +82,7 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
 
     /**
      * Creates new NetBeans multi-view editor.
+     *
      * @param lookup lookup
      */
     public MultiViewScenarioEditor(Lookup lookup) {
@@ -97,12 +98,13 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
             model = loader.loadModel(dataObject.getPrimaryFile().toURL());
         } catch (PerfCakeException e) {
             logger.log(Level.SEVERE, "Cannot open scenario", e);
+        } catch (ModelConversionException e) {
+            logger.log(Level.SEVERE, "Cannot open scenario", e);
         }
 
-        final InputStream javadocStream = EditorJPanel.class.getResourceAsStream(ComponentManager.JAVADOC_LOCATION_CLASSPATH);
         List<String> packages = Arrays
-                .asList(new String[] {"org.perfcake.message","org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"});
-        ComponentManager manager = new ComponentManager(javadocStream, packages);
+                .asList(new String[] {"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"});
+        ComponentCatalogue manager = new ReflectionComponentCatalogue(packages);
         pc4ideEditor = new EditorJPanel(model, manager);
 
         Node palette = new AbstractNode(Children.LEAF);
