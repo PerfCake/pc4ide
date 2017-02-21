@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.ide.core;
 
 import java.util.Arrays;
 import org.perfcake.ide.core.components.ComponentCatalogue;

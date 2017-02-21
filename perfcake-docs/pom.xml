@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>pc4ide-parent</artifactId>
+        <groupId>org.perfcake</groupId>
+        <version>7.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <perfcake.javadoc.folder.name>perfcake-docs</perfcake.javadoc.folder.name>
+        <perfcake.javadoc.folder>${project.build.directory}/site/apidocs/${perfcake.javadoc.folder.name}</perfcake.javadoc.folder>
+    </properties>
+
+    <artifactId>perfcake-docs</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.perfcake</groupId>
+            <artifactId>perfcake</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>perfcake-docs</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-javadoc-properites</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                                <inherited>false</inherited>
+                                <configuration>
+
+                                    <includeDependencySources>true</includeDependencySources>
+
+                                    <dependencySourceIncludes>
+                                        <dependencySourceInclude>org.perfcake:*</dependencySourceInclude>
+                                    </dependencySourceIncludes>
+
+                                    <show>private</show>
+
+                                    <doclet>org.perfcake.docs.doclet.JavadocComponentParser</doclet>
+                                    <docletPath>${project.build.directory}/classes</docletPath>
+
+                                    <useStandardDocletOptions>false</useStandardDocletOptions>
+                                    <destDir>${perfcake.javadoc.folder.name}</destDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- we need to copy resources after the documentation properties is built -->
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-perfcake-docs</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+
+                                    <resources>
+                                        <resource>
+                                            <directory>${perfcake.javadoc.folder}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.1</version>
+                <executions>
+                    <execution>
+                        <id>bundle-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

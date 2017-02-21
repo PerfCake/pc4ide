@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.components.doclet;
+package org.perfcake.docs.doclet;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import org.perfcake.ide.core.utils.StringUtils;
+import org.perfcake.docs.utils.StringUtils;
 
 /**
  * JavadocComponentParser scans sources of standard PerfCake components and parses their documentation from
@@ -39,7 +39,7 @@ public class JavadocComponentParser {
     /**
      * Properties file.
      */
-    public static final String JAVADOC_PROPERTIES_FILE = "perfcake-comment.properties";
+    public static final String JAVADOC_PROPERTIES_FILE = "perfcake-javadoc.properties";
 
     private static final String JAVADOC_PROPERTIES_COMMENT = "Javadoc for the perfcake components fields.";
 

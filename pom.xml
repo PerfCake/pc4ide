@@ -69,6 +69,17 @@
                 </property>
             </activation>
         </profile>
+        <profile>
+            <id>perfcake-docs</id>
+            <modules>
+                <module>perfcake-docs</module>
+            </modules>
+            <activation>
+                <property>
+                    <name>perfcake.docs</name>
+                </property>
+            </activation>
+        </profile>
     </profiles>
 
     <dependencyManagement>

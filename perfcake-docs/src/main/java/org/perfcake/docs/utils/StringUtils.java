@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.utils;
+package org.perfcake.docs.utils;
 
 /**
  * Utility class for manipulating with strings.
