@@ -11,6 +11,7 @@
     <modules>
         <module>pc4ide-core</module>
         <module>pc4ide-editor</module>
+        <module>pc4ide-testing-components</module>
     </modules>
 
     <properties>
