@@ -32,7 +32,7 @@ public interface Property {
     /**
      * Gets propertyInfo of this property.
      *
-     * @return PropertyInfo or null, if the preperty is not part of any model; and thus it has no info associated
+     * @return PropertyInfo or null, if the property is not part of any model; and thus it has no info associated
      */
     PropertyInfo getPropertyInfo();
 

@@ -39,7 +39,7 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.docs.DocServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.convertor.XmlConverter;
+import org.perfcake.ide.core.model.converter.XmlConverter;
 import org.perfcake.model.Scenario;
 import org.perfcake.util.Utils;
 import org.xml.sax.SAXException;

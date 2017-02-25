@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.convertor;
+package org.perfcake.ide.core.model.converter;
 
 import java.util.Iterator;
 import java.util.List;
