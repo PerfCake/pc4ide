@@ -30,12 +30,12 @@ import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 public interface ComponentLoader {
 
     /**
-     * Loads a componetn class by its name. If name is not FQDN, then default packages for given component type are used
+     * Loads a PerfCake component class by its name. If name is not FQDN, then default packages for given component type are used
      * as defined in {@link org.perfcake.scenario.ScenarioFactory}.
+     *
      * @param name Name of the component.
-     * @param component type of the perfcake component.
-     * @return Class of the component implementation.
-     * @throws ImplementationNotFoundException if implementation cannot be found.
+     * @param component type of the PerfCake component.
+     * @return Class of the component implementation or null if no such component can be found.
      */
-    Class<?> loadComponent(String name, PerfCakeComponent component) throws ImplementationNotFoundException;
+    Class<?> loadComponent(String name, PerfCakeComponent component);
 }

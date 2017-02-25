@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.components;
 
-import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class ComponentLoaderImpl implements ComponentLoader {
     static final Logger logger = LoggerFactory.getLogger(ComponentLoaderImpl.class);
 
     @Override
-    public Class<?> loadComponent(String name, PerfCakeComponent componentType) throws ImplementationNotFoundException {
+    public Class<?> loadComponent(String name, PerfCakeComponent componentType) {
         if (name == null) {
             throw new IllegalArgumentException("name cannot be null.");
         }
@@ -52,8 +51,12 @@ public class ComponentLoaderImpl implements ComponentLoader {
         try {
             logger.debug("Trying to load component {}", fqdn);
             component = Class.forName(fqdn);
+            if (!componentType.getApi().isAssignableFrom(component)) {
+                logger.warn(String.format("Implementation %s is not subtype of %s", fqdn, componentType));
+                component = null;
+            }
         } catch (ClassNotFoundException e) {
-            throw new ImplementationNotFoundException(String.format("Cannot find implementation class %s.", fqdn), e);
+            logger.warn(String.format("Cannot find implementation class %s.", fqdn));
         }
 
         return component;
