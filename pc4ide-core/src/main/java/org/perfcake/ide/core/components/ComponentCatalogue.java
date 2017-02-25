@@ -28,10 +28,34 @@ import java.util.List;
  * @author Jakub Knetl
  */
 public interface ComponentCatalogue {
+
     /**
-     * Updates a catalogue in order to find new implementations.
+     * List of the default packages, that are scanned by default for PerfCake components. These packages will be always scanned.
+     */
+    String[] DEFAULT_PACKAGES = new String[] {"org.perfcake"};
+
+    /**
+     * Updates a catalogue in order to find new implementations. This method may take a while to finish.
      */
     void update();
+
+    /**
+     * Adds packages which should be scanned for components.
+     * This method only modifies collection of packages, but it does not trigger actual scanning. In order
+     * to discover new components you need to call {@link #update()} method.
+     *
+     * @param packages additional packages.
+     */
+    void addPackage(String... packages);
+
+    /**
+     * Removes packages which should not be scanned for components anymore.
+     * This method only modifies collection of packages, but it does not trigger actual scanning. In order
+     * to discover new components you need to call {@link #update()} method.
+     *
+     * @param packages packages which should not be scanned anymore.
+     */
+    void removePackage(String... packages);
 
     /**
      * Lists a PerfCake component implementations for a given inspector type.

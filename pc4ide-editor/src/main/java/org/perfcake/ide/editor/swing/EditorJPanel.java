@@ -22,7 +22,6 @@ package org.perfcake.ide.editor.swing;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JSplitPane;
@@ -86,7 +85,6 @@ public class EditorJPanel extends JSplitPane {
     }
 
     private ComponentCatalogue createComponentCatalogue() {
-        final List<String> packagesList = Arrays.asList(ReflectionComponentCatalogue.PACKAGES_WITH_COMPONENTS);
-        return new ReflectionComponentCatalogue(packagesList);
+        return new ReflectionComponentCatalogue();
     }
 }

@@ -22,12 +22,13 @@ package org.perfcake.ide.core.components;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.perfcake.message.generator.MessageGenerator;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,39 +42,45 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
     static final Logger logger = LoggerFactory.getLogger(ReflectionComponentCatalogue.class);
 
-    public static final String[] PACKAGES_WITH_COMPONENTS = new String[] {"org.perfcake"};
-
     /**
-     * Map of componets type and their implementations.
+     * Map of components type and their implementations.
      */
     private Map<PerfCakeComponent, List<String>> components;
 
     /**
-     * List of packages prefixes where to search for the components.
+     * List of additional packages which will be scanned.
      */
-    private List<String> packagesToScan;
+    private Set<String> additionalPackages;
 
     /**
-     * Creates a inspector manager.
+     * Creates a new catalogue. It also triggers scanning for components in given packages. Therefore, creating a new
+     * {@link ReflectionComponentCatalogue} is costly operation and should not be called often.
      *
-     * @param packagesToScan packages to scan for components.
+     * @param additionalPackages additional packages where catalogue will look for components.
      */
-    public ReflectionComponentCatalogue(List<String> packagesToScan) {
-        this.packagesToScan = packagesToScan;
+    public ReflectionComponentCatalogue(String... additionalPackages) {
+        this.additionalPackages = new HashSet<String>(Arrays.asList(additionalPackages));
         components = new HashMap<>();
         update();
     }
 
     @Override
     public void update() {
+        final Reflections reflections = createReflections();
         for (final PerfCakeComponent componentApi : PerfCakeComponent.values()) {
-            final Reflections reflections = createReflections();
-            Set<Class<? extends MessageGenerator>> subTypesOf = reflections.getSubTypesOf(MessageGenerator.class);
-
+            logger.debug("Scanning for perfcake components in packages {}.", String.join(",", additionalPackages));
             List<String> list = new ArrayList<>();
             for (Class<?> subType : reflections.getSubTypesOf(componentApi.getApi())) {
                 if (!subType.isInterface() && !Modifier.isAbstract(subType.getModifiers())) {
-                    list.add(subType.getCanonicalName());
+                    String name;
+                    if (subType.getCanonicalName().startsWith(componentApi.getDefaultPackage())) {
+                        name = subType.getSimpleName();
+                    } else {
+                        name = subType.getCanonicalName();
+                    }
+
+                    logger.trace("Component found. Type: {}, Name: {}", componentApi.name(), name);
+                    list.add(name);
                 }
             }
 
@@ -87,13 +94,36 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
     }
 
+    @Override
+    public void addPackage(String... packages) {
+        if (packages != null) {
+            for (String p : packages) {
+                additionalPackages.add(p);
+            }
+        }
+    }
+
+    @Override
+    public void removePackage(String... packages) {
+        if (packages != null) {
+            for (String p : packages) {
+                additionalPackages.remove(p);
+            }
+        }
+    }
+
     /**
      * Creates and configure instance of {@link Reflections} which will be used for scanning.
      *
      * @return Reflections instance
      */
     protected Reflections createReflections() {
-        return new Reflections(packagesToScan);
+
+        Set<String> allPackages = new HashSet<>(Arrays.asList(DEFAULT_PACKAGES));
+        allPackages.addAll(additionalPackages);
+        Reflections reflections = new Reflections(allPackages);
+
+        return reflections;
     }
 
 }

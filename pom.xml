@@ -117,7 +117,12 @@
                 <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.perfcake</groupId>
+                <artifactId>pc4ide-testing-components</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

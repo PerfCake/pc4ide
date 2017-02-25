@@ -27,6 +27,20 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>
+
+        <!-- TEST dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.perfcake</groupId>
+            <artifactId>pc4ide-testing-components</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
