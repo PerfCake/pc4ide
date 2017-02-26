@@ -39,6 +39,8 @@ import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.inspector.ImplementationField;
 import org.perfcake.ide.core.inspector.PropertyInspector;
 import org.perfcake.ide.core.inspector.PropertyUtilsInspector;
+import org.perfcake.ide.core.model.listeners.ModelListener;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.slf4j.Logger;
@@ -50,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jakub Knetl
  */
-public abstract class AbstractModel extends AbstractProperty implements Model, PropertyChangeListener {
+public abstract class AbstractModel extends AbstractProperty implements Model, PropertyListener {
 
     static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -233,12 +235,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
-    public void addModelListener(PropertyChangeListener listener) {
+    public void addModelListener(ModelListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removeModelListener(PropertyChangeListener listener) {
+    public void removeModelListener(ModelListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 

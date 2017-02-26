@@ -23,6 +23,7 @@ package org.perfcake.ide.core.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 
 /**
  * Contains information about property of a model.
@@ -105,12 +106,12 @@ public abstract class AbstractProperty implements Property {
     }
 
     @Override
-    public void addPropertyListener(PropertyChangeListener listener) {
+    public void addPropertyListener(PropertyListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removePropertyListener(PropertyChangeListener listener) {
+    public void removePropertyListener(PropertyListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 

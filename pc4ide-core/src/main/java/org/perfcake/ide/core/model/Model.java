@@ -29,6 +29,7 @@ import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.model.listeners.ModelListener;
 
 /**
  * Represents a model object of a PerfCake inspector. Model maintains supported properties and their values.
@@ -128,14 +129,14 @@ public interface Model extends Property {
      *
      * @param listener listener to be added.
      */
-    void addModelListener(PropertyChangeListener listener);
+    void addModelListener(ModelListener listener);
 
     /**
      * Remove a listener to the model.
      *
      * @param listener listener to be removed
      */
-    void removeModelListener(PropertyChangeListener listener);
+    void removeModelListener(ModelListener listener);
 
     /**
      * @return return kind of PerfCake component which is represented by this model.

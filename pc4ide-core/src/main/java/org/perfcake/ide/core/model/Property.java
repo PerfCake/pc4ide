@@ -22,6 +22,7 @@ package org.perfcake.ide.core.model;
 
 import java.beans.PropertyChangeListener;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 
 /**
  * Represents a property of a model.
@@ -66,11 +67,11 @@ public interface Property {
      * Adds a listener for this property.
      * @param listener listener of the property.
      */
-    void addPropertyListener(PropertyChangeListener listener);
+    void addPropertyListener(PropertyListener listener);
 
     /**
      * Removes a listener for this property.
      * @param listener listener to be removed
      */
-    void removePropertyListener(PropertyChangeListener listener);
+    void removePropertyListener(PropertyListener listener);
 }

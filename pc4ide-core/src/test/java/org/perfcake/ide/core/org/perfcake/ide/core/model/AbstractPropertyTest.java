@@ -20,14 +20,11 @@
 
 package org.perfcake.ide.core.org.perfcake.ide.core.model;
 
-import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,7 +32,7 @@ import org.mockito.Mockito;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.AbstractProperty;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
@@ -85,17 +82,20 @@ public class AbstractPropertyTest {
     public void testListeners() {
         property = new SimpleValue("value");
 
-        PropertyChangeListener listener1 = mock(PropertyChangeListener.class);
-        PropertyChangeListener listener2 = mock(PropertyChangeListener.class);
+        PropertyListener listener1 = mock(PropertyListener.class);
+        PropertyListener listener2 = mock(PropertyListener.class);
+        PropertyListener listener3 = mock(PropertyListener.class);
 
         property.addPropertyListener(listener1);
         property.addPropertyListener(listener2);
+        property.addPropertyListener(listener3);
 
-        property.removePropertyListener(listener1);
+        property.removePropertyListener(listener2);
 
         property.cast(Value.class).setValue("new-value");
 
-        Mockito.verify(listener1, Mockito.never()).propertyChange(anyObject());
-        Mockito.verify(listener2).propertyChange(anyObject());
+        Mockito.verify(listener1).propertyChange(anyObject());
+        Mockito.verify(listener2, Mockito.never()).propertyChange(anyObject());
+        Mockito.verify(listener3).propertyChange(anyObject());
     }
 }
