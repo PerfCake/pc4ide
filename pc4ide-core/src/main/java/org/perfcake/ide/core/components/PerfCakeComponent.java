@@ -84,4 +84,21 @@ public enum PerfCakeComponent {
     public String getDefaultPackage() {
         return defaultPackage;
     }
+
+    /**
+     * Detects PerfCake component by implementation class.
+     *
+     * @param clazz implementation of some component.
+     * @return PerfCake component which is implemented by the clazz or null if clazz is not a perfcake component implementation.
+     */
+    public static PerfCakeComponent detectComponentType(Class<?> clazz) {
+        PerfCakeComponent result = null;
+        for (PerfCakeComponent c : values()) {
+            if (c.getApi().isAssignableFrom(clazz)) {
+                result = c;
+            }
+        }
+
+        return result;
+    }
 }

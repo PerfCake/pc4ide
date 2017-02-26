@@ -31,11 +31,11 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 public interface PropertyInspector {
 
     /**
-     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake inspector.
+     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake component.
+     *
      * @param implementation Clazz for which properties should be detected
-     * @param component kind of a PerfCake component
      * @return Map of property name and its default value.
      */
-    List<ImplementationField> getProperties(Class<?> implementation, PerfCakeComponent component);
+    List<ImplementationField> getProperties(Class<?> implementation);
 
 }

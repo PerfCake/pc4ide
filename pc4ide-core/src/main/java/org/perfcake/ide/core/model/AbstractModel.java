@@ -251,7 +251,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         ComponentLoader loader = new ComponentLoaderImpl();
         Class<?> newImplementation = loader.loadComponent(clazz, component);
         PropertyInspector inspector = new PropertyUtilsInspector();
-        List<ImplementationField> fields = inspector.getProperties(newImplementation, component);
+        List<ImplementationField> fields = inspector.getProperties(newImplementation);
 
         for (ImplementationField f : fields) {
             int minOccurs = (f.isMandatory()) ? 1 : 0;
