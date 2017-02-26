@@ -88,6 +88,15 @@ public interface Model extends Property {
      */
     List<Property> getProperties(PropertyInfo propertyInfo);
 
+    /**
+     * Returns an unmodifiable list of properties of given type in this model.
+     *
+     * @param supportedPropertyName Name of property type which is supported by this model
+     * @return <em>unmodifiable list</em> of properties of given type in this model. If given property name is not supported,
+     *     then null is returned.
+     */
+    List<Property> getProperties(String supportedPropertyName);
+
 
     /**
      * Determines whether the properties for given property info is empty.

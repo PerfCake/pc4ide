@@ -138,15 +138,9 @@ public class PropertyUtilsInspector implements PropertyInspector {
             try {
                 Object v = propertyUtils.getSimpleProperty(instance, descriptor.getName());
                 value = (v == null) ? null : String.valueOf(v);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
                 logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
-            } catch (InvocationTargetException e) {
-                logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
-            } catch (NoSuchMethodException e) {
-                logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
+                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation));
             }
 
         }

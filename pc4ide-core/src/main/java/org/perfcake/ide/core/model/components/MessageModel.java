@@ -69,6 +69,7 @@ public class MessageModel extends AbstractModel {
                 new PropertyInfo(PropertyNames.CONTENT.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
                 new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1),
                 new PropertyInfo(PropertyNames.HEADERS.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.VALIDATOR_REFS.toString(), this, PropertyType.VALUE.getClazz(), null, 0, -1),
                 new PropertyInfo(PropertyNames.PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
         );
     }

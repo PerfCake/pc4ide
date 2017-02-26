@@ -69,6 +69,7 @@ public class ScenarioModel extends AbstractModel {
                 new PropertyInfo(PropertyNames.GENERATOR.toString(), this, PropertyType.MODEL.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.SENDER.toString(), this, PropertyType.MODEL.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.RECEIVER.toString(), this, PropertyType.MODEL.getClazz(), null, 0, 1),
+                new PropertyInfo(PropertyNames.SEQUENCES.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
                 new PropertyInfo(PropertyNames.REPORTERS.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
                 new PropertyInfo(PropertyNames.REPORTERS_PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(),
                         null, 0, -1),
