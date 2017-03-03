@@ -26,7 +26,6 @@ import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
 import org.perfcake.ide.core.model.properties.SimpleValue;
-import org.perfcake.message.generator.MessageGenerator;
 
 /**
  * Represents model of a generator.

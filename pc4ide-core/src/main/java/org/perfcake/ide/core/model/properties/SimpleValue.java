@@ -23,6 +23,9 @@ package org.perfcake.ide.core.model.properties;
 import java.util.Objects;
 import org.perfcake.ide.core.model.AbstractProperty;
 import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.validation.StringValidator;
+import org.perfcake.ide.core.model.validation.Validator;
+import org.perfcake.ide.core.model.validation.error.ValidationError;
 
 /**
  * Represents properties value in model.
@@ -32,6 +35,7 @@ import org.perfcake.ide.core.model.PropertyType;
 public class SimpleValue extends AbstractProperty implements Value {
 
     private String value;
+    private Validator<String> validator;
 
     /**
      * Creates new properties value.
@@ -39,8 +43,23 @@ public class SimpleValue extends AbstractProperty implements Value {
      * @param value value of the property
      */
     public SimpleValue(String value) {
+        this(value, null);
+    }
+
+    /**
+     * Creates new properties value.
+     *
+     * @param value     value of the property
+     * @param validator value validator
+     */
+    public SimpleValue(String value, Validator<String> validator) {
         super(PropertyType.VALUE);
         this.value = value;
+        if (validator == null) {
+            this.validator = new StringValidator();
+        } else {
+            this.validator = validator;
+        }
     }
 
     @Override
@@ -54,6 +73,16 @@ public class SimpleValue extends AbstractProperty implements Value {
         this.value = value;
 
         fireChangeEvent(oldValue, value);
+    }
+
+    @Override
+    public boolean isValid() {
+        return (validator.validate(this, value) == null);
+    }
+
+    @Override
+    public ValidationError getValidationError() {
+        return validator.validate(this, value);
     }
 
     @Override

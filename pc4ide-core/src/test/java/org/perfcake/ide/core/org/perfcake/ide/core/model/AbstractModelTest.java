@@ -20,10 +20,7 @@
 
 package org.perfcake.ide.core.org.perfcake.ide.core.model;
 
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -37,18 +34,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.perfcake.ide.core.docs.DocServiceImpl;
 import org.perfcake.ide.core.docs.DocsService;
+import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.GeneratorModel;
 import org.perfcake.ide.core.model.components.ReporterModel;
@@ -74,7 +67,7 @@ public class AbstractModelTest {
      */
     @Before
     public void setUp() throws IOException {
-        docsService = new DocServiceImpl(TestUtils.loadJavadocProperties());
+        docsService = new DocsServiceImpl(TestUtils.loadJavadocProperties());
     }
 
     @Test

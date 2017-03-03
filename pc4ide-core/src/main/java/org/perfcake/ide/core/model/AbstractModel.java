@@ -42,6 +42,9 @@ import org.perfcake.ide.core.model.listeners.ModelListener;
 import org.perfcake.ide.core.model.listeners.PropertyListener;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
+import org.perfcake.ide.core.model.validation.ModelValidator;
+import org.perfcake.ide.core.model.validation.Validator;
+import org.perfcake.ide.core.model.validation.error.ValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractModel extends AbstractProperty implements Model, PropertyListener {
 
     static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
+
+    Validator<Model> validator;
 
     public static final String IMPLEMENTATION_CLASS_PROPERTY = "class";
     public static final String SUPPORTED_PROPERTIES_PROPERTY = "supported-properties";
@@ -105,6 +110,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         this.properties = new HashMap<>();
         this.pcs = new PropertyChangeSupport(this);
         this.docsService = docsService;
+        this.validator = new ModelValidator();
         initializeSupportedProperties();
     }
 
@@ -233,6 +239,16 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     @Override
     public DocsService getDocsService() {
         return this.docsService;
+    }
+
+    @Override
+    public boolean isValid() {
+        return validator.validate(this,this) == null;
+    }
+
+    @Override
+    public ValidationError getValidationError() {
+        return validator.validate(this,this);
     }
 
     @Override

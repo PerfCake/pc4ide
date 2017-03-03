@@ -58,7 +58,7 @@ public class DocsServiceTest {
     @Before
     public void setUp() throws IOException {
         Properties javadoc = TestUtils.loadJavadocProperties();
-        docsService = new DocServiceImpl(javadoc);
+        docsService = new DocsServiceImpl(javadoc);
     }
 
     @Test

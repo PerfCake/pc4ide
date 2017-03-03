@@ -23,9 +23,14 @@ package org.perfcake.ide.core.model.properties;
 import java.util.Objects;
 import org.perfcake.ide.core.model.AbstractProperty;
 import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.validation.StringValidator;
+import org.perfcake.ide.core.model.validation.Validator;
+import org.perfcake.ide.core.model.validation.error.CompoundError;
+import org.perfcake.ide.core.model.validation.error.ValidationError;
 
 /**
  * Represents a key-value object.
+ *
  * @author Jakub Knetl
  */
 public class KeyValueImpl extends AbstractProperty implements KeyValue {
@@ -37,23 +42,52 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
     private String value;
     private String any;
 
+    private Validator<String> keyValidator;
+    private Validator<String> valueValidator;
+
     /**
      * Constructs new key-value instance.
-     * @param key key of the instance
-     * @param value value of the instance
+     *
+     * @param key            key of the instance
+     * @param value          value of the instance
+     * @param keyValidator   validator for key
+     * @param valueValidator validator for value
      */
-    public KeyValueImpl(String key, String value) {
+    public KeyValueImpl(String key, String value, Validator<String> keyValidator, Validator<String> valueValidator) {
         super(PropertyType.KEY_VALUE);
         this.key = key;
         this.value = value;
+
+        if (keyValidator == null) {
+            this.keyValidator = new StringValidator();
+        } else {
+            this.keyValidator = keyValidator;
+        }
+
+        if (valueValidator == null) {
+            this.valueValidator = new StringValidator();
+        } else {
+            this.valueValidator = valueValidator;
+        }
+
     }
 
     /**
      * Constructs new key-value instance.
      *
-     * @param key key of the instance
+     * @param key   key of the instance
      * @param value value of the instance
-     * @param any arbitrary value associated with key-value store
+     */
+    public KeyValueImpl(String key, String value) {
+        this(key, value, null, null);
+    }
+
+    /**
+     * Constructs new key-value instance.
+     *
+     * @param key   key of the instance
+     * @param value value of the instance
+     * @param any   arbitrary value associated with key-value store
      */
     public KeyValueImpl(String key, String value, String any) {
         super(PropertyType.KEY_VALUE);
@@ -100,6 +134,28 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
     }
 
     @Override
+    public boolean isValid() {
+        return (keyValidator.validate(this, key) == null && valueValidator.validate(this, value) == null);
+    }
+
+    @Override
+    public ValidationError getValidationError() {
+        ValidationError keyError = keyValidator.validate(this, key);
+        ValidationError valueError = keyValidator.validate(this, key);
+
+        ValidationError result = null;
+        if (keyError != null && valueError != null) {
+            result = new CompoundError(this, null, keyError, valueError);
+        } else if (keyError != null) {
+            result = keyError;
+        } else if (valueError != null) {
+            result = valueError;
+        }
+
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -109,8 +165,8 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
         }
         KeyValueImpl keyValue = (KeyValueImpl) o;
         return Objects.equals(key, keyValue.key)
-               && Objects.equals(value, keyValue.value)
-               && Objects.equals(any, keyValue.any);
+                && Objects.equals(value, keyValue.value)
+                && Objects.equals(any, keyValue.any);
     }
 
     @Override
@@ -121,9 +177,9 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
     @Override
     public String toString() {
         return "KeyValueImpl{"
-               + "key='" + key + '\''
-               + ", value='" + value + '\''
-               + ", any='" + any + '\''
-               + '}';
+                + "key='" + key + '\''
+                + ", value='" + value + '\''
+                + ", any='" + any + '\''
+                + '}';
     }
 }

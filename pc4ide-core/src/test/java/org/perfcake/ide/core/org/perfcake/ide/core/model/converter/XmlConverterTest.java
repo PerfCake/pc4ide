@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
-import org.perfcake.ide.core.docs.DocServiceImpl;
 import org.perfcake.ide.core.docs.DocsService;
+import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
@@ -86,7 +86,7 @@ public class XmlConverterTest {
         InputStream inStream = Files.newInputStream(javadocPath);
         javadoc.load(inStream);
         objectFactory = new ObjectFactory();
-        docsService = new DocServiceImpl(javadoc);
+        docsService = new DocsServiceImpl(javadoc);
         converter = new XmlConverter(docsService);
 
         // do the conversion
