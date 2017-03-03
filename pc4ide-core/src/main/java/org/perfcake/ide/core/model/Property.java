@@ -20,9 +20,9 @@
 
 package org.perfcake.ide.core.model;
 
-import java.beans.PropertyChangeListener;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.listeners.PropertyListener;
+import org.perfcake.ide.core.model.validation.error.ValidationError;
 
 /**
  * Represents a property of a model.
@@ -62,6 +62,19 @@ public interface Property {
      * @param model model which owns this property.
      */
     void setModel(Model model);
+
+    /**
+     * This method performs validation of this property and determines if property is valid.
+     * @return true if and only if the content of a property is valid.
+     */
+    boolean isValid();
+
+    /**
+     * This method performs validation of this property and in case that property is invalid it returns error
+     * description.
+     * @return validation error object or null if this property is valid.
+     */
+    ValidationError getValidationError();
 
     /**
      * Adds a listener for this property.
