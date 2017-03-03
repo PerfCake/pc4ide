@@ -39,9 +39,14 @@ import org.perfcake.ide.core.model.listeners.ModelListener;
 public interface Model extends Property {
 
     /**
-     * @return Set of properties which are supported in this model.
+     * @return Unmodifiable set of all properties which are supported in this model.
      */
     Set<PropertyInfo> getSupportedProperties();
+
+    /**
+     * @return Unmodifiable set of properties which are supported by this model because of current implementation.
+     */
+    Set<PropertyInfo> getSupportedImplProperties();
 
     /**
      * Finds supported property type by name.

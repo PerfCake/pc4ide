@@ -23,7 +23,9 @@ package org.perfcake.ide.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,8 +118,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
     @Override
     public Set<PropertyInfo> getSupportedProperties() {
-
         return properties.keySet();
+    }
+
+    @Override
+    public Set<PropertyInfo> getSupportedImplProperties() {
+        return Collections.unmodifiableSet(new HashSet<PropertyInfo>(implementationProperties));
     }
 
     @Override
