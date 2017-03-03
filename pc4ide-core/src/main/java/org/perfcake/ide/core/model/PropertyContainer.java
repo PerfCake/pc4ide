@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.model;
 
-import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import org.perfcake.ide.core.exception.PropertyLimitException;
@@ -57,6 +56,7 @@ public interface PropertyContainer extends Iterable<Property> {
 
     /**
      * Lists properties which are contained in this container.
+     *
      * @return <em>Unmodifiable list</em> of the properties in this container.
      */
     List<Property> getProperties();
@@ -74,16 +74,5 @@ public interface PropertyContainer extends Iterable<Property> {
      * @return number of properties of in this container.
      */
     int size();
-
-    /**
-     * Removes a listener for adding/removing property.
-     * @param listener listener to be added
-     */
-    void addListener(PropertyChangeListener listener);
-
-    /**
-     * Removes a listener.
-     * @param listener listener to be removed.
-     */
-    void removeListener(PropertyChangeListener listener);
 }
+

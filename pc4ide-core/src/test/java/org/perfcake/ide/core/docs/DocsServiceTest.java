@@ -26,13 +26,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
+import org.perfcake.ide.core.utils.TestUtils;
 import org.perfcake.message.generator.ConstantSpeedMessageGenerator;
 import org.perfcake.message.generator.DefaultMessageGenerator;
 import org.perfcake.message.receiver.HttpReceiver;
@@ -50,7 +47,7 @@ import org.perfcake.validation.RegExpValidator;
  */
 public class DocsServiceTest {
 
-    public static final String PERFCAKE_COMMENT_PROPERTIES = "perfcake-comment.properties";
+    public static final String PERFCAKE_COMMENT_PROPERTIES = "src/main/resources/perfcake-comment.properties";
     private DocsService docsService;
 
     /**
@@ -60,11 +57,7 @@ public class DocsServiceTest {
      */
     @Before
     public void setUp() throws IOException {
-        Properties javadoc = new Properties();
-        Path javadocPath = Paths.get("src/main/resources/perfcake-comment.properties");
-        assertTrue("File with javadoc does not exists.", Files.exists(javadocPath));
-        InputStream inStream = Files.newInputStream(javadocPath);
-        javadoc.load(inStream);
+        Properties javadoc = TestUtils.loadJavadocProperties();
         docsService = new DocServiceImpl(javadoc);
     }
 

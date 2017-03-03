@@ -20,14 +20,10 @@
 
 package org.perfcake.ide.core.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.perfcake.ide.core.exception.ModelException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 
@@ -54,8 +50,6 @@ public class PropertyContainerImpl implements PropertyContainer {
      * Properties in the container.
      */
     private List<Property> properties;
-
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     @Override
     public Iterator<Property> iterator() {
@@ -111,8 +105,9 @@ public class PropertyContainerImpl implements PropertyContainer {
 
         PropertyType propertyType = PropertyType.detectPropertyType(property.getClass());
         if (!propertyInfo.getType().equals(propertyType)) {
-            throw new ModelException(String.format("Invalid property type. This container supports %s, but added property was %s ",
-                    propertyInfo.getType().getClazz().getCanonicalName(), propertyType.getClazz()));
+            throw new UnsupportedPropertyException(
+                    String.format("Invalid property type. This container supports %s, but added property was %s ",
+                        propertyInfo.getType().getClazz().getCanonicalName(), propertyType.getClazz()));
         }
 
         if (properties.size() == propertyInfo.getMaxOccurs()) {
@@ -122,8 +117,6 @@ public class PropertyContainerImpl implements PropertyContainer {
         property.setModel(model);
         property.setPropertyInfo(propertyInfo);
         properties.add(property);
-        pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
-
     }
 
     @Override
@@ -146,8 +139,6 @@ public class PropertyContainerImpl implements PropertyContainer {
             property.setModel(null);
             property.setPropertyInfo(null);
 
-            pcs.firePropertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
-
         }
         return removed;
     }
@@ -166,15 +157,4 @@ public class PropertyContainerImpl implements PropertyContainer {
     public int size() {
         return properties.size();
     }
-
-    @Override
-    public void addListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-
-    @Override
-    public void removeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
-    }
-
 }
