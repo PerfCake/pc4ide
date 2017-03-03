@@ -31,7 +31,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.editor.swing.EditorJPanel;
+import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.perfcake.pc4ide.eclipse.Activator;
 import org.perfcake.pc4ide.eclipse.EclipseLogger;
 
@@ -39,13 +39,13 @@ import org.perfcake.pc4ide.eclipse.EclipseLogger;
 /**
  * This editor represents a graphical PerfCake scenario editor.
  */
-public class GraphicalScenarioEditor extends EditorPart {
+public class Pc4ideWindow extends EditorPart {
 
     private EclipseLogger logger = Activator.getInstance().getLogger();
 
     private ScenarioModel scenarioModel;
 
-    public GraphicalScenarioEditor() {
+    public Pc4ideWindow() {
         super();
     }
 
@@ -91,7 +91,7 @@ public class GraphicalScenarioEditor extends EditorPart {
         // TODO Auto-generated method stub
         final Composite composite = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
         final Frame frame = SWT_AWT.new_Frame(composite);
-        final EditorJPanel editorJPanel = new EditorJPanel(scenarioModel);
+        final Pc4ideEditor editorJPanel = new Pc4ideEditor(scenarioModel);
         frame.add(editorJPanel);
 
     }

@@ -23,11 +23,10 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.AbstractController;
+import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.ComponentView;
-import org.perfcake.ide.editor.view.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.impl.SectorView;
 
 /**
@@ -41,9 +40,10 @@ public class SectionController extends AbstractController {
 
     /**
      * Creates new section controller.
+     *
      * @param sectionName Name of the section to be controlled
-     * @param icon Icon of a section
-     * @param model model class
+     * @param icon        Icon of a section
+     * @param model       model class
      */
     public SectionController(String sectionName, ResizableIcon icon, Model model) {
         super(model);

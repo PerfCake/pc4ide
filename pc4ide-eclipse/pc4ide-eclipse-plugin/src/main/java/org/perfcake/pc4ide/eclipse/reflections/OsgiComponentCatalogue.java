@@ -20,7 +20,6 @@
 
 package org.perfcake.pc4ide.eclipse.reflections;
 
-import java.util.List;
 import org.osgi.framework.Bundle;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.reflections.Reflections;
@@ -31,7 +30,7 @@ import org.reflections.vfs.Vfs;
  */
 public class OsgiComponentCatalogue extends ReflectionComponentCatalogue {
 
-    public OsgiComponentCatalogue(List<String> packagesToScan) {
+    public OsgiComponentCatalogue(String... packagesToScan) {
         super(packagesToScan);
     }
 

@@ -18,12 +18,10 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.swing;
+package org.perfcake.ide.editor.swing.editor;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.JSplitPane;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
@@ -32,15 +30,16 @@ import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.impl.FormManagerImpl;
 
 /**
- * Represents an editor as a whole. It consits of graphical editor panel and the panel with form.
+ * Represents an pc4ide editor as a whole. It consists of graphical editor panel and the panel with form.
+ * @author jknelt
  */
-public class EditorJPanel extends JSplitPane {
+public class Pc4ideEditor extends JSplitPane {
 
     private ScenarioModel scenario;
-    private GraphicalEditorJPanel graphicalEditorPanel;
+    private GraphicalPanel graphicalEditorPanel;
     private FormManager formManager;
 
-    public EditorJPanel(ScenarioModel scenario) {
+    public Pc4ideEditor(ScenarioModel scenario) {
         this(scenario, null);
     }
 
@@ -50,7 +49,7 @@ public class EditorJPanel extends JSplitPane {
      * @param scenario         Scenario edited by editor
      * @param componentManager PerfCake inspector manager
      */
-    public EditorJPanel(ScenarioModel scenario, ComponentCatalogue componentManager) {
+    public Pc4ideEditor(ScenarioModel scenario, ComponentCatalogue componentManager) {
         super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
@@ -61,7 +60,7 @@ public class EditorJPanel extends JSplitPane {
         } else {
             formManager = new FormManagerImpl(componentManager);
         }
-        graphicalEditorPanel = new GraphicalEditorJPanel(scenario, formManager);
+        graphicalEditorPanel = new GraphicalPanel(scenario, formManager);
         // final FormPage generatorPage = new SimpleFormPage(formManager,
         // new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
         // formManager.addFormPage(generatorPage);

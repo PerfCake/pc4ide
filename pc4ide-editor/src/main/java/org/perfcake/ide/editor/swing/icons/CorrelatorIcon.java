@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.icons;
+package org.perfcake.ide.editor.swing.icons;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class SenderIcon implements ResizableIcon {
+public class CorrelatorIcon implements ResizableIcon {
 
     /**
      * The width of this icon.
@@ -55,16 +55,16 @@ public class SenderIcon implements ResizableIcon {
     /**
      * Creates a new transcoded SVG image.
      */
-    public SenderIcon() {
-        this(34, 34);
+    public CorrelatorIcon() {
+        this(41, 21);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
-     * @param height heigth of the icon
+     * @param width width of icon
+     * @param height height of icon
      */
-    public SenderIcon(int width, int height) {
+    public CorrelatorIcon(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -93,7 +93,7 @@ public class SenderIcon implements ResizableIcon {
     public void paintIcon(Component c, Graphics g, int x, int y) {
         if (image == null) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            final double coef = Math.min((double) width / (double) 34, (double) height / (double) 34);
+            final double coef = Math.min((double) width / (double) 41, (double) height / (double) 21);
 
             final Graphics2D g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -120,7 +120,7 @@ public class SenderIcon implements ResizableIcon {
 
         //
         transformations.push(g.getTransform());
-        g.transform(new AffineTransform(0.037795275f, 0, 0, 0.037795275f, -488.6173f, -106.73386f));
+        g.transform(new AffineTransform(0.037795275f, 0, 0, 0.037795275f, -478.14804f, -227.86772f));
 
         // _0
 
@@ -140,20 +140,14 @@ public class SenderIcon implements ResizableIcon {
 
         // _0_0_0_0_0_0_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13240.0, 3690.0);
-        ((GeneralPath) shape).lineTo(13429.0, 3690.0);
-        ((GeneralPath) shape).curveTo(13463.0, 3690.0, 13490.0, 3662.0, 13490.0, 3628.0);
-        ((GeneralPath) shape).lineTo(13490.0, 2906.0);
-        ((GeneralPath) shape).curveTo(13490.0, 2872.0, 13463.0, 2845.0, 13429.0, 2845.0);
-        ((GeneralPath) shape).lineTo(13050.0, 2845.0);
-        ((GeneralPath) shape).curveTo(13016.0, 2845.0, 12989.0, 2872.0, 12989.0, 2906.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3628.0);
-        ((GeneralPath) shape).curveTo(12989.0, 3662.0, 13016.0, 3690.0, 13050.0, 3690.0);
-        ((GeneralPath) shape).lineTo(13240.0, 3690.0);
-        ((GeneralPath) shape).closePath();
+        ((GeneralPath) shape).moveTo(12672.0, 6305.0);
+        ((GeneralPath) shape).lineTo(12927.0, 6050.0);
+        ((GeneralPath) shape).lineTo(12927.0, 6178.0);
+        ((GeneralPath) shape).lineTo(13137.0, 6178.0);
+        ((GeneralPath) shape).lineTo(13137.0, 6302.0);
 
-        g.setPaint(new Color(0xFFC73A));
-        g.setStroke(new BasicStroke(42, 0, 0, 4));
+        g.setPaint(new Color(0x47C30C));
+        g.setStroke(new BasicStroke(42, 0, 1, 4));
         g.draw(shape);
 
         // _0_0_0_0_0_1
@@ -164,8 +158,11 @@ public class SenderIcon implements ResizableIcon {
 
         // _0_0_0_0_0_1_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(12928.0, 3688.0);
-        ((GeneralPath) shape).lineTo(13549.0, 3688.0);
+        ((GeneralPath) shape).moveTo(12672.0, 6304.0);
+        ((GeneralPath) shape).lineTo(12927.0, 6559.0);
+        ((GeneralPath) shape).lineTo(12927.0, 6432.0);
+        ((GeneralPath) shape).lineTo(13137.0, 6432.0);
+        ((GeneralPath) shape).lineTo(13137.0, 6300.0);
 
         g.draw(shape);
 
@@ -177,35 +174,12 @@ public class SenderIcon implements ResizableIcon {
 
         // _0_0_0_0_0_2_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13240.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3678.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3159.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3678.0);
-        ((GeneralPath) shape).curveTo(12989.0, 3679.0, 12989.0, 3679.0, 12989.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13240.0, 3679.0);
-        ((GeneralPath) shape).closePath();
+        ((GeneralPath) shape).moveTo(13701.0, 6305.0);
+        ((GeneralPath) shape).lineTo(13446.0, 6050.0);
+        ((GeneralPath) shape).lineTo(13446.0, 6178.0);
+        ((GeneralPath) shape).lineTo(13236.0, 6178.0);
+        ((GeneralPath) shape).lineTo(13236.0, 6302.0);
 
-        g.fill(shape);
-
-        // _0_0_0_0_0_2_0_2
-        shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13240.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3678.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3159.0);
-        ((GeneralPath) shape).lineTo(13490.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3159.0);
-        ((GeneralPath) shape).lineTo(12989.0, 3678.0);
-        ((GeneralPath) shape).curveTo(12989.0, 3679.0, 12989.0, 3679.0, 12989.0, 3679.0);
-        ((GeneralPath) shape).lineTo(13240.0, 3679.0);
-        ((GeneralPath) shape).closePath();
-
-        g.setStroke(new BasicStroke(28, 0, 0, 4));
         g.draw(shape);
 
         // _0_0_0_0_0_3
@@ -216,28 +190,12 @@ public class SenderIcon implements ResizableIcon {
 
         // _0_0_0_0_0_3_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13610.0, 2842.0);
-        ((GeneralPath) shape).lineTo(13785.0, 3044.0);
+        ((GeneralPath) shape).moveTo(13701.0, 6304.0);
+        ((GeneralPath) shape).lineTo(13446.0, 6559.0);
+        ((GeneralPath) shape).lineTo(13446.0, 6432.0);
+        ((GeneralPath) shape).lineTo(13236.0, 6432.0);
+        ((GeneralPath) shape).lineTo(13236.0, 6300.0);
 
-        g.setStroke(new BasicStroke(42, 0, 0, 4));
-        g.draw(shape);
-
-        // _0_0_0_0_0_4
-
-        // _0_0_0_0_0_4_0
-
-        // _0_0_0_0_0_4_0_0
-
-        // _0_0_0_0_0_4_0_1
-        shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13487.0, 3205.0);
-        ((GeneralPath) shape).curveTo(13550.0, 3206.0, 13574.0, 3229.0, 13589.0, 3255.0);
-        ((GeneralPath) shape).curveTo(13618.0, 3314.0, 13557.0, 3515.0, 13658.0, 3591.0);
-        ((GeneralPath) shape).curveTo(13691.0, 3612.0, 13717.0, 3617.0, 13746.0, 3600.0);
-        ((GeneralPath) shape).curveTo(13818.0, 3553.0, 13814.0, 3454.0, 13789.0, 3375.0);
-        ((GeneralPath) shape).curveTo(13759.0, 3318.0, 13726.0, 3145.0, 13737.0, 2997.0);
-
-        g.setStroke(new BasicStroke(28, 0, 1, 4));
         g.draw(shape);
 
         g.setTransform(transformations.pop()); // _0

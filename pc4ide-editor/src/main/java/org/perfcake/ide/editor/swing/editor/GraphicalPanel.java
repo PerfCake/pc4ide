@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.swing;
+package org.perfcake.ide.editor.swing.editor;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -34,9 +34,9 @@ import org.perfcake.ide.editor.controller.impl.EditorController;
 import org.perfcake.ide.editor.forms.FormManager;
 
 /**
- * GraphicalEditorJpanel represents a graphical part of editor.
+ * GraphicalPanel represents a graphical part of pc4ide editor.
  */
-public class GraphicalEditorJPanel extends JPanel {
+public class GraphicalPanel extends JPanel {
 
     private EditorController editorController;
 
@@ -46,7 +46,7 @@ public class GraphicalEditorJPanel extends JPanel {
      * @param scenarioModel model of scenario managed by editor
      * @param formManager manager which manages the forms
      */
-    public GraphicalEditorJPanel(ScenarioModel scenarioModel, FormManager formManager) {
+    public GraphicalPanel(ScenarioModel scenarioModel, FormManager formManager) {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());

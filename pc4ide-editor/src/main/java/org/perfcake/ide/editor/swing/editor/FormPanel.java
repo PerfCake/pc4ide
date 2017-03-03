@@ -18,19 +18,22 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.icons;
+package org.perfcake.ide.editor.swing.editor;
 
-import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
- * Swing icon which can change its size.
- *
- * @author jknetl
+ * Represent Swing container of a form.
  */
-public interface ResizableIcon extends Icon {
+public class FormPanel extends JPanel {
 
-    void setIconWidth(int width);
-
-    void setIconHeight(int height);
+    /**
+     * Creates new form panel.
+     */
+    public FormPanel() {
+        super();
+        add(new JLabel("Settings"));
+    }
 
 }

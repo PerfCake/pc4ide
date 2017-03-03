@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.icons;
+package org.perfcake.ide.editor.swing.icons;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class MessageIcon implements ResizableIcon {
+public class DestinationIcon implements ResizableIcon {
 
     /**
      * The width of this icon.
@@ -55,16 +55,16 @@ public class MessageIcon implements ResizableIcon {
     /**
      * Creates a new transcoded SVG image.
      */
-    public MessageIcon() {
-        this(41, 23);
+    public DestinationIcon() {
+        this(40, 25);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
-     * @param height heigth of the icon
+     * @param width  width of the icon
+     * @param height height of the icon
      */
-    public MessageIcon(int width, int height) {
+    public DestinationIcon(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -93,7 +93,7 @@ public class MessageIcon implements ResizableIcon {
     public void paintIcon(Component c, Graphics g, int x, int y) {
         if (image == null) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            final double coef = Math.min((double) width / (double) 41, (double) height / (double) 23);
+            final double coef = Math.min((double) width / (double) 40, (double) height / (double) 25);
 
             final Graphics2D g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -120,7 +120,7 @@ public class MessageIcon implements ResizableIcon {
 
         //
         transformations.push(g.getTransform());
-        g.transform(new AffineTransform(0.03779528f, 0, 0, 0.03779528f, -482.19217f, -482.41895f));
+        g.transform(new AffineTransform(0.037795275f, 0, 0, 0.037795275f, -481.96536f, -436.08188f));
 
         // _0
 
@@ -140,34 +140,14 @@ public class MessageIcon implements ResizableIcon {
 
         // _0_0_0_0_0_0_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(12779.0, 12785.0);
-        ((GeneralPath) shape).lineTo(12779.0, 13350.0);
-        ((GeneralPath) shape).curveTo(12779.0, 13350.0, 12922.0, 13138.0, 13204.0, 13079.0);
-        ((GeneralPath) shape).curveTo(13265.0, 13079.0, 13767.0, 13080.0, 13767.0, 13080.0);
-        ((GeneralPath) shape).curveTo(13794.0, 13097.0, 13796.0, 13153.0, 13796.0, 13153.0);
-        ((GeneralPath) shape).lineTo(13796.0, 12983.0);
-        ((GeneralPath) shape).curveTo(13796.0, 12983.0, 13794.0, 13040.0, 13766.0, 13056.0);
-        ((GeneralPath) shape).curveTo(13766.0, 13056.0, 13259.0, 13055.0, 13204.0, 13055.0);
-        ((GeneralPath) shape).curveTo(12921.0, 13027.0, 12779.0, 12785.0, 12779.0, 12785.0);
+        ((GeneralPath) shape).moveTo(13233.0, 12164.0);
+        ((GeneralPath) shape).curveTo(13165.0, 12164.0, 13160.0, 11561.0, 13233.0, 11561.0);
+        ((GeneralPath) shape).curveTo(13382.0, 11546.0, 13777.0, 11631.0, 13776.0, 11861.0);
+        ((GeneralPath) shape).curveTo(13774.0, 12083.0, 13390.0, 12174.0, 13233.0, 12164.0);
         ((GeneralPath) shape).closePath();
 
-        g.setPaint(new Color(0x6AD299));
-        g.fill(shape);
-
-        // _0_0_0_0_0_0_0_2
-        shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(12779.0, 12785.0);
-        ((GeneralPath) shape).lineTo(12779.0, 13350.0);
-        ((GeneralPath) shape).curveTo(12779.0, 13350.0, 12922.0, 13138.0, 13204.0, 13079.0);
-        ((GeneralPath) shape).curveTo(13265.0, 13079.0, 13767.0, 13080.0, 13767.0, 13080.0);
-        ((GeneralPath) shape).curveTo(13794.0, 13097.0, 13796.0, 13153.0, 13796.0, 13153.0);
-        ((GeneralPath) shape).lineTo(13796.0, 12983.0);
-        ((GeneralPath) shape).curveTo(13796.0, 12983.0, 13794.0, 13040.0, 13766.0, 13056.0);
-        ((GeneralPath) shape).curveTo(13766.0, 13056.0, 13259.0, 13055.0, 13204.0, 13055.0);
-        ((GeneralPath) shape).curveTo(12921.0, 13027.0, 12779.0, 12785.0, 12779.0, 12785.0);
-        ((GeneralPath) shape).closePath();
-
-        g.setStroke(new BasicStroke(42, 0, 1, 4));
+        g.setPaint(new Color(0x9C81F5));
+        g.setStroke(new BasicStroke(42, 0, 0, 4));
         g.draw(shape);
 
         // _0_0_0_0_0_1
@@ -178,20 +158,60 @@ public class MessageIcon implements ResizableIcon {
 
         // _0_0_0_0_0_1_0_1
         shape = new GeneralPath();
-        ((GeneralPath) shape).moveTo(13676.0, 13171.0);
-        ((GeneralPath) shape).curveTo(13676.0, 13190.0, 13665.0, 13205.0, 13640.0, 13221.0);
-        ((GeneralPath) shape).curveTo(13616.0, 13237.0, 13585.0, 13248.0, 13542.0, 13257.0);
-        ((GeneralPath) shape).curveTo(13499.0, 13266.0, 13457.0, 13271.0, 13408.0, 13271.0);
-        ((GeneralPath) shape).curveTo(13358.0, 13271.0, 13316.0, 13266.0, 13273.0, 13257.0);
-        ((GeneralPath) shape).curveTo(13230.0, 13248.0, 13200.0, 13237.0, 13175.0, 13221.0);
-        ((GeneralPath) shape).curveTo(13150.0, 13205.0, 13139.0, 13190.0, 13139.0, 13171.0);
-        ((GeneralPath) shape).curveTo(13139.0, 13153.0, 13150.0, 13137.0, 13175.0, 13122.0);
-        ((GeneralPath) shape).curveTo(13200.0, 13106.0, 13230.0, 13094.0, 13273.0, 13085.0);
-        ((GeneralPath) shape).curveTo(13316.0, 13076.0, 13358.0, 13072.0, 13408.0, 13072.0);
-        ((GeneralPath) shape).curveTo(13457.0, 13072.0, 13499.0, 13076.0, 13542.0, 13085.0);
-        ((GeneralPath) shape).curveTo(13585.0, 13094.0, 13616.0, 13106.0, 13640.0, 13122.0);
-        ((GeneralPath) shape).curveTo(13665.0, 13137.0, 13676.0, 13153.0, 13676.0, 13171.0);
-        ((GeneralPath) shape).closePath();
+        ((GeneralPath) shape).moveTo(13091.0, 11597.0);
+        ((GeneralPath) shape).lineTo(12752.0, 11597.0);
+
+        g.draw(shape);
+
+        // _0_0_0_0_0_2
+
+        // _0_0_0_0_0_2_0
+
+        // _0_0_0_0_0_2_0_0
+
+        // _0_0_0_0_0_2_0_1
+        shape = new GeneralPath();
+        ((GeneralPath) shape).moveTo(13091.0, 11729.0);
+        ((GeneralPath) shape).lineTo(12752.0, 11729.0);
+
+        g.draw(shape);
+
+        // _0_0_0_0_0_3
+
+        // _0_0_0_0_0_3_0
+
+        // _0_0_0_0_0_3_0_0
+
+        // _0_0_0_0_0_3_0_1
+        shape = new GeneralPath();
+        ((GeneralPath) shape).moveTo(13091.0, 11861.0);
+        ((GeneralPath) shape).lineTo(12752.0, 11861.0);
+
+        g.draw(shape);
+
+        // _0_0_0_0_0_4
+
+        // _0_0_0_0_0_4_0
+
+        // _0_0_0_0_0_4_0_0
+
+        // _0_0_0_0_0_4_0_1
+        shape = new GeneralPath();
+        ((GeneralPath) shape).moveTo(13091.0, 11993.0);
+        ((GeneralPath) shape).lineTo(12752.0, 11993.0);
+
+        g.draw(shape);
+
+        // _0_0_0_0_0_5
+
+        // _0_0_0_0_0_5_0
+
+        // _0_0_0_0_0_5_0_0
+
+        // _0_0_0_0_0_5_0_1
+        shape = new GeneralPath();
+        ((GeneralPath) shape).moveTo(13091.0, 12125.0);
+        ((GeneralPath) shape).lineTo(12752.0, 12125.0);
 
         g.draw(shape);
 

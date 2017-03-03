@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.icons;
+package org.perfcake.ide.editor.swing.icons;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

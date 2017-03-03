@@ -31,7 +31,7 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
-import org.perfcake.ide.editor.swing.EditorJPanel;
+import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 
 /**
  * Main class. This class is intendet for testing purposes only. The program should
@@ -77,8 +77,8 @@ public class Main {
                 final JFrame frame = new JFrame();
                 frame.setTitle("Perfcake editor");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                // final GraphicalEditorJPanel editor = new GraphicalEditorJPanel(model);
-                final EditorJPanel editor = new EditorJPanel(model);
+                // final GraphicalPanel editor = new GraphicalPanel(model);
+                final Pc4ideEditor editor = new Pc4ideEditor(model);
                 frame.add(editor);
                 frame.setVisible(true);
             }

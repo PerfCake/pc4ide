@@ -25,8 +25,6 @@
 
 package org.perfcake.pc4ide.netbeans;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -55,7 +53,7 @@ import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
-import org.perfcake.ide.editor.swing.EditorJPanel;
+import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 
 /**
  * Netbeans PerfCake editor with multiple views.
@@ -78,7 +76,7 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
     private PerfCakeScenarioDataObject dataObject;
     private PaletteController paletteController = null;
     private MultiViewElementCallback callback;
-    private EditorJPanel pc4ideEditor;
+    private Pc4ideEditor pc4ideEditor;
 
     /**
      * Creates new NetBeans multi-view editor.
@@ -102,10 +100,9 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
             logger.log(Level.SEVERE, "Cannot open scenario", e);
         }
 
-        List<String> packages = Arrays
-                .asList(new String[] {"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"});
+        String[] packages = new String[] {"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"};
         ComponentCatalogue manager = new ReflectionComponentCatalogue(packages);
-        pc4ideEditor = new EditorJPanel(model, manager);
+        pc4ideEditor = new Pc4ideEditor(model, manager);
 
         Node palette = new AbstractNode(Children.LEAF);
         paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());

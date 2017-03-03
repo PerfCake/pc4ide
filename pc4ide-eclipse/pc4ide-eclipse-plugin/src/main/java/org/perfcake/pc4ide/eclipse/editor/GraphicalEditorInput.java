@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
-import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
@@ -66,11 +65,11 @@ public class GraphicalEditorInput extends FileEditorInput {
         final ModelLoader loader = new ModelLoader();
         try {
             model = loader.loadModel(getURI().toURL());
-        } catch (final PerfCakeException e) {
-            e.printStackTrace();
         } catch (final MalformedURLException e) {
             e.printStackTrace();
         } catch (ModelConversionException e) {
+            e.printStackTrace();
+        } catch (org.perfcake.PerfCakeException e) {
             e.printStackTrace();
         }
     }

@@ -47,7 +47,7 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
-import org.perfcake.ide.editor.swing.EditorJPanel;
+import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 
 
 
@@ -68,7 +68,7 @@ public class ScenarioEditor implements FileEditor {
     // private ScenarioManager manager;
     private boolean updateInProcess;
 
-    private final EditorJPanel editorGui;
+    private final Pc4ideEditor editorGui;
     // private final ScenarioModelWrapper modelWrapper;
     private ScenarioModel model = null;
 
@@ -124,7 +124,7 @@ public class ScenarioEditor implements FileEditor {
         } catch (ModelConversionException e) {
             e.printStackTrace();
         }
-        editorGui = new EditorJPanel(model);
+        editorGui = new Pc4ideEditor(model);
     }
 
     @Override

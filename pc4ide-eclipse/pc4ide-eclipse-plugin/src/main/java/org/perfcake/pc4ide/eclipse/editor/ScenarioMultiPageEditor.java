@@ -46,7 +46,7 @@ public class ScenarioMultiPageEditor extends MultiPageEditorPart {
 
     private static final String DESIGN_EDITOR_TAB_LABEL = "Designer";
 
-    private GraphicalScenarioEditor graphicalEditor;
+    private Pc4ideWindow graphicalEditor;
     private int graphicalEditorIndex;
 
     private TextEditor xmlEditor;
@@ -91,7 +91,7 @@ public class ScenarioMultiPageEditor extends MultiPageEditorPart {
 
     private void createDesignEditorPage() {
         try {
-            graphicalEditor = new GraphicalScenarioEditor();
+            graphicalEditor = new Pc4ideWindow();
             final IFileEditorInput input = (IFileEditorInput) getEditorInput();
             final GraphicalEditorInput editorInput = new GraphicalEditorInput(input.getFile());
             graphicalEditorIndex = addPage(graphicalEditor, editorInput);

@@ -37,11 +37,10 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.ComponentView;
-import org.perfcake.ide.editor.view.icons.ResizableIcon;
 
 /**
  * Represents a view of the sector.
@@ -61,9 +60,10 @@ public class SectorView extends AbstractView {
 
     /**
      * creates new sector view.
-     * @param parent parent view
+     *
+     * @param parent        parent view
      * @param componentName name of the inspector in the sector
-     * @param icon icon of the inspector in the sector
+     * @param icon          icon of the inspector in the sector
      */
     public SectorView(ComponentView parent, String componentName, ResizableIcon icon) {
         super(parent);
@@ -143,10 +143,10 @@ public class SectorView extends AbstractView {
         final Point2D endOuterArcPoint = new Point2D.Double(
                 layoutData.getCenter().getX() + layoutData.getRadiusData().getOuterRadius()
                         * Math.cos(Math.toRadians(
-                                -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))),
+                        -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))),
                 layoutData.getCenter().getY() + layoutData.getRadiusData().getOuterRadius()
                         * Math.sin(Math.toRadians(
-                                -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))));
+                        -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))));
 
         final Point2D chordCenter = new Point2D.Double(
                 (startOuterArcPoint.getX() + endOuterArcPoint.getX()) / 2,
