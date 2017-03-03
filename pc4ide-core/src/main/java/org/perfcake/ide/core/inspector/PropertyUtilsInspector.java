@@ -44,7 +44,14 @@ public class PropertyUtilsInspector implements PropertyInspector {
     static final Logger logger = LoggerFactory.getLogger(PropertyUtilsInspector.class);
 
     @Override
-    public List<ImplementationField> getProperties(Class<?> implementation, PerfCakeComponent component) {
+    public List<ImplementationField> getProperties(Class<?> implementation) {
+
+        PerfCakeComponent component = PerfCakeComponent.detectComponentType(implementation);
+
+        if (component == null) {
+            throw new IllegalArgumentException("implementation class must be implementation of some Perfcake component.");
+        }
+
         PropertyUtilsBean propertyUtils = new PropertyUtilsBean();
         propertyUtils.addBeanIntrospector(new FluentPropertyBeanIntrospector()); // also parse beans with fluent setters
         propertyUtils.addBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS); // do not parse class field
@@ -129,16 +136,11 @@ public class PropertyUtilsInspector implements PropertyInspector {
         String value = null;
         if (instance != null) {
             try {
-                value = String.valueOf(propertyUtils.getSimpleProperty(instance, descriptor.getName()));
-            } catch (IllegalAccessException e) {
+                Object v = propertyUtils.getSimpleProperty(instance, descriptor.getName());
+                value = (v == null) ? null : String.valueOf(v);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
                 logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
-            } catch (InvocationTargetException e) {
-                logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
-            } catch (NoSuchMethodException e) {
-                logger.warn(String.format("Cannot obtain default value of the property %s,"
-                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation), e);
+                        + " in the implementation class %s, default value won't be set", descriptor.getName(), implementation));
             }
 
         }

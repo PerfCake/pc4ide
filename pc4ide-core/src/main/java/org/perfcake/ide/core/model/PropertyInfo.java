@@ -135,7 +135,6 @@ public class PropertyInfo {
         this(name, null, model, defaultValueClazz, defaultValue, minOccurs, maxOccurs);
     }
 
-
     /**
      * @return Property name.
      */

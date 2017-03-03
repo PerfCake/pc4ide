@@ -29,6 +29,7 @@ import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.model.listeners.ModelListener;
 
 /**
  * Represents a model object of a PerfCake inspector. Model maintains supported properties and their values.
@@ -88,6 +89,15 @@ public interface Model extends Property {
      */
     List<Property> getProperties(PropertyInfo propertyInfo);
 
+    /**
+     * Returns an unmodifiable list of properties of given type in this model.
+     *
+     * @param supportedPropertyName Name of property type which is supported by this model
+     * @return <em>unmodifiable list</em> of properties of given type in this model. If given property name is not supported,
+     *     then null is returned.
+     */
+    List<Property> getProperties(String supportedPropertyName);
+
 
     /**
      * Determines whether the properties for given property info is empty.
@@ -119,14 +129,14 @@ public interface Model extends Property {
      *
      * @param listener listener to be added.
      */
-    void addModelListener(PropertyChangeListener listener);
+    void addModelListener(ModelListener listener);
 
     /**
      * Remove a listener to the model.
      *
      * @param listener listener to be removed
      */
-    void removeModelListener(PropertyChangeListener listener);
+    void removeModelListener(ModelListener listener);
 
     /**
      * @return return kind of PerfCake component which is represented by this model.

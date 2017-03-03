@@ -18,28 +18,14 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core;
+package org.perfcake.ide.core.model.listeners;
 
-import java.util.Arrays;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import java.beans.PropertyChangeListener;
 
 /**
- * Created by jknetl on 9/30/16.
+ * Represents a listener of a {@link org.perfcake.ide.core.model.Property}
+ *
+ * @author Jakub Knetl
  */
-public class TestUtils {
-
-    private TestUtils() {
-    }
-
-    /**
-     * Creates new inspector manager.
-     *
-     * @return PerfCake inspector manager
-     */
-    public static ComponentCatalogue createCatalogue() {
-        ComponentCatalogue componentManager = null;
-        componentManager = new ReflectionComponentCatalogue(Arrays.asList(new String[] {"org.perfcake"}));
-        return componentManager;
-    }
+public interface PropertyListener extends PropertyChangeListener {
 }

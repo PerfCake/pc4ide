@@ -39,7 +39,7 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.docs.DocServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.convertor.XmlConverter;
+import org.perfcake.ide.core.model.converter.XmlConverter;
 import org.perfcake.model.Scenario;
 import org.perfcake.util.Utils;
 import org.xml.sax.SAXException;
@@ -49,10 +49,11 @@ public class ModelLoader {
     /**
      * Does the parsing itself by using JAXB.
      *
+     * @param scenarioLocation url to scenario file.
      * @return Parsed JAXB scenario model.
      * @throws PerfCakeException If XML is not valid or cannot be successfully parsed.
      */
-    Scenario parse(URL scenarioLocation) throws PerfCakeException {
+    public Scenario parse(URL scenarioLocation) throws PerfCakeException {
         try {
             final Source scenarioXml = new StreamSource(scenarioLocation.openStream());
             final String schemaFileName = "perfcake-scenario-" + PerfCakeConst.XSD_SCHEMA_VERSION + ".xsd";

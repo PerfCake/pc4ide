@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.convertor;
+package org.perfcake.ide.core.model.converter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -343,6 +343,12 @@ public class XmlConverter {
                 }
             }
 
+            if (xmlDestination.isEnabled()) {
+                PropertyInfo enabledInfo = destinationModel.getSupportedProperty(DestinationModel.PropertyNames.ENABLED.toString());
+                Property enabled = new SimpleValue("true");
+                destinationModel.addProperty(enabledInfo, enabled);
+            }
+
             if (xmlDestination.getProperty() != null) {
                 convertImplementationProperties(xmlDestination.getProperty(), destinationModel);
             }
@@ -423,6 +429,8 @@ public class XmlConverter {
                 Property id = new SimpleValue(xmlValidator.getId());
                 validatorModel.addProperty(idInfo, id);
             }
+
+            convertImplementationProperties(xmlValidator.getProperty(), validatorModel);
 
             pc4ideModel.addProperty(validatorInfo, validatorModel);
         }

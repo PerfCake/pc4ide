@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Bob's use case scenario:
+     ========================
+
+     1) Sender: It uses Bob's specific implementation of a Sender. Actually BobSender, is very
+                similar to PerfCake dummy sender and does not send anything, just simulates delay
+
+
+-->
+<scenario xmlns="urn:perfcake:scenario:7.0">
+    <run type="time" value="${run.time:2000}"/>
+    <generator class="DefaultMessageGenerator" threads="${thread.count:10}">
+        <property name="monitoringPeriod" value="1000" />
+        <property name="senderTaskQueueSize" value="500" />
+    </generator>
+
+
+
+    <sequences>
+        <sequence id="seq.natural" class="PrimitiveNumberSequence" />
+    </sequences>
+
+    <!--TODO: implement own sender-->
+    <sender class="org.bob.perfcake.BobSender">
+        <target>bob-application-target</target>
+        <property name="bobDelay" value="100" />
+    </sender>
+
+<!--&lt;!&ndash; HttpReceiver creates a http server and listen there for responses &ndash;&gt;-->
+    <!--<receiver class="HttpReceiver" threads="${thread.count:10}">-->
+        <!--&lt;!&ndash; GenerateHeaderCorrelator generates UUID for each message and includes the UUID in the message header.-->
+             <!--Therefore, there must be a message defined in the scenario (it may be empty, though).&ndash;&gt;-->
+        <!--<correlator class="GenerateHeaderCorrelator" />-->
+        <!--<property name="source" value="http://localhost:8088" />-->
+        <!--<property name="httpStatusCode" value="200,400" />-->
+        <!--<property name="httpResponse" value="OK" />-->
+    <!--</receiver>-->
+
+
+    <reporting>
+        <reporter class="IterationsPerSecondReporter">
+            <destination class="ConsoleDestination">
+                <period type="time" value="1000"/>
+                <property name="prefix" value="iterationsPerSec" />
+                <property name="foreground" value="7" />
+            </destination>
+            <destination class="ChartDestination">
+                <period type="time" value="500"/>
+                <property name="name" value="Iteration per seconds" />
+                <property name="group" value="throughput" />
+                <property name="attributes" value="*" />
+                <property name="outputDir" value="/home/jknetl/projects/pc4ide-parent/pc4ide-testing-scenarios/chart/" />
+            </destination>
+        </reporter>
+        <reporter class="ResponseTimeStatsReporter">
+            <property name="minimumEnabled" value="true" />
+            <property name="maximumEnabled" value="false" />
+            <property name="averageEnabled" value="true" />
+            <property name="windowSize" value="10000" />
+            <property name="windowType" value="time" />
+            <property name="histogram" value="20,40,60,80" />
+            <destination class="Log4jDestination">
+                <period type="time" value="1000"/>
+                <property name="level" value="info" />
+            </destination>
+        </reporter>
+    </reporting>
+    <messages>
+        <!-- message content is not being used by the command sender -->
+        <message content="greeting message ${seq.natural}" multiplicity="1">
+            <header name="my-group" value="group-1" />
+            <property name="who" value="${who}" />
+            <validatorRef id="greeting-validator" />
+        </message>
+        <message uri="bobs-message.txt" multiplicity="2">
+            <header name="my-group" value="group-1" />
+            <property name="who" value="${who}" />
+            <validatorRef id="greeting-validator" />
+            <validatorRef id="service-validator" />
+        </message>
+    </messages>
+
+    <validation>
+        <validator id="greeting-validator" class="RegExpValidator">
+            <property name="pattern">
+                <text>hi M.*</text>
+            </property>
+        </validator>
+        <validator id="service-validator" class="RulesValidator">
+            <property name="pattern">
+                <text>Maria</text>
+            </property>
+        </validator>
+    </validation>
+</scenario>

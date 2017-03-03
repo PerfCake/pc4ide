@@ -22,7 +22,8 @@ package org.perfcake.ide.core.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import org.perfcake.ide.core.exception.ModelException;
+import org.perfcake.ide.core.exception.UnsupportedPropertyException;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 
 /**
  * Contains information about property of a model.
@@ -77,15 +78,20 @@ public abstract class AbstractProperty implements Property {
             throw new IllegalArgumentException("Class cannot be null.");
         }
 
-        if (!clazz.isAssignableFrom(propertyInfo.getType().getClazz())) {
-            throw new ModelException(String.format("Type of property value (%s) does not conform property type (%s)",
-                    clazz.getCanonicalName(), propertyInfo.getType().getClazz().getCanonicalName()));
+        if (!clazz.isAssignableFrom(type.getClazz())) {
+            throw new UnsupportedPropertyException(String.format("Type of property value (%s) does not conform property type (%s)",
+                    clazz.getCanonicalName(), type.getClazz().getCanonicalName()));
         }
         return clazz.cast(this);
     }
 
     @Override
     public void setPropertyInfo(PropertyInfo propertyInfo) {
+        if (propertyInfo != null && propertyInfo.getType() != type) {
+            throw new UnsupportedPropertyException(
+                    String.format("Type of the property info (%s) is not compatible with property type (%s).",
+                    propertyInfo.getType(), type));
+        }
         this.propertyInfo = propertyInfo;
     }
 
@@ -100,20 +106,20 @@ public abstract class AbstractProperty implements Property {
     }
 
     @Override
-    public void addPropertyListener(PropertyChangeListener listener) {
+    public void addPropertyListener(PropertyListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removePropertyListener(PropertyChangeListener listener) {
+    public void removePropertyListener(PropertyListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 
     /**
      * Notifies listeners about property change.
      *
-     * @param oldValue    old value of property
-     * @param newValue    new value of property
+     * @param oldValue old value of property
+     * @param newValue new value of property
      */
     protected void fireChangeEvent(Object oldValue, Object newValue) {
         this.fireChangeEvent(null, oldValue, newValue);
@@ -128,17 +134,19 @@ public abstract class AbstractProperty implements Property {
      * @param newValue    new value of property
      */
     protected void fireChangeEvent(String eventSuffix, Object oldValue, Object newValue) {
-        if (model != null) {
+        String eventName;
 
-            String eventName;
+        if (propertyInfo != null) {
             if (eventSuffix == null || eventSuffix.isEmpty()) {
                 eventName = propertyInfo.getName();
             } else {
                 eventName = String.format("%s-%s", propertyInfo.getName());
             }
-
-            pcs.firePropertyChange(eventName, oldValue, newValue);
+        } else {
+            eventName = "property value change";
         }
+
+        pcs.firePropertyChange(eventName, oldValue, newValue);
 
     }
 }

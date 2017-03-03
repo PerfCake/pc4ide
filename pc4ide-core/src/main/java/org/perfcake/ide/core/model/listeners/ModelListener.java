@@ -18,24 +18,14 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.inspector;
+package org.perfcake.ide.core.model.listeners;
 
-import java.util.List;
-import org.perfcake.ide.core.components.PerfCakeComponent;
+import java.beans.PropertyChangeListener;
 
 /**
- * Property inspector enables to find properties specific to implementation class of a PerfCake inspector.
+ * Represents listener of a {@link org.perfcake.ide.core.model.Model}.
  *
  * @author Jakub Knetl
  */
-public interface PropertyInspector {
-
-    /**
-     * Dynamically detects properties (fields) of a implementation clazz of a PerfCake component.
-     *
-     * @param implementation Clazz for which properties should be detected
-     * @return Map of property name and its default value.
-     */
-    List<ImplementationField> getProperties(Class<?> implementation);
-
+public interface ModelListener extends PropertyChangeListener {
 }

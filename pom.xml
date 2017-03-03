@@ -11,6 +11,7 @@
     <modules>
         <module>pc4ide-core</module>
         <module>pc4ide-editor</module>
+        <module>pc4ide-testing-components</module>
     </modules>
 
     <properties>
@@ -114,6 +115,18 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
                 <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.perfcake</groupId>
+                <artifactId>pc4ide-testing-components</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
 

@@ -21,7 +21,6 @@
 package org.perfcake.ide.core.model;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +38,8 @@ import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.inspector.ImplementationField;
 import org.perfcake.ide.core.inspector.PropertyInspector;
 import org.perfcake.ide.core.inspector.PropertyUtilsInspector;
+import org.perfcake.ide.core.model.listeners.ModelListener;
+import org.perfcake.ide.core.model.listeners.PropertyListener;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jakub Knetl
  */
-public abstract class AbstractModel extends AbstractProperty implements Model, PropertyChangeListener {
+public abstract class AbstractModel extends AbstractProperty implements Model, PropertyListener {
 
     static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -146,8 +147,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
             throw new UnsupportedPropertyException(String.format("The %s is not supported by the model.", propertyInfo));
         }
 
-        property.addPropertyListener(this);
-        container.addProperty(property);
+        property.addPropertyListener(this); // add listener so that this model listen for child property changes
+        container.addProperty(property); // add property
+        propertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), null, property));
     }
 
     @Override
@@ -168,7 +170,8 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
         boolean removed = container.removeProperty(property);
         if (removed) {
-            property.removePropertyListener(this);
+            property.removePropertyListener(this); // remove listener for property changes
+            propertyChange(new PropertyChangeEvent(this, propertyInfo.getName(), property, null));
         }
         return removed;
     }
@@ -188,6 +191,16 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
     @Override
     public List<Property> getProperties(PropertyInfo propertyInfo) {
+        if (propertyInfo == null || !getSupportedProperties().contains(propertyInfo)) {
+            return null;
+        }
+
+        return getPropertyContainer(propertyInfo).getProperties();
+    }
+
+    @Override
+    public List<Property> getProperties(String supportedPropertyName) {
+        PropertyInfo propertyInfo = getSupportedProperty(supportedPropertyName);
         if (propertyInfo == null || !getSupportedProperties().contains(propertyInfo)) {
             return null;
         }
@@ -223,12 +236,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
-    public void addModelListener(PropertyChangeListener listener) {
+    public void addModelListener(ModelListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
-    public void removeModelListener(PropertyChangeListener listener) {
+    public void removeModelListener(ModelListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 
@@ -240,10 +253,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     public void updateImplementation(String clazz) throws ImplementationNotFoundException {
 
         // remove old properties
-        for (PropertyInfo property : implementationProperties) {
-            PropertyContainer container = properties.get(property);
-            container.removeListener(this);
-            properties.remove(property);
+        for (PropertyInfo propertyInfo : implementationProperties) {
+            for (Property p : properties.get(propertyInfo)) {
+                p.removePropertyListener(this);
+            }
+            properties.remove(propertyInfo);
+            pcs.firePropertyChange(SUPPORTED_PROPERTIES_PROPERTY, propertyInfo, null);
         }
         implementationProperties.clear();
 
@@ -251,7 +266,7 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         ComponentLoader loader = new ComponentLoaderImpl();
         Class<?> newImplementation = loader.loadComponent(clazz, component);
         PropertyInspector inspector = new PropertyUtilsInspector();
-        List<ImplementationField> fields = inspector.getProperties(newImplementation, component);
+        List<ImplementationField> fields = inspector.getProperties(newImplementation);
 
         for (ImplementationField f : fields) {
             int minOccurs = (f.isMandatory()) ? 1 : 0;
@@ -260,8 +275,8 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
                     new PropertyInfo(f.getName(), this, Value.class, value, minOccurs, 1);
 
             PropertyContainer propertyContainer = new PropertyContainerImpl(this, implementationPropertyInfo);
-            propertyContainer.addListener(this);
             properties.put(implementationPropertyInfo, propertyContainer);
+            pcs.firePropertyChange(SUPPORTED_PROPERTIES_PROPERTY, null, implementationPropertyInfo);
             implementationProperties.add(implementationPropertyInfo);
         }
     }
@@ -283,7 +298,6 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         }
 
         PropertyContainer container = new PropertyContainerImpl(this, propertyInfo);
-        container.addListener(this);
         properties.put(propertyInfo, container);
         pcs.firePropertyChange(SUPPORTED_PROPERTIES_PROPERTY, null, propertyInfo);
 
