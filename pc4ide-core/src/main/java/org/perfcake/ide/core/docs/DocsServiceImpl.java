@@ -28,11 +28,11 @@ import java.util.Properties;
  * get documentation.
  * @author Jakub Knetl
  */
-public class DocServiceImpl implements DocsService {
+public class DocsServiceImpl implements DocsService {
 
     private Properties javadoc;
 
-    public DocServiceImpl(Properties javadoc) {
+    public DocsServiceImpl(Properties javadoc) {
         this.javadoc = javadoc;
     }
 

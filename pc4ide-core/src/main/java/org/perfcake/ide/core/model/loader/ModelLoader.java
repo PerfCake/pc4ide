@@ -36,7 +36,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.perfcake.PerfCakeConst;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.docs.DocServiceImpl;
+import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.converter.XmlConverter;
@@ -100,7 +100,7 @@ public class ModelLoader {
      */
     public ScenarioModel loadModel(URL url) throws PerfCakeException, ModelConversionException {
         final Scenario scenario = parse(url);
-        XmlConverter converter = new XmlConverter(new DocServiceImpl(new Properties()));
+        XmlConverter converter = new XmlConverter(new DocsServiceImpl(new Properties()));
         final ScenarioModel model = converter.convertToPc4ideModel(scenario);
         return model;
     }
