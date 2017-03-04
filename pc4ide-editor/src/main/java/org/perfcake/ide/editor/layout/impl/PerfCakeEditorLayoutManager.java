@@ -32,7 +32,8 @@ import org.perfcake.ide.editor.view.View;
  * PerfCakeEditorLayoutManager manages the layout of graphical part of PerfCake editor.
  */
 public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
-    public static final int DEFAULT_START_ANGLE = 225;
+
+    public static final int DEFAULT_START_ANGLE = 120;
 
     @Override
     public void layout(Graphics2D g2d) {
@@ -51,11 +52,13 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
 
         if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
             for (View v : children) {
-                startAngle -= extentMap.get(v);
                 final LayoutData data = new LayoutData(constraints);
                 data.getAngularData().setAngleExtent(extentMap.get(v));
                 data.getAngularData().setStartAngle(startAngle);
                 v.setLayoutData(data);
+
+                // move startAgle by angular extent of view v
+                startAngle += extentMap.get(v);
             }
         } else {
             // TODO: inspector requested larger angular extent than is available

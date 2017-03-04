@@ -98,10 +98,10 @@ public class EditorController extends AbstractController implements RootControll
                     Model generatorModel = properties.get(0).cast(Model.class);
                     final Controller generator = new GeneratorController(generatorModel, viewFactory);
                     addChild(generator);
-                    //} else if (PropertyNames.SENDER.toString().equals(propertyInfo.getName())) {
-                    //    Model senderModel = properties.get(0).cast(Model.class);
-                    //    final Controller sender = new SectionController(senderModel);
-                    //    addChild(sender);
+                } else if (PropertyNames.SENDER.toString().equals(propertyInfo.getName())) {
+                    Model senderModel = properties.get(0).cast(Model.class);
+                    final Controller sender = new SenderController(senderModel, viewFactory);
+                    addChild(sender);
                     //} else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
                     //    for (Property reporterModel : properties) {
                     //        final Controller reporter = new SectionController(reporterModel.cast(Model.class));

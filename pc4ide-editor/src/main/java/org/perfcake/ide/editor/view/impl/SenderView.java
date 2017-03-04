@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.view.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.perfcake.ide.editor.swing.icons.SenderIcon;
 import org.perfcake.ide.editor.view.Pair;
@@ -30,6 +31,9 @@ import org.perfcake.ide.editor.view.Pair;
  * @author Jakub Knetl
  */
 public class SenderView extends SectorView {
+
+    private String target;
+
     /**
      * creates new sector view.
      */
@@ -39,6 +43,17 @@ public class SenderView extends SectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        ArrayList<Pair> list = new ArrayList<>(1);
+        list.add(new Pair("target", target));
+
+        return list;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 }

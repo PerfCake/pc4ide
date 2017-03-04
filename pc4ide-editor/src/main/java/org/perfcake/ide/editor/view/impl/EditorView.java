@@ -97,7 +97,9 @@ public class EditorView extends AbstractView {
         if (jComponent != null) {
             //EditorView is a root so it may trigger validation
             Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
-            validate(g2d);
+            if (g2d != null) {
+                validate(g2d);
+            }
         }
     }
 
