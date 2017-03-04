@@ -26,6 +26,7 @@ import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;
+import org.perfcake.ide.editor.view.factory.ViewFactory;
 
 /**
  * Represents a controller of a PerfCake component.
@@ -82,6 +83,18 @@ public interface Controller extends MouseListener {
      * @return associated view.
      */
     View getView();
+
+    /**
+     * @return an instance of view factory.
+     */
+    ViewFactory getViewFactory();
+
+    /**
+     * Updates view data according to values in model.
+     *
+     * @return True if data was changed, false if data had been up to date before and no change was needed.
+     */
+    boolean updateViewData();
 
     /**
      * Accepts a visitor to visit this node.

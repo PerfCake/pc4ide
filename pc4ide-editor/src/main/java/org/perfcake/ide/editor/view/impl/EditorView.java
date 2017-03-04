@@ -27,7 +27,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import javax.swing.JComponent;
-
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
@@ -49,13 +48,10 @@ public class EditorView extends AbstractView {
 
     /**
      * Creates new editor view inside of swing container.
-     * @param jComponent swing container
      */
-    public EditorView(JComponent jComponent) {
-        super(null);
-        this.jComponent = jComponent;
+    public EditorView() {
+        super();
         layoutManager = new PerfCakeEditorLayoutManager();
-        layoutManager.setConstraint(getConstraints());
     }
 
     /* (non-Javadoc)
@@ -98,9 +94,11 @@ public class EditorView extends AbstractView {
      * a validation process.
      */
     public void invalidate() {
-        //EditorView is a root so it may trigger validation
-        Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
-        validate(g2d);
+        if (jComponent != null) {
+            //EditorView is a root so it may trigger validation
+            Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
+            validate(g2d);
+        }
     }
 
     @Override
@@ -112,6 +110,20 @@ public class EditorView extends AbstractView {
         super.validate(g2d);
 
         jComponent.repaint();
+    }
+
+    /**
+     * Sets JComponent to which the view will be drawn.
+     *
+     * @param jComponent pane for drawing this view.
+     */
+    public void setJComponent(JComponent jComponent) {
+        if (jComponent == null) {
+            throw new IllegalArgumentException("jcomponent cannot be null.");
+        }
+        this.jComponent = jComponent;
+        layoutManager.setConstraint(getConstraints());
+        invalidate();
     }
 
     private LayoutData getConstraints() {

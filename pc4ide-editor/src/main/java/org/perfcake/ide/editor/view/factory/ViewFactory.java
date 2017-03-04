@@ -17,43 +17,25 @@
  * limitations under the License.
  *-----------------------------------------------------------------------------
  */
-/**
- *
- */
 
-package org.perfcake.ide.editor.controller.impl;
+package org.perfcake.ide.editor.view.factory;
 
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.editor.controller.AbstractController;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.View;
-import org.perfcake.ide.editor.view.impl.SectorView;
 
 /**
- * Controls one section of a inspector.
+ * ViewFactory is responsible for creating view instances.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
-public class SectionController extends AbstractController {
-
-    private View view;
+public interface ViewFactory {
 
     /**
-     * Creates new section controller.
+     * Creates view for a model.
      *
-     * @param sectionName Name of the section to be controlled
-     * @param icon        Icon of a section
-     * @param model       model class
+     * @param model Model for which view will be created.
+     * @return view for the model
      */
-    public SectionController(String sectionName, ResizableIcon icon, Model model) {
-        super(model);
-        final View parentView = (getParent() == null) ? null : getParent().getView();
-        view = new SectorView(parentView, sectionName, icon);
-    }
-
-    @Override
-    public View getView() {
-        return view;
-    }
+    View createView(Model model);
 
 }

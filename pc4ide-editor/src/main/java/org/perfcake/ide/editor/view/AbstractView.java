@@ -27,7 +27,6 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 
@@ -48,11 +47,9 @@ public abstract class AbstractView implements View {
 
     /**
      * Creates new abstract view.
-     * @param parent parent view
      */
-    public AbstractView(View parent) {
+    public AbstractView() {
         super();
-        this.parent = parent;
         isValid = false;
     }
 
@@ -121,9 +118,12 @@ public abstract class AbstractView implements View {
 
     @Override
     public void addChild(View view) {
-        children.add(view);
-        if (layoutManager != null) {
-            layoutManager.add(view);
+        if (view != null) {
+            children.add(view);
+            view.setParent(this);
+            if (layoutManager != null) {
+                layoutManager.add(view);
+            }
         }
     }
 
@@ -132,6 +132,11 @@ public abstract class AbstractView implements View {
         if (layoutManager != null) {
             layoutManager.remove(view);
         }
-        return children.remove(view);
+        boolean removed = children.remove(view);
+        if (removed) {
+            view.setParent(null);
+        }
+
+        return removed;
     }
 }

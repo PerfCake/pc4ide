@@ -32,6 +32,8 @@ import javax.swing.JPanel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.editor.controller.impl.EditorController;
 import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
+import org.perfcake.ide.editor.view.factory.ViewFactory;
 
 /**
  * GraphicalPanel represents a graphical part of pc4ide editor.
@@ -50,7 +52,8 @@ public class GraphicalPanel extends JPanel {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
-        editorController = new EditorController(this, scenarioModel, formManager);
+        ViewFactory viewFactory = new GraphicalViewFactory();
+        editorController = new EditorController(this, scenarioModel, viewFactory, formManager);
         this.setBackground(Color.WHITE);
     }
 

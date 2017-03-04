@@ -36,38 +36,30 @@ import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.AbstractView;
-import org.perfcake.ide.editor.view.View;
+import org.perfcake.ide.editor.view.Pair;
 
 /**
  * Represents a view of the sector.
  *
  * @author jknetl
  */
-public class SectorView extends AbstractView {
+public abstract class SectorView extends AbstractView {
 
-    public String getComponentName() {
-        return componentName;
-    }
-
-    private String componentName;
-    private ResizableIcon icon;
-
-    private Shape bounds;
+    protected ResizableIcon icon;
+    protected String header;
+    protected Shape bounds;
 
     /**
      * creates new sector view.
      *
-     * @param parent        parent view
-     * @param componentName name of the inspector in the sector
-     * @param icon          icon of the inspector in the sector
+     * @param icon icon of the inspector in the sector
      */
-    public SectorView(View parent, String componentName, ResizableIcon icon) {
-        super(parent);
-        this.componentName = componentName;
+    public SectorView(ResizableIcon icon) {
         this.icon = icon;
     }
 
@@ -96,8 +88,16 @@ public class SectorView extends AbstractView {
         g2d.draw(boundArea);
         g2d.setStroke(defaultStorke);
 
-        drawSectorName(g2d);
+        drawText(g2d);
 
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     private Area drawBounds() {
@@ -141,7 +141,7 @@ public class SectorView extends AbstractView {
         return new Rectangle2D.Double(iconX, iconY, icon.getIconWidth(), icon.getIconHeight());
     }
 
-    protected void drawSectorName(Graphics2D g2d) {
+    protected void drawText(Graphics2D g2d) {
         final Point2D startOuterArcPoint = new Point2D.Double(layoutData.getCenter().getX() + layoutData.getRadiusData().getOuterRadius()
                 * Math.cos(Math.toRadians(-layoutData.getAngularData().getStartAngle())),
                 layoutData.getCenter().getY() + layoutData.getRadiusData().getOuterRadius()
@@ -162,7 +162,7 @@ public class SectorView extends AbstractView {
         final AffineTransform defaultTransform = g2d.getTransform();
         final FontRenderContext frc = g2d.getFontRenderContext();
         final Font font = g2d.getFont();
-        final Rectangle2D fontBounds = font.getStringBounds(componentName, frc);
+        final Rectangle2D fontBounds = font.getStringBounds(header, frc);
 
         final Point2D textCenter = new Point2D.Double(
                 chordCenter.getX() - fontBounds.getHeight() * Math.cos(Math.toRadians(
@@ -175,7 +175,7 @@ public class SectorView extends AbstractView {
         g2d.rotate(Math.toRadians(theta), textCenter.getX(), textCenter.getY());
         // g2d.drawString(componentName, (float) (textCenter.getX() - fontBounds.getWidth() / 2),
         // (float) (textCenter.getY() - fontBounds.getHeight() / 2));
-        g2d.drawString(componentName, (float) (textCenter.getX()), (float) (textCenter.getY()));
+        g2d.drawString(header, (float) (textCenter.getX()), (float) (textCenter.getY()));
         g2d.setTransform(defaultTransform);
     }
 
@@ -196,4 +196,9 @@ public class SectorView extends AbstractView {
         return minimumSize;
     }
 
+    /**
+     *
+     * @return List of additional pairs of key value, which this view will draw into surface along with header.
+     */
+    protected abstract List<Pair> getAdditionalData();
 }

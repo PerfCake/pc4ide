@@ -32,6 +32,8 @@ import java.util.List;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
+import org.perfcake.ide.editor.view.View;
+import org.perfcake.ide.editor.view.factory.ViewFactory;
 
 /**
  * AbstractController provides default implementation for some methods from {@link Controller} interface.
@@ -45,17 +47,22 @@ import org.perfcake.ide.editor.view.UnsupportedChildViewException;
  */
 public abstract class AbstractController implements Controller {
 
-    private Model model;
-    private List<Controller> children = new ArrayList<>();
-    private Controller parent = null;
+    protected ViewFactory viewFactory;
+    protected View view;
+    protected Model model;
+    protected List<Controller> children = new ArrayList<>();
+    protected Controller parent = null;
 
     /**
      * Creates abstract controller which will manage a model.
      * @param model model to be managed
+     * @param viewFactory viewFactory which may be used to create views.
      */
-    public AbstractController(Model model) {
+    public AbstractController(Model model, ViewFactory viewFactory) {
         super();
         this.model = model;
+        this.viewFactory = viewFactory;
+        this.view = viewFactory.createView(model);
     }
 
     @Override
@@ -103,6 +110,16 @@ public abstract class AbstractController implements Controller {
             getView().invalidate();
         }
         return removed;
+    }
+
+    @Override
+    public View getView() {
+        return view;
+    }
+
+    @Override
+    public ViewFactory getViewFactory() {
+        return viewFactory;
     }
 
     @Override
