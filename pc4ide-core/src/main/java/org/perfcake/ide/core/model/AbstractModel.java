@@ -215,6 +215,31 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
+    public <T extends Property> T getSingleProperty(String supportedPropertyName, Class<? extends T> type)
+            throws UnsupportedPropertyException {
+
+        PropertyInfo info = getSupportedProperty(supportedPropertyName);
+
+        if (info == null) {
+            return null;
+        }
+
+        List<Property> properties = getProperties(info);
+
+        if (properties.isEmpty()) {
+            return null;
+        }
+
+        Property firstProperty = properties.get(0);
+        if (firstProperty != null && !type.isAssignableFrom(firstProperty.getClass())) {
+            throw new UnsupportedPropertyException(String.format("Cannot cast '%s' to '%s'",
+                    firstProperty.getClass().getCanonicalName(), type.getCanonicalName()));
+        }
+
+        return firstProperty.cast(type);
+    }
+
+    @Override
     public boolean isEmpty(PropertyInfo propertyInfo) throws UnsupportedPropertyException {
         PropertyContainer container = getPropertyContainer(propertyInfo);
         if (propertyInfo == null || container == null) {
@@ -243,12 +268,12 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
     @Override
     public boolean isValid() {
-        return validator.validate(this,this) == null;
+        return validator.validate(this, this) == null;
     }
 
     @Override
     public ValidationError getValidationError() {
-        return validator.validate(this,this);
+        return validator.validate(this, this);
     }
 
     @Override

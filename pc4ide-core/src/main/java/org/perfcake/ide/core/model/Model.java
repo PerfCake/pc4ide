@@ -98,6 +98,17 @@ public interface Model extends Property {
      */
     List<Property> getProperties(String supportedPropertyName);
 
+    /**
+     * Gets single property for supported property with given name.
+     *
+     * @param supportedPropertyName name of the supported property.
+     * @param type type of an expected property
+     * @param <T> Type of the property
+     * @throws UnsupportedPropertyException if property is found but it has different type so that it cannot be casted.
+     * @return Property or null, if there is no such property.
+     */
+    <T extends Property> T getSingleProperty(String supportedPropertyName, Class<? extends T> type) throws UnsupportedPropertyException;
+
 
     /**
      * Determines whether the properties for given property info is empty.

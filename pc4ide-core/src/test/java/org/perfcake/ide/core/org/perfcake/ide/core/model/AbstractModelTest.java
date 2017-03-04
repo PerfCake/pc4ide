@@ -48,12 +48,14 @@ import org.perfcake.ide.core.model.components.ReporterModel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.SenderModel;
 import org.perfcake.ide.core.model.listeners.ModelListener;
+import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.core.utils.TestUtils;
 
 /**
  * Tests for {@link org.perfcake.ide.core.model.AbstractModel}.
+ *
  * @author Jakub Knetl
  */
 public class AbstractModelTest {
@@ -63,6 +65,7 @@ public class AbstractModelTest {
 
     /**
      * Sets up tests.
+     *
      * @throws IOException when there is problem in reading javadoc properties.
      */
     @Before
@@ -127,7 +130,7 @@ public class AbstractModelTest {
         model.addProperty(reporterInfo, reporter1);
         model.addProperty(reporterInfo, reporter2);
         assertThat(model.getProperties(reporterInfo), containsInAnyOrder(reporter1, reporter2));
-        model.removeProperty(reporterInfo,reporter1);
+        model.removeProperty(reporterInfo, reporter1);
         assertThat(model.getProperties(reporterInfo), containsInAnyOrder(reporter2));
     }
 
@@ -146,6 +149,27 @@ public class AbstractModelTest {
         Model generator = new GeneratorModel(docsService);
         model.addProperty(info, generator);
         assertThat(model.getProperties(info).isEmpty(), equalTo(false));
+    }
+
+    @Test
+    public void testGetSingleProperty() {
+
+        model = new ScenarioModel(docsService);
+
+        PropertyInfo info = model.getSupportedProperty(ScenarioModel.PropertyNames.GENERATOR.toString());
+
+        Model generator = new GeneratorModel(docsService);
+        model.addProperty(info, generator);
+        assertThat(model.getSingleProperty(ScenarioModel.PropertyNames.GENERATOR.toString(), Model.class), equalTo(generator));
+
+        try {
+            model.getSingleProperty(ScenarioModel.PropertyNames.GENERATOR.toString(), Value.class);
+            fail("UnsupportedPropertyException expected!");
+        } catch (UnsupportedPropertyException e) {
+            //OK, expected behaviour
+        }
+
+        assertThat(model.getSingleProperty("wrong-name", KeyValue.class), nullValue());
     }
 
     @Test
