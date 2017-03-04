@@ -23,6 +23,7 @@
 
 package org.perfcake.ide.editor;
 
+import com.sun.tools.classfile.SourceFile_attribute;
 import java.awt.EventQueue;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -50,9 +51,13 @@ public class Main {
      * @throws ModelConversionException when model cannot be converted
      */
     public static void main(String[] args) throws PerfCakeException, MalformedURLException, ModelConversionException {
-        // TODO Auto-generated method stub
 
-        final File scenarioFile = new File("src/main/resources/scenario/http.xml");
+        if (args.length == 0) {
+            System.out.println("No scenario file specified as argument. Exiting");
+            System.exit(1);
+        }
+
+        final File scenarioFile = new File(args[0]);
         ModelLoader loader = new ModelLoader();
         final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
 
