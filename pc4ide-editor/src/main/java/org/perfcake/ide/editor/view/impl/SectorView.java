@@ -81,6 +81,26 @@ public class SectorView extends AbstractView {
         hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.addRenderingHints(hints);
 
+        // draw shape of the sector
+        final Area boundArea = drawBounds();
+
+        // draw the icon
+        drawIcon(g2d);
+
+        final Stroke defaultStorke = g2d.getStroke();
+        if (isSelected()) {
+            final Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g2d.setStroke(selectedStroke);
+        }
+
+        g2d.draw(boundArea);
+        g2d.setStroke(defaultStorke);
+
+        drawSectorName(g2d);
+
+    }
+
+    private Area drawBounds() {
         final Arc2D outerArc = new Arc2D.Double();
         outerArc.setArcByCenter(layoutData.getCenter().getX(), layoutData.getCenter().getY(), layoutData.getRadiusData().getOuterRadius(),
                 layoutData.getAngularData().getStartAngle(), layoutData.getAngularData().getAngleExtent(),
@@ -94,24 +114,11 @@ public class SectorView extends AbstractView {
                 layoutData.getAngularData().getStartAngle() - angularOverlap,
                 layoutData.getAngularData().getAngleExtent() + 2 * angularOverlap, Arc2D.PIE);
 
-        drawIcon(g2d);
-
         final Area boundArea = new Area(outerArc);
         boundArea.subtract(new Area(innerArc));
 
         bounds = boundArea;
-
-        final Stroke defaultStorke = g2d.getStroke();
-        if (isSelected()) {
-            final Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2d.setStroke(selectedStroke);
-        }
-
-        g2d.draw(boundArea);
-        g2d.setStroke(defaultStorke);
-
-        drawSectorName(g2d);
-
+        return boundArea;
     }
 
     private void drawIcon(Graphics2D g2d) {
