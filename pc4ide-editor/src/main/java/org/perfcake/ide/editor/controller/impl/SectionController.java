@@ -26,7 +26,7 @@ package org.perfcake.ide.editor.controller.impl;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.impl.SectorView;
 
 /**
@@ -36,7 +36,7 @@ import org.perfcake.ide.editor.view.impl.SectorView;
  */
 public class SectionController extends AbstractController {
 
-    private ComponentView view;
+    private View view;
 
     /**
      * Creates new section controller.
@@ -47,12 +47,12 @@ public class SectionController extends AbstractController {
      */
     public SectionController(String sectionName, ResizableIcon icon, Model model) {
         super(model);
-        final ComponentView parentView = (getParent() == null) ? null : getParent().getView();
+        final View parentView = (getParent() == null) ? null : getParent().getView();
         view = new SectorView(parentView, sectionName, icon);
     }
 
     @Override
-    public ComponentView getView() {
+    public View getView() {
         return view;
     }
 

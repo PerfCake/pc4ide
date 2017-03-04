@@ -17,49 +17,44 @@
  * limitations under the License.
  *-----------------------------------------------------------------------------
  */
-/**
- *
- */
 
 package org.perfcake.ide.editor.view;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.util.List;
-
 import org.perfcake.ide.editor.layout.LayoutData;
 
 /**
- * Base type for inspector view in editor MVC.
+ * Base type for a view in editor MVC.
  *
  * @author jknetl
  */
-public interface ComponentView {
+public interface View {
 
     /**
      * @return true if the view is currently selected.
      */
-    public boolean isSelected();
+    boolean isSelected();
 
     /**
      * toggle the view selection.
      *
      * @param selected set as selected?
      */
-    public void setSelected(boolean selected);
+    void setSelected(boolean selected);
 
     /**
      * draw view on the surface.
      *
      * @param g2d Graphics context
      */
-    public void draw(Graphics2D g2d);
+    void draw(Graphics2D g2d);
 
     /**
      * @return Shape which completely encloses this view graphical representation.
      */
-    public Shape getViewBounds();
+    Shape getViewBounds();
 
     /**
      * Computes a minimum size of the view. The constraint argument is used as a constraint for the size. So if
@@ -70,53 +65,53 @@ public interface ComponentView {
      * @param g2d        Graphics context
      * @return Minimum size of the inspector according to given constraints.
      */
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
+    LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
 
     /**
      * @return Actual layoutData of the view.
      */
-    public LayoutData getLayoutData();
+    LayoutData getLayoutData();
 
     /**
-     * Sets layout which will be used for the inspector on {@link #draw(Graphics)} method.
+     * Sets layout which will be used for the inspector on {@link #draw(Graphics2D)} method.
      *
      * @param data layout data to be set
      */
-    public void setLayoutData(LayoutData data);
+    void setLayoutData(LayoutData data);
 
     /**
      * @return <b>unmodifiable list of</b> views that acts as a child of current view (they are inside of the view).
      */
-    public List<ComponentView> getChildren();
+    List<View> getChildren();
 
     /**
      * @return view which is parent of the view. Root view will return null.
      */
-    public ComponentView getParent();
+    View getParent();
 
     /**
      * Sets a parent of this view.
      *
      * @param parent parent view
      */
-    public void setParent(ComponentView parent);
+    void setParent(View parent);
 
     /**
      * Adds child view.
      *
      * @param view view to add
      */
-    public void addChild(ComponentView view);
+    void addChild(View view);
 
     /**
      * @return true if the view is valid (up to date).
      */
-    public boolean isValid();
+    boolean isValid();
 
     /**
      * Invalidates view to indicate that it needs to be redrawn.
      */
-    public void invalidate();
+    void invalidate();
 
     /**
      * Validates the view and the view of the children. It means that it sets view sizes and positions so that consequent draw operation
@@ -124,7 +119,7 @@ public interface ComponentView {
      *
      * @param g2d Graphics context
      */
-    public void validate(Graphics2D g2d);
+    void validate(Graphics2D g2d);
 
 
     /**
@@ -133,6 +128,6 @@ public interface ComponentView {
      * @param view child view to be removed
      * @return true if the view was removed or false if the view is not children of this view.
      */
-    public boolean removeChild(ComponentView view);
+    boolean removeChild(View view);
 
 }

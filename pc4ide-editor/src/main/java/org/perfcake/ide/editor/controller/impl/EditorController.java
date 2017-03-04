@@ -43,20 +43,19 @@ import org.perfcake.ide.editor.swing.icons.ReporterIcon;
 import org.perfcake.ide.editor.swing.icons.SenderIcon;
 import org.perfcake.ide.editor.swing.icons.SequenceIcon;
 import org.perfcake.ide.editor.swing.icons.ValidatorIcon;
-import org.perfcake.ide.editor.view.ComponentView;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
+import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.impl.EditorView;
 
 
 /**
- * Controler of the editor.
+ * Controller of the editor.
  */
 public class EditorController extends AbstractController implements RootController {
 
     private JComponent jComponent;
     private EditorView view;
     private FormManager formManager;
-
 
     /**
      * Creates new editor controller.
@@ -71,6 +70,41 @@ public class EditorController extends AbstractController implements RootControll
         this.formManager = formManager;
         view = new EditorView(jComponent);
 
+        createChildrenControllers(model);
+    }
+
+    @Override
+    public void addChild(Controller child) throws UnsupportedChildViewException {
+        if (child instanceof SectionController) {
+            super.addChild(child);
+        } else {
+            throw new UnsupportedChildViewException("Editor controller can accept only SectorController object as child");
+        }
+    }
+
+    @Override
+    public View getView() {
+        return view;
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+        UnselectVisitor unselectVisitor = new UnselectVisitor();
+        unselectVisitor.visit(this);
+
+        Point2D point = new Point2D.Double(e.getX(), e.getY());
+        SelectVisitor selectVisitor = new SelectVisitor(point, formManager);
+        selectVisitor.visit(this);
+
+    }
+
+    @Override
+    public JComponent getJComponent() {
+        return this.jComponent;
+    }
+
+    private void createChildrenControllers(ScenarioModel model) {
         for (final PropertyInfo propertyInfo : model.getSupportedProperties()) {
             List<Property> properties =  model.getProperties(propertyInfo);
             if (propertyInfo.getType() == PropertyType.MODEL && properties != null && !properties.isEmpty()) {
@@ -110,36 +144,5 @@ public class EditorController extends AbstractController implements RootControll
                 }
             }
         }
-    }
-
-    @Override
-    public void addChild(Controller child) throws UnsupportedChildViewException {
-        if (child instanceof SectionController) {
-            super.addChild(child);
-        } else {
-            throw new UnsupportedChildViewException("Editor controller can accept only SectorController object as child");
-        }
-    }
-
-    @Override
-    public ComponentView getView() {
-        return view;
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-        UnselectVisitor unselectVisitor = new UnselectVisitor();
-        unselectVisitor.visit(this);
-
-        Point2D point = new Point2D.Double(e.getX(), e.getY());
-        SelectVisitor selectVisitor = new SelectVisitor(point, formManager);
-        selectVisitor.visit(this);
-
-    }
-
-    @Override
-    public JComponent getJComponent() {
-        return this.jComponent;
     }
 }

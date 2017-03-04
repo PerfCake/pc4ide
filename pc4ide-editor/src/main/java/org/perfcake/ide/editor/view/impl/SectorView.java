@@ -40,7 +40,7 @@ import java.util.Map;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.AbstractView;
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
  * Represents a view of the sector.
@@ -65,14 +65,14 @@ public class SectorView extends AbstractView {
      * @param componentName name of the inspector in the sector
      * @param icon          icon of the inspector in the sector
      */
-    public SectorView(ComponentView parent, String componentName, ResizableIcon icon) {
+    public SectorView(View parent, String componentName, ResizableIcon icon) {
         super(parent);
         this.componentName = componentName;
         this.icon = icon;
     }
 
     /* (non-Javadoc)
-     * @see org.perfcake.ide.editor.view.ComponentView#draw(java.awt.Graphics)
+     * @see org.perfcake.ide.editor.view.View#draw(java.awt.Graphics)
      */
     @Override
     public void draw(Graphics2D g2d) {

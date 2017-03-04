@@ -26,10 +26,10 @@ package org.perfcake.ide.editor.layout.impl;
 import java.awt.Graphics2D;
 
 import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
- * Simple circular manager lays out the children into circular secotrs. It computes angular
+ * Simple circular manager lays out the children into circular sectors. It computes angular
  * extent of each child equally so that each child has same extent.
  *
  * @author jknetl
@@ -48,7 +48,7 @@ public class SimpleCircularLayoutManager extends org.perfcake.ide.editor.layout.
         final double angularExtendForChild = constraints.getAngularData().getAngleExtent() / numOfChildren;
         double startAngle = constraints.getAngularData().getStartAngle();
 
-        for (ComponentView v : getChildren()) {
+        for (View v : getChildren()) {
             final LayoutData data = new LayoutData(constraints);
             data.getAngularData().setAngleExtent(angularExtendForChild);
             data.getAngularData().setStartAngle(startAngle);

@@ -32,15 +32,15 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 
 /**
- * {@link AbstractView} implements some of the methods of {@link ComponentView} interface.
+ * {@link AbstractView} implements some of the methods of {@link View} interface.
  *
  * @author jknetl
  */
-public abstract class AbstractView implements ComponentView {
+public abstract class AbstractView implements View {
 
     private boolean isSelected = false;
-    private List<ComponentView> children = new ArrayList<>();
-    private ComponentView parent;
+    private List<View> children = new ArrayList<>();
+    private View parent;
     protected boolean isValid;
 
     protected LayoutData layoutData;
@@ -50,7 +50,7 @@ public abstract class AbstractView implements ComponentView {
      * Creates new abstract view.
      * @param parent parent view
      */
-    public AbstractView(ComponentView parent) {
+    public AbstractView(View parent) {
         super();
         this.parent = parent;
         isValid = false;
@@ -88,7 +88,7 @@ public abstract class AbstractView implements ComponentView {
         if (layoutManager != null) {
             layoutManager.layout(g2d);
         }
-        for (final ComponentView view : children) {
+        for (final View view : children) {
             view.validate(g2d);
         }
         isValid = true;
@@ -105,22 +105,22 @@ public abstract class AbstractView implements ComponentView {
     }
 
     @Override
-    public List<ComponentView> getChildren() {
+    public List<View> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
     @Override
-    public ComponentView getParent() {
+    public View getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(ComponentView parent) {
+    public void setParent(View parent) {
         this.parent = parent;
     }
 
     @Override
-    public void addChild(ComponentView view) {
+    public void addChild(View view) {
         children.add(view);
         if (layoutManager != null) {
             layoutManager.add(view);
@@ -128,7 +128,7 @@ public abstract class AbstractView implements ComponentView {
     }
 
     @Override
-    public boolean removeChild(ComponentView view) {
+    public boolean removeChild(View view) {
         if (layoutManager != null) {
             layoutManager.remove(view);
         }

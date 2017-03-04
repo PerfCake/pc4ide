@@ -23,7 +23,7 @@ package org.perfcake.ide.editor.controller.visitor;
 import java.util.Iterator;
 
 import org.perfcake.ide.editor.controller.Controller;
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
  * Traverses through all controllers and unselects its view.
@@ -32,7 +32,7 @@ public class UnselectVisitor implements ControllerVisitor {
 
     @Override
     public void visit(Controller controller) {
-        ComponentView view = controller.getView();
+        View view = controller.getView();
 
         if (view != null) {
             view.setSelected(false);

@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
  * Created by jknetl on 10/15/16.
  */
 public abstract class AbstractLayoutManager implements LayoutManager {
     protected LayoutData constraints;
-    protected List<ComponentView> children;
+    protected List<View> children;
 
     public AbstractLayoutManager() {
         children = new ArrayList<>();
@@ -43,17 +43,17 @@ public abstract class AbstractLayoutManager implements LayoutManager {
     }
 
     @Override
-    public void add(ComponentView component) {
+    public void add(View component) {
         children.add(component);
     }
 
     @Override
-    public boolean remove(ComponentView component) {
+    public boolean remove(View component) {
         return children.remove(component);
     }
 
     @Override
-    public List<ComponentView> getChildren() {
+    public List<View> getChildren() {
         return Collections.unmodifiableList(children);
     }
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.perfcake.ide.editor.layout.AbstractLayoutManager;
 import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
  * PerfCakeEditorLayoutManager manages the layout of graphical part of PerfCake editor.
@@ -37,11 +37,11 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
     @Override
     public void layout(Graphics2D g2d) {
 
-        Map<ComponentView, Double> extentMap = new HashMap<>();
+        Map<View, Double> extentMap = new HashMap<>();
 
         double requestedExtentByChildren = 0.0;
 
-        for (ComponentView child : children) {
+        for (View child : children) {
             double extent = child.getMinimumSize(constraints, g2d).getAngularData().getAngleExtent();
             extentMap.put(child, extent);
             requestedExtentByChildren += extent;
@@ -50,7 +50,7 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
         double startAngle = DEFAULT_START_ANGLE;
 
         if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
-            for (ComponentView v : children) {
+            for (View v : children) {
                 startAngle -= extentMap.get(v);
                 final LayoutData data = new LayoutData(constraints);
                 data.getAngularData().setAngleExtent(extentMap.get(v));

@@ -26,7 +26,7 @@ package org.perfcake.ide.editor.layout;
 import java.awt.Graphics2D;
 import java.util.List;
 
-import org.perfcake.ide.editor.view.ComponentView;
+import org.perfcake.ide.editor.view.View;
 
 /**
  * Layout manger computes {@link LayoutData} for children components.
@@ -56,7 +56,7 @@ public interface LayoutManager {
      *
      * @param component inspector to be managed by this layout manager
      */
-    void add(ComponentView component);
+    void add(View component);
 
     /**
      * Removes a graphical inspector from the layout so that this layout manager won't manager inspector
@@ -65,11 +65,11 @@ public interface LayoutManager {
      * @param component inspector to be removed from this layout manager
      * @return true if the inspector was removed, or false if inspector couldn't be found.
      */
-    boolean remove(ComponentView component);
+    boolean remove(View component);
 
     /**
      * @return <b>Unmodifiable List</b> of all managed inspector views.
      */
-    List<ComponentView> getChildren();
+    List<View> getChildren();
 
 }
