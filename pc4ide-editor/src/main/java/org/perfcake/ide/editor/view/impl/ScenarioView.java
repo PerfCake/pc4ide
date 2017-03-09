@@ -24,8 +24,11 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;

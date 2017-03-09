@@ -79,9 +79,12 @@ public abstract class SectorView extends AbstractView {
         if (layoutData == null) {
             return;
         }
-        //antialiasing
+
+        // antialiasing of the shapes
         final Map<Object, Object> hints = new HashMap<>();
         hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
+        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.addRenderingHints(hints);
 
         // draw shape of the sector
