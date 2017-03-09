@@ -178,11 +178,25 @@ public abstract class SectorView extends AbstractView {
 
         Rectangle2D textDimension = computeTextBounds(g2d, layoutData.getWidth());
 
-        //do not compoute text position from inside, but rather place it near to the outer radius:
+        double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
+                chordCenter,
+                layoutData.getRadiusData().getOuterRadius());
+
+        final double textInnerBound = layoutData.getCenter().getX()
+                + layoutData.getRadiusData().getInnerRadius()
+                + 2 * PADDING
+                + icon.getIconWidth();
+        final double textOuterBound = layoutData.getCenter().getX()
+                + layoutData.getRadiusData().getOuterRadius()
+                - chordDistanceFromOuterRadius
+                - PADDING;
+        final double maximumWidthForText = textOuterBound - textInnerBound;
+
+        //do not compute text position from inside, but rather place it near to the outer radius:
         double textCenterX =
                 layoutData.getCenter().getX()
                         + layoutData.getRadiusData().getOuterRadius()
-                        - getChordDistanceFromOuterRadius(layoutData.getCenter(), chordCenter, layoutData.getRadiusData().getOuterRadius())
+                        - chordDistanceFromOuterRadius
                         - PADDING
                         - (textDimension.getWidth() / 2);
 
@@ -205,14 +219,17 @@ public abstract class SectorView extends AbstractView {
 
         // TODO: find out why 1*ascent() is not enough ???
         double y = textRectangle.getY() + 2.5 * headerMetrics.getAscent() + PADDING;
-        g2d.drawString(header, (float) textRectangle.getX(), (float) y);
+
+        String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidthForText);
+        g2d.drawString(renderedHeader, (float) textRectangle.getX(), (float) y);
 
         List<Pair> additionalData = getAdditionalData();
         FontMetrics additionalTextMetrics = g2d.getFontMetrics(font);
 
         for (Pair p : additionalData) {
             y += additionalTextMetrics.getHeight();
-            g2d.drawString(p.getKey() + ": " + p.getValue(), (float) (textRectangle.getX()), (float) y);
+            String renderedPair = Utils2D.computeRenderedPart(p.getKey() + ": " + p.getValue(), headerMetrics, maximumWidthForText);
+            g2d.drawString(renderedPair, (float) (textRectangle.getX()), (float) y);
         }
         g2d.setTransform(defaultTransform);
     }

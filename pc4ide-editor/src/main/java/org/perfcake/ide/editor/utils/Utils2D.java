@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.utils;
 
+import java.awt.FontMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -92,5 +93,52 @@ public class Utils2D {
      */
     public static double getMiddleAngle(AngularData angularData) {
         return angularData.getStartAngle() + (angularData.getAngleExtent() / 2);
+    }
+
+    /**
+     * Computes part of the string which will fit into the width. If string do not fit into width limit, then only part of the
+     * string is returned. Returned text may contain additional characters indicating, that text is not rendered completely.
+     *
+     * @param text        text which should be rendered
+     * @param fontMetrics metrics for the text
+     * @param widthLimit  maximum widht of the text.
+     * @return Whole or part of the string which will fit into widthLimit. If only part of the text is returned, then
+     *     String may contain additional characters indicating incompleteness of the text.
+     */
+    public static String computeRenderedPart(String text, FontMetrics fontMetrics, double widthLimit) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+
+        if (widthLimit <= 0) {
+            return "";
+        }
+        double textWidth = fontMetrics.stringWidth(text);
+        String result;
+
+        if (textWidth > widthLimit) {
+            String dots = "...";
+            double averageCharWidth = textWidth / text.length();
+            int estimatedChars = (int) (widthLimit / averageCharWidth);
+
+            String shortenedText = text.substring(0, Math.min(estimatedChars, text.length()));
+            textWidth = fontMetrics.stringWidth(shortenedText + dots);
+
+            // if shortening by average width is not enough then try to remove char one by one
+            while (textWidth > widthLimit && !shortenedText.isEmpty()) {
+                shortenedText = shortenedText.substring(0, shortenedText.length() - 1);
+                textWidth = fontMetrics.stringWidth(shortenedText + dots);
+            }
+
+            if (!shortenedText.isEmpty()) {  // if shortened text is not empty then there is a text which fits together with dots
+                shortenedText = shortenedText + dots;
+            }
+
+            result = shortenedText;
+        } else {
+            result = text;
+        }
+        return result;
+
     }
 }
