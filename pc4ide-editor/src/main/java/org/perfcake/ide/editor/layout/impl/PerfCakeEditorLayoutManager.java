@@ -21,9 +21,12 @@
 package org.perfcake.ide.editor.layout.impl;
 
 import java.awt.Graphics2D;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.perfcake.ide.editor.comparator.ViewComparator;
 import org.perfcake.ide.editor.layout.AbstractLayoutManager;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.View;
@@ -34,6 +37,8 @@ import org.perfcake.ide.editor.view.View;
 public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
 
     public static final int DEFAULT_START_ANGLE = 120;
+
+    private Comparator<View> viewComparator = new ViewComparator();
 
     @Override
     public void layout(Graphics2D g2d) {
@@ -66,4 +71,9 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
         }
     }
 
+    @Override
+    public void add(View component) {
+        super.add(component);
+        Collections.sort(children, viewComparator);
+    }
 }

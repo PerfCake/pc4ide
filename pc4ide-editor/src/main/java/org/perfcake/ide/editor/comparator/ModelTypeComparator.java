@@ -18,10 +18,10 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.comparator;
+package org.perfcake.ide.editor.comparator;
 
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.CorrelatorModel;
 import org.perfcake.ide.core.model.components.DestinationModel;
@@ -35,24 +35,19 @@ import org.perfcake.ide.core.model.components.SequenceModel;
 import org.perfcake.ide.core.model.components.ValidatorModel;
 
 /**
- * ModelTypeComparator is {@link java.util.Comparator} which is able to compare Model objects. It contains Map of model type priorities,
- * Each model object is assigned some priority based on actual implementation class (type) of a model. So if objects have different type
- * then comparison is made based on type priorities. The lower priority, the less instance is.
- * If instance's type has no priority defined, then it has maximum priority.
- * If two instances have same priorities (e.g. they have same type), then they are considered equal.
- * the other.
- *
+ * Implementation of {@link ImplementationPriorityComparator}.
  * @author Jakub Knetl
  */
-public class ModelTypeComparator implements Comparator<Model> {
+public class ModelTypeComparator extends ImplementationPriorityComparator<Model> {
 
     private HashMap<Class<? extends Model>, Integer> priorities;
 
     public ModelTypeComparator() {
-        this.priorities = createPriorities();
+        super();
     }
 
-    private HashMap<Class<? extends Model>, Integer> createPriorities() {
+    @Override
+    protected Map<Class<? extends Model>, Integer> initializePriorities() {
         HashMap<Class<? extends Model>, Integer> map = new HashMap<>();
 
         map.put(ScenarioModel.class, 0);
@@ -69,45 +64,4 @@ public class ModelTypeComparator implements Comparator<Model> {
         return priorities;
     }
 
-    @Override
-    public int compare(Model o1, Model o2) {
-        if (o1 == null && o2 == null) {
-            return 0;
-        }
-
-        if (o1 == null) {
-            return 1;
-        }
-
-        if (o2 == null) {
-            return -1;
-        }
-
-        int priority1 = getPriority(o1.getClass());
-        int priority2 = getPriority(o1.getClass());
-
-        if (priority1 == priority2) {
-            return 0;
-        }
-
-        if (priority1 < priority2) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
-
-    public HashMap<Class<? extends Model>, Integer> getPriorities() {
-        return priorities;
-    }
-
-    /**
-     * Gets priority of an type. If instance has no priority set, then Integer.MAX_VALUE is returned.
-     *
-     * @param clazz clazz which represents model type
-     * @return a priority of type which represents model.
-     */
-    public int getPriority(Class<? extends Model> clazz) {
-        return (priorities.get(clazz) == null ? Integer.MAX_VALUE : priorities.get(clazz));
-    }
 }

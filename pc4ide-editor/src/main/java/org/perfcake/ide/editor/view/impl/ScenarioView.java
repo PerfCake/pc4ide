@@ -35,11 +35,11 @@ import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.View;
 
 /**
- * Represents view of the whole editor.
+ * Represents view of the whole scenario, which represents whole editor.
  *
  * @author jknetl
  */
-public class EditorView extends AbstractView {
+public class ScenarioView extends AbstractView {
 
     private static final int MAXIMUM_ANGLE_EXTENT = 340;
     private static final int MAXIMUM_INNER_RADIUS = 200;
@@ -49,7 +49,7 @@ public class EditorView extends AbstractView {
     /**
      * Creates new editor view inside of swing container.
      */
-    public EditorView() {
+    public ScenarioView() {
         super();
         layoutManager = new PerfCakeEditorLayoutManager();
     }
@@ -95,7 +95,7 @@ public class EditorView extends AbstractView {
      */
     public void invalidate() {
         if (jComponent != null) {
-            //EditorView is a root so it may trigger validation
+            //ScenarioView is a root so it may trigger validation
             Graphics2D g2d = (Graphics2D) jComponent.getGraphics();
             if (g2d != null) {
                 validate(g2d);

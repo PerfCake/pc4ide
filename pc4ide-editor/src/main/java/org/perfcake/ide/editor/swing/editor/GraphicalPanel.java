@@ -30,7 +30,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.editor.controller.impl.EditorController;
+import org.perfcake.ide.editor.controller.impl.ScenarioController;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
@@ -40,7 +40,7 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  */
 public class GraphicalPanel extends JPanel {
 
-    private EditorController editorController;
+    private ScenarioController scenarioController;
 
     /**
      * Creates new graphical editor.
@@ -53,7 +53,7 @@ public class GraphicalPanel extends JPanel {
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
         ViewFactory viewFactory = new GraphicalViewFactory();
-        editorController = new EditorController(this, scenarioModel, viewFactory, formManager);
+        scenarioController = new ScenarioController(this, scenarioModel, viewFactory, formManager);
         this.setBackground(Color.WHITE);
     }
 
@@ -63,17 +63,17 @@ public class GraphicalPanel extends JPanel {
 
         // first paint of the editor happens before the views are validated
         // so we need to validate them first if they are invalid
-        if (!editorController.getView().isValid()) {
-            editorController.getView().validate((Graphics2D) getGraphics());
+        if (!scenarioController.getView().isValid()) {
+            scenarioController.getView().validate((Graphics2D) getGraphics());
         }
-        editorController.getView().draw((Graphics2D) g);
+        scenarioController.getView().draw((Graphics2D) g);
     }
 
     private class EditorComponentListener implements ComponentListener {
 
         @Override
         public void componentResized(ComponentEvent e) {
-            editorController.getView().validate((Graphics2D) getGraphics());
+            scenarioController.getView().validate((Graphics2D) getGraphics());
         }
 
         @Override
@@ -107,7 +107,7 @@ public class GraphicalPanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            editorController.mouseReleased(e);
+            scenarioController.mouseReleased(e);
             //            for (SectorView s : sectors) {
             //                            if (s.getViewBounds().contains(e.getX(), e.getY())) {
             //                                //unselect sectors

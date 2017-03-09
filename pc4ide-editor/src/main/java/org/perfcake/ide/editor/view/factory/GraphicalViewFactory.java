@@ -24,11 +24,11 @@ import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.impl.CorrelatorView;
 import org.perfcake.ide.editor.view.impl.DestinationView;
-import org.perfcake.ide.editor.view.impl.EditorView;
 import org.perfcake.ide.editor.view.impl.GeneratorView;
 import org.perfcake.ide.editor.view.impl.MessageView;
 import org.perfcake.ide.editor.view.impl.ReceiverView;
 import org.perfcake.ide.editor.view.impl.ReporterView;
+import org.perfcake.ide.editor.view.impl.ScenarioView;
 import org.perfcake.ide.editor.view.impl.SenderView;
 import org.perfcake.ide.editor.view.impl.SequenceView;
 import org.perfcake.ide.editor.view.impl.ValidatorView;
@@ -68,7 +68,7 @@ public class GraphicalViewFactory implements ViewFactory {
                 view = new ReporterView();
                 break;
             case SCENARIO:
-                view = new EditorView();
+                view = new ScenarioView();
                 break;
             case SENDER:
                 view = new SenderView();

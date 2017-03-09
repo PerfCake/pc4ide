@@ -37,13 +37,13 @@ import org.perfcake.ide.editor.controller.visitor.SelectVisitor;
 import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
-import org.perfcake.ide.editor.view.impl.EditorView;
+import org.perfcake.ide.editor.view.impl.ScenarioView;
 
 
 /**
- * Controller of the editor.
+ * Controller of the whole scenario. It is effectively controller of whole editor.
  */
-public class EditorController extends AbstractController implements RootController {
+public class ScenarioController extends AbstractController implements RootController {
 
     private JComponent jComponent;
     private FormManager formManager;
@@ -56,13 +56,13 @@ public class EditorController extends AbstractController implements RootControll
      * @param viewFactory Factory for creating views
      * @param formManager manager of forms to modify inspector properties
      */
-    public EditorController(JComponent jComponent, ScenarioModel model, ViewFactory viewFactory, FormManager formManager) {
+    public ScenarioController(JComponent jComponent, ScenarioModel model, ViewFactory viewFactory, FormManager formManager) {
         super(model, viewFactory);
         this.jComponent = jComponent;
         this.formManager = formManager;
-        EditorView editorView = (EditorView) view;
-        editorView.setJComponent(jComponent);
-        this.view = editorView;
+        ScenarioView scenarioView = (ScenarioView) view;
+        scenarioView.setJComponent(jComponent);
+        this.view = scenarioView;
 
         createChildrenControllers(model);
     }
