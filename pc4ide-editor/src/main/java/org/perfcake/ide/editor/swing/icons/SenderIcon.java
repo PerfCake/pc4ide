@@ -35,17 +35,9 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class SenderIcon implements ResizableIcon {
+public class SenderIcon extends ComponentIcon {
 
-    /**
-     * The width of this icon.
-     */
-    private int width;
-
-    /**
-     * The height of this icon.
-     */
-    private int height;
+    public static final Color DEFAULT_COLOR = new Color(0xFFC73A);
 
     /**
      * The rendered image.
@@ -56,17 +48,27 @@ public class SenderIcon implements ResizableIcon {
      * Creates a new transcoded SVG image.
      */
     public SenderIcon() {
-        this(34, 34);
+        this(DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates new Sender icon.
+     *
+     * @param color color of the icon
+     */
+    public SenderIcon(Color color) {
+        this(34, 34, color);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
+     *
+     * @param width  width of the icon
      * @param height heigth of the icon
+     * @param color  color of the icon
      */
-    public SenderIcon(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public SenderIcon(int width, int height, Color color) {
+        super(width, height, color);
     }
 
     @Override
@@ -110,7 +112,7 @@ public class SenderIcon implements ResizableIcon {
      *
      * @param g Graphics context.
      */
-    private static void paint(Graphics2D g) {
+    private void paint(Graphics2D g) {
         Shape shape = null;
 
         final float origAlpha = 1.0f;
@@ -152,7 +154,7 @@ public class SenderIcon implements ResizableIcon {
         ((GeneralPath) shape).lineTo(13240.0, 3690.0);
         ((GeneralPath) shape).closePath();
 
-        g.setPaint(new Color(0xFFC73A));
+        g.setPaint(color);
         g.setStroke(new BasicStroke(42, 0, 0, 4));
         g.draw(shape);
 

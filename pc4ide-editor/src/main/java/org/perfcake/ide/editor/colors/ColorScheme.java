@@ -18,33 +18,36 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.impl;
+package org.perfcake.ide.editor.colors;
 
 import java.awt.Color;
-import java.util.List;
-import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.swing.icons.ReceiverIcon;
-import org.perfcake.ide.editor.view.Pair;
 
 /**
- * Represents view of an receiver.
+ * <p>Color scheme in pc4ide-editor is represented as 25 colors. It is supposed that first 8 colors serves as base colors, next 8
+ * colors serves as accent colors, and last 9 colors as component colors (each component has dedicated color).</p>
+ *
+ * <p>Colorscheme was inspired by <a href="https://github.com/chriskempson/base16">base16 colorschemes</a>.</p>
+ *
  * @author Jakub Knetl
+ *
  */
-public class ReceiverView extends SimpleSectorView {
+public interface ColorScheme {
+
     /**
-     * creates new sector view.
+     * Total number of colors used by colorscheme.
      */
-    public ReceiverView() {
-        super(new ReceiverIcon());
-    }
+    public static int NUM_OF_COLORS = 25;
 
-    @Override
-    protected List<Pair> getAdditionalData() {
-        return null;
-    }
+    /**
+     * @return Palette of all colors.
+     */
+    Color[] getPalette();
 
-    @Override
-    protected Color getIconColor() {
-        return colorScheme.getColor(NamedColor.COMPONENT_RECEIVER);
-    }
+    /**
+     *
+     * @param color Color from palette.
+     * @return Color from current scheme.
+     * @see {@link NamedColor}
+     */
+    Color getColor(NamedColor color);
 }

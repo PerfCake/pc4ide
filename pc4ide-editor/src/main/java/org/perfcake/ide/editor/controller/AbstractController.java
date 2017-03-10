@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;

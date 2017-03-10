@@ -20,7 +20,9 @@
 
 package org.perfcake.ide.editor.view.impl;
 
+import java.awt.Color;
 import java.util.List;
+import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.DestinationIcon;
 import org.perfcake.ide.editor.view.Pair;
 
@@ -39,5 +41,10 @@ public class DestinationView extends SimpleSectorView {
     @Override
     protected List<Pair> getAdditionalData() {
         return null;
+    }
+
+    @Override
+    protected Color getIconColor() {
+        return colorScheme.getColor(NamedColor.COMPONENT_DESTINATION);
     }
 }

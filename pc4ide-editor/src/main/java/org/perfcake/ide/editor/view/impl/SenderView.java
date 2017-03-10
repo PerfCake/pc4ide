@@ -20,8 +20,10 @@
 
 package org.perfcake.ide.editor.view.impl;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.SenderIcon;
 import org.perfcake.ide.editor.view.Pair;
 
@@ -55,5 +57,10 @@ public class SenderView extends SimpleSectorView {
 
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    @Override
+    protected Color getIconColor() {
+        return colorScheme.getColor(NamedColor.COMPONENT_SENDER);
     }
 }

@@ -27,6 +27,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 
@@ -45,9 +46,11 @@ public abstract class AbstractView implements View {
     protected LayoutData layoutData;
     protected LayoutManager layoutManager;
 
+    protected ColorScheme colorScheme;
+
     /**
      * Creates new abstract view.
-     */
+    */
     public AbstractView() {
         super();
         isValid = false;
@@ -138,5 +141,15 @@ public abstract class AbstractView implements View {
         }
 
         return removed;
+    }
+
+    @Override
+    public ColorScheme getColorScheme() {
+        return colorScheme;
+    }
+
+    @Override
+    public void setColorScheme(ColorScheme colorScheme) {
+        this.colorScheme = colorScheme;
     }
 }

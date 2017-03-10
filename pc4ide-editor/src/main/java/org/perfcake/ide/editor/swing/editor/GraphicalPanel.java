@@ -30,6 +30,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
@@ -53,6 +54,7 @@ public class GraphicalPanel extends JPanel {
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
         ViewFactory viewFactory = new GraphicalViewFactory();
+        viewFactory.setColorScheme(new DefaultColorScheme());
         scenarioController = new ScenarioController(this, scenarioModel, viewFactory, formManager);
         this.setBackground(Color.WHITE);
     }

@@ -20,8 +20,10 @@
 
 package org.perfcake.ide.editor.view.impl;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.GeneratorIcon;
 import org.perfcake.ide.editor.view.Pair;
 
@@ -75,5 +77,10 @@ public class GeneratorView extends SimpleSectorView {
         list.add(new Pair("threads", threads));
 
         return list;
+    }
+
+    @Override
+    protected Color getIconColor() {
+        return colorScheme.getColor(NamedColor.COMPONENT_GENERATOR);
     }
 }

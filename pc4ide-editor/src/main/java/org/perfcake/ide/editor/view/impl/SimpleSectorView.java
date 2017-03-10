@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -34,6 +35,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
@@ -87,8 +89,9 @@ public abstract class SimpleSectorView extends SectorView {
         // antialiasing of the shapes
         final Map<Object, Object> hints = new HashMap<>();
         hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
+        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        hints.put(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
         g2d.addRenderingHints(hints);
 
         // draw shape of the sector
@@ -103,6 +106,7 @@ public abstract class SimpleSectorView extends SectorView {
             g2d.setStroke(selectedStroke);
         }
 
+        g2d.setColor(colorScheme.getColor(NamedColor.BASE_5));
         g2d.draw(boundArea);
         g2d.setStroke(defaultStorke);
 
@@ -114,6 +118,8 @@ public abstract class SimpleSectorView extends SectorView {
         if (icon != null) {
             Rectangle2D iconBounds = getIconBounds(layoutData);
 
+            Color iconColor = getIconColor();
+            icon.setColor(iconColor);
             // we may pass null as inspector since our icon implementation completely ignores this argument
             icon.paintIcon(null, g2d, (int) iconBounds.getX(), (int) iconBounds.getY());
         }
@@ -187,6 +193,7 @@ public abstract class SimpleSectorView extends SectorView {
 
         double y = textRectangle.getY() + 1 * headerMetrics.getAscent();
 
+        g2d.setColor(colorScheme.getColor(NamedColor.BASE_6));
         // render header
         g2d.setFont(headerFont);
         String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidthForText);
@@ -194,11 +201,13 @@ public abstract class SimpleSectorView extends SectorView {
 
         y += HEADER_BOTTOM_SPACE;
 
+
         // render additional text
         List<Pair> additionalData = getAdditionalData();
         Font additionalTextFont = getAdditionalTextFont(g2d);
         FontMetrics additionalTextMetrics = g2d.getFontMetrics(additionalTextFont);
         g2d.setFont(additionalTextFont);
+        g2d.setColor(colorScheme.getColor(NamedColor.BASE_4));
         for (Pair p : additionalData) {
             y += additionalTextMetrics.getHeight();
             String renderedPair = Utils2D.computeRenderedPart(p.getKey() + ": " + p.getValue(), headerMetrics, maximumWidthForText);
@@ -327,4 +336,9 @@ public abstract class SimpleSectorView extends SectorView {
     public void setHeader(String header) {
         this.header = header;
     }
+
+    /**
+     * @return Color of the icon.
+     */
+    protected abstract Color getIconColor();
 }

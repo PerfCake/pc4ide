@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.factory;
 
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.impl.CorrelatorView;
 import org.perfcake.ide.editor.view.impl.DestinationView;
@@ -40,11 +41,16 @@ import org.perfcake.ide.editor.view.impl.ValidatorView;
  */
 public class GraphicalViewFactory implements ViewFactory {
 
+    private ColorScheme colorScheme;
+
     @Override
     public View createView(Model model) {
 
         if (model == null) {
             throw new IllegalArgumentException("Model cannot be null");
+        }
+        if (colorScheme == null) {
+            throw new IllegalStateException("Colroscheme has not been set.");
         }
 
         View view = null;
@@ -83,6 +89,18 @@ public class GraphicalViewFactory implements ViewFactory {
                 return null;
         }
 
+        if (view != null) {
+            view.setColorScheme(colorScheme);
+        }
+
         return view;
+    }
+
+    public ColorScheme getColorScheme() {
+        return colorScheme;
+    }
+
+    public void setColorScheme(ColorScheme colorScheme) {
+        this.colorScheme = colorScheme;
     }
 }

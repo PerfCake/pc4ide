@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.view;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.util.List;
+import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 
 /**
@@ -107,6 +108,18 @@ public interface View {
      * @return true if the view is valid (up to date).
      */
     boolean isValid();
+
+    /**
+     * @return Colorscheme used by this view.
+     */
+    ColorScheme getColorScheme();
+
+    /**
+     * Sets colorscheme for this view.
+     *
+     * @param colorScheme color scheme
+     */
+    void setColorScheme(ColorScheme colorScheme);
 
     /**
      * Invalidates view to indicate that it needs to be redrawn.

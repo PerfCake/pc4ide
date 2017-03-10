@@ -35,17 +35,9 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class GeneratorIcon implements ResizableIcon {
+public class GeneratorIcon extends ComponentIcon {
 
-    /**
-     * The width of this icon.
-     */
-    private int width;
-
-    /**
-     * The height of this icon.
-     */
-    private int height;
+    public static final Color DEFAULT_COLOR = new Color(0xFF6FAF);
 
     /**
      * The rendered image.
@@ -56,17 +48,26 @@ public class GeneratorIcon implements ResizableIcon {
      * Creates a new transcoded SVG image.
      */
     public GeneratorIcon() {
-        this(31, 22);
+        this(DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates new generator icon.
+     * @param color color of the icon
+     */
+    public GeneratorIcon(Color color) {
+        this(31, 22, color);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
-     * @param height heigth of the icon
+     *
+     * @param width  width of the icon
+     * @param height height of the icon
+     * @param color  color  of an icon
      */
-    public GeneratorIcon(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public GeneratorIcon(int width, int height, Color color) {
+        super(width, height, color);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class GeneratorIcon implements ResizableIcon {
      *
      * @param g Graphics context.
      */
-    private static void paint(Graphics2D g) {
+    private void paint(Graphics2D g) {
         Shape shape = null;
 
         final float origAlpha = 1.0f;
@@ -163,7 +164,7 @@ public class GeneratorIcon implements ResizableIcon {
         ((GeneralPath) shape).lineTo(13048.0, 1509.0);
         ((GeneralPath) shape).closePath();
 
-        g.setPaint(new Color(0xFF6FAF));
+        g.setPaint(color);
         g.setStroke(new BasicStroke(42, 0, 1, 4));
         g.draw(shape);
 

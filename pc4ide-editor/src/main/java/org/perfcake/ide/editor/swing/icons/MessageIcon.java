@@ -35,8 +35,9 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class MessageIcon implements ResizableIcon {
+public class MessageIcon extends ComponentIcon {
 
+    public static final Color DEFAULT_COLOR = new Color(0x6AD299);
     /**
      * The width of this icon.
      */
@@ -56,17 +57,28 @@ public class MessageIcon implements ResizableIcon {
      * Creates a new transcoded SVG image.
      */
     public MessageIcon() {
-        this(41, 23);
+        this(DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates new message icon.
+     *
+     * @param color color of the icon
+     */
+    public MessageIcon(Color color) {
+        this(41, 23, color);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
-     * @param height heigth of the icon
+     *
+     * @param width  width of the icon.
+     * @param height heigth of the icon.
+     * @param color  color of the icon
      */
-    public MessageIcon(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public MessageIcon(int width, int height, Color color) {
+        super(width, height, color);
+
     }
 
     @Override
@@ -110,7 +122,7 @@ public class MessageIcon implements ResizableIcon {
      *
      * @param g Graphics context.
      */
-    private static void paint(Graphics2D g) {
+    private void paint(Graphics2D g) {
         Shape shape = null;
 
         final float origAlpha = 1.0f;
@@ -151,7 +163,7 @@ public class MessageIcon implements ResizableIcon {
         ((GeneralPath) shape).curveTo(12921.0, 13027.0, 12779.0, 12785.0, 12779.0, 12785.0);
         ((GeneralPath) shape).closePath();
 
-        g.setPaint(new Color(0x6AD299));
+        g.setPaint(color);
         g.fill(shape);
 
         // _0_0_0_0_0_0_0_2

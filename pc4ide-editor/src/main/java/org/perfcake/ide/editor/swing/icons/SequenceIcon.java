@@ -35,8 +35,9 @@ import java.awt.image.BufferedImage;
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class SequenceIcon implements ResizableIcon {
+public class SequenceIcon extends ComponentIcon {
 
+    public static final Color DEFAULT_COLOR = new Color(0xFF8054);
     /**
      * The width of this icon.
      */
@@ -56,17 +57,27 @@ public class SequenceIcon implements ResizableIcon {
      * Creates a new transcoded SVG image.
      */
     public SequenceIcon() {
-        this(50, 20);
+        this(DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates new sequence icon.
+     *
+     * @param color color of the icon.
+     */
+    public SequenceIcon(Color color) {
+        this(50, 20, color);
     }
 
     /**
      * Creates a new transcoded SVG image.
-     * @param width width of the icon
+     *
+     * @param width  width of the icon
      * @param height heigth of the icon
+     * @param color  Color of the icon
      */
-    public SequenceIcon(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public SequenceIcon(int width, int height, Color color) {
+        super(width, height, color);
     }
 
     @Override
@@ -110,7 +121,7 @@ public class SequenceIcon implements ResizableIcon {
      *
      * @param g Graphics context.
      */
-    private static void paint(Graphics2D g) {
+    private void paint(Graphics2D g) {
         Shape shape = null;
 
         final float origAlpha = 1.0f;
@@ -152,7 +163,7 @@ public class SequenceIcon implements ResizableIcon {
         ((GeneralPath) shape).curveTo(13741.0, 7490.0, 13650.0, 7489.0, 13617.0, 7475.0);
         ((GeneralPath) shape).closePath();
 
-        g.setPaint(new Color(0xFF8054));
+        g.setPaint(color);
         g.setStroke(new BasicStroke(42, 0, 0, 4));
         g.draw(shape);
 

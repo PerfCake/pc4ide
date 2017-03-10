@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.swing.icons;
 
+import java.awt.Color;
 import javax.swing.Icon;
 
 /**
@@ -28,6 +29,17 @@ import javax.swing.Icon;
  * @author jknetl
  */
 public interface ResizableIcon extends Icon {
+
+    /**
+     * @return Color used for icon.
+     */
+    Color getColor();
+
+    /**
+     * Sets color which will be used for drawing icon.
+     * @param color color
+     */
+    void setColor(Color color);
 
     void setIconWidth(int width);
 

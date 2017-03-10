@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.factory;
 
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.view.View;
 
 /**
@@ -38,4 +39,14 @@ public interface ViewFactory {
      */
     View createView(Model model);
 
+    /**
+     * @return Current colorscheme.
+     */
+    ColorScheme getColorScheme();
+
+    /**
+     * Sets colorscheme.
+     * @param colorScheme color scheme
+     */
+    void setColorScheme(ColorScheme colorScheme);
 }
