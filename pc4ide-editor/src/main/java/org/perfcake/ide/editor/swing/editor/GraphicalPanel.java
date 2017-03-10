@@ -108,10 +108,10 @@ public class GraphicalPanel extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             scenarioController.mouseReleased(e);
-            //            for (SectorView s : sectors) {
+            //            for (SimpleSectorView s : sectors) {
             //                            if (s.getViewBounds().contains(e.getX(), e.getY())) {
             //                                //unselect sectors
-            //                                for (SectorView s2 : sectors) {
+            //                                for (SimpleSectorView s2 : sectors) {
             //                                    if (!s2.equals(s)) {
             //                                        s2.setSelected(false);
             //                                    }

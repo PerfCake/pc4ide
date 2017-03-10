@@ -28,7 +28,7 @@ import org.perfcake.ide.editor.view.Pair;
  * Represents a validator view.
  * @author Jakub Knetl
  */
-public class ValidatorView extends SectorView {
+public class ValidatorView extends SimpleSectorView {
 
     /**
      * creates new sector view.

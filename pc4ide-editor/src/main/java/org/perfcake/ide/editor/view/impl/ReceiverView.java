@@ -22,15 +22,13 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.util.List;
 import org.perfcake.ide.editor.swing.icons.ReceiverIcon;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.Pair;
-import org.perfcake.ide.editor.view.View;
 
 /**
  * Represents view of an receiver.
  * @author Jakub Knetl
  */
-public class ReceiverView extends SectorView {
+public class ReceiverView extends SimpleSectorView {
     /**
      * creates new sector view.
      */

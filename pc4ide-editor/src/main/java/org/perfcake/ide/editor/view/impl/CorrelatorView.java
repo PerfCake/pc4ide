@@ -22,16 +22,14 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.util.List;
 import org.perfcake.ide.editor.swing.icons.CorrelatorIcon;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.Pair;
-import org.perfcake.ide.editor.view.View;
 
 /**
  * Creates new view of a correlator.
  *
  * @author Jakub Knetl
  */
-public class CorrelatorView extends SectorView {
+public class CorrelatorView extends SimpleSectorView {
 
     /**
      * creates new sector view.

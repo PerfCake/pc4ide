@@ -21,17 +21,15 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.util.List;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.swing.icons.SequenceIcon;
 import org.perfcake.ide.editor.view.Pair;
-import org.perfcake.ide.editor.view.View;
 
 /**
  * Represents view of an sequence.
  *
  * @author Jakub Knetl
  */
-public class SequenceView extends SectorView {
+public class SequenceView extends SimpleSectorView {
     /**
      * creates new sector view.
      */

@@ -30,7 +30,7 @@ import org.perfcake.ide.editor.view.Pair;
  *
  * @author Jakub Knetl
  */
-public class SenderView extends SectorView {
+public class SenderView extends SimpleSectorView {
 
     private String target;
 

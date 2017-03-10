@@ -29,7 +29,7 @@ import org.perfcake.ide.editor.view.Pair;
  *
  * @author Jakub Knetl
  */
-public class MessageView extends SectorView {
+public class MessageView extends SimpleSectorView {
     /**
      * creates new sector view.
      */

@@ -28,7 +28,7 @@ import org.perfcake.ide.editor.view.Pair;
  * Represents a reporter view.
  * @author Jakub Knetl
  */
-public class ReporterView extends SectorView {
+public class ReporterView extends SimpleSectorView {
     /**
      * creates new sector view.
      *

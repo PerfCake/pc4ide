@@ -23,16 +23,14 @@ package org.perfcake.ide.editor.view.impl;
 import java.util.ArrayList;
 import java.util.List;
 import org.perfcake.ide.editor.swing.icons.GeneratorIcon;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.Pair;
-import org.perfcake.ide.editor.view.View;
 
 /**
  * Represents view of a generator.
  *
  * @author Jakub Knetl
  */
-public class GeneratorView extends SectorView {
+public class GeneratorView extends SimpleSectorView {
 
     private String runType;
     private String runValue;

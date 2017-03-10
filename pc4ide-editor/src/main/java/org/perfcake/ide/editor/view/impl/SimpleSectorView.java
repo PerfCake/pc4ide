@@ -17,9 +17,6 @@
  * limitations under the License.
  *-----------------------------------------------------------------------------
  */
-/**
- *
- */
 
 package org.perfcake.ide.editor.view.impl;
 
@@ -28,11 +25,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -43,29 +38,38 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.utils.Utils2D;
-import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.Pair;
+import org.perfcake.ide.editor.view.SectorView;
 
 /**
  * Represents a view of the sector.
  *
  * @author jknetl
  */
-public abstract class SectorView extends AbstractView {
+public abstract class SimpleSectorView extends SectorView {
 
-    private static final int HEADER_BOTTOM_SPACE = 50;
-    private static final int PADDING = 10;
+    /**
+     * Space between header and additional text.
+     */
+    public static final int HEADER_BOTTOM_SPACE = 5;
+
+    /**
+     * padding between objects (e.g. header and icon)
+     */
+    public static final int PADDING = 10;
+
+    protected int headerFontSize = 12;
+    protected int additionalTextFontSize;
 
     protected ResizableIcon icon;
     protected String header;
-    protected Shape bounds;
 
     /**
      * creates new sector view.
      *
      * @param icon icon of the inspector in the sector
      */
-    public SectorView(ResizableIcon icon) {
+    public SimpleSectorView(ResizableIcon icon) {
         this.icon = icon;
     }
 
@@ -106,43 +110,6 @@ public abstract class SectorView extends AbstractView {
 
     }
 
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
-
-    private Area drawBounds() {
-
-        // we multiply with -1 since setArcByCenter handles angle in counter clockwise direction
-        double angularExtent = -1 * layoutData.getAngularData().getAngleExtent();
-        double startAngle = -1 * layoutData.getAngularData().getStartAngle();
-
-
-        // angular overlap needed since we need to make sure that innerArc overlaps completely over innerArc
-        // if we use same angles than it could happen that innerArc is little bit less because of double conversion
-        final double angularOverlap = 1;
-
-        final Arc2D outerArc = new Arc2D.Double();
-        outerArc.setArcByCenter(layoutData.getCenter().getX(), layoutData.getCenter().getY(), layoutData.getRadiusData().getOuterRadius(),
-                startAngle, angularExtent,
-                Arc2D.PIE);
-
-        final Arc2D innerArc = new Arc2D.Double();
-        innerArc.setArcByCenter(layoutData.getCenter().getX(), layoutData.getCenter().getY(), layoutData.getRadiusData().getInnerRadius(),
-                startAngle + angularOverlap,
-                angularExtent - 2 * angularOverlap, Arc2D.PIE);
-
-
-        final Area boundArea = new Area(outerArc);
-        boundArea.subtract(new Area(innerArc));
-
-        bounds = boundArea;
-        return boundArea;
-    }
-
     private void drawIcon(Graphics2D g2d) {
         if (icon != null) {
             Rectangle2D iconBounds = getIconBounds(layoutData);
@@ -167,14 +134,15 @@ public abstract class SectorView extends AbstractView {
     }
 
     protected void drawText(Graphics2D g2d) {
+        Font defaultFont = g2d.getFont();
         final Point2D startOuterArcPoint = getStartOuterArcPoint(layoutData);
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
         final AffineTransform defaultTransform = g2d.getTransform();
         final FontRenderContext frc = g2d.getFontRenderContext();
-        final Font font = g2d.getFont();
-        final Rectangle2D headerBounds = font.getStringBounds(header, frc);
+        final Font headerFont = getHeaderFont(g2d);
+        final Rectangle2D headerBounds = headerFont.getStringBounds(header, frc);
 
         Rectangle2D textDimension = computeTextBounds(g2d, layoutData.getWidth());
 
@@ -208,7 +176,7 @@ public abstract class SectorView extends AbstractView {
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
         Point2D rotatedCenter = Utils2D.rotatePoint(textCenter, theta, layoutData.getCenter());
 
-        FontMetrics headerMetrics = g2d.getFontMetrics(font);
+        FontMetrics headerMetrics = g2d.getFontMetrics(headerFont);
         Rectangle2D textRectangle = Utils2D.getUpperLeftCorner(rotatedCenter, textDimension.getWidth(), textDimension.getHeight());
 
         // if the angle is between 90 and 270, then we need to rotate the text by 180 degrees, otherwise it would be upside down
@@ -217,48 +185,27 @@ public abstract class SectorView extends AbstractView {
         }
         g2d.rotate(Math.toRadians(theta), rotatedCenter.getX(), rotatedCenter.getY());
 
-        // TODO: find out why 1*ascent() is not enough ???
-        double y = textRectangle.getY() + 2.5 * headerMetrics.getAscent() + PADDING;
+        double y = textRectangle.getY() + 1 * headerMetrics.getAscent();
 
+        // render header
+        g2d.setFont(headerFont);
         String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidthForText);
         g2d.drawString(renderedHeader, (float) textRectangle.getX(), (float) y);
 
-        List<Pair> additionalData = getAdditionalData();
-        FontMetrics additionalTextMetrics = g2d.getFontMetrics(font);
+        y += HEADER_BOTTOM_SPACE;
 
+        // render additional text
+        List<Pair> additionalData = getAdditionalData();
+        Font additionalTextFont = getAdditionalTextFont(g2d);
+        FontMetrics additionalTextMetrics = g2d.getFontMetrics(additionalTextFont);
+        g2d.setFont(additionalTextFont);
         for (Pair p : additionalData) {
             y += additionalTextMetrics.getHeight();
             String renderedPair = Utils2D.computeRenderedPart(p.getKey() + ": " + p.getValue(), headerMetrics, maximumWidthForText);
             g2d.drawString(renderedPair, (float) (textRectangle.getX()), (float) y);
         }
         g2d.setTransform(defaultTransform);
-    }
-
-    private Point2D.Double getChordCenter(Point2D startOuterArcPoint, Point2D endOuterArcPoint) {
-        return new Point2D.Double(
-                (startOuterArcPoint.getX() + endOuterArcPoint.getX()) / 2,
-                (startOuterArcPoint.getY() + endOuterArcPoint.getY()) / 2);
-    }
-
-    private Point2D.Double getEndOuterArcPoint(LayoutData data) {
-        return new Point2D.Double(
-                layoutData.getCenter().getX() + layoutData.getRadiusData().getOuterRadius()
-                        * Math.cos(Math.toRadians(
-                        -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))),
-                layoutData.getCenter().getY() + layoutData.getRadiusData().getOuterRadius()
-                        * Math.sin(Math.toRadians(
-                        -(layoutData.getAngularData().getStartAngle() + layoutData.getAngularData().getAngleExtent()))));
-    }
-
-    private Point2D.Double getStartOuterArcPoint(LayoutData data) {
-        return new Point2D.Double(layoutData.getCenter().getX() + layoutData.getRadiusData().getOuterRadius()
-                * Math.cos(Math.toRadians(-layoutData.getAngularData().getStartAngle())),
-                layoutData.getCenter().getY() + layoutData.getRadiusData().getOuterRadius()
-                        * Math.sin(Math.toRadians(-layoutData.getAngularData().getStartAngle())));
-    }
-
-    private double getChordDistanceFromOuterRadius(Point2D center, Point2D chordCenter, double outerRadius) {
-        return outerRadius - center.distance(chordCenter);
+        g2d.setFont(defaultFont);
     }
 
     private Rectangle2D computeTextBounds(Graphics2D g2d, double maximumWidth) {
@@ -286,29 +233,6 @@ public abstract class SectorView extends AbstractView {
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new Rectangle2D.Double(0, 0, totalWidth, totalHeight);
-    }
-
-    private String joinText(List<Pair> text) {
-        if (text == null) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < text.size(); i++) {
-            Pair p = text.get(i);
-            builder.append(p.getKey()).append(": ").append(p.getValue());
-
-            if (i + 1 < text.size()) { // if there will be next iteration
-                builder.append(", ");
-            }
-        }
-
-        return builder.toString();
-    }
-
-    @Override
-    public Shape getViewBounds() {
-        return bounds;
     }
 
     @Override
@@ -373,4 +297,34 @@ public abstract class SectorView extends AbstractView {
      * @return List of additional pairs of key value, which this view will draw into surface along with header.
      */
     protected abstract List<Pair> getAdditionalData();
+
+    /**
+     * Get font for header.
+     * @param g2d graphics context
+     * @return Font for the header
+     */
+    protected Font getHeaderFont(Graphics2D g2d) {
+        Font f = g2d.getFont();
+        f = f.deriveFont(Font.BOLD, headerFontSize);
+        return f;
+    }
+
+    /**
+     * Get font for additional text.
+     * @param g2d graphics context
+     * @return Font for the additionalText
+     */
+    protected Font getAdditionalTextFont(Graphics2D g2d) {
+        Font f = g2d.getFont();
+        f = f.deriveFont(additionalTextFontSize);
+        return f;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
 }
