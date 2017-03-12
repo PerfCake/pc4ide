@@ -23,7 +23,6 @@
 
 package org.perfcake.ide.editor;
 
-import com.sun.tools.classfile.SourceFile_attribute;
 import java.awt.EventQueue;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -33,6 +32,8 @@ import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main class. This class is intendet for testing purposes only. The program should
@@ -42,12 +43,14 @@ import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
  */
 public class Main {
 
+    static final Logger logger = LoggerFactory.getLogger(Main.class);
+
     /**
      * Main method for launching editor
      *
      * @param args arguments
-     * @throws PerfCakeException     when scenario cannot be loaded.
-     * @throws MalformedURLException when URL to scenario file is illegal.
+     * @throws PerfCakeException        when scenario cannot be loaded.
+     * @throws MalformedURLException    when URL to scenario file is illegal.
      * @throws ModelConversionException when model cannot be converted
      */
     public static void main(String[] args) throws PerfCakeException, MalformedURLException, ModelConversionException {
@@ -56,6 +59,8 @@ public class Main {
             System.out.println("No scenario file specified as argument. Exiting");
             System.exit(1);
         }
+
+        logger.info("Application is starting. Loading scenario: {}", args[0]);
 
         final File scenarioFile = new File(args[0]);
         ModelLoader loader = new ModelLoader();

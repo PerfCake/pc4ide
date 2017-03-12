@@ -22,6 +22,8 @@ package org.perfcake.ide.editor.comparator;
 
 import java.util.Comparator;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation priority comparator is able to compare objects based on priorities of its implementing classes. It uses internal priority
@@ -31,6 +33,8 @@ import java.util.Map;
  * @author Jakub Knetl
  */
 public abstract class ImplementationPriorityComparator<T> implements Comparator<T> {
+
+    static final Logger logger = LoggerFactory.getLogger(ImplementationPriorityComparator.class);
 
     private Map<Class<? extends T>, Integer> priorityMap;
 
@@ -53,7 +57,10 @@ public abstract class ImplementationPriorityComparator<T> implements Comparator<
         }
 
         int priority1 = getPriority((Class<? extends T>) o1.getClass());
-        int priority2 = getPriority((Class<? extends T>) o1.getClass());
+        int priority2 = getPriority((Class<? extends T>) o2.getClass());
+
+        logger.trace("Comparing [class: {}, priority: {}] with [class: {}, priority: {}]",
+                o1.getClass(), priority1, o2.getClass(), priority2);
 
         if (priority1 == priority2) {
             return 0;
