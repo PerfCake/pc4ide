@@ -24,9 +24,12 @@
 package org.perfcake.ide.editor.view;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
@@ -151,5 +154,19 @@ public abstract class AbstractView implements View {
     @Override
     public void setColorScheme(ColorScheme colorScheme) {
         this.colorScheme = colorScheme;
+    }
+
+    /**
+     * Adds rendering hints to a graphics context.
+     *
+     * @param g2d graphics context
+     */
+    protected void addRenderingHints(Graphics2D g2d) {
+        final Map<Object, Object> hints = new HashMap<>();
+        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        hints.put(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
+        g2d.addRenderingHints(hints);
     }
 }

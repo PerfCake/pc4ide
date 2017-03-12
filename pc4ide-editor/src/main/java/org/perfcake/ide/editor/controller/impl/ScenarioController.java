@@ -102,11 +102,11 @@ public class ScenarioController extends AbstractController implements RootContro
                     Model senderModel = properties.get(0).cast(Model.class);
                     final Controller sender = new SenderController(senderModel, viewFactory);
                     addChild(sender);
-                    //} else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
-                    //    for (Property reporterModel : properties) {
-                    //        final Controller reporter = new SectionController(reporterModel.cast(Model.class));
-                    //        addChild(reporter);
-                    //    }
+                } else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
+                    for (Property reporterModel : properties) {
+                        final Controller reporter = new ReporterController(reporterModel.cast(Model.class), viewFactory);
+                        addChild(reporter);
+                    }
                     //} else if (PropertyNames.SEQUENCES.toString().equals(propertyInfo.getName())) {
                     //    for (Property sequenceModel : properties) {
                     //        final Controller sequence = new SectionController(sequenceModel.cast(Model.class));

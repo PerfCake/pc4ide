@@ -25,16 +25,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.perfcake.ide.editor.comparator.ViewComparator;
 import org.perfcake.ide.editor.layout.AbstractLayoutManager;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PerfCakeEditorLayoutManager manages the layout of graphical part of PerfCake editor.
  */
 public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
+
+    static final Logger logger = LoggerFactory.getLogger(PerfCakeEditorLayoutManager.class);
 
     public static final int DEFAULT_START_ANGLE = 120;
 

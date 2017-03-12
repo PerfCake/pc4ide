@@ -61,7 +61,7 @@ public abstract class SectorView extends AbstractView {
         return outerRadius - center.distance(chordCenter);
     }
 
-    protected Area drawBounds() {
+    protected Area computeBounds() {
 
         // we multiply with -1 since setArcByCenter handles angle in counter clockwise direction
         double angularExtent = -1 * layoutData.getAngularData().getAngleExtent();

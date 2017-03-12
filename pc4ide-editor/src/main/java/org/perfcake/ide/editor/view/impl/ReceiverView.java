@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.ReceiverIcon;
@@ -40,7 +41,7 @@ public class ReceiverView extends SimpleSectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

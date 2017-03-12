@@ -38,15 +38,6 @@ import java.awt.image.BufferedImage;
 public class ReceiverIcon extends ComponentIcon {
 
     public static final Color DEFAULT_COLOR = new Color(0x6FA0FF);
-    /**
-     * The width of this icon.
-     */
-    private int width;
-
-    /**
-     * The height of this icon.
-     */
-    private int height;
 
     /**
      * The rendered image.
