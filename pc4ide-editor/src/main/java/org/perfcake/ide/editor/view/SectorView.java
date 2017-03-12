@@ -25,7 +25,6 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.view.AbstractView;
 
 /**
  * Sector view represents a view with circular sector shape. It defines useful method for managing sector.
@@ -61,7 +60,13 @@ public abstract class SectorView extends AbstractView {
         return outerRadius - center.distance(chordCenter);
     }
 
-    protected Area computeBounds() {
+    /**
+     * Computes bounds of the view.
+     *
+     * @param layoutData layout data
+     * @return bounds of the view
+     */
+    protected Area computeBounds(LayoutData layoutData) {
 
         // we multiply with -1 since setArcByCenter handles angle in counter clockwise direction
         double angularExtent = -1 * layoutData.getAngularData().getAngleExtent();

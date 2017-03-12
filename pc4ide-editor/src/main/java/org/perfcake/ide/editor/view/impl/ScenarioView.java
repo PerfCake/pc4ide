@@ -24,16 +24,13 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JComponent;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
-import org.perfcake.ide.editor.layout.impl.PerfCakeEditorLayoutManager;
+import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.View;
 
@@ -46,6 +43,7 @@ public class ScenarioView extends AbstractView {
 
     private static final int MAXIMUM_ANGLE_EXTENT = 340;
     private static final int MAXIMUM_INNER_RADIUS = 200;
+    public static final int START_ANGLE = 150;
 
     private JComponent jComponent;
 
@@ -54,7 +52,7 @@ public class ScenarioView extends AbstractView {
      */
     public ScenarioView() {
         super();
-        layoutManager = new PerfCakeEditorLayoutManager();
+        layoutManager = new CircularSectorLayoutManager();
     }
 
     /* (non-Javadoc)
@@ -135,7 +133,7 @@ public class ScenarioView extends AbstractView {
         final double outerRadius = (0.9 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2;
         final double innerRadius = Math.min(MAXIMUM_INNER_RADIUS, (0.25 * Math.min(jComponent.getWidth(), jComponent.getHeight())) / 2);
         final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
-        final AngularData angularData = new AngularData(0, MAXIMUM_ANGLE_EXTENT);
+        final AngularData angularData = new AngularData(START_ANGLE, MAXIMUM_ANGLE_EXTENT);
         return new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
     }
 }

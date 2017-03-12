@@ -20,54 +20,64 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
-import org.perfcake.ide.core.model.components.ReporterModel;
+import org.perfcake.ide.core.model.components.DestinationModel;
+import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.controller.AbstractController;
+import org.perfcake.ide.editor.view.Pair;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
-import org.perfcake.ide.editor.view.impl.ReporterView;
+import org.perfcake.ide.editor.view.impl.DestinationView;
 
 /**
- * Controller of reporter.
+ * Represents controller of destination.
+ *
  * @author Jakub Knetl
  */
-public class ReporterController extends AbstractController {
+public class DestinationController extends AbstractController {
 
     /**
-     * Creates new view.
+     * Creates abstract controller which will manage a model.
      *
-     * @param senderModel model of sender
-     * @param viewFactory view factory
+     * @param model       model to be managed
+     * @param viewFactory viewFactory which may be used to create views.
      */
-    public ReporterController(Model senderModel, ViewFactory viewFactory) {
-        super(senderModel, viewFactory);
-        view = viewFactory.createView(senderModel);
+    public DestinationController(Model model, ViewFactory viewFactory) {
+        super(model, viewFactory);
         updateViewData();
-
-        List<Property> destinations = model.getProperties(ReporterModel.PropertyNames.DESTINATION.toString());
-
-        for (Property p : destinations) {
-            Model destination = p.cast(Model.class);
-            addChild(new DestinationController(destination, viewFactory));
-        }
     }
 
     @Override
     public boolean updateViewData() {
-        ReporterView view = (ReporterView) this.view;
-        boolean modified = false; // was view modified during execution of this method?
 
-        Value implementation = model.getSingleProperty(ReporterModel.PropertyNames.IMPLEMENTATION.toString(), Value.class);
+        boolean modified = false;
+        DestinationView view = (DestinationView) this.view;
+        Value implementation = model.getSingleProperty(DestinationModel.PropertyNames.IMPLEMENTATION.toString(), Value.class);
 
         if (implementation != null && !implementation.getValue().equals(view.getHeader())) {
             view.setHeader(implementation.getValue());
             modified = true;
         }
 
+        List<Property> periods = model.getProperties(DestinationModel.PropertyNames.PERIOD.toString());
+
+        Set<Pair> modelPeriodPairs = new HashSet<>();
+        Set<Pair> viewPeriods = view.getPeriods();
+
+        for (Property p : periods) {
+            KeyValue k = p.cast(KeyValue.class);
+            modelPeriodPairs.add(new Pair(k.getKey(), k.getValue()));
+        }
+
+        if (!modelPeriodPairs.equals(viewPeriods)) {
+            view.setPeriods(modelPeriodPairs);
+            modified = true;
+        }
 
         return modified;
     }
-
 }

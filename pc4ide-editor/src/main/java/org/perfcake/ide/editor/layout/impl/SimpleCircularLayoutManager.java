@@ -25,6 +25,7 @@ package org.perfcake.ide.editor.layout.impl;
 
 import java.awt.Graphics2D;
 
+import org.perfcake.ide.editor.layout.AbstractLayoutManager;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.View;
 
@@ -34,7 +35,7 @@ import org.perfcake.ide.editor.view.View;
  *
  * @author jknetl
  */
-public class SimpleCircularLayoutManager extends org.perfcake.ide.editor.layout.AbstractLayoutManager {
+public class SimpleCircularLayoutManager extends AbstractLayoutManager {
 
     public SimpleCircularLayoutManager() {
         super();
@@ -59,6 +60,11 @@ public class SimpleCircularLayoutManager extends org.perfcake.ide.editor.layout.
             v.setLayoutData(data);
             startAngle += angularExtendForChild;
         }
+    }
+
+    @Override
+    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+        return constraint;
     }
 
     private int computeChildren() {

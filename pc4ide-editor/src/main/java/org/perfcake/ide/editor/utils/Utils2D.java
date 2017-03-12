@@ -33,7 +33,6 @@ import org.perfcake.ide.editor.layout.AngularData;
  */
 public class Utils2D {
 
-
     /**
      * Rotates point around center.
      *

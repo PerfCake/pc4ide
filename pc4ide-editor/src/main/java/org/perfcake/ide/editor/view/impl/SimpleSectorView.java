@@ -104,7 +104,7 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected void drawBounds(Graphics2D g2d) {
         // compute bounds
-        final Area boundArea = computeBounds();
+        final Area boundArea = computeBounds(layoutData);
 
         final Stroke defaultStroke = g2d.getStroke();
         if (isSelected()) {
@@ -124,7 +124,7 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected void drawIcon(Graphics2D g2d) {
         if (icon != null) {
-            Rectangle2D iconBounds = computeIconBounds(layoutData);
+            Rectangle2D iconBounds = computeIconBounds(g2d, layoutData);
 
             Color iconColor = getIconColor();
             icon.setColor(iconColor);
@@ -142,14 +142,14 @@ public abstract class SimpleSectorView extends SectorView {
         Font defaultFont = g2d.getFont();
         final AffineTransform defaultTransform = g2d.getTransform();
 
-        Rectangle2D textRectangle = computeTextBounds(g2d);
+        Rectangle2D textRectangle = computeTextBounds(g2d, layoutData);
         Point2D textCenter = Utils2D.getCenter(textRectangle);
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconBounds(layoutData));
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconBounds(g2d, layoutData));
         double maximumWidthForText = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
         // if the angle is between 90 and 270, then we need to rotate the text by 180 degrees, otherwise it would be upside down
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
-        if (theta > 90 && theta < 270) {
+        if (isReversed(theta)) {
             theta += 180;
         }
         g2d.rotate(Math.toRadians(theta), textCenter.getX(), textCenter.getY());
@@ -163,9 +163,9 @@ public abstract class SimpleSectorView extends SectorView {
         g2d.setFont(headerFont);
         String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidthForText);
         g2d.drawString(renderedHeader, (float) textRectangle.getX(), (float) y);
+        //g2d.draw(textRectangle);
 
         y += HEADER_BOTTOM_SPACE;
-
 
         // render additional text
         List<Pair> additionalData = getAdditionalData();
@@ -182,13 +182,17 @@ public abstract class SimpleSectorView extends SectorView {
         g2d.setFont(defaultFont);
     }
 
+    protected boolean isReversed(double theta) {
+        return theta > 90 && theta < 270;
+    }
+
     /**
      * Computes icon bounds.
      *
      * @param layoutData layout data
      * @return bounds of icon.
      */
-    protected Rectangle2D computeIconBounds(LayoutData layoutData) {
+    protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData) {
 
         double iconCenterX = layoutData.getCenter().getX()
                 + (layoutData.getRadiusData().getInnerRadius() + PADDING + icon.getIconWidth() / 2);
@@ -206,21 +210,20 @@ public abstract class SimpleSectorView extends SectorView {
      * Computes bounds of the text before applying rotation. Therefore this rectangle edges are always parallel to
      * X and Y axes. Before using this rectangle, you should apply rotation to it.
      *
-     * @param g2d graphics context
+     * @param g2d        graphics context
+     * @param layoutData layout data
      * @return Rectangle bounds of a text before applying rotation.
      */
-    protected Rectangle2D computeTextBounds(Graphics2D g2d) {
+    protected Rectangle2D computeTextBounds(Graphics2D g2d, LayoutData layoutData) {
         final Point2D startOuterArcPoint = getStartOuterArcPoint(layoutData);
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
-        Rectangle2D textDimension = computeTextDimension(g2d, layoutData.getWidth());
+        Rectangle2D textDimension = computeTextDimension(g2d, layoutData);
 
         double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
                 chordCenter,
                 layoutData.getRadiusData().getOuterRadius());
-
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconBounds(layoutData));
 
         //do not compute text position from inside, but rather place it near to the outer radius:
         double textCenterX =
@@ -245,14 +248,17 @@ public abstract class SimpleSectorView extends SectorView {
     /**
      * Computes dimension of a text. The location of the computed rectangle is not defined.
      *
-     * @param g2d          graphics context
-     * @param maximumWidth maximum possible width for text
+     * @param g2d        graphics context
+     * @param layoutData layout data which require at least radius to be set
      * @return Rectangle which contains dimension of a text bounds. Note that position of rectangle is not defined!
      */
-    protected Rectangle2D computeTextDimension(Graphics2D g2d, double maximumWidth) {
+    protected Rectangle2D computeTextDimension(Graphics2D g2d, LayoutData layoutData) {
         final FontRenderContext frc = g2d.getFontRenderContext();
         final Font font = g2d.getFont();
         final Rectangle2D headerBounds = font.getStringBounds(header, frc);
+
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension());
+        double maximumWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
         FontMetrics metrics = g2d.getFontMetrics(font);
 
@@ -265,12 +271,12 @@ public abstract class SimpleSectorView extends SectorView {
             if (width > longestLineWidth) {
                 longestLineWidth = width;
             }
-            additionalLines += (1 + width / maximumWidth);
+            additionalLines++;
         }
 
         int additionalHeight = additionalLines * metrics.getHeight() + metrics.getAscent();
 
-        double totalWidth = Math.max(headerBounds.getWidth(), longestLineWidth);
+        double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestLineWidth), maximumWidth);
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new Rectangle2D.Double(0, 0, totalWidth, totalHeight);
@@ -295,43 +301,47 @@ public abstract class SimpleSectorView extends SectorView {
     @Override
     public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
 
-        if (constraint.getRadiusData() == null
+        if (constraint == null
+                || constraint.getRadiusData() == null
                 || constraint.getRadiusData().getInnerRadius() == 0
                 || constraint.getRadiusData().getOuterRadius() == 0) {
             // it has no point to compute anything if we dont know radius
             return constraint;
         }
 
-        Rectangle2D iconBounds = computeIconBounds(constraint);
+        Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
 
         // we assume that width constraint is positive and large enough!
         // it should be ensured by sufficient minimum size on editor as a whole
-        double textMaximumWidth = computeTextMaximumWidth(constraint.getRadiusData(), Utils2D.getRectangleDiagonal(iconBounds));
-        Rectangle2D textBounds = computeTextDimension(g2d, textMaximumWidth);
+        Rectangle2D textBounds = computeTextDimension(g2d, constraint);
 
-
-        Double minimumAngluarExtentForIcon = getMinimumAngle(iconBounds, constraint.getRadiusData().getInnerRadius());
+        double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
+        Double minimumAngularExtentForIcon = getMinimumAngle(iconDiagonal, constraint.getRadiusData().getInnerRadius());
         double distanceOfObject = constraint.getRadiusData().getInnerRadius() + 2 * PADDING + iconBounds.getWidth();
-        Double minimumAngluarExtentForText = getMinimumAngle(textBounds, distanceOfObject);
+        Double minimumAngularExtentForText = getMinimumAngle(textBounds.getHeight(), distanceOfObject);
         LayoutData minimumSize = new LayoutData(constraint);
-        minimumSize.getAngularData().setAngleExtent(Math.min(minimumAngluarExtentForIcon, minimumAngluarExtentForText));
+        minimumSize.getAngularData().setAngleExtent(Math.max(minimumAngularExtentForIcon, minimumAngularExtentForText));
         return minimumSize;
     }
 
     /**
      * Computes minimum angle required so that object will fit within the radius from the given distance.
      *
-     * @param object           object
+     * @param size             size of a perpendicular edge
      * @param distanceOfObject distance of object
      * @return minimum angle
      */
-    private Double getMinimumAngle(Rectangle2D object, double distanceOfObject) {
+    protected Double getMinimumAngle(double size, double distanceOfObject) {
+        return 2 * Math.toDegrees(Math.atan((size / 2) / distanceOfObject));
+    }
 
-        // We cannot use width nor height of the object since we don't know from which direction we want to enclose the object
-        // therefore we will use half of diagonal ( it effectively computes required distance of circle which encloses the object)
-        double diagonal = Utils2D.getRectangleDiagonal(object);
-
-        return Math.toDegrees(2 * Math.atan((diagonal / 2) / distanceOfObject));
+    /**
+     * Computes rectangle which contains icon dimension. Icon position is not relevant.
+     *
+     * @return rectangle which contains icon dimension. Icon position is not relevant.
+     */
+    protected Rectangle2D computeIconDimension() {
+        return new Rectangle2D.Double(0, 0, icon.getIconWidth(), icon.getIconHeight());
     }
 
     /**

@@ -33,15 +33,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * PerfCakeEditorLayoutManager manages the layout of graphical part of PerfCake editor.
+ * CircularSectorLayoutManager manages the layout of graphical part of PerfCake editor.
  */
-public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
+public class CircularSectorLayoutManager extends AbstractLayoutManager {
 
-    static final Logger logger = LoggerFactory.getLogger(PerfCakeEditorLayoutManager.class);
-
-    public static final int DEFAULT_START_ANGLE = 120;
+    static final Logger logger = LoggerFactory.getLogger(CircularSectorLayoutManager.class);
 
     private Comparator<View> viewComparator = new ViewComparator();
+
+    private boolean fill;
+
+    /**
+     * Creates new CircularSectorLayoutManager.
+     */
+    public CircularSectorLayoutManager() {
+        this(false);
+    }
+
+    /**
+     * Creates new CircularSectorLayoutManager.
+     *
+     * @param fillExtent should layout manager fill whole angle extent provided?
+     */
+    public CircularSectorLayoutManager(boolean fillExtent) {
+        this.fill = fillExtent;
+    }
 
     @Override
     public void layout(Graphics2D g2d) {
@@ -56,22 +72,53 @@ public class PerfCakeEditorLayoutManager extends AbstractLayoutManager {
             requestedExtentByChildren += extent;
         }
 
-        double startAngle = DEFAULT_START_ANGLE;
+        double startAngle = constraints.getAngularData().getStartAngle();
 
-        if (requestedExtentByChildren < constraints.getAngularData().getAngleExtent()) {
+        double angleExtentConstraint = constraints.getAngularData().getAngleExtent();
+        if (requestedExtentByChildren <= angleExtentConstraint) {
             for (View v : children) {
                 final LayoutData data = new LayoutData(constraints);
-                data.getAngularData().setAngleExtent(extentMap.get(v));
+                Double angleExtent = extentMap.get(v);
+
+                if (fill) {
+                    double percentage = angleExtent / requestedExtentByChildren;
+                    angleExtent = percentage * angleExtentConstraint;
+                }
+                data.getAngularData().setAngleExtent(angleExtent);
                 data.getAngularData().setStartAngle(startAngle);
+
                 v.setLayoutData(data);
 
                 // move startAgle by angular extent of view v
-                startAngle += extentMap.get(v);
+                startAngle += angleExtent;
             }
         } else {
             // TODO: inspector requested larger angular extent than is available
             // we need to somehow implement shirnking of some views!
+            logger.warn("Too large angular extent. Requested: {}, Provided: {}",
+                    requestedExtentByChildren,
+                    constraints.getAngularData().getAngleExtent());
         }
+    }
+
+    /*
+     * This layout manager computes required angular data based on radius data constraint.
+     */
+    @Override
+    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+        double requiredExtent = 0;
+
+        if (children == null) {
+            return constraint;
+        }
+        for (View child : children) {
+            requiredExtent += child.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
+        }
+
+        LayoutData requiredData = new LayoutData(constraint);
+        requiredData.getAngularData().setAngleExtent(requiredExtent);
+
+        return requiredData;
     }
 
     @Override

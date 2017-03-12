@@ -21,7 +21,10 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.DestinationIcon;
 import org.perfcake.ide.editor.view.Pair;
@@ -30,21 +33,33 @@ import org.perfcake.ide.editor.view.Pair;
  * Creates a destination view.
  * @author Jakub Knetl
  */
-public class DestinationView extends SimpleSectorView {
+public class DestinationView extends CondensedSectorView {
+
+    private Set<Pair> periods;
+
     /**
      * creates new sector view.
      */
     public DestinationView() {
         super(new DestinationIcon());
+        periods = new HashSet<>();
     }
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        return new ArrayList<>(periods);
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_DESTINATION);
+    }
+
+    public Set<Pair> getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(Set<Pair> periods) {
+        this.periods = periods;
     }
 }

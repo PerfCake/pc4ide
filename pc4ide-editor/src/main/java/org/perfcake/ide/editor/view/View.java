@@ -58,7 +58,7 @@ public interface View {
     Shape getViewBounds();
 
     /**
-     * Computes a minimum size of the view. The constraint argument is used as a constraint for the size. So if
+     * Computes a minimum size of the view and it children views. The constraint argument is used as a constraint for the size. So if
      * some dimension of constraint argument is N, then returned value in that dimension cannot be larger than N.
      * If some dimension of constraint argument is zero then there is no constraint on that dimension
      *
@@ -74,7 +74,7 @@ public interface View {
     LayoutData getLayoutData();
 
     /**
-     * Sets layout which will be used for the inspector on {@link #draw(Graphics2D)} method.
+     * Sets layout data which are provided to this view and its children views.
      *
      * @param data layout data to be set
      */

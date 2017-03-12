@@ -22,7 +22,6 @@ package org.perfcake.ide.editor.controller.visitor;
 
 import java.awt.geom.Point2D;
 import java.util.Iterator;
-
 import org.perfcake.ide.editor.controller.Controller;
 
 /**
@@ -65,7 +64,8 @@ public abstract class ViewTargetedVisitor implements ControllerVisitor {
         Iterator<Controller> it = controller.getChildrenIterator();
         while (it.hasNext()) {
             Controller childController = it.next();
-            if (childController.getView() != null && childController.getView().getViewBounds().contains(location)) {
+            if (childController.getView() != null && childController.getView().getViewBounds() != null
+                    && childController.getView().getViewBounds().contains(location)) {
                 moreSpecificController = childController;
                 break;
             }
