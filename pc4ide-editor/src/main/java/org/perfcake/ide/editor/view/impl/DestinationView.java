@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.swing.icons.DestinationIcon;
+import org.perfcake.ide.editor.swing.icons.components.DestinationIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**

@@ -21,13 +21,14 @@
 package org.perfcake.ide.editor.swing.icons;
 
 import java.awt.Color;
+import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 
 /**
  * Abstract implementation of component icon.
  *
  * @author Jakub Knetl
  */
-public abstract class ComponentIcon implements ResizableIcon {
+public abstract class AbstractIcon implements ResizableIcon {
     /**
      * The width of this icon.
      */
@@ -49,7 +50,7 @@ public abstract class ComponentIcon implements ResizableIcon {
      * @param height height of the icon
      * @param color color of the icon.
      */
-    public ComponentIcon(int width, int height, Color color) {
+    public AbstractIcon(int width, int height, Color color) {
         this.height = height;
         this.width = width;
         this.color = color;

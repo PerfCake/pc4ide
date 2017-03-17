@@ -23,7 +23,7 @@ package org.perfcake.ide.editor.view.impl;
 import java.awt.Color;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.swing.icons.MessageIcon;
+import org.perfcake.ide.editor.swing.icons.components.MessageIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**

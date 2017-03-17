@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.editor.colors.ColorScheme;
+import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 
@@ -57,6 +58,7 @@ public abstract class AbstractView implements View {
     public AbstractView() {
         super();
         isValid = false;
+        colorScheme = new DefaultColorScheme();
     }
 
     @Override

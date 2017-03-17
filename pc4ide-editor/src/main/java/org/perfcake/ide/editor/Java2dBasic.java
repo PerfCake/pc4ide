@@ -22,6 +22,7 @@ package org.perfcake.ide.editor;
 
 import static java.awt.geom.Arc2D.PIE;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -32,9 +33,13 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
+import org.perfcake.ide.editor.swing.icons.control.XIcon;
 
 /**
  * Java2d basics demo.
+ *
  * @author Jakub Knetl
  */
 public class Java2dBasic extends JPanel {
@@ -65,6 +70,12 @@ public class Java2dBasic extends JPanel {
         Arc2D arc = new Arc2D.Double();
         arc.setArcByCenter(center.getX(), center.getY(), radius / 4, 180, 45, PIE);
         g2d.draw(arc);
+        PlusIcon plus = new PlusIcon(Color.BLACK);
+        MinusIcon minus = new MinusIcon(Color.BLACK);
+        XIcon xIcon = new XIcon(Color.BLACK);
+        plus.paintIcon(null, g2d, 10, 10);
+        minus.paintIcon(null, g2d, 20, 10);
+        xIcon.paintIcon(null, g2d, 30, 10);
         //g2d.draw(line);
         //
         //// rotate point

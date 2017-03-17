@@ -31,6 +31,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.LayoutData;
@@ -57,6 +59,13 @@ public abstract class SimpleSectorView extends SectorView {
      */
     public static final int PADDING = 10;
 
+    /**
+     * Space between management icons.
+     */
+    public static final int MANAGEMENT_ICON_SPACE = 5;
+
+    protected List<ResizableIcon> managementIcons;
+
     protected int headerFontSize = 12;
     protected int additionalTextFontSize;
 
@@ -70,6 +79,7 @@ public abstract class SimpleSectorView extends SectorView {
      */
     public SimpleSectorView(ResizableIcon icon) {
         this.icon = icon;
+        managementIcons = new ArrayList<>();
     }
 
     /* (non-Javadoc)
@@ -95,6 +105,8 @@ public abstract class SimpleSectorView extends SectorView {
         // draw text
         drawText(g2d);
 
+        // draw managementIcons
+        drawManagementIcons(g2d);
     }
 
     /**
@@ -112,7 +124,7 @@ public abstract class SimpleSectorView extends SectorView {
             g2d.setStroke(selectedStroke);
         }
 
-        g2d.setColor(colorScheme.getColor(NamedColor.BASE_5));
+        g2d.setColor(colorScheme.getColor(NamedColor.BASE_4));
         g2d.draw(boundArea);
         g2d.setStroke(defaultStroke);
     }
@@ -182,6 +194,18 @@ public abstract class SimpleSectorView extends SectorView {
         g2d.setFont(defaultFont);
     }
 
+    protected void drawManagementIcons(Graphics2D g2d) {
+
+        List<Rectangle2D> iconBounds = computeManagementIconBounds(layoutData);
+
+        for (int i = 0; i < iconBounds.size(); i++) {
+            Rectangle2D bounds = iconBounds.get(i);
+            ResizableIcon icon = managementIcons.get(i);
+
+            icon.paintIcon(null, g2d, (int) bounds.getX(), (int) bounds.getY());
+        }
+    }
+
     protected boolean isReversed(double theta) {
         return theta > 90 && theta < 270;
     }
@@ -208,7 +232,7 @@ public abstract class SimpleSectorView extends SectorView {
 
     /**
      * Computes bounds of the text before applying rotation. Therefore this rectangle edges are always parallel to
-     * X and Y axes. Before using this rectangle, you should apply rotation to it.
+     * XIcon and Y axes. Before using this rectangle, you should apply rotation to it.
      *
      * @param g2d        graphics context
      * @param layoutData layout data
@@ -296,6 +320,32 @@ public abstract class SimpleSectorView extends SectorView {
                 - iconDiagonal // minus icon diagonal
                 - PADDING // minus space between icon and text
                 - PADDING;
+    }
+
+    private List<Rectangle2D> computeManagementIconBounds(LayoutData data) {
+
+        List<Rectangle2D> bounds = new ArrayList<>(managementIcons.size());
+
+        double radius = data.getRadiusData().getOuterRadius();
+        for (int i = managementIcons.size(); i > 0; i--) {
+
+            ResizableIcon icon = managementIcons.get(i - 1);
+            double iconDiagonal = Utils2D.getRectangleDiagonal(new Rectangle2D.Double(0, 0, icon.getIconWidth(), icon.getIconHeight()));
+            double iconCenterX = data.getCenter().getX() + radius - iconDiagonal / 2 - MANAGEMENT_ICON_SPACE;
+            double iconCenterY = data.getCenter().getY() - MANAGEMENT_ICON_SPACE - iconDiagonal / 2;
+
+            double theta = data.getAngularData().getStartAngle()  + data.getAngularData().getAngleExtent();
+            Point2D location = Utils2D.rotatePoint(new Point2D.Double(iconCenterX, iconCenterY), theta, layoutData.getCenter());
+
+            Rectangle2D iconBounds = Utils2D.getUpperLeftCorner(location, icon.getIconWidth(), icon.getIconHeight());
+
+            bounds.add(iconBounds);
+
+            radius = radius - iconDiagonal - MANAGEMENT_ICON_SPACE;
+        }
+
+        Collections.reverse(bounds);
+        return bounds;
     }
 
     @Override

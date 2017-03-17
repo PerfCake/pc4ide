@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.swing.icons;
+package org.perfcake.ide.editor.swing.icons.components;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -30,12 +30,13 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
+import org.perfcake.ide.editor.swing.icons.AbstractIcon;
 
 /**
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class ValidatorIcon extends ComponentIcon {
+public class ValidatorIcon extends AbstractIcon {
 
     public static final Color DEFAULT_COLOR = new Color(0x7BDDD9);
 

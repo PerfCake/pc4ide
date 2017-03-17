@@ -21,17 +21,13 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Area;
 import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.layout.LayoutData;
-import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
-import org.perfcake.ide.editor.swing.icons.ReporterIcon;
+import org.perfcake.ide.editor.swing.icons.components.ReporterIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
-import org.perfcake.ide.editor.view.View;
 
 /**
  * Represents a reporter view.
@@ -44,6 +40,8 @@ public class ReporterView extends LayeredSectorView {
      */
     public ReporterView() {
         super(new ReporterIcon());
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
     }
 
     @Override
