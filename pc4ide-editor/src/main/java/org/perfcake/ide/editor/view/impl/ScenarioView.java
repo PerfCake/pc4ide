@@ -27,10 +27,13 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import javax.swing.JComponent;
+import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
+import org.perfcake.ide.editor.swing.icons.control.PlayIcon;
+import org.perfcake.ide.editor.swing.icons.control.StopIcon;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.View;
 
@@ -113,6 +116,12 @@ public class ScenarioView extends AbstractView {
         super.validate(g2d);
 
         jComponent.repaint();
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new PlayIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
+        managementIcons.add(new StopIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
     }
 
     /**

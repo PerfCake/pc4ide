@@ -13,5 +13,7 @@
             <AppenderRef ref="console"/>
             <AppenderRef ref="FILE"/>
         </Root>
+        <Logger name="org.perfcake.ide" level="debug" additivity="true">
+        </Logger>
     </Loggers>
 </Configuration>

@@ -33,7 +33,7 @@ import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
-import org.perfcake.ide.editor.controller.visitor.SelectVisitor;
+import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
 import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
@@ -80,7 +80,7 @@ public class ScenarioController extends AbstractController implements RootContro
         unselectVisitor.visit(this);
 
         Point2D point = new Point2D.Double(e.getX(), e.getY());
-        SelectVisitor selectVisitor = new SelectVisitor(point, formManager);
+        MouseClickVisitor selectVisitor = new MouseClickVisitor(point, formManager);
         selectVisitor.visit(this);
 
     }

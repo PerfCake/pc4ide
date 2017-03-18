@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.editor.swing.icons.control;
 
-import static java.awt.Color.BLACK;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -31,14 +29,15 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import org.perfcake.ide.editor.swing.icons.AbstractIcon;
 
 /**
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class XIcon extends AbstractIcon {
+public class XIcon extends AbstractControlIcon {
 
+    public static final int DEFAULT_WIDTH = 8;
+    public static final int DEFAULT_HEIGHT = 8;
     /**
      * The rendered image.
      */
@@ -50,14 +49,14 @@ public class XIcon extends AbstractIcon {
      * @param color color
      */
     public XIcon(Color color) {
-        this(8, 8, color);
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT, color);
     }
 
     /**
      * Creates a new transcoded SVG image.
      *
      * @param width  width of the icon
-     * @param height heigth of the icon
+     * @param height height of the icon
      * @param color  color
      */
     public XIcon(int width, int height, Color color) {
@@ -76,9 +75,13 @@ public class XIcon extends AbstractIcon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
+        //store location
+        this.x = x;
+        this.y = y;
+
         if (image == null) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            double coef = Math.min((double) width / (double) 8, (double) height / (double) 8);
+            double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
 
             Graphics2D g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -134,7 +137,6 @@ public class XIcon extends AbstractIcon {
 
         g.setPaint(color);
         g.fill(shape);
-
     }
 }
 

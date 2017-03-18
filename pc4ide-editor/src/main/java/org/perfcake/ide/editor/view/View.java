@@ -22,7 +22,9 @@ package org.perfcake.ide.editor.view;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.util.List;
+import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 
@@ -142,5 +144,14 @@ public interface View {
      * @return true if the view was removed or false if the view is not children of this view.
      */
     boolean removeChild(View view);
+
+    /**
+     * Returns action which should be performed as a result of mouse click on particular location.
+     *
+     * @param location location of the click
+     * @return Action which should be performed. If no Action should be performed, then {@link ActionType#NONE} is returned. This method
+     *          must not return null.
+     */
+    ActionType getAction(Point2D location);
 
 }

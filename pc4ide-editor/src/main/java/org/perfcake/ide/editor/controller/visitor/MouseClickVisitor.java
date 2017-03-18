@@ -21,10 +21,13 @@
 package org.perfcake.ide.editor.controller.visitor;
 
 import java.awt.geom.Point2D;
+import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.forms.FormPage;
 import org.perfcake.ide.editor.forms.impl.SimpleFormPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,7 +35,9 @@ import org.perfcake.ide.editor.forms.impl.SimpleFormPage;
  *
  * @see ViewTargetedVisitor
  */
-public class SelectVisitor extends ViewTargetedVisitor {
+public class MouseClickVisitor extends ViewTargetedVisitor {
+
+    static final Logger logger = LoggerFactory.getLogger(MouseClickVisitor.class);
 
     private FormManager formManager;
 
@@ -42,17 +47,25 @@ public class SelectVisitor extends ViewTargetedVisitor {
      * @param location    coordinates representing location to be visited.
      * @param formManager Form manager
      */
-    public SelectVisitor(Point2D location, FormManager formManager) {
+    public MouseClickVisitor(Point2D location, FormManager formManager) {
         super(location);
         this.formManager = formManager;
     }
 
     @Override
     protected void performOperation(Controller controller) {
-        controller.getView().setSelected(true);
-        formManager.removeAllPages();
-        //TODO: (you should have some kind of factory method for the creating directors!!!)
-        FormPage page = new SimpleFormPage(formManager, controller.getModel());
-        formManager.addFormPage(page);
+        ActionType action = controller.getView().getAction(location);
+        logger.debug("Action detected: {}. Controller {}", action, controller);
+        switch (action) {
+            case SELECT:
+                controller.getView().setSelected(true);
+                formManager.removeAllPages();
+                //TODO: (you should have some kind of factory method for the creating directors!!!)
+                FormPage page = new SimpleFormPage(formManager, controller.getModel());
+                formManager.addFormPage(page);
+                break;
+            default:
+                // do nothing
+        }
     }
 }

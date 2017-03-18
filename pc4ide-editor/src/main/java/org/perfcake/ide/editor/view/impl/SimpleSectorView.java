@@ -64,8 +64,6 @@ public abstract class SimpleSectorView extends SectorView {
      */
     public static final int MANAGEMENT_ICON_SPACE = 5;
 
-    protected List<ResizableIcon> managementIcons;
-
     protected int headerFontSize = 12;
     protected int additionalTextFontSize;
 
@@ -78,9 +76,8 @@ public abstract class SimpleSectorView extends SectorView {
      * @param icon icon of the inspector in the sector
      */
     public SimpleSectorView(ResizableIcon icon) {
+        super();
         this.icon = icon;
-        managementIcons = new ArrayList<>();
-        initManagementIcons();
     }
 
     /* (non-Javadoc)
@@ -335,7 +332,7 @@ public abstract class SimpleSectorView extends SectorView {
             double iconCenterX = data.getCenter().getX() + radius - iconDiagonal / 2 - MANAGEMENT_ICON_SPACE;
             double iconCenterY = data.getCenter().getY() - MANAGEMENT_ICON_SPACE - iconDiagonal / 2;
 
-            double theta = data.getAngularData().getStartAngle()  + data.getAngularData().getAngleExtent();
+            double theta = data.getAngularData().getStartAngle() + data.getAngularData().getAngleExtent();
             Point2D location = Utils2D.rotatePoint(new Point2D.Double(iconCenterX, iconCenterY), theta, layoutData.getCenter());
 
             Rectangle2D iconBounds = Utils2D.getUpperLeftCorner(location, icon.getIconWidth(), icon.getIconHeight());
@@ -437,8 +434,4 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected abstract Color getIconColor();
 
-    /**
-     * This method is intended to add management icons.
-     */
-    protected abstract void initManagementIcons();
 }

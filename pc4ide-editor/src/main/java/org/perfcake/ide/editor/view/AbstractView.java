@@ -25,15 +25,19 @@ package org.perfcake.ide.editor.view;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.colors.ColorScheme;
 import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
+import org.perfcake.ide.editor.swing.icons.ControlIcon;
 
 /**
  * {@link AbstractView} implements some of the methods of {@link View} interface.
@@ -42,6 +46,7 @@ import org.perfcake.ide.editor.layout.LayoutManager;
  */
 public abstract class AbstractView implements View {
 
+    protected List<ControlIcon> managementIcons;
     private boolean isSelected = false;
     private List<View> children = new ArrayList<>();
     private View parent;
@@ -54,11 +59,13 @@ public abstract class AbstractView implements View {
 
     /**
      * Creates new abstract view.
-    */
+     */
     public AbstractView() {
         super();
         isValid = false;
         colorScheme = new DefaultColorScheme();
+        managementIcons = new ArrayList<>();
+        initManagementIcons();
     }
 
     @Override
@@ -158,6 +165,24 @@ public abstract class AbstractView implements View {
         this.colorScheme = colorScheme;
     }
 
+    @Override
+    public ActionType getAction(Point2D location) {
+        ActionType action = ActionType.NONE;
+
+        if (location != null && getViewBounds() != null || getViewBounds().contains(location)) {
+            action = ActionType.SELECT;
+
+            for (ControlIcon controlIcon : managementIcons) {
+                Shape iconBounds = controlIcon.getBounds();
+                if (iconBounds.contains(location) && controlIcon.getAction() != null) {
+                    action = controlIcon.getAction();
+                }
+            }
+        }
+
+        return action;
+    }
+
     /**
      * Adds rendering hints to a graphics context.
      *
@@ -171,4 +196,9 @@ public abstract class AbstractView implements View {
         hints.put(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
         g2d.addRenderingHints(hints);
     }
+
+    /**
+     * This method is intended to add management icons.
+     */
+    protected abstract void initManagementIcons();
 }

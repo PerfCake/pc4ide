@@ -28,15 +28,18 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.perfcake.ide.editor.swing.icons.AbstractIcon;
+import org.perfcake.ide.editor.actions.ActionType;
 
 /**
  * This class has been automatically generated using
  * <a href="http://ebourg.github.io/flamingo-svg-transcoder/">Flamingo SVG transcoder</a>.
  */
-public class MinusIcon extends AbstractIcon {
+public class MinusIcon extends AbstractControlIcon {
 
+    private static final int DEFAULT_WIDTH = 8;
+    private static final int DEFAULT_HEIGHT = 2;
     /**
      * The rendered image.
      */
@@ -48,7 +51,7 @@ public class MinusIcon extends AbstractIcon {
      * @param color color of the icon
      */
     public MinusIcon(Color color) {
-        this(8, 2, color);
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT, color);
     }
 
     /**
@@ -59,7 +62,7 @@ public class MinusIcon extends AbstractIcon {
      * @param color  color of the icon
      */
     public MinusIcon(int width, int height, Color color) {
-        super(width, height, color);
+        super(width, height, color, ActionType.REMOVE);
     }
 
     @Override
@@ -74,10 +77,13 @@ public class MinusIcon extends AbstractIcon {
 
     @Override
     public void paintIcon(Component co, Graphics g, int x, int y) {
+        // store location
+        this.x = x;
+        this.y = y;
+
         if (image == null) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            double coef = Math.min((double) width / (double) 8, (double) height / (double) 2);
-
+            double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
             Graphics2D g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.scale(coef, coef);
@@ -116,7 +122,21 @@ public class MinusIcon extends AbstractIcon {
         g.fill(shape);
 
         g.setTransform(transformations.pop()); // _0_0
+    }
 
+    @Override
+    public Shape getBounds() {
+        /*
+         * Complete to square since minus height is too small to acquire it easily.
+         */
+        Rectangle2D superBounds = (Rectangle2D) super.getBounds();
+        double difference = superBounds.getWidth() - superBounds.getHeight();
+        Rectangle2D bounds = new Rectangle2D.Double(superBounds.getX(),
+                superBounds.getY() - difference / 2,
+                superBounds.getWidth(),
+                superBounds.getWidth());
+
+        return bounds;
     }
 }
 

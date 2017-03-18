@@ -48,7 +48,7 @@ public abstract class ViewTargetedVisitor implements ControllerVisitor {
     @Override
     public void visit(Controller controller) {
         if (controller.getView() != null && controller.getView().getViewBounds().contains(location)) {
-            Controller moreSpecificTarget = findMoreSpecifcTarget(controller);
+            Controller moreSpecificTarget = findMoreSpecificTarget(controller);
 
             if (moreSpecificTarget == null) {
                 performOperation(controller);
@@ -58,7 +58,7 @@ public abstract class ViewTargetedVisitor implements ControllerVisitor {
         }
     }
 
-    private Controller findMoreSpecifcTarget(Controller controller) {
+    private Controller findMoreSpecificTarget(Controller controller) {
         Controller moreSpecificController = null;
 
         Iterator<Controller> it = controller.getChildrenIterator();
