@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.controller.impl;
 
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ValidatorModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
@@ -36,11 +37,12 @@ public class ValidatorController extends AbstractController {
     /**
      * Creates abstract controller which will manage a model.
      *
-     * @param model       model to be managed
-     * @param viewFactory viewFactory which may be used to create views.
+     * @param model        model to be managed
+     * @param modelFactory model factory.
+     * @param viewFactory  viewFactory which may be used to create views.
      */
-    public ValidatorController(Model model, ViewFactory viewFactory) {
-        super(model, viewFactory);
+    public ValidatorController(Model model, ModelFactory modelFactory, ViewFactory viewFactory) {
+        super(model, modelFactory, viewFactory);
         updateViewData();
     }
 

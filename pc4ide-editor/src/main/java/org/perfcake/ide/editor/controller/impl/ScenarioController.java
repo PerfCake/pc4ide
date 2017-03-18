@@ -22,19 +22,16 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.List;
 import javax.swing.JComponent;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
-import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.forms.FormManager;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 import org.perfcake.ide.editor.view.impl.ScenarioView;
@@ -51,20 +48,22 @@ public class ScenarioController extends AbstractController implements RootContro
     /**
      * Creates new editor controller.
      *
-     * @param jComponent  Swing inspector used as a container for editor visuals
-     * @param model       model of scenario managed by controller
-     * @param viewFactory Factory for creating views
-     * @param formManager manager of forms to modify inspector properties
+     * @param jComponent   Swing inspector used as a container for editor visuals
+     * @param model        model of scenario managed by controller
+     * @param modelFactory model factory.
+     * @param viewFactory  Factory for creating views
+     * @param formManager  manager of forms to modify inspector properties
      */
-    public ScenarioController(JComponent jComponent, ScenarioModel model, ViewFactory viewFactory, FormManager formManager) {
-        super(model, viewFactory);
+    public ScenarioController(JComponent jComponent, ScenarioModel model, ModelFactory modelFactory,
+                              ViewFactory viewFactory, FormManager formManager) {
+        super(model, modelFactory, viewFactory);
         this.jComponent = jComponent;
         this.formManager = formManager;
         ScenarioView scenarioView = (ScenarioView) view;
         scenarioView.setJComponent(jComponent);
         this.view = scenarioView;
 
-        createChildrenControllers(model);
+        createChildrenControllers();
     }
 
     @Override
@@ -74,12 +73,16 @@ public class ScenarioController extends AbstractController implements RootContro
     }
 
     @Override
+    protected void initActionHandlers() {
+        // no handlers
+    }
+
+    @Override
     public void mouseReleased(MouseEvent e) {
 
         Point2D point = new Point2D.Double(e.getX(), e.getY());
         MouseClickVisitor selectVisitor = new MouseClickVisitor(point, formManager);
         selectVisitor.visit(this);
-
     }
 
     @Override
@@ -87,49 +90,36 @@ public class ScenarioController extends AbstractController implements RootContro
         return this.jComponent;
     }
 
-    private void createChildrenControllers(ScenarioModel model) {
-        for (final PropertyInfo propertyInfo : model.getSupportedProperties()) {
-            List<Property> properties = model.getProperties(propertyInfo);
-            if (propertyInfo.getType() == PropertyType.MODEL && properties != null && !properties.isEmpty()) {
-                if (PropertyNames.GENERATOR.toString().equals(propertyInfo.getName())) {
-                    Model generatorModel = properties.get(0).cast(Model.class);
-                    final Controller generator = new GeneratorController(generatorModel, viewFactory);
-                    addChild(generator);
-                } else if (PropertyNames.SENDER.toString().equals(propertyInfo.getName())) {
-                    Model senderModel = properties.get(0).cast(Model.class);
-                    final Controller sender = new SenderController(senderModel, viewFactory);
-                    addChild(sender);
-                } else if (PropertyNames.RECEIVER.toString().equals(propertyInfo.getName())) {
-                    Model receiverModel = properties.get(0).cast(Model.class);
-                    final Controller receiver = new ReceiverController(receiverModel, viewFactory);
-                    addChild(receiver);
-                } else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
-                    for (Property reporterModel : properties) {
-                        final Controller reporter = new ReporterController(reporterModel.cast(Model.class), viewFactory);
-                        addChild(reporter);
-                    }
-                } else if (PropertyNames.SEQUENCES.toString().equals(propertyInfo.getName())) {
-                    for (Property sequenceModel : properties) {
-                        final Controller sequence = new SequenceController(sequenceModel.cast(Model.class), viewFactory);
-                        addChild(sequence);
-                    }
-                } else if (PropertyNames.MESSAGES.toString().equals(propertyInfo.getName())) {
-                    for (Property messageModel : properties) {
-                        final Controller message = new MessageController(messageModel.cast(Model.class), viewFactory);
-                        addChild(message);
-                    }
-                } else if (PropertyNames.VALIDATORS.toString().equals(propertyInfo.getName())) {
-                    for (Property validatorModel : properties) {
-                        final Controller validator = new ValidatorController(validatorModel.cast(Model.class), viewFactory);
-                        addChild(validator);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public Controller getParent() {
         return null;
+    }
+
+    @Override
+    public Controller createChildController(Model model) {
+        Controller child = super.createChildController(model);
+
+        if (child == null) {
+            PropertyInfo info = model.getPropertyInfo();
+
+            if (PropertyNames.REPORTERS.toString().equals(info.getName())) {
+                child = new ReporterController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.SEQUENCES.toString().equals(info.getName())) {
+                child = new SequenceController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.SENDER.toString().equals(info.getName())) {
+                child = new SenderController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.GENERATOR.toString().equals(info.getName())) {
+                child = new GeneratorController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.MESSAGES.toString().equals(info.getName())) {
+                child = new MessageController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.VALIDATORS.toString().equals(info.getName())) {
+                child = new ValidatorController(model, modelFactory, viewFactory);
+            } else if (PropertyNames.RECEIVER.toString().equals(info.getName())) {
+                child = new ReceiverController(model, modelFactory, viewFactory);
+            }
+        }
+
+        return child;
+
     }
 }

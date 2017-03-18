@@ -22,8 +22,10 @@ package org.perfcake.ide.editor.controller.impl;
 
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ReceiverModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.controller.AbstractController;
+import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 import org.perfcake.ide.editor.view.impl.ReceiverView;
 
@@ -37,18 +39,17 @@ public class ReceiverController extends AbstractController {
     /**
      * Creates abstract controller which will manage a model.
      *
-     * @param model       model to be managed
-     * @param viewFactory viewFactory which may be used to create views.
+     * @param model        model to be managed
+     * @param modelFactory model factory.
+     * @param viewFactory  viewFactory which may be used to create views.
      */
-    public ReceiverController(Model model, ViewFactory viewFactory) {
-        super(model, viewFactory);
+    public ReceiverController(Model model, ModelFactory modelFactory, ViewFactory viewFactory) {
+        super(model, modelFactory, viewFactory);
         updateViewData();
 
         Model correlator = model.getSingleProperty(ReceiverModel.PropertyNames.CORRELATOR.toString(), Model.class);
 
-        if (correlator != null) {
-            addChild(new CorrelatorController(correlator, viewFactory));
-        }
+        createChildrenControllers();
     }
 
     @Override
@@ -76,5 +77,18 @@ public class ReceiverController extends AbstractController {
         }
 
         return modified;
+    }
+
+    @Override
+    public Controller createChildController(Model model) {
+        Controller child = super.createChildController(model);
+
+        if (child == null) {
+            if (ReceiverModel.PropertyNames.CORRELATOR.toString().equals(model.getPropertyInfo().getName())) {
+                child = new CorrelatorController(model, modelFactory, viewFactory);
+            }
+        }
+
+        return child;
     }
 }

@@ -23,14 +23,18 @@ package org.perfcake.ide.editor.controller.impl;
 import java.util.List;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ReporterModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.controller.AbstractController;
+import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 import org.perfcake.ide.editor.view.impl.ReporterView;
 
 /**
  * Controller of reporter.
+ *
  * @author Jakub Knetl
  */
 public class ReporterController extends AbstractController {
@@ -38,20 +42,18 @@ public class ReporterController extends AbstractController {
     /**
      * Creates new view.
      *
-     * @param senderModel model of sender
-     * @param viewFactory view factory
+     * @param senderModel  model of sender
+     * @param modelFactory model factory.
+     * @param viewFactory  view factory
      */
-    public ReporterController(Model senderModel, ViewFactory viewFactory) {
-        super(senderModel, viewFactory);
+    public ReporterController(Model senderModel, ModelFactory modelFactory, ViewFactory viewFactory) {
+        super(senderModel, modelFactory, viewFactory);
         view = viewFactory.createView(senderModel);
         updateViewData();
 
         List<Property> destinations = model.getProperties(ReporterModel.PropertyNames.DESTINATION.toString());
 
-        for (Property p : destinations) {
-            Model destination = p.cast(Model.class);
-            addChild(new DestinationController(destination, viewFactory));
-        }
+        createChildrenControllers();
     }
 
     @Override
@@ -70,4 +72,17 @@ public class ReporterController extends AbstractController {
         return modified;
     }
 
+    @Override
+    public Controller createChildController(Model model) {
+        Controller child = super.createChildController(model);
+
+        if (child == null) {
+            PropertyInfo info = model.getPropertyInfo();
+            if (ReporterModel.PropertyNames.DESTINATION.toString().equals(info.getName())) {
+                child = new DestinationController(model, modelFactory, viewFactory);
+            }
+        }
+
+        return child;
+    }
 }

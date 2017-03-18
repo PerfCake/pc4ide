@@ -24,19 +24,29 @@
 package org.perfcake.ide.editor.controller;
 
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.Property;
+import org.perfcake.ide.core.model.PropertyInfo;
+import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.core.model.listeners.ModelListener;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.actions.handlers.ActionHandler;
+import org.perfcake.ide.editor.actions.handlers.AddSiblingHandler;
+import org.perfcake.ide.editor.actions.handlers.RemoveHandler;
 import org.perfcake.ide.editor.actions.handlers.SelectionHandler;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractController provides default implementation for some methods from {@link Controller} interface.
@@ -48,7 +58,9 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  *
  * @author jknetl
  */
-public abstract class AbstractController implements Controller {
+public abstract class AbstractController implements Controller, ModelListener {
+
+    static final Logger logger = LoggerFactory.getLogger(AbstractController.class);
 
     protected ViewFactory viewFactory;
     protected View view;
@@ -56,19 +68,33 @@ public abstract class AbstractController implements Controller {
     protected List<Controller> children = new ArrayList<>();
     private Map<ActionType, ActionHandler> actionHandlers = new HashMap<>();
     protected Controller parent = null;
+    protected ModelFactory modelFactory;
 
     /**
      * Creates abstract controller which will manage a model.
-     *
-     * @param model       model to be managed
-     * @param viewFactory viewFactory which may be used to create views.
+     * @param model        model to be managed
+     * @param modelFactory model factory.
+     * @param viewFactory  viewFactory which may be used to create views.
      */
-    public AbstractController(Model model, ViewFactory viewFactory) {
+    public AbstractController(Model model, ModelFactory modelFactory, ViewFactory viewFactory) {
         super();
+        if (model == null) {
+            throw new IllegalArgumentException("Model is null.");
+        }
+        if (modelFactory == null) {
+            throw new IllegalArgumentException("Model factory is null.");
+        }
+        if (viewFactory == null) {
+            throw new IllegalArgumentException("View factory is null.");
+        }
+
         this.model = model;
+        this.modelFactory = modelFactory;
         this.viewFactory = viewFactory;
         this.view = viewFactory.createView(model);
+
         initActionHandlers();
+        model.addModelListener(this);
     }
 
     /**
@@ -76,6 +102,8 @@ public abstract class AbstractController implements Controller {
      */
     protected void initActionHandlers() {
         addActionHandler(new SelectionHandler());
+        addActionHandler(new RemoveHandler());
+        addActionHandler(new AddSiblingHandler());
     }
 
     @Override
@@ -117,8 +145,8 @@ public abstract class AbstractController implements Controller {
     public boolean removeChild(Controller child) {
         final boolean removed = children.remove(child);
         if (removed) {
+            getView().removeChild(child.getView());
             child.getView().setParent(null);
-            getView().removeChild(getView());
             child.setParent(null);
             getView().invalidate();
         }
@@ -197,6 +225,7 @@ public abstract class AbstractController implements Controller {
 
     /**
      * Removes actionHandler from this controller.
+     *
      * @param handler handler to be removed
      * @return True if handler was removed.
      */
@@ -211,5 +240,88 @@ public abstract class AbstractController implements Controller {
         }
 
         return removed;
+    }
+
+    @Override
+    public ModelFactory getModelFactory() {
+        return modelFactory;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        logger.debug("Event received in {}: {}", this.getClass().getSimpleName(), evt);
+        if (evt.getOldValue() instanceof Model && evt.getNewValue() == null) {
+            Model oldValue = (Model) evt.getOldValue();
+            Controller oldController = findChildByModel(oldValue);
+            if (oldController != null) {
+                logger.debug("Controller {} removes child: {}", this.getClass().getSimpleName(), oldController.getClass().getSimpleName());
+                removeChild(oldController);
+            }
+        }
+
+        if (evt.getNewValue() instanceof Model && evt.getOldValue() == null) {
+            Controller childController = createChildController(((Model) evt.getNewValue()).cast(Model.class));
+            if (childController != null) {
+                addChild(childController);
+            }
+        }
+        boolean modified = updateViewData();
+        if (modified) {
+            logger.debug("Event caused view data update invalidating the view!");
+            getView().invalidate();
+        }
+    }
+
+    /**
+     * Finds child controller by its model class.
+     *
+     * @param model model whose controller is searched for
+     * @return child controller or null. If no direct child has such model.
+     */
+    protected Controller findChildByModel(Model model) {
+
+        Controller child = null;
+
+        Iterator<Controller> it = getChildrenIterator();
+        while (it.hasNext()) {
+            Controller c = it.next();
+            if (c.getModel() == model) {
+                child = c;
+                break;
+            }
+        }
+
+        return child;
+    }
+
+    /**
+     * This method create children controller. It goes through all model properties which are also model. Child controller is added only
+     * if the {@link #createChildController(Model)} method returns controller.
+     */
+    protected void createChildrenControllers() {
+        for (final PropertyInfo propertyInfo : model.getSupportedProperties()) {
+            List<Property> properties = model.getProperties(propertyInfo);
+            if (propertyInfo.getType() == PropertyType.MODEL && properties != null && !properties.isEmpty()) {
+                for (Property p : properties) {
+                    Controller child = createChildController(p.cast(Model.class));
+                    if (child != null) {
+                        addChild(child);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public Controller createChildController(Model model) {
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null");
+        }
+
+        if (model.getPropertyInfo() == null) {
+            throw new IllegalArgumentException("model must containt property info");
+        }
+
+        return null;
     }
 }

@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.controller.impl;
 
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.SenderModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
@@ -37,11 +38,12 @@ public class SenderController extends AbstractController {
     /**
      * Creates new view.
      *
-     * @param senderModel model of sender
-     * @param viewFactory view factory
+     * @param senderModel  model of sender
+     * @param modelFactory model factory.
+     * @param viewFactory  view factory
      */
-    public SenderController(Model senderModel, ViewFactory viewFactory) {
-        super(senderModel, viewFactory);
+    public SenderController(Model senderModel, ModelFactory modelFactory, ViewFactory viewFactory) {
+        super(senderModel, modelFactory, viewFactory);
         view = viewFactory.createView(senderModel);
         updateViewData();
     }

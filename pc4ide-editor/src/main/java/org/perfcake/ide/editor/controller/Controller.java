@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.controller;
 import java.awt.event.MouseListener;
 import java.util.Iterator;
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
@@ -111,4 +112,19 @@ public interface Controller extends MouseListener {
      * @param action action type to be performed.
      */
     void performAction(ActionType action);
+
+    /**
+     * @return Model factory.
+     */
+    ModelFactory getModelFactory();
+
+    /**
+     * Creates controller object for given model. This method is supposed for creating children controllers. Therefore, if this controller
+     * is not interested in particular model as a children, then it should return null value. Default implementation in
+     * {@link AbstractController} always return null.
+     *
+     * @param model model object
+     * @return Controller, which may be added as a child, or null if this controller does not accept the model as its child.
+     */
+    Controller createChildController(Model model);
 }

@@ -66,6 +66,7 @@ public abstract class LayeredSectorView extends SimpleSectorView {
 
     /**
      * Computes layout data for lower layer.
+     *
      * @param data data
      * @return copy of layout data shrunk only to lower layer
      */
@@ -77,6 +78,7 @@ public abstract class LayeredSectorView extends SimpleSectorView {
 
     /**
      * Computes layout data for upper layer.
+     *
      * @param data data
      * @return copy of layout data shrunk only to upper layer
      */
@@ -88,8 +90,8 @@ public abstract class LayeredSectorView extends SimpleSectorView {
 
     /**
      * Compute border radius between layers.
-     * @param data layout data
      *
+     * @param data layout data
      * @return radius of border between layers.
      */
     protected double computeLayerBorder(LayoutData data) {
@@ -101,8 +103,10 @@ public abstract class LayeredSectorView extends SimpleSectorView {
     public Shape getViewBounds() {
         Area area = new Area(super.getViewBounds());
         for (View child : getChildren()) {
-            Area childArea = new Area(child.getViewBounds());
-            area.add(childArea);
+            if (child != null && child.getViewBounds() != null) {
+                Area childArea = new Area(child.getViewBounds());
+                area.add(childArea);
+            }
         }
 
         return area;

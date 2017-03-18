@@ -66,17 +66,14 @@ public class ValidModelFactory implements ModelFactory {
      * DocsService injected into created models.
      */
     private DocsService docsService;
-    private ComponentCatalogue componentCatalogue;
 
     /**
      * Creates new ValidModeFactory.
      *
      * @param docsService        documentation service
-     * @param componentCatalogue catalogue of PerfCake component implementations.
      */
-    public ValidModelFactory(DocsService docsService, ComponentCatalogue componentCatalogue) {
+    public ValidModelFactory(DocsService docsService) {
         this.docsService = docsService;
-        this.componentCatalogue = componentCatalogue;
     }
 
     @Override
@@ -248,13 +245,4 @@ public class ValidModelFactory implements ModelFactory {
     public void setDocsService(DocsService docsService) {
         this.docsService = docsService;
     }
-
-    public ComponentCatalogue getComponentCatalogue() {
-        return componentCatalogue;
-    }
-
-    public void setComponentCatalogue(ComponentCatalogue componentCatalogue) {
-        this.componentCatalogue = componentCatalogue;
-    }
-
 }

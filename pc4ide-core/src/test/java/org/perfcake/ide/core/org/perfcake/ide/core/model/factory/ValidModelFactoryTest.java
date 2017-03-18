@@ -67,9 +67,7 @@ public class ValidModelFactoryTest {
     @Before
     public void setUp() throws IOException {
         DocsService service = new DocsServiceImpl(TestUtils.loadJavadocProperties());
-        ComponentCatalogue catalogue = new ReflectionComponentCatalogue();
-
-        factory = new ValidModelFactory(service, catalogue);
+        factory = new ValidModelFactory(service);
     }
 
     @Test
