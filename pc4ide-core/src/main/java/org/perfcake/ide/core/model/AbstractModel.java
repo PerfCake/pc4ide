@@ -140,6 +140,21 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
+    public void addProperty(String supportedPropertyName, Property property) throws PropertyLimitException, UnsupportedPropertyException {
+        if (supportedPropertyName == null) {
+            throw new IllegalArgumentException("Supported property name cannot be null.");
+        }
+
+        PropertyInfo propertyInfo = getSupportedProperty(supportedPropertyName);
+
+        if (propertyInfo == null) {
+            throw new UnsupportedPropertyException(String.format("No supported property has name %s.%n", supportedPropertyName));
+        }
+
+        addProperty(propertyInfo, property);
+    }
+
+    @Override
     public void addProperty(PropertyInfo propertyInfo, Property property) throws PropertyLimitException, UnsupportedPropertyException {
         if (propertyInfo == null) {
             throw new IllegalArgumentException("Property info must not be null.");

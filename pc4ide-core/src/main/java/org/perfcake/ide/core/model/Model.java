@@ -62,6 +62,16 @@ public interface Model extends Property {
     void addProperty(PropertyInfo propertyInfo, Property property) throws PropertyLimitException, UnsupportedPropertyException;
 
     /**
+     * Adds property to the model.
+     *
+     * @param supportedPropertyName name of supported property
+     * @param property     Property to be added
+     * @throws PropertyLimitException       If the maximum number of properties for given type are present in the model.
+     * @throws UnsupportedPropertyException If the no supported property match suppertedPropertyName argument
+     */
+    void addProperty(String supportedPropertyName, Property property) throws PropertyLimitException, UnsupportedPropertyException;
+
+    /**
      * Removes property to the model.
      *
      * @param propertyInfo metadata about type of the property to be removed.
