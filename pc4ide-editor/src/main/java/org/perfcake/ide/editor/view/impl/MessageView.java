@@ -21,9 +21,14 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.MessageIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
@@ -32,20 +37,80 @@ import org.perfcake.ide.editor.view.Pair;
  * @author Jakub Knetl
  */
 public class MessageView extends SimpleSectorView {
+
+    private Set<String> validatorRefs;
+    private String uri;
+    private String content;
+    private String multiplicity;
+
     /**
-     * creates new sector view.
+     * Creates new sector view.
      */
     public MessageView() {
         super(new MessageIcon());
+        validatorRefs = new HashSet<>();
     }
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        List<Pair> pairs = new ArrayList<>();
+        if (uri != null && !uri.isEmpty()) {
+            pairs.add(new Pair("uri", uri));
+        }
+        if (content != null && !content.isEmpty()) {
+            pairs.add(new Pair("content", content));
+        }
+        if (multiplicity != null && !multiplicity.isEmpty()) {
+            pairs.add(new Pair("multiplicity", multiplicity));
+        }
+
+        for (String validatorRef : validatorRefs) {
+            pairs.add(new Pair("Validator", validatorRef));
+        }
+
+        return pairs;
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_MESSAGE);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
+    }
+
+    public Set<String> getValidatorRefs() {
+        return validatorRefs;
+    }
+
+    public void setValidatorRefs(Set<String> validatorRefs) {
+        this.validatorRefs = validatorRefs;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getMultiplicity() {
+        return multiplicity;
+    }
+
+    public void setMultiplicity(String multiplicity) {
+        this.multiplicity = multiplicity;
     }
 }

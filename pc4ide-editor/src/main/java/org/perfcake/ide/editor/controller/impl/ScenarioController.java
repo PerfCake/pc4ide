@@ -102,30 +102,30 @@ public class ScenarioController extends AbstractController implements RootContro
                     Model senderModel = properties.get(0).cast(Model.class);
                     final Controller sender = new SenderController(senderModel, viewFactory);
                     addChild(sender);
+                } else if (PropertyNames.RECEIVER.toString().equals(propertyInfo.getName())) {
+                    Model receiverModel = properties.get(0).cast(Model.class);
+                    final Controller receiver = new ReceiverController(receiverModel, viewFactory);
+                    addChild(receiver);
                 } else if (PropertyNames.REPORTERS.toString().equals(propertyInfo.getName())) {
                     for (Property reporterModel : properties) {
                         final Controller reporter = new ReporterController(reporterModel.cast(Model.class), viewFactory);
                         addChild(reporter);
                     }
-                    //} else if (PropertyNames.SEQUENCES.toString().equals(propertyInfo.getName())) {
-                    //    for (Property sequenceModel : properties) {
-                    //        final Controller sequence = new SectionController(sequenceModel.cast(Model.class));
-                    //        addChild(sequence);
-                    //    }
-                    //} else if (PropertyNames.RECEIVER.toString().equals(propertyInfo)) {
-                    //    final Controller receiver = new SectionController(properties.get(0).cast(Model.class));
-                    //    addChild(receiver);
-                    //} else if (PropertyNames.MESSAGES.toString().equals(propertyInfo)) {
-                    //    for (Property messageModel : properties) {
-                    //        final Controller message
-                    //                = new SectionController(messageModel.cast(Model.class));
-                    //        addChild(message);
-                    //    }
-                    //} else if (PropertyNames.VALIDATORS.toString().equals(propertyInfo)) {
-                    //    for (Property validatorModel : properties) {
-                    //        final Controller validator = new SectionController(validatorModel.cast(Model.class));
-                    //        addChild(validator);
-                    //    }
+                } else if (PropertyNames.SEQUENCES.toString().equals(propertyInfo.getName())) {
+                    for (Property sequenceModel : properties) {
+                        final Controller sequence = new SequenceController(sequenceModel.cast(Model.class), viewFactory);
+                        addChild(sequence);
+                    }
+                } else if (PropertyNames.MESSAGES.toString().equals(propertyInfo.getName())) {
+                    for (Property messageModel : properties) {
+                        final Controller message = new MessageController(messageModel.cast(Model.class), viewFactory);
+                        addChild(message);
+                    }
+                } else if (PropertyNames.VALIDATORS.toString().equals(propertyInfo.getName())) {
+                    for (Property validatorModel : properties) {
+                        final Controller validator = new ValidatorController(validatorModel.cast(Model.class), viewFactory);
+                        addChild(validator);
+                    }
                 }
             }
         }

@@ -80,6 +80,7 @@ public abstract class SimpleSectorView extends SectorView {
     public SimpleSectorView(ResizableIcon icon) {
         this.icon = icon;
         managementIcons = new ArrayList<>();
+        initManagementIcons();
     }
 
     /* (non-Javadoc)
@@ -435,4 +436,9 @@ public abstract class SimpleSectorView extends SectorView {
      * @return Color of the icon.
      */
     protected abstract Color getIconColor();
+
+    /**
+     * This method is intended to add management icons.
+     */
+    protected abstract void initManagementIcons();
 }

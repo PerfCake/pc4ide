@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.DestinationIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
@@ -53,6 +55,12 @@ public class DestinationView extends CondensedSectorView {
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_DESTINATION);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
     }
 
     public Set<Pair> getPeriods() {

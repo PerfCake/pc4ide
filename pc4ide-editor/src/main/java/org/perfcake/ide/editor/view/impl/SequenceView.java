@@ -21,9 +21,12 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.SequenceIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
@@ -32,6 +35,9 @@ import org.perfcake.ide.editor.view.Pair;
  * @author Jakub Knetl
  */
 public class SequenceView extends SimpleSectorView {
+
+    private String id;
+
     /**
      * creates new sector view.
      */
@@ -41,11 +47,27 @@ public class SequenceView extends SimpleSectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        List<Pair> data = new ArrayList<>();
+        data.add(new Pair("id", id));
+        return data;
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_SEQUENCE);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

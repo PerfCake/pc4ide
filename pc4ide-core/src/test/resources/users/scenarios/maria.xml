@@ -27,10 +27,17 @@
         <property name="senderTaskQueueSize" value="500" />
     </generator>
 
+    <sequences>
+        <sequence id="seq.natural" class="PrimitiveNumberSequence" />
+    </sequences>
     <sender class="CommandSender">
         <target>${script.dir}/perfcake-maria.sh</target>
         <property name="messageFrom" value="stdin" />
     </sender>
+    <receiver class="HttpReceiver" threads="10">
+        <correlator class="GenerateHeaderCorrelator" />
+        <source>localhost:8080</source>
+    </receiver>
     <reporting>
         <reporter class="IterationsPerSecondReporter">
             <destination class="ConsoleDestination">

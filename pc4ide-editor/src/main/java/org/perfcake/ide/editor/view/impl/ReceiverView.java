@@ -21,17 +21,24 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.ReceiverIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
  * Represents view of an receiver.
  * @author Jakub Knetl
  */
-public class ReceiverView extends SimpleSectorView {
+public class ReceiverView extends LayeredSectorView {
+
+    private String threads;
+    private String source;
+
     /**
      * creates new sector view.
      */
@@ -41,11 +48,39 @@ public class ReceiverView extends SimpleSectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return Collections.emptyList();
+        List<Pair> data = new ArrayList<>();
+        if (source != null) {
+            data.add(new Pair("Source", source));
+        }
+        if (threads != null) {
+            data.add(new Pair("threads", threads));
+        }
+        return data;
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_RECEIVER);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+    }
+
+    public String getThreads() {
+        return threads;
+    }
+
+    public void setThreads(String threads) {
+        this.threads = threads;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

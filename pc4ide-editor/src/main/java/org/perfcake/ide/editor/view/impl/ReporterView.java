@@ -40,8 +40,6 @@ public class ReporterView extends LayeredSectorView {
      */
     public ReporterView() {
         super(new ReporterIcon());
-        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
-        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
     }
 
     @Override
@@ -52,6 +50,12 @@ public class ReporterView extends LayeredSectorView {
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_REPORTER);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
     }
 
 }

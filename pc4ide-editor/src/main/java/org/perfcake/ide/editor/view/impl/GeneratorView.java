@@ -83,4 +83,9 @@ public class GeneratorView extends SimpleSectorView {
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_GENERATOR);
     }
+
+    @Override
+    protected void initManagementIcons() {
+         // no icons
+    }
 }

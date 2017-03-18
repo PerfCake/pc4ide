@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.CorrelatorIcon;
@@ -31,7 +32,7 @@ import org.perfcake.ide.editor.view.Pair;
  *
  * @author Jakub Knetl
  */
-public class CorrelatorView extends SimpleSectorView {
+public class CorrelatorView extends CondensedSectorView {
 
     /**
      * creates new sector view.
@@ -42,12 +43,17 @@ public class CorrelatorView extends SimpleSectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_CORRELATOR);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        // no icons.
     }
 
 }

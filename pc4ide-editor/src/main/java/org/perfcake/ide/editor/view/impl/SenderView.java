@@ -63,4 +63,9 @@ public class SenderView extends SimpleSectorView {
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_SENDER);
     }
+
+    @Override
+    protected void initManagementIcons() {
+       // no icons
+    }
 }

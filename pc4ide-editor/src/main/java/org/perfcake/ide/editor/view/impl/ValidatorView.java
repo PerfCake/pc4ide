@@ -21,16 +21,22 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.ValidatorIcon;
+import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
+import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
  * Represents a validator view.
+ *
  * @author Jakub Knetl
  */
 public class ValidatorView extends SimpleSectorView {
+
+    private String id;
 
     /**
      * creates new sector view.
@@ -41,11 +47,27 @@ public class ValidatorView extends SimpleSectorView {
 
     @Override
     protected List<Pair> getAdditionalData() {
-        return null;
+        List<Pair> pairs = new ArrayList<>();
+        pairs.add(new Pair("id", id));
+        return pairs;
     }
 
     @Override
     protected Color getIconColor() {
         return colorScheme.getColor(NamedColor.COMPONENT_VALIDATOR);
+    }
+
+    @Override
+    protected void initManagementIcons() {
+        managementIcons.add(new MinusIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        managementIcons.add(new PlusIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
