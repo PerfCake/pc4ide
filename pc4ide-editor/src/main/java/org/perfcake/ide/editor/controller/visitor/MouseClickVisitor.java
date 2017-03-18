@@ -56,16 +56,6 @@ public class MouseClickVisitor extends ViewTargetedVisitor {
     protected void performOperation(Controller controller) {
         ActionType action = controller.getView().getAction(location);
         logger.debug("Action detected: {}. Controller {}", action, controller);
-        switch (action) {
-            case SELECT:
-                controller.getView().setSelected(true);
-                formManager.removeAllPages();
-                //TODO: (you should have some kind of factory method for the creating directors!!!)
-                FormPage page = new SimpleFormPage(formManager, controller.getModel());
-                formManager.addFormPage(page);
-                break;
-            default:
-                // do nothing
-        }
+        controller.performAction(action);
     }
 }

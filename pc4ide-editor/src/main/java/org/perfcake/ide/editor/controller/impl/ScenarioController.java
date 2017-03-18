@@ -76,9 +76,6 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     public void mouseReleased(MouseEvent e) {
 
-        UnselectVisitor unselectVisitor = new UnselectVisitor();
-        unselectVisitor.visit(this);
-
         Point2D point = new Point2D.Double(e.getX(), e.getY());
         MouseClickVisitor selectVisitor = new MouseClickVisitor(point, formManager);
         selectVisitor.visit(this);
@@ -129,5 +126,10 @@ public class ScenarioController extends AbstractController implements RootContro
                 }
             }
         }
+    }
+
+    @Override
+    public Controller getParent() {
+        return null;
     }
 }

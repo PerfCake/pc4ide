@@ -18,12 +18,38 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.editor.actions.handlers;
+
+import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.editor.controller.Controller;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Represents abstract handler.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, START, STOP, SELECT, OTHER, NONE;
+public abstract class AbstractHandler implements ActionHandler {
+
+    protected ActionType actionType;
+    protected Controller controller;
+
+    public AbstractHandler(ActionType actionType) {
+        this.actionType = actionType;
+    }
+
+    @Override
+    public ActionType getEventType() {
+        return actionType;
+    }
+
+    @Override
+    public Controller getController() {
+        return controller;
+    }
+
+    @Override
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 }
+

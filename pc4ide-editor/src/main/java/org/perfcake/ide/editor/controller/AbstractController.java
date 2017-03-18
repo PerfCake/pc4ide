@@ -24,13 +24,15 @@
 package org.perfcake.ide.editor.controller;
 
 import java.awt.event.MouseEvent;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.editor.colors.DefaultColorScheme;
+import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.editor.actions.handlers.ActionHandler;
+import org.perfcake.ide.editor.actions.handlers.SelectionHandler;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;
@@ -52,11 +54,13 @@ public abstract class AbstractController implements Controller {
     protected View view;
     protected Model model;
     protected List<Controller> children = new ArrayList<>();
+    private Map<ActionType, ActionHandler> actionHandlers = new HashMap<>();
     protected Controller parent = null;
 
     /**
      * Creates abstract controller which will manage a model.
-     * @param model model to be managed
+     *
+     * @param model       model to be managed
      * @param viewFactory viewFactory which may be used to create views.
      */
     public AbstractController(Model model, ViewFactory viewFactory) {
@@ -64,6 +68,14 @@ public abstract class AbstractController implements Controller {
         this.model = model;
         this.viewFactory = viewFactory;
         this.view = viewFactory.createView(model);
+        initActionHandlers();
+    }
+
+    /**
+     * This method initializes action handlers.
+     */
+    protected void initActionHandlers() {
+        addActionHandler(new SelectionHandler());
     }
 
     @Override
@@ -75,7 +87,7 @@ public abstract class AbstractController implements Controller {
     public RootController getRoot() {
         Controller root;
         root = this;
-        while (this.getParent() != null) {
+        while (root.getParent() != null) {
             root = this.getParent();
         }
 
@@ -156,5 +168,48 @@ public abstract class AbstractController implements Controller {
     @Override
     public Model getModel() {
         return model;
+    }
+
+    @Override
+    public void performAction(ActionType action) {
+        ActionHandler handler = actionHandlers.get(action);
+        if (handler != null) {
+            handler.handleAction();
+        }
+    }
+
+    /**
+     * Adds action handler. If this controller already has action handler for same {@link ActionType}, then old handler is removed.
+     *
+     * @param handler handler to be added
+     */
+    public void addActionHandler(ActionHandler handler) {
+        if (handler == null) {
+            throw new IllegalArgumentException("Action handler is null");
+        }
+        if (handler.getEventType() == null) {
+            throw new IllegalArgumentException("Action handler has null ActionType");
+        }
+
+        actionHandlers.put(handler.getEventType(), handler);
+        handler.setController(this);
+    }
+
+    /**
+     * Removes actionHandler from this controller.
+     * @param handler handler to be removed
+     * @return True if handler was removed.
+     */
+    public boolean removeActionHandler(ActionHandler handler) {
+        if (handler == null) {
+            return false;
+        }
+
+        boolean removed = actionHandlers.remove(handler.getEventType(), handler);
+        if (removed) {
+            handler.setController(null);
+        }
+
+        return removed;
     }
 }

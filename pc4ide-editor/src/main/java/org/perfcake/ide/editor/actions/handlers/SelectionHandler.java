@@ -18,12 +18,30 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.editor.actions.handlers;
+
+import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Handles selection event on a controller.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, START, STOP, SELECT, OTHER, NONE;
+public class SelectionHandler extends AbstractHandler {
+
+    public SelectionHandler() {
+        super(ActionType.SELECT);
+    }
+
+    @Override
+    public void handleAction() {
+        UnselectVisitor visitor = new UnselectVisitor();
+        controller.getRoot().accept(visitor);
+        controller.getView().setSelected(true);
+        //TODO: enable to obtain formManager
+        //formManager.removeAllPages();
+        //FormPage page = new SimpleFormPage(formManager, controller.getModel());
+        //formManager.addFormPage(page);
+    }
 }

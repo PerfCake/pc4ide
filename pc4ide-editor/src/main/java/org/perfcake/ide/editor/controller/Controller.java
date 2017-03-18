@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.controller;
 import java.awt.event.MouseListener;
 import java.util.Iterator;
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;
@@ -102,4 +103,12 @@ public interface Controller extends MouseListener {
      * @param visitor visitor instance
      */
     void accept(ControllerVisitor visitor);
+
+
+    /**
+     * Performs an action.
+     *
+     * @param action action type to be performed.
+     */
+    void performAction(ActionType action);
 }
