@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -323,5 +324,10 @@ public abstract class AbstractController implements Controller, ModelListener {
         }
 
         return null;
+    }
+
+    @Override
+    public CommandInvoker getCommandInvoker() {
+        return getRoot().getCommandInvoker();
     }
 }

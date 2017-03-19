@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.core.command;
 
+import org.perfcake.ide.core.exception.CommandException;
+
 /**
  * Represent command which may be executed and undone.
  */
@@ -27,13 +29,17 @@ public interface Command {
 
     /**
      * Executes command.
+     *
+     * @throws CommandException if there is any problem when executing command.
      */
-    void execute();
+    void execute() throws CommandException;
 
     /**
      * Undo command.
+     *
+     * @throws CommandException if there is any problem when undoing command.
      */
-    void undo();
+    void undo() throws CommandException;
 
     /**
      * @return true if the command can be undone. False otherwise

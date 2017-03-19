@@ -26,6 +26,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.SimplePropertyCommand;
+import org.perfcake.ide.core.exception.CommandException;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.properties.Value;
@@ -64,7 +65,11 @@ public class ChoiceElement extends FieldElement {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Command command = new SimplePropertyCommand(property.cast(Value.class), String.valueOf(comboBox.getSelectedItem()));
-                command.execute();
+                try {
+                    command.execute();
+                } catch (CommandException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 

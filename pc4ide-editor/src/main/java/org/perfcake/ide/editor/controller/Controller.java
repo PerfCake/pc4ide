@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.controller;
 
 import java.awt.event.MouseListener;
 import java.util.Iterator;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.actions.ActionType;
@@ -127,4 +128,11 @@ public interface Controller extends MouseListener {
      * @return Controller, which may be added as a child, or null if this controller does not accept the model as its child.
      */
     Controller createChildController(Model model);
+
+    /**
+     * Gets command invoker.
+     *
+     * @return Command invoker.
+     */
+    CommandInvoker getCommandInvoker();
 }

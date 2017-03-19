@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JTextField;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.SimplePropertyCommand;
+import org.perfcake.ide.core.exception.CommandException;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.properties.Value;
@@ -55,7 +56,11 @@ public class TextElement extends FieldElement {
             public void keyReleased(KeyEvent e) {
                 JTextField tf = (JTextField) component;
                 Command command = new SimplePropertyCommand(property.cast(Value.class), ((JTextField) component).getText());
-                command.execute();
+                try {
+                    command.execute();
+                } catch (CommandException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }

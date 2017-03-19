@@ -20,9 +20,9 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
-import org.apache.commons.math3.analysis.function.Abs;
+import org.perfcake.ide.core.command.AddPropertyCommand;
+import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.Controller;
 
@@ -45,9 +45,8 @@ public class AddSiblingHandler extends AbstractHandler {
         Model currentModel = controller.getModel();
         Model newSibling = controller.getModelFactory().createModel(currentModel.getComponent());
         Controller parentController = controller.getParent();
-        if (parentController != null) {
-            Model parentModel = parentController.getModel();
-            parentModel.addProperty(currentModel.getPropertyInfo(), newSibling);
-        }
+
+        Command addCommand = new AddPropertyCommand(parentController.getModel(), newSibling, currentModel.getPropertyInfo());
+        controller.getCommandInvoker().executeCommand(addCommand);
     }
 }

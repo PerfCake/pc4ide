@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import org.perfcake.ide.core.command.Command;
+import org.perfcake.ide.core.command.RemovePropertyCommand;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.Controller;
@@ -48,6 +50,8 @@ public class RemoveHandler extends AbstractHandler {
         Model model = controller.getModel();
         Model parentModel = parentController.getModel();
 
-        parentModel.removeProperty(model.getPropertyInfo(), model);
+        Command removeCommand = new RemovePropertyCommand(parentModel, model, model.getPropertyInfo());
+        controller.getCommandInvoker().executeCommand(removeCommand);
     }
 }
+

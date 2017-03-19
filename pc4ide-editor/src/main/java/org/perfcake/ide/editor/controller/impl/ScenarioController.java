@@ -23,6 +23,8 @@ package org.perfcake.ide.editor.controller.impl;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.command.invoker.CommandInvokerImpl;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
@@ -45,6 +47,8 @@ public class ScenarioController extends AbstractController implements RootContro
     private JComponent jComponent;
     private FormManager formManager;
 
+    private CommandInvoker commandInvoker;
+
     /**
      * Creates new editor controller.
      *
@@ -61,6 +65,7 @@ public class ScenarioController extends AbstractController implements RootContro
         this.formManager = formManager;
         ScenarioView scenarioView = (ScenarioView) view;
         scenarioView.setJComponent(jComponent);
+        commandInvoker = new CommandInvokerImpl();
         this.view = scenarioView;
 
         createChildrenControllers();
@@ -121,5 +126,10 @@ public class ScenarioController extends AbstractController implements RootContro
 
         return child;
 
+    }
+
+    @Override
+    public CommandInvoker getCommandInvoker() {
+        return commandInvoker;
     }
 }

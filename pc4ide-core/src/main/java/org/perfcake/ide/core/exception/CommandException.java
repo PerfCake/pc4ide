@@ -23,21 +23,21 @@ package org.perfcake.ide.core.exception;
 /**
  * Represents exception in {@link org.perfcake.ide.core.command.Command} execution.
  */
-public class CommandExecutionException extends RuntimeException {
+public class CommandException extends Exception {
 
-    public CommandExecutionException(String message) {
+    public CommandException(String message) {
         super(message);
     }
 
-    public CommandExecutionException(String message, Throwable cause) {
+    public CommandException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public CommandExecutionException(Throwable cause) {
+    public CommandException(Throwable cause) {
         super(cause);
     }
 
-    public CommandExecutionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public CommandException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
