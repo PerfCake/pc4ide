@@ -41,6 +41,12 @@
         <property name="fileExtensions" value="java"/>
     </module>
 
+    <!-- Suppress some files (e.g. test files) -->
+    <module name="SuppressionFilter">
+        <property name="file" value="suppressions.xml" />
+        <property name="optional" value="false" />
+    </module>
+
     <module name="TreeWalker">
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
