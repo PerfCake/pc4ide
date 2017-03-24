@@ -30,6 +30,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.editor.actions.ActionType;
@@ -48,8 +49,8 @@ public abstract class AbstractView implements View {
 
     protected List<ControlIcon> managementIcons;
     private boolean isSelected = false;
-    private List<View> children = new ArrayList<>();
-    private View parent;
+    protected List<View> children = new ArrayList<>();
+    protected View parent;
     protected boolean isValid;
 
     protected LayoutData layoutData;
@@ -83,7 +84,16 @@ public abstract class AbstractView implements View {
 
     @Override
     public boolean isValid() {
-        return isValid;
+        boolean valid = isValid;
+
+        Iterator<View> it = getChildren().iterator();
+
+        while (valid == true && it.hasNext()) {
+            View child = it.next();
+            valid = valid && child.isValid();
+        }
+
+        return valid;
     }
 
     @Override
@@ -100,7 +110,7 @@ public abstract class AbstractView implements View {
         if (layoutManager != null) {
             layoutManager.layout(g2d);
         }
-        for (final View view : children) {
+        for (final View view : getChildren()) {
             view.validate(g2d);
         }
         isValid = true;
@@ -113,6 +123,9 @@ public abstract class AbstractView implements View {
 
     @Override
     public void setLayoutData(LayoutData layoutData) {
+        if (layoutManager != null) {
+            layoutManager.setConstraint(layoutData);
+        }
         this.layoutData = layoutData;
     }
 
@@ -169,6 +182,7 @@ public abstract class AbstractView implements View {
     public ActionType getAction(Point2D location) {
         ActionType action = ActionType.NONE;
 
+        // try to handle action by this view
         if (location != null && getViewBounds() != null || getViewBounds().contains(location)) {
             action = ActionType.SELECT;
 
@@ -177,6 +191,13 @@ public abstract class AbstractView implements View {
                 if (iconBounds.contains(location) && controlIcon.getAction() != null) {
                     action = controlIcon.getAction();
                 }
+            }
+        }
+
+        // if there is no action try to ask children for action
+        if (action == ActionType.NONE) {
+            for (View child : getChildren()) {
+                action = child.getAction(location);
             }
         }
 

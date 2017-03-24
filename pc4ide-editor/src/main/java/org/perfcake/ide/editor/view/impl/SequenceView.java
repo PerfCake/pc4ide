@@ -34,7 +34,7 @@ import org.perfcake.ide.editor.view.Pair;
  *
  * @author Jakub Knetl
  */
-public class SequenceView extends SimpleSectorView {
+public class SequenceView extends CondensedSectorView {
 
     private String id;
 
