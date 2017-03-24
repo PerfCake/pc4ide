@@ -35,8 +35,12 @@ import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
 import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
+import org.perfcake.ide.editor.view.impl.LayeredView;
+import org.perfcake.ide.editor.view.impl.MessageView;
 import org.perfcake.ide.editor.view.impl.ScenarioView;
+import org.perfcake.ide.editor.view.impl.SequenceView;
 
 
 /**
@@ -48,6 +52,8 @@ public class ScenarioController extends AbstractController implements RootContro
     private FormManager formManager;
 
     private CommandInvoker commandInvoker;
+
+    private LayeredView messagesAndSequencesView;
 
     /**
      * Creates new editor controller.
@@ -67,6 +73,11 @@ public class ScenarioController extends AbstractController implements RootContro
         scenarioView.setJComponent(jComponent);
         commandInvoker = new CommandInvokerImpl();
         this.view = scenarioView;
+
+        /* add composite view for messages and seqeunces. Warning: this violates hierarchy,
+         * because this view will have no controller attached! */
+        messagesAndSequencesView = new LayeredView(MessageView.class, SequenceView.class);
+        this.getView().addChild(messagesAndSequencesView);
 
         createChildrenControllers();
     }
@@ -126,6 +137,36 @@ public class ScenarioController extends AbstractController implements RootContro
 
         return child;
 
+    }
+
+    @Override
+    public void addChild(Controller child) throws UnsupportedChildViewException {
+        // special case for messages and sequences since they need to be nested into their special parent view
+        if (child instanceof MessageController || child instanceof SequenceController) {
+            children.add(child);
+            child.setParent(this);
+            messagesAndSequencesView.addChild(child.getView());
+            child.getView().invalidate();
+        } else {
+            super.addChild(child);
+        }
+    }
+
+    @Override
+    public boolean removeChild(Controller child) {
+        // special case for messages and sequences since they need to be removed from their special parent view
+        if (child instanceof MessageController || child instanceof SequenceController) {
+
+            final boolean removed = children.remove(child);
+            if (removed) {
+                messagesAndSequencesView.removeChild(child.getView());
+                child.setParent(null);
+                messagesAndSequencesView.invalidate();
+            }
+            return removed;
+        } else {
+            return super.removeChild(child);
+        }
     }
 
     @Override

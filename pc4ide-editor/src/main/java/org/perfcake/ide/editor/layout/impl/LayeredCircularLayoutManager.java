@@ -41,8 +41,8 @@ public class LayeredCircularLayoutManager implements LayoutManager {
     private Class<? extends View> innerViewsType;
     private Class<? extends View> outerViewsType;
 
-    // split position will be 60% of radius for inner view and 40% for outer view
-    private double splitPosition = 0.6;
+    // split position will be 55% of radius for inner view and 40% for outer view
+    private double splitPosition = 0.55;
 
     /**
      * Creates layered circular layout manager.
@@ -54,12 +54,19 @@ public class LayeredCircularLayoutManager implements LayoutManager {
         this.outerViewsType = outerViewsType;
         innerLayerManager = new CircularSectorLayoutManager(true);
         outerLayerManager = new CircularSectorLayoutManager(true);
+
+        innerLayerManager.setConstraint(new LayoutData());
+        outerLayerManager.setConstraint(new LayoutData());
     }
 
     @Override
     public void layout(Graphics2D g2d) {
-        innerLayerManager.layout(g2d);
-        outerLayerManager.layout(g2d);
+        if (!innerLayerManager.getChildren().isEmpty()) {
+            innerLayerManager.layout(g2d);
+        }
+        if (!outerLayerManager.getChildren().isEmpty()) {
+            outerLayerManager.layout(g2d);
+        }
 
     }
 
@@ -84,6 +91,8 @@ public class LayeredCircularLayoutManager implements LayoutManager {
         } else if (innerLayerManager.getChildren().isEmpty() && !outerLayerManager.getChildren().isEmpty()) {
             double minimumOuterExtent = outerLayerManager.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
             minimumSize.getAngularData().setAngleExtent(minimumOuterExtent);
+        } else if (innerLayerManager.getChildren().isEmpty() && outerLayerManager.getChildren().isEmpty()) {
+            minimumSize.getAngularData().setAngleExtent(0);
         }
 
         return minimumSize;
@@ -116,7 +125,7 @@ public class LayeredCircularLayoutManager implements LayoutManager {
         if (innerViewsType.isAssignableFrom(component.getClass())) {
             innerLayerManager.add(component);
         } else if (outerViewsType.isAssignableFrom(component.getClass())) {
-            outerLayerManager.remove(component);
+            outerLayerManager.add(component);
         }
 
     }

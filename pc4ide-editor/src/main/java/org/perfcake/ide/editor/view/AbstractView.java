@@ -49,8 +49,8 @@ public abstract class AbstractView implements View {
 
     protected List<ControlIcon> managementIcons;
     private boolean isSelected = false;
-    private List<View> children = new ArrayList<>();
-    private View parent;
+    protected List<View> children = new ArrayList<>();
+    protected View parent;
     protected boolean isValid;
 
     protected LayoutData layoutData;
@@ -89,7 +89,8 @@ public abstract class AbstractView implements View {
         Iterator<View> it = getChildren().iterator();
 
         while (valid == true && it.hasNext()) {
-            valid = valid && it.next().isValid();
+            View child = it.next();
+            valid = valid && child.isValid();
         }
 
         return valid;
@@ -109,7 +110,7 @@ public abstract class AbstractView implements View {
         if (layoutManager != null) {
             layoutManager.layout(g2d);
         }
-        for (final View view : children) {
+        for (final View view : getChildren()) {
             view.validate(g2d);
         }
         isValid = true;
@@ -122,6 +123,9 @@ public abstract class AbstractView implements View {
 
     @Override
     public void setLayoutData(LayoutData layoutData) {
+        if (layoutManager != null) {
+            layoutManager.setConstraint(layoutData);
+        }
         this.layoutData = layoutData;
     }
 

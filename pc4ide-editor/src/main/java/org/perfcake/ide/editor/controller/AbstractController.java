@@ -133,7 +133,6 @@ public abstract class AbstractController implements Controller, ModelListener {
         children.add(child);
         child.setParent(this);
         getView().addChild(child.getView());
-        child.getView().setParent(this.getView());
         child.getView().invalidate();
     }
 
@@ -147,7 +146,6 @@ public abstract class AbstractController implements Controller, ModelListener {
         final boolean removed = children.remove(child);
         if (removed) {
             getView().removeChild(child.getView());
-            child.getView().setParent(null);
             child.setParent(null);
             getView().invalidate();
         }

@@ -61,15 +61,18 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
 
     @Override
     public void layout(Graphics2D g2d) {
-
         Map<View, Double> extentMap = new HashMap<>();
 
         double requestedExtentByChildren = 0.0;
 
         for (View child : children) {
-            double extent = child.getMinimumSize(constraints, g2d).getAngularData().getAngleExtent();
-            extentMap.put(child, extent);
-            requestedExtentByChildren += extent;
+
+            LayoutData minimumSize = child.getMinimumSize(constraints, g2d);
+            if (minimumSize != null) {
+                double extent = minimumSize.getAngularData().getAngleExtent();
+                extentMap.put(child, extent);
+                requestedExtentByChildren += extent;
+            }
         }
 
         double startAngle = constraints.getAngularData().getStartAngle();

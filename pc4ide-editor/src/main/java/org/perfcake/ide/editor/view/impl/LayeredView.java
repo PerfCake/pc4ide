@@ -26,6 +26,7 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
 import org.perfcake.ide.editor.layout.LayoutData;
+import org.perfcake.ide.editor.layout.impl.LayeredCircularLayoutManager;
 import org.perfcake.ide.editor.view.AbstractView;
 import org.perfcake.ide.editor.view.View;
 
@@ -43,10 +44,15 @@ public class LayeredView extends AbstractView {
 
     /**
      * Creates new layered view.
+     * @param innerViewsType type of views in inner layer
+     * @param outerViewsType type of views in outer layer
      */
-    public LayeredView() {
+    public LayeredView(Class<? extends View> innerViewsType, Class<? extends View> outerViewsType) {
         innerViews = new ArrayList<>();
         outerViews = new ArrayList<>();
+        this.innerViewsType = innerViewsType;
+        this.outerViewsType = outerViewsType;
+        this.layoutManager = new LayeredCircularLayoutManager(innerViewsType, outerViewsType);
     }
 
     @Override
@@ -62,7 +68,9 @@ public class LayeredView extends AbstractView {
         Area bounds = new Area();
 
         for (View v : getChildren()) {
-            bounds.add(new Area(v.getViewBounds()));
+            if (v.getViewBounds() != null) {
+                bounds.add(new Area(v.getViewBounds()));
+            }
         }
 
         return bounds;
@@ -91,11 +99,13 @@ public class LayeredView extends AbstractView {
         if (innerViewsType.isAssignableFrom(view.getClass())) {
             view.setParent(this);
             innerViews.add(view);
-            layoutManager.add(this);
+            layoutManager.add(view);
+            children.add(view);
         } else if (outerViewsType.isAssignableFrom(view.getClass())) {
             view.setParent(this);
             outerViews.add(view);
-            layoutManager.add(this);
+            layoutManager.add(view);
+            children.add(view);
         } else {
             throw new IllegalArgumentException(String.format("View expected of either type '%s' or '%s' but was '%s'",
                     innerViewsType.getCanonicalName(), outerViewsType.getCanonicalName(), view.getClass().getCanonicalName()));
@@ -115,6 +125,8 @@ public class LayeredView extends AbstractView {
         } else if (outerViewsType.isAssignableFrom(view.getClass())) {
             removed = outerViews.remove(view);
         }
+        children.remove(view);
+        layoutManager.remove(view);
         return removed;
     }
 
