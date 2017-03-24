@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import org.perfcake.ide.editor.layout.LayoutData;
@@ -87,7 +88,7 @@ public abstract class CondensedSectorView extends SimpleSectorView {
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
-        Rectangle2D textDimension = computeTextDimension(g2d, layoutData);
+        Dimension2D textDimension = computeTextDimension(g2d, layoutData);
 
         double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
                 chordCenter,
@@ -127,7 +128,7 @@ public abstract class CondensedSectorView extends SimpleSectorView {
         }
 
         Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
-        Rectangle2D textBounds = computeTextDimension(g2d, constraint);
+        Dimension2D textBounds = computeTextDimension(g2d, constraint);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
 

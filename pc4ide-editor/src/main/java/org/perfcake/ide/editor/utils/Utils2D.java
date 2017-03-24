@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.utils;
 
 import java.awt.FontMetrics;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import org.perfcake.ide.editor.layout.AngularData;
@@ -81,6 +82,16 @@ public class Utils2D {
      */
     public static Double getRectangleDiagonal(Rectangle2D rectangle) {
         return Math.sqrt(Math.pow(rectangle.getWidth(), 2) + Math.pow(rectangle.getHeight(), 2));
+    }
+
+    /**
+     * Computes diagonal of an rectangle defined by its dimension.
+     *
+     * @param dimension dimension of an rectangle
+     * @return diagonal length of an rectangle
+     */
+    public static Double getRectangleDiagonal(Dimension2D dimension) {
+        return Math.sqrt(Math.pow(dimension.getWidth(), 2) + Math.pow(dimension.getHeight(), 2));
     }
 
     /**

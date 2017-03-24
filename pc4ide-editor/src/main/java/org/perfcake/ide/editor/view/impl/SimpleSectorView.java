@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -29,11 +30,14 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.xmlgraphics.java2d.Dimension2DDouble;
+import org.perfcake.ide.editor.awt.geom.DimensionDouble;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
@@ -241,7 +245,7 @@ public abstract class SimpleSectorView extends SectorView {
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
-        Rectangle2D textDimension = computeTextDimension(g2d, layoutData);
+        Dimension2D textDimension = computeTextDimension(g2d, layoutData);
 
         double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
                 chordCenter,
@@ -268,13 +272,13 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     /**
-     * Computes dimension of a text. The location of the computed rectangle is not defined.
+     * Computes dimension of a text.
      *
      * @param g2d        graphics context
      * @param layoutData layout data which require at least radius to be set
-     * @return Rectangle which contains dimension of a text bounds. Note that position of rectangle is not defined!
+     * @return Rectangle which contains dimension of a text bounds.
      */
-    protected Rectangle2D computeTextDimension(Graphics2D g2d, LayoutData layoutData) {
+    protected Dimension2D computeTextDimension(Graphics2D g2d, LayoutData layoutData) {
         final FontRenderContext frc = g2d.getFontRenderContext();
         final Font font = g2d.getFont();
         final Rectangle2D headerBounds = font.getStringBounds(header, frc);
@@ -301,7 +305,7 @@ public abstract class SimpleSectorView extends SectorView {
         double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestLineWidth), maximumWidth);
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
-        return new Rectangle2D.Double(0, 0, totalWidth, totalHeight);
+        return new DimensionDouble(totalWidth, totalHeight);
     }
 
     /**
@@ -361,7 +365,7 @@ public abstract class SimpleSectorView extends SectorView {
 
         // we assume that width constraint is positive and large enough!
         // it should be ensured by sufficient minimum size on editor as a whole
-        Rectangle2D textBounds = computeTextDimension(g2d, constraint);
+        Dimension2D textBounds = computeTextDimension(g2d, constraint);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
         Double minimumAngularExtentForIcon = getMinimumAngle(iconDiagonal, constraint.getRadiusData().getInnerRadius());
@@ -384,12 +388,12 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     /**
-     * Computes rectangle which contains icon dimension. Icon position is not relevant.
+     * Computes rectangle which contains icon dimension.
      *
-     * @return rectangle which contains icon dimension. Icon position is not relevant.
+     * @return rectangle which contains icon dimension.
      */
-    protected Rectangle2D computeIconDimension() {
-        return new Rectangle2D.Double(0, 0, icon.getIconWidth(), icon.getIconHeight());
+    protected Dimension2D computeIconDimension() {
+        return new Dimension(icon.getIconWidth(), icon.getIconHeight());
     }
 
     /**
