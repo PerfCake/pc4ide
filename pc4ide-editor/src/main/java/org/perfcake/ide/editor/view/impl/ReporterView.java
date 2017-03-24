@@ -34,7 +34,7 @@ import org.perfcake.ide.editor.view.Pair;
  *
  * @author Jakub Knetl
  */
-public class ReporterView extends LayeredSectorView {
+public class ReporterView extends ParentSectorView {
     /**
      * creates new sector view.
      */

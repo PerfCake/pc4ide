@@ -117,7 +117,7 @@ public abstract class AbstractController implements Controller, ModelListener {
         Controller root;
         root = this;
         while (root.getParent() != null) {
-            root = this.getParent();
+            root = root.getParent();
         }
 
         return (RootController) root;

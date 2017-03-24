@@ -30,6 +30,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.editor.actions.ActionType;
@@ -83,7 +84,15 @@ public abstract class AbstractView implements View {
 
     @Override
     public boolean isValid() {
-        return isValid;
+        boolean valid = isValid;
+
+        Iterator<View> it = getChildren().iterator();
+
+        while (valid == true && it.hasNext()) {
+            valid = valid && it.next().isValid();
+        }
+
+        return valid;
     }
 
     @Override
@@ -169,6 +178,7 @@ public abstract class AbstractView implements View {
     public ActionType getAction(Point2D location) {
         ActionType action = ActionType.NONE;
 
+        // try to handle action by this view
         if (location != null && getViewBounds() != null || getViewBounds().contains(location)) {
             action = ActionType.SELECT;
 
@@ -177,6 +187,13 @@ public abstract class AbstractView implements View {
                 if (iconBounds.contains(location) && controlIcon.getAction() != null) {
                     action = controlIcon.getAction();
                 }
+            }
+        }
+
+        // if there is no action try to ask children for action
+        if (action == ActionType.NONE) {
+            for (View child : getChildren()) {
+                action = child.getAction(location);
             }
         }
 

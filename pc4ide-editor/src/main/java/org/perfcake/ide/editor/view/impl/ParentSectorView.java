@@ -29,19 +29,19 @@ import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.View;
 
 /**
- * Layered sector view splits sectors into two layers. Inner layer is used for actuall view. The outer layer is
+ * Parent sector view splits sectors into two layers. Inner layer is used for actual view. The outer layer is
  * used for children views.
  *
  * @author Jakub Knetl
  */
-public abstract class LayeredSectorView extends SimpleSectorView {
+public abstract class ParentSectorView extends SimpleSectorView {
 
     /**
      * Constructor for Layered sector view.
      *
      * @param icon icon of the view.
      */
-    public LayeredSectorView(ResizableIcon icon) {
+    public ParentSectorView(ResizableIcon icon) {
         super(icon);
         layoutManager = new CircularSectorLayoutManager(true);
         layoutManager.setConstraint(new LayoutData());

@@ -22,19 +22,17 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.swing.icons.components.ReceiverIcon;
 import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
-import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
  * Represents view of an receiver.
  * @author Jakub Knetl
  */
-public class ReceiverView extends LayeredSectorView {
+public class ReceiverView extends ParentSectorView {
 
     private String threads;
     private String source;
