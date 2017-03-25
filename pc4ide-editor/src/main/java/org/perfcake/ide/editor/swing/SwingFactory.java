@@ -18,28 +18,49 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
+package org.perfcake.ide.editor.swing;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
- * FormBuilder incrementally builds a from by adding/removing the form elements. It should manage layout
- * of the components by its own.
+ * Component factory manages creating of various swing components, which are used in the editor.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
-public interface FormBuilder {
+public interface SwingFactory {
 
     /**
-     * Adds form element into the form.
-     *
-     * @param element element to be added
+     * @return Swing label.
      */
-    void addElement(FormElement element);
+    JLabel createLabel();
 
     /**
-     * Remove form element from the form.
-     *
-     * @param element element to be removed.
-     * @return true if the element was removed, false if wasn't part of form.
+     * @return Textfield.
      */
-    boolean removeElement(FormElement element);
+    JTextField createTextField();
+
+    /**
+     * @return JPanel.
+     */
+    JPanel createPanel();
+
+    /**
+     * @return Text area.
+     */
+    JTextArea createTextArea();
+
+    /**
+     * @return JSeparator.
+     */
+    JSeparator createSeparator();
+
+    /**
+     * @return JButton.
+     */
+    JButton createButton();
 }

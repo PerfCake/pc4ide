@@ -23,9 +23,7 @@ package org.perfcake.ide.editor.controller.visitor;
 import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.Controller;
-import org.perfcake.ide.editor.forms.FormManager;
-import org.perfcake.ide.editor.forms.FormPage;
-import org.perfcake.ide.editor.forms.impl.SimpleFormPage;
+import org.perfcake.ide.editor.form.FormManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

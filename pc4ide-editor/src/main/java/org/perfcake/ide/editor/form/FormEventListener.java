@@ -18,17 +18,17 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
+package org.perfcake.ide.editor.form;
 
 /**
- * FormGenerator serves as tool for creating a forms dynamically.
- *
- * @author jknetl
+ * Listener for the {@link FormEvent}.
+ * @author Jakub Knetl
  */
-public interface FormGenerator {
+public interface FormEventListener {
 
     /**
-     * Generates form with appropriate elements.
+     * Invoked when form changed.
+     * @param event event.
      */
-    void createForm();
+    void formChanged(FormEvent event);
 }

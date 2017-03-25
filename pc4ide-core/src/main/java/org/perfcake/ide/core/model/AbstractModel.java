@@ -434,7 +434,5 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
         // forward events to model listeners
         pcs.firePropertyChange(evt);
-
-
     }
 }

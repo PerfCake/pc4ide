@@ -20,17 +20,19 @@
 
 package org.perfcake.ide.editor.swing.editor;
 
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JSplitPane;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.editor.forms.FormManager;
-import org.perfcake.ide.editor.forms.impl.FormManagerImpl;
+import org.perfcake.ide.editor.form.FormManager;
+import org.perfcake.ide.editor.form.impl.FormManagerImpl;
 
 /**
  * Represents an pc4ide editor as a whole. It consists of graphical editor panel and the panel with form.
+ *
  * @author jknelt
  */
 public class Pc4ideEditor extends JSplitPane {
@@ -47,38 +49,43 @@ public class Pc4ideEditor extends JSplitPane {
      * Creates new editor panel.
      *
      * @param scenario         Scenario edited by editor
-     * @param componentManager PerfCake inspector manager
+     * @param componentCatalogue PerfCake inspector manager
      */
-    public Pc4ideEditor(ScenarioModel scenario, ComponentCatalogue componentManager) {
+    public Pc4ideEditor(ScenarioModel scenario, ComponentCatalogue componentCatalogue) {
         super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
         this.scenario = scenario;
 
-        if (componentManager == null) {
+        if (componentCatalogue == null) {
             formManager = new FormManagerImpl(createComponentCatalogue());
         } else {
-            formManager = new FormManagerImpl(componentManager);
+            formManager = new FormManagerImpl(componentCatalogue);
         }
         graphicalEditorPanel = new GraphicalPanel(scenario, formManager);
         // final FormPage generatorPage = new SimpleFormPage(formManager,
-        // new ReflectiveModelDirector(scenario.getGenerator(), componentManager));
+        // new ReflectiveModelDirector(scenario.getGenerator(), componentCatalogue));
         // formManager.addFormPage(generatorPage);
 
         setLeftComponent(graphicalEditorPanel);
-        setRightComponent(formManager.getContainerPanel());
+        setRightComponent(formManager.getContentPanel());
 
         // setDividerLocation(getWidth() - 200);
         // this.add(graphicalEditorPanel, BorderLayout.CENTER);
         // this.add(formPanel, BorderLayout.LINE_END);
         // formPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
+        //
         addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
+                //Dimension panelSize = getSize();
+                //Dimension leftPreferredSize = new Dimension((int) (panelSize.getWidth() * 0.8), (int) panelSize.getHeight());
+                //Dimension rightPreferredSize = new Dimension((int) (panelSize.getWidth() * 0.8), (int) panelSize.getHeight());
+                //leftComponent.setPreferredSize(leftPreferredSize);
+                //rightComponent.setPreferredSize(rightPreferredSize);
                 setDividerLocation(0.7);
+                super.componentResized(e);
             }
         });
     }

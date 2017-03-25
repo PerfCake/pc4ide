@@ -147,6 +147,10 @@ public abstract class AbstractProperty implements Property {
         }
 
         pcs.firePropertyChange(eventName, oldValue, newValue);
+    }
 
+    @Override
+    public PropertyType getPropertyType() {
+        return type;
     }
 }

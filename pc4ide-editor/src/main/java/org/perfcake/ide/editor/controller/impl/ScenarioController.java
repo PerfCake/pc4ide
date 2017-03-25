@@ -34,7 +34,7 @@ import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
-import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 import org.perfcake.ide.editor.view.impl.LayeredView;
@@ -104,6 +104,11 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     public JComponent getJComponent() {
         return this.jComponent;
+    }
+
+    @Override
+    public FormManager getFormManger() {
+        return formManager;
     }
 
     @Override

@@ -64,6 +64,16 @@ public class PlusIcon extends AbstractControlIcon {
         super(width, height, color, ActionType.ADD);
     }
 
+    /**
+     * Creates new plus icon.
+     *
+     * @param iconWidth width
+     * @param iconHeight height
+     */
+    public PlusIcon(int iconWidth, int iconHeight) {
+        super(iconWidth, iconHeight, null);
+    }
+
     @Override
     public int getIconHeight() {
         return height;

@@ -18,13 +18,25 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
+package org.perfcake.ide.editor.form;
+
+import javax.swing.JPanel;
+import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.model.Property;
 
 /**
- * Handles event from the form.
+ * Form builder is responsible for creating form and filling it with proper values.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
-public interface EventHandler {
+public interface FormBuilder {
 
+    /**
+     * Creates form and places it into panel.
+     *
+     * @param panel    panel where form will be created
+     * @param property property which will be displayed in the form.
+     * @param componentCatalogue catalogue of the components
+     */
+    void buildForm(JPanel panel, Property property, ComponentCatalogue componentCatalogue);
 }

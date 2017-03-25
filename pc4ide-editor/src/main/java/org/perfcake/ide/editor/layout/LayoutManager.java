@@ -78,7 +78,7 @@ public interface LayoutManager {
     boolean remove(View component);
 
     /**
-     * @return <b>Unmodifiable List</b> of all managed inspector views.
+     * @return <b>Unmodifiable ListIcon</b> of all managed inspector views.
      */
     List<View> getChildren();
 

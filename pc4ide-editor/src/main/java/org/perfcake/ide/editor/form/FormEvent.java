@@ -18,43 +18,33 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms.impl;
+package org.perfcake.ide.editor.form;
 
-import org.perfcake.ide.editor.forms.EventHandler;
-import org.perfcake.ide.editor.forms.FormPageDirector;
+import java.awt.event.ActionEvent;
 
 /**
- * TODO: implement this.
+ * Form event represents event of changing value in the form of some property.
+ *
  * @author Jakub Knetl
  */
-public class FormDirectorImpl implements FormPageDirector {
-    @Override
-    public boolean isValid() {
-        return true;
+public interface FormEvent {
+
+    enum Type {
+       MODIFY, ADD, REMOVE, SELECT;
     }
 
-    @Override
-    public boolean isSynced() {
-        return true;
-    }
+    /**
+     * @return type of the event.
+     */
+    Type getEventType();
 
-    @Override
-    public void addHandler(EventHandler handler) {
+    /**
+     * @return FormElement which caused the event.
+     */
+    FormElement getFormElement();
 
-    }
-
-    @Override
-    public boolean removeHandler(EventHandler handler) {
-        return false;
-    }
-
-    @Override
-    public void applyChanges() {
-
-    }
-
-    @Override
-    public String getMessage() {
-        return null;
-    }
+    /**
+     * @return underlying AWT event.
+     */
+    ActionEvent getUnderlyingEvent();
 }

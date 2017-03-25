@@ -18,33 +18,44 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
-
-import java.util.List;
-import javax.swing.JComponent;
+package org.perfcake.ide.editor.form;
 
 /**
- * FormElement represents element of the form. It usually contains multiple swing elements which
- * are related to one model element.
- * <p>E.g. name of the element (JLabel) + inputField (JTextField) + description</p>
+ * FormElement represent view of one property in the form.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
 public interface FormElement {
 
     /**
-     * Get all grapphical components representing the element.
-     *
-     * @return Graphical inspector representing the element or EMPTY_LIST
+     * @return Current value displayed by this element.
      */
-    List<JComponent> getGraphicalComponents();
+    String getValue();
 
     /**
-     * This methods is hint for layout manager. If the manager needs to enlarge some inspector it may
-     * take a hint from this method.
+     * Sets displayed value by this element.
      *
-     * @return index of inspector in the {@link #getGraphicalComponents()} list which should be
-     *     expanded by the layout manager if required.
+     * @param value value to be displayed
      */
-    int getMainComponent();
+    void setValue(String value);
+
+    /**
+     * @return true if value in the field is valid.
+     */
+    boolean isValid();
+
+    /**
+     * Adds listener.
+     *
+     * @param listener listener to be added.
+     */
+    void addListener(FormEventListener listener);
+
+    /**
+     * Removes listener.
+     *
+     * @param listener listener to be removed
+     * @return true if the listener has been removed.
+     */
+    boolean removeListener(FormEventListener listener);
 }

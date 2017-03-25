@@ -17,9 +17,6 @@
  * limitations under the License.
  *-----------------------------------------------------------------------------
  */
-/**
- *
- */
 
 package org.perfcake.ide.editor;
 
@@ -28,23 +25,29 @@ import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.JFrame;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.model.AbstractModel;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.components.GeneratorModel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
+import org.perfcake.ide.core.model.properties.Value;
+import org.perfcake.ide.editor.colors.DefaultColorScheme;
+import org.perfcake.ide.editor.form.FormBuilder;
+import org.perfcake.ide.editor.form.builder.FormBuilderImpl;
+import org.perfcake.ide.editor.swing.editor.FormPanel;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class. This class is intendet for testing purposes only. The program should
- * run inside of IDE instead.
- *
- * @author jknetl
+ * This class contains main class which displays only the form. It is meant for testing purposes only.
+ * @author Jakub Knetl
  */
-public class Main {
-
-    static final Logger logger = LoggerFactory.getLogger(Main.class);
+public class FormMain {
+    static final Logger logger = LoggerFactory.getLogger(FormMain.class);
 
     /**
      * Main method for launching editor
@@ -72,28 +75,21 @@ public class Main {
             @Override
             public void run() {
 
-                /*
-                final PerfCakeScenarioParser parser = new PerfCakeScenarioParser();
-                ScenarioModel model = null;
-                try {
-                    final Scenario s = parser.parse(new File("src/main/resources/scenario/http.xml").toURI().toURL());
-                    model = ModelConverter.getPc4ideModel(s);
-                } catch (final PerfCakeException e) {
-                    e.printStackTrace();
-                } catch (final MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                */
-
                 final JFrame frame = new JFrame();
                 frame.setTitle("Perfcake editor");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 // final GraphicalPanel editor = new GraphicalPanel(model);
-                final Pc4ideEditor editor = new Pc4ideEditor(model, new ReflectionComponentCatalogue());
-                frame.add(editor);
+                final FormPanel formPane = new FormPanel();
+                FormBuilder builder = new FormBuilderImpl();
+
+                Model generatorModel = model.getSingleProperty(ScenarioModel.PropertyNames.GENERATOR.toString(), Model.class);
+                ComponentCatalogue catalogue = new ReflectionComponentCatalogue();
+                //builder.buildForm(formPane.getContentPanel(), generatorModel, catalogue);
+                builder.buildForm(formPane.getContentPanel(), generatorModel.getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY,
+                        Value.class), catalogue);
+                frame.add(formPane);
                 frame.setVisible(true);
             }
         });
     }
-
 }

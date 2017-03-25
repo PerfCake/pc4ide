@@ -20,14 +20,12 @@
 
 package org.perfcake.ide.editor.swing.editor;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JPanel;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -35,7 +33,7 @@ import org.perfcake.ide.core.model.factory.ValidModelFactory;
 import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
-import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 

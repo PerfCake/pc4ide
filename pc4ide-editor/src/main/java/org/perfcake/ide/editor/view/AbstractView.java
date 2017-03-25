@@ -39,6 +39,7 @@ import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.swing.icons.ControlIcon;
+import org.perfcake.ide.editor.utils.FontUtils;
 
 /**
  * {@link AbstractView} implements some of the methods of {@link View} interface.
@@ -210,11 +211,9 @@ public abstract class AbstractView implements View {
      * @param g2d graphics context
      */
     protected void addRenderingHints(Graphics2D g2d) {
-        final Map<Object, Object> hints = new HashMap<>();
+        final Map<Object, Object> hints = FontUtils.getRenderingHints();
         hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_TEXT_LCD_CONTRAST, 100);
         g2d.addRenderingHints(hints);
     }
 

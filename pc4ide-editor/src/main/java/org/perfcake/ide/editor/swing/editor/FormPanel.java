@@ -20,20 +20,31 @@
 
 package org.perfcake.ide.editor.swing.editor;
 
+import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 /**
  * Represent Swing container of a form.
  */
 public class FormPanel extends JPanel {
 
+    private JPanel contentPanel;
+
+
     /**
      * Creates new form panel.
      */
     public FormPanel() {
         super();
-        add(new JLabel("Settings"));
+        setLayout(new BorderLayout());
+        //add(new JLabel("Settings"), BorderLayout.PAGE_START);
+        this.contentPanel = new JPanel();
+        add(contentPanel, BorderLayout.CENTER);
     }
 
+    public JPanel getContentPanel() {
+        return contentPanel;
+    }
 }
