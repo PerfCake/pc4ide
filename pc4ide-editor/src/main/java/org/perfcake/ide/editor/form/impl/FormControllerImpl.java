@@ -36,24 +36,21 @@ public class FormControllerImpl implements FormController {
 
     private FormBuilder formBuilder;
     private FormManager formManager;
-    private ComponentCatalogue catalogue;
     private Model model;
 
     /**
      * Creates new Form controller.
      *
      * @param model     model which is controlled by the controller
-     * @param catalogue catalogue of components
      */
-    public FormControllerImpl(Model model, ComponentCatalogue catalogue) {
+    public FormControllerImpl(Model model) {
         this.model = model;
-        this.catalogue = catalogue;
     }
 
     @Override
     public void drawForm() {
         JPanel panel = formManager.getContentPanel();
-        formBuilder.buildForm(panel, model, catalogue);
+        formBuilder.buildForm(panel, model, this);
     }
 
     @Override

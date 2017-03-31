@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.form;
 
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.Model;
 
 /**

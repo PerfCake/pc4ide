@@ -36,7 +36,7 @@ public interface FormBuilder {
      *
      * @param panel    panel where form will be created
      * @param property property which will be displayed in the form.
-     * @param componentCatalogue catalogue of the components
+     * @param controller controller of the form
      */
-    void buildForm(JPanel panel, Property property, ComponentCatalogue componentCatalogue);
+    void buildForm(JPanel panel, Property property, FormController controller);
 }

@@ -20,10 +20,11 @@
 
 package org.perfcake.ide.editor.swing.editor;
 
-import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JSplitPane;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.command.invoker.CommandInvokerImpl;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.model.components.ScenarioModel;
@@ -40,6 +41,7 @@ public class Pc4ideEditor extends JSplitPane {
     private ScenarioModel scenario;
     private GraphicalPanel graphicalEditorPanel;
     private FormManager formManager;
+    private CommandInvoker commandInvoker;
 
     public Pc4ideEditor(ScenarioModel scenario) {
         this(scenario, null);
@@ -48,7 +50,7 @@ public class Pc4ideEditor extends JSplitPane {
     /**
      * Creates new editor panel.
      *
-     * @param scenario         Scenario edited by editor
+     * @param scenario           Scenario edited by editor
      * @param componentCatalogue PerfCake inspector manager
      */
     public Pc4ideEditor(ScenarioModel scenario, ComponentCatalogue componentCatalogue) {
@@ -57,18 +59,21 @@ public class Pc4ideEditor extends JSplitPane {
         // setLayout(layout);
         this.scenario = scenario;
 
+        commandInvoker = new CommandInvokerImpl();
+
         if (componentCatalogue == null) {
-            formManager = new FormManagerImpl(createComponentCatalogue());
-        } else {
-            formManager = new FormManagerImpl(componentCatalogue);
+            componentCatalogue = createComponentCatalogue();
         }
-        graphicalEditorPanel = new GraphicalPanel(scenario, formManager);
+
+        formManager = new FormManagerImpl(scenario,commandInvoker, componentCatalogue);
+
+        graphicalEditorPanel = new GraphicalPanel(scenario, commandInvoker, formManager);
         // final FormPage generatorPage = new SimpleFormPage(formManager,
         // new ReflectiveModelDirector(scenario.getGenerator(), componentCatalogue));
         // formManager.addFormPage(generatorPage);
 
         setLeftComponent(graphicalEditorPanel);
-        setRightComponent(formManager.getContentPanel());
+        setRightComponent(formManager.getMasterPanel());
 
         // setDividerLocation(getWidth() - 200);
         // this.add(graphicalEditorPanel, BorderLayout.CENTER);

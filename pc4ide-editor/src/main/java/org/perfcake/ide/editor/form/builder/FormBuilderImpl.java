@@ -56,6 +56,7 @@ import org.perfcake.ide.core.model.components.MessageModel;
 import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.form.FormBuilder;
+import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.swing.icons.control.CogIcon;
@@ -84,7 +85,7 @@ public class FormBuilderImpl implements FormBuilder {
     private Color removeIconColor = Color.BLACK;
 
     @Override
-    public void buildForm(JPanel panel, Property property, ComponentCatalogue catalogue) {
+    public void buildForm(JPanel panel, Property property, FormController controller) {
         if (panel == null) {
             throw new IllegalArgumentException("Panel cannot be null.");
         }
@@ -108,7 +109,7 @@ public class FormBuilderImpl implements FormBuilder {
                 break;
             case VALUE:
                 if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(property.getPropertyInfo().getName())) {
-                    buildImplementationChooserForm(panel, property.cast(Value.class), catalogue);
+                    buildImplementationChooserForm(panel, property.cast(Value.class), controller.getFormManager().getComponentCatalogue());
                 } else {
                     logger.warn("Ignoring request to build form for property: {}. Only class property is supported", property);
                 }
@@ -117,51 +118,6 @@ public class FormBuilderImpl implements FormBuilder {
                 break;
         }
 
-    }
-
-    private void buildImplementationChooserForm(JPanel panel, Value value, ComponentCatalogue catalogue) {
-
-        List<JPanel> panels = new ArrayList<>();
-
-        PerfCakeComponent component = value.getModel().getComponent();
-
-        List<String> components = catalogue.list(component);
-        for (String name : components) {
-            DocsService docsService = value.getModel().getDocsService();
-            String docs = "Documentation is not available";
-            ComponentLoader loader = new ComponentLoaderImpl();
-
-            Class<?> implementation = loader.loadComponent(name, component);
-            docs = docsService.getDocs(implementation);
-            if (docs == null) {
-                docs = "Description cannot be found!";
-            }
-
-            JPanel componentPanel = createComponentChooserPanel(name, docs);
-            panels.add(componentPanel);
-        }
-
-        // add individual panels
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = 0;
-        c.gridx = 0;
-
-        for (JPanel p : panels) {
-            panel.add(p, c);
-            c.gridy++;
-            addSepartor(panel, c);
-            c.gridy++;
-        }
-
-        // to start from the top, we need to set weighty of the last component to 1, so that it eats up all the redundant space
-        // therefore we will use dummy component
-        // see: http://stackoverflow.com/a/24790318
-        JPanel dummy = swingFactory.createPanel();
-        c.weightx = 1;
-        c.weighty = 1;
-        panel.add(dummy, c);
     }
 
     private void buildModelForm(JPanel panel, Model model) {
@@ -190,6 +146,7 @@ public class FormBuilderImpl implements FormBuilder {
                     case KEY_VALUE:
 
                         KeyValue keyValue = model.getSingleProperty(propertyInfo.getName(), KeyValue.class);
+                        //TODO(jknetl): Display plus icon if key-value is null (e.g. Receiver and correlator)
                         if (keyValue != null) {
                             JPanel keyValuePanel = createKeyValuePanel(propertyInfo.getDisplayName(), keyValue);
                             additionalPanels.add(keyValuePanel);
@@ -198,6 +155,7 @@ public class FormBuilderImpl implements FormBuilder {
 
                     case MODEL:
                         Model childModel = model.getSingleProperty(propertyInfo.getName(), Model.class);
+                        //TODO(jknetl): Display plus icon if model is null (e.g. Receiver and correlator)
                         if (childModel != null) {
                             JPanel modelPanel = createModelPanel(childModel);
                             additionalPanels.add(modelPanel);
@@ -271,6 +229,51 @@ public class FormBuilderImpl implements FormBuilder {
         c.weighty = 1;
         panel.add(dummy, c);
 
+    }
+
+    private void buildImplementationChooserForm(JPanel panel, Value value, ComponentCatalogue catalogue) {
+
+        List<JPanel> panels = new ArrayList<>();
+
+        PerfCakeComponent component = value.getModel().getComponent();
+
+        List<String> components = catalogue.list(component);
+        for (String name : components) {
+
+            String docs;
+            DocsService docsService = value.getModel().getDocsService();
+            ComponentLoader loader = new ComponentLoaderImpl();
+            Class<?> implementation = loader.loadComponent(name, component);
+            docs = docsService.getDocs(implementation);
+            if (docs == null) {
+                docs = "Description cannot be found!";
+            }
+
+            JPanel componentPanel = createComponentChooserPanel(name, docs);
+            panels.add(componentPanel);
+        }
+
+        // add individual panels
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = 0;
+        c.gridx = 0;
+
+        for (JPanel p : panels) {
+            panel.add(p, c);
+            c.gridy++;
+            addSepartor(panel, c);
+            c.gridy++;
+        }
+
+        // to start from the top, we need to set weighty of the last component to 1, so that it eats up all the redundant space
+        // therefore we will use dummy component
+        // see: http://stackoverflow.com/a/24790318
+        JPanel dummy = swingFactory.createPanel();
+        c.weightx = 1;
+        c.weighty = 1;
+        panel.add(dummy, c);
     }
 
     private JPanel createKeyValuePanel(String sectionName, KeyValue keyValue) {
@@ -353,6 +356,7 @@ public class FormBuilderImpl implements FormBuilder {
         panel.add(header, c);
 
         c.gridy = 1;
+        c.weightx = 0.9;
         c.fill = GridBagConstraints.BOTH;
         panel.add(idLabel, c);
 
@@ -363,6 +367,7 @@ public class FormBuilderImpl implements FormBuilder {
         c.gridheight = 2;
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;
+        c.weightx = 0;
         panel.add(button, c);
 
         return panel;
@@ -373,8 +378,6 @@ public class FormBuilderImpl implements FormBuilder {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = createGridBagConstraints();
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         JLabel header = swingFactory.createLabel();
         header.setText(value.getValue());
@@ -396,9 +399,14 @@ public class FormBuilderImpl implements FormBuilder {
         docs.setText(docsText);
 
 
+        GridBagConstraints c = createGridBagConstraints();
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+
         c.insets = new Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 0.9;
+
         panel.add(header, c);
         c.gridy++;
         c.fill = GridBagConstraints.BOTH;
@@ -407,6 +415,8 @@ public class FormBuilderImpl implements FormBuilder {
         JButton button = createIconButton(new ListIcon(ICON_WIDTH, ICON_HEIGHT), true);
 
         c.gridy = 0;
+        c.weightx = 0;
+        c.weighty = 0;
         c.gridheight = 2;
         c.anchor = GridBagConstraints.LINE_END;
         c.fill = GridBagConstraints.NONE;
@@ -793,6 +803,9 @@ public class FormBuilderImpl implements FormBuilder {
             public void actionPerformed(ActionEvent e) {
                 if (isNull) {
                     field.setText(previousValue);
+                    if (info.getMinOccurs() > 0) {
+                        button.setEnabled(false);
+                    }
                     field.setEnabled(true);
                     button.setText(nullifyText);
                     isNull = false;

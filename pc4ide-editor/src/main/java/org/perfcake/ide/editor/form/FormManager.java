@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.form;
 
 import javax.swing.JPanel;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 
 /**
@@ -33,6 +34,12 @@ public interface FormManager {
      * @return Content page for form components.
      */
     JPanel getContentPanel();
+
+    /**
+     *
+     * @return Master panel which contains all parts of the form (including content panel).
+     */
+    JPanel getMasterPanel();
 
     /**
      * Deletes all form controls from content panel.
@@ -68,6 +75,11 @@ public interface FormManager {
      * @return Controller of current page or null, if there is no page.
      */
     FormController getCurrentPageController();
+
+    /**
+     * @return Command invoker which can be used for executing commands.
+     */
+    CommandInvoker getCommandInvoker();
 
     /**
      * @return Component catalogue.

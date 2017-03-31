@@ -23,6 +23,7 @@ package org.perfcake.ide.core.model.components;
 import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
+import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
 import org.perfcake.ide.core.model.properties.SimpleValue;
@@ -60,6 +61,7 @@ public class ScenarioModel extends AbstractModel {
      */
     public ScenarioModel(DocsService docsService) {
         super(PerfCakeComponent.SCENARIO, docsService);
+        this.setPropertyInfo(new PropertyInfo("Scenario",  this, Model.class, null,1,1));
     }
 
     @Override

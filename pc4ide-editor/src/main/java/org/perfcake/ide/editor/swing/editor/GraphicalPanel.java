@@ -27,6 +27,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.factory.ValidModelFactory;
@@ -47,10 +48,11 @@ public class GraphicalPanel extends JPanel {
     /**
      * Creates new graphical editor.
      *
-     * @param scenarioModel model of scenario managed by editor
-     * @param formManager manager which manages the forms
+     * @param scenarioModel  model of scenario managed by editor
+     * @param commandInvoker command invoker for executing commands
+     * @param formManager    manager which manages the forms
      */
-    public GraphicalPanel(ScenarioModel scenarioModel, FormManager formManager) {
+    public GraphicalPanel(ScenarioModel scenarioModel, CommandInvoker commandInvoker, FormManager formManager) {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
@@ -58,7 +60,7 @@ public class GraphicalPanel extends JPanel {
         ModelFactory modelFactory = new ValidModelFactory(scenarioModel.getDocsService());
         DefaultColorScheme colorScheme = new DefaultColorScheme();
         viewFactory.setColorScheme(colorScheme);
-        scenarioController = new ScenarioController(this, scenarioModel, modelFactory, viewFactory, formManager);
+        scenarioController = new ScenarioController(this, scenarioModel, modelFactory, viewFactory, commandInvoker, formManager);
         this.setBackground(colorScheme.getColor(NamedColor.BASE_1));
     }
 

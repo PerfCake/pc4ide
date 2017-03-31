@@ -47,7 +47,7 @@ public class SelectionHandler extends AbstractHandler {
         FormManager formManager = controller.getRoot().getFormManger();
         //TODO: enable to obtain formManager
         formManager.removeAllPages();
-        formManager.addPage(new FormControllerImpl(controller.getModel(), formManager.getComponentCatalogue()));
+        formManager.addPage(new FormControllerImpl(controller.getModel()));
         //FormPage page = new SimpleFormPage(formManager, controller.getModel());
         //formManager.addFormPage(page);
     }
