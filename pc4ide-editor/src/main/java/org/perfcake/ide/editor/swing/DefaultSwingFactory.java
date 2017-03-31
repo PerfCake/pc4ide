@@ -57,6 +57,7 @@ public class DefaultSwingFactory implements SwingFactory {
     public JTextField createTextField() {
         JTextField field = new JTextField();
         field.setFont(font);
+        field.setColumns(5);
         return field;
     }
 
