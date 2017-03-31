@@ -20,34 +20,41 @@
 
 package org.perfcake.ide.editor.form.impl;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
 
 /**
- * Basic implementation of {@link org.perfcake.ide.editor.form.FormController}  interface.
- *
+ * Base class which implements majority of {@link FormController} methods.
  * @author Jakub Knetl
  */
-public class FormControllerImpl extends AbstractFormController {
+public abstract class AbstractFormController implements FormController {
+    protected FormBuilder formBuilder;
+    protected FormManager formManager;
+    protected Model model;
 
-    /**
-     * Creates new Form controller.
-     *
-     * @param model     model which is controlled by the controller
-     */
-    public FormControllerImpl(Model model) {
-        super(model);
+    public AbstractFormController(Model model) {
+        this.model = model;
     }
 
-    @Override
-    public void drawForm() {
-        JPanel panel = formManager.getContentPanel();
-        formBuilder.buildForm(panel, model, this);
+    public void setFormManager(FormManager formManager) {
+        this.formManager = formManager;
     }
 
+    public FormManager getFormManager() {
+        return formManager;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setFormBuilder(FormBuilder formBuilder) {
+        this.formBuilder = formBuilder;
+    }
+
+    public FormBuilder getFormBuilder() {
+        return formBuilder;
+    }
 }

@@ -23,6 +23,8 @@ package org.perfcake.ide.editor.swing;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -48,6 +50,11 @@ public interface SwingFactory {
      * @return JPanel.
      */
     JPanel createPanel();
+
+    /**
+     * @return JScrollPane.
+     */
+    JScrollPane createSrollPane();
 
     /**
      * @return Text area.

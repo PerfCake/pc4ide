@@ -57,6 +57,7 @@ import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
+import org.perfcake.ide.editor.form.impl.ComponentSelctorFormController;
 import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.swing.icons.control.CogIcon;
@@ -102,7 +103,7 @@ public class FormBuilderImpl implements FormBuilder {
 
         switch (property.getPropertyType()) {
             case MODEL:
-                buildModelForm(panel, property.cast(Model.class));
+                buildModelForm(controller, panel, property.cast(Model.class));
                 break;
             case KEY_VALUE:
                 logger.warn("Ignoring request to build form for key-value property: {}.", property);
@@ -120,7 +121,7 @@ public class FormBuilderImpl implements FormBuilder {
 
     }
 
-    private void buildModelForm(JPanel panel, Model model) {
+    private void buildModelForm(FormController controller, JPanel panel, Model model) {
 
         // pane for values
         JPanel valuesPanel = createValuesPanel();
@@ -136,7 +137,7 @@ public class FormBuilderImpl implements FormBuilder {
                     case VALUE:
                         Value value = model.getSingleProperty(propertyInfo.getName(), Value.class);
                         if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName())) {
-                            JPanel implPanel = createDetailedValuePanel(value);
+                            JPanel implPanel = createDetailedValuePanel(controller, value);
                             additionalPanels.add(0, implPanel); //add always to the beginning
                         } else {
                             addSimpleValueToPanel(valuesPanel, propertyInfo, value, valuesPanelSize);
@@ -374,7 +375,7 @@ public class FormBuilderImpl implements FormBuilder {
 
     }
 
-    private JPanel createDetailedValuePanel(Value value) {
+    private JPanel createDetailedValuePanel(FormController controller, Value value) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -413,6 +414,13 @@ public class FormBuilderImpl implements FormBuilder {
         panel.add(docs, c);
 
         JButton button = createIconButton(new ListIcon(ICON_WIDTH, ICON_HEIGHT), true);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FormController selectorContorller = new ComponentSelctorFormController(controller.getModel());
+                controller.getFormManager().addPage(selectorContorller);
+            }
+        });
 
         c.gridy = 0;
         c.weightx = 0;

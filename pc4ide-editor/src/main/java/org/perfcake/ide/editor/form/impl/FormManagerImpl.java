@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.form.impl;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,6 +35,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.Property;
@@ -72,6 +75,7 @@ public class FormManagerImpl implements FormManager {
     private boolean drawDebugBorders = false;
     private JButton backButton;
     private JLabel headerLabel;
+    private JScrollPane scrollPane;
 
     /**
      * Creates new Form manager.
@@ -116,6 +120,8 @@ public class FormManagerImpl implements FormManager {
         headerPanel.add(headerLabel);
 
         contentPanel = swingFactory.createPanel();
+        scrollPane = new JScrollPane(contentPanel);
+
         bottomPanel = swingFactory.createPanel();
 
         backButton = swingFactory.createButton();
@@ -131,7 +137,7 @@ public class FormManagerImpl implements FormManager {
         if (drawDebugBorders) {
             masterPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
             headerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            contentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         }
 
@@ -146,7 +152,7 @@ public class FormManagerImpl implements FormManager {
         masterPanel.add(headerPanel, constraints);
         constraints.gridy++;
         constraints.weighty = 0.9;
-        masterPanel.add(contentPanel, constraints);
+        masterPanel.add(scrollPane, constraints);
         constraints.gridy++;
         constraints.weighty = 0;
         masterPanel.add(bottomPanel, constraints);
@@ -176,7 +182,6 @@ public class FormManagerImpl implements FormManager {
         controller.setFormManager(this);
         controller.setFormBuilder(formBuilder);
         controller.drawForm();
-        getContentPanel().updateUI();
         updateAll();
     }
 
