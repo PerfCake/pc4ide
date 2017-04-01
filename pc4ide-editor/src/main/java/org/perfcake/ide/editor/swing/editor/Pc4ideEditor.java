@@ -42,8 +42,6 @@ public class Pc4ideEditor extends JSplitPane {
 
     private ScenarioModel scenario;
     private GraphicalPanel graphicalEditorPanel;
-    private FormManager formManager;
-    private CommandInvoker commandInvoker;
 
     public Pc4ideEditor(ScenarioModel scenario) {
         this(scenario, null);
@@ -61,17 +59,21 @@ public class Pc4ideEditor extends JSplitPane {
         // setLayout(layout);
         this.scenario = scenario;
 
-        commandInvoker = new CommandInvokerImpl();
+        // init invoker
+        CommandInvoker commandInvoker = new CommandInvokerImpl();
 
+        // init catalogue
         if (componentCatalogue == null) {
             componentCatalogue = createComponentCatalogue();
         }
 
-        ModelFactory modelFactory = new ValidModelFactory(scenario.getDocsService());
 
-        formManager = new FormManagerImpl(scenario,commandInvoker, componentCatalogue, modelFactory);
+        ModelFactory modelFactory = new ValidModelFactory(scenario.getDocsService());
+        FormManager formManager = new FormManagerImpl(scenario, commandInvoker, componentCatalogue, modelFactory);
 
         graphicalEditorPanel = new GraphicalPanel(scenario, commandInvoker, formManager);
+        formManager.setGraphicalController(graphicalEditorPanel.getScenarioController());
+
         // final FormPage generatorPage = new SimpleFormPage(formManager,
         // new ReflectiveModelDirector(scenario.getGenerator(), componentCatalogue));
         // formManager.addFormPage(generatorPage);

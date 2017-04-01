@@ -33,6 +33,7 @@ import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.factory.ValidModelFactory;
 import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.colors.NamedColor;
+import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
 import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
@@ -43,7 +44,7 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  */
 public class GraphicalPanel extends JPanel {
 
-    private ScenarioController scenarioController;
+    private RootController scenarioController;
 
     /**
      * Creates new graphical editor.
@@ -144,4 +145,7 @@ public class GraphicalPanel extends JPanel {
 
     }
 
+    public RootController getScenarioController() {
+        return scenarioController;
+    }
 }

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.editor.controller.RootController;
 
 /**
  * Form manager manages form which is used to modify component properties. Form manager can go back between multiple pages. It manages
@@ -37,7 +38,6 @@ public interface FormManager {
     JPanel getContentPanel();
 
     /**
-     *
      * @return Master panel which contains all parts of the form (including content panel).
      */
     JPanel getMasterPanel();
@@ -102,4 +102,15 @@ public interface FormManager {
      * @return model factory.
      */
     ModelFactory getModelFactory();
+
+    /**
+     * @return Root controller of the graphical representation.
+     */
+    RootController getGraphicalController();
+
+    /**
+     * Sets graphical editor controller.
+     * @param controller controller of the graphical editor.
+     */
+    void setGraphicalController(RootController controller);
 }

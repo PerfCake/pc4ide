@@ -41,6 +41,9 @@ import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.editor.controller.RootController;
+import org.perfcake.ide.editor.controller.visitor.SelectModelVisitor;
+import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
@@ -58,7 +61,6 @@ import org.slf4j.LoggerFactory;
 public class FormManagerImpl implements FormManager {
 
     static final Logger logger = LoggerFactory.getLogger(FormManagerImpl.class);
-
     private JPanel masterPanel;
     private JPanel contentPanel;
     private JPanel bottomPanel;
@@ -70,6 +72,7 @@ public class FormManagerImpl implements FormManager {
     private FormBuilder formBuilder;
     private CommandInvoker commandInvoker;
     private ModelFactory modelFactory;
+    private RootController graphicalRootController;
 
     private boolean drawDebugBorders = false;
     private JButton backButton;
@@ -82,7 +85,7 @@ public class FormManagerImpl implements FormManager {
      * @param scenario           model of a scenario.
      * @param commandInvoker     invoker for executing commands
      * @param componentCatalogue catalogue of PerfCake components
-     * @param modelFactory  model factory
+     * @param modelFactory       model factory
      */
     public FormManagerImpl(ScenarioModel scenario, CommandInvoker commandInvoker,
                            ComponentCatalogue componentCatalogue, ModelFactory modelFactory) {
@@ -278,6 +281,16 @@ public class FormManagerImpl implements FormManager {
         return modelFactory;
     }
 
+    @Override
+    public RootController getGraphicalController() {
+        return graphicalRootController;
+    }
+
+    @Override
+    public void setGraphicalController(RootController controller) {
+        this.graphicalRootController = controller;
+    }
+
     protected void updateAll() {
         updateBackButton();
         FormController current = controllers.peek();
@@ -285,6 +298,8 @@ public class FormManagerImpl implements FormManager {
             updateContentPanel();
         }
         updateHeader();
+
+        selectCurrentPage();
     }
 
     protected void updateContentPanel() {
@@ -321,5 +336,18 @@ public class FormManagerImpl implements FormManager {
         }
 
         return header;
+    }
+
+    /**
+     * Selects current page in the graphical view.
+     */
+    private void selectCurrentPage() {
+        if (graphicalRootController != null) {
+            graphicalRootController.accept(new UnselectVisitor());
+            FormController currentPage = controllers.peek();
+            if (currentPage != null) {
+                graphicalRootController.accept(new SelectModelVisitor(currentPage.getModel()));
+            }
+        }
     }
 }
