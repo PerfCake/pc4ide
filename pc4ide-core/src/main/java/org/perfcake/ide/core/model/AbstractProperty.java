@@ -20,7 +20,6 @@
 
 package org.perfcake.ide.core.model;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.listeners.PropertyListener;
@@ -90,7 +89,7 @@ public abstract class AbstractProperty implements Property {
         if (propertyInfo != null && propertyInfo.getType() != type) {
             throw new UnsupportedPropertyException(
                     String.format("Type of the property info (%s) is not compatible with property type (%s).",
-                    propertyInfo.getType(), type));
+                            propertyInfo.getType(), type));
         }
         this.propertyInfo = propertyInfo;
     }
@@ -140,7 +139,7 @@ public abstract class AbstractProperty implements Property {
             if (eventSuffix == null || eventSuffix.isEmpty()) {
                 eventName = propertyInfo.getName();
             } else {
-                eventName = String.format("%s-%s", propertyInfo.getName());
+                eventName = String.format("%s-%s", propertyInfo.getName(), eventSuffix);
             }
         } else {
             eventName = "property value change";
