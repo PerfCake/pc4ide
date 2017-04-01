@@ -27,7 +27,6 @@ import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
 import org.perfcake.ide.core.model.properties.SimpleValue;
-import org.perfcake.scenario.Scenario;
 
 /**
  * Represents a PerfCake scenario model.
@@ -61,22 +60,30 @@ public class ScenarioModel extends AbstractModel {
      */
     public ScenarioModel(DocsService docsService) {
         super(PerfCakeComponent.SCENARIO, docsService);
-        this.setPropertyInfo(new PropertyInfo("Scenario",  this, Model.class, null,1,1));
+        this.setPropertyInfo(new PropertyInfo("Scenario", this, Model.class, null,
+                PerfCakeComponent.SCENARIO, 1, 1));
     }
 
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.GENERATOR.toString(), this, PropertyType.MODEL.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.SENDER.toString(), this, PropertyType.MODEL.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.RECEIVER.toString(), this, PropertyType.MODEL.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.SEQUENCES.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.REPORTERS.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.GENERATOR.toString(), this, PropertyType.MODEL.getClazz(), null, PerfCakeComponent.GENERATOR,
+                        1, 1),
+                new PropertyInfo(PropertyNames.SENDER.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.SENDER, 1, 1),
+                new PropertyInfo(PropertyNames.RECEIVER.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.RECEIVER, 0, 1),
+                new PropertyInfo(PropertyNames.SEQUENCES.toString(), this, PropertyType.MODEL.getClazz(),
+                        null, PerfCakeComponent.SEQUENCE, 0, -1),
+                new PropertyInfo(PropertyNames.REPORTERS.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.REPORTER, 0, -1),
                 new PropertyInfo(PropertyNames.REPORTERS_PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(),
                         null, 0, -1),
-                new PropertyInfo(PropertyNames.MESSAGES.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.VALIDATORS.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1),
+                new PropertyInfo(PropertyNames.MESSAGES.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.MESSAGE, 0, -1),
+                new PropertyInfo(PropertyNames.VALIDATORS.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.VALIDATOR, 0, -1),
                 new PropertyInfo(PropertyNames.VALIDATION_ENABLED.toString(), this, PropertyType.VALUE.getClazz(),
                         new SimpleValue("true"), 0, 1),
                 new PropertyInfo(PropertyNames.VALIDATION_FAST_FORWARD.toString(), this, PropertyType.VALUE.getClazz(),

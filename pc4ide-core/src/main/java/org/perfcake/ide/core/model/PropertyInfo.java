@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.model;
 
 import java.util.Objects;
+import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelException;
 import org.slf4j.Logger;
@@ -56,6 +57,11 @@ public class PropertyInfo {
     private PropertyType type;
 
     /**
+     * Which component is represented by this property (applicable only in case that type == PropertyType.Model)
+     */
+    private PerfCakeComponent perfCakeComponent;
+
+    /**
      * Default value of the property.
      */
     private Object defaultValue;
@@ -79,11 +85,12 @@ public class PropertyInfo {
      * @param model             Model to which this property belongs
      * @param defaultValueClazz class of a default value
      * @param defaultValue      default value of the property
+     * @param perfCakeComponent PerfCake component represented by this property (applicable only if propertyType == MODEL)
      * @param minOccurs         minimum number of occurrences of this property.
      * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
     public <T extends Property> PropertyInfo(String name, String displayName, Model model, Class<? extends T> defaultValueClazz,
-                                             T defaultValue, int minOccurs, int maxOccurs) {
+                                             T defaultValue, PerfCakeComponent perfCakeComponent, int minOccurs, int maxOccurs) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
@@ -111,12 +118,38 @@ public class PropertyInfo {
         // Detects type of a property based on implementation class.
         type = PropertyType.detectPropertyType(defaultValueClazz);
 
+        if (type == PropertyType.MODEL && perfCakeComponent == null) {
+            throw new IllegalArgumentException("perfCakeComponent cannot be null in case that this represents model type");
+        }
+
+        if (type != PropertyType.MODEL && perfCakeComponent != null) {
+            throw new IllegalArgumentException("perfCakeComponent must be null in case that this does not represents model type");
+        }
+
+        this.perfCakeComponent = perfCakeComponent;
         this.name = name;
         this.defaultValue = defaultValue;
         this.displayName = displayName;
         this.model = model;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
+    }
+
+    /**
+     * Creates new propertyInfo
+     *
+     * @param <T>               Type of property value.
+     * @param name              Name of the property
+     * @param displayName       Name to be displayed in the UI
+     * @param model             Model to which this property belongs
+     * @param defaultValueClazz class of a default value
+     * @param defaultValue      default value of the property
+     * @param minOccurs         minimum number of occurrences of this property.
+     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
+     */
+    public <T extends Property> PropertyInfo(String name, String displayName, Model model, Class<? extends T> defaultValueClazz,
+                                             T defaultValue, int minOccurs, int maxOccurs) {
+        this(name, displayName, model, defaultValueClazz, defaultValue, null, minOccurs, maxOccurs);
     }
 
     /**
@@ -132,7 +165,24 @@ public class PropertyInfo {
      */
     public <T extends Property> PropertyInfo(String name, Model model, Class<? extends T> defaultValueClazz,
                                              T defaultValue, int minOccurs, int maxOccurs) {
-        this(name, null, model, defaultValueClazz, defaultValue, minOccurs, maxOccurs);
+        this(name, null, model, defaultValueClazz, defaultValue, null, minOccurs, maxOccurs);
+    }
+
+    /**
+     * Creates new propertyInfo
+     *
+     * @param <T>               Type of property value.
+     * @param name              Name of the property
+     * @param model             Model to which this property belongs
+     * @param defaultValueClazz class of a default value
+     * @param defaultValue      default value of the property
+     * @param perfCakeComponent PerfCake component represented by this property (applicable only if propertyType == MODEL)
+     * @param minOccurs         minimum number of occurrences of this property.
+     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
+     */
+    public <T extends Property> PropertyInfo(String name,  Model model, Class<? extends T> defaultValueClazz,
+                                             T defaultValue, PerfCakeComponent perfCakeComponent, int minOccurs, int maxOccurs) {
+        this(name, null, model, defaultValueClazz, defaultValue, perfCakeComponent, minOccurs, maxOccurs);
     }
 
     /**
@@ -144,6 +194,13 @@ public class PropertyInfo {
 
     public PropertyType getType() {
         return type;
+    }
+
+    /**
+     * @return PerfCake component represented by this metadata, or null if {@link #getType()} is not a model.
+     */
+    public PerfCakeComponent getPerfCakeComponent() {
+        return perfCakeComponent;
     }
 
     /**
