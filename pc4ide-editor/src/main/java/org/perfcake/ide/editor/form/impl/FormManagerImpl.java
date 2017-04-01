@@ -44,7 +44,6 @@ import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
-import org.perfcake.ide.editor.form.builder.FormBuilderImpl;
 import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.utils.FontUtils;

@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.form.builder;
+package org.perfcake.ide.editor.form.impl;
 
 import java.awt.Color;
 import java.awt.Cursor;
