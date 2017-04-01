@@ -24,7 +24,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
-import org.perfcake.ide.core.command.invoker.CommandInvokerImpl;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
@@ -34,7 +33,7 @@ import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
-import org.perfcake.ide.editor.forms.FormManager;
+import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 import org.perfcake.ide.editor.view.impl.LayeredView;
@@ -57,21 +56,21 @@ public class ScenarioController extends AbstractController implements RootContro
 
     /**
      * Creates new editor controller.
-     *
-     * @param jComponent   Swing inspector used as a container for editor visuals
+     *  @param jComponent   Swing inspector used as a container for editor visuals
      * @param model        model of scenario managed by controller
      * @param modelFactory model factory.
      * @param viewFactory  Factory for creating views
+     * @param commandInvoker command invoker for executing commands
      * @param formManager  manager of forms to modify inspector properties
      */
     public ScenarioController(JComponent jComponent, ScenarioModel model, ModelFactory modelFactory,
-                              ViewFactory viewFactory, FormManager formManager) {
+                              ViewFactory viewFactory, CommandInvoker commandInvoker, FormManager formManager) {
         super(model, modelFactory, viewFactory);
         this.jComponent = jComponent;
         this.formManager = formManager;
         ScenarioView scenarioView = (ScenarioView) view;
         scenarioView.setJComponent(jComponent);
-        commandInvoker = new CommandInvokerImpl();
+        this.commandInvoker = commandInvoker;
         this.view = scenarioView;
 
         /* add composite view for messages and seqeunces. Warning: this violates hierarchy,
@@ -104,6 +103,11 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     public JComponent getJComponent() {
         return this.jComponent;
+    }
+
+    @Override
+    public FormManager getFormManger() {
+        return formManager;
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.JFrame;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.loader.ModelLoader;
@@ -88,7 +89,7 @@ public class Main {
                 frame.setTitle("Perfcake editor");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 // final GraphicalPanel editor = new GraphicalPanel(model);
-                final Pc4ideEditor editor = new Pc4ideEditor(model);
+                final Pc4ideEditor editor = new Pc4ideEditor(model, new ReflectionComponentCatalogue());
                 frame.add(editor);
                 frame.setVisible(true);
             }

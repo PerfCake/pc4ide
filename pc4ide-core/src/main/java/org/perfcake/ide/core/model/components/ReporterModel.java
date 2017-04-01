@@ -25,7 +25,6 @@ import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.reporting.reporter.Reporter;
 
 /**
  * Represents model of a Reporter PerfCake inspector.
@@ -63,7 +62,8 @@ public class ReporterModel extends AbstractModel {
         addSupportedProperties(
                 new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.ENABLED.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.DESTINATION.toString(), this, PropertyType.MODEL.getClazz(), null, 0, -1)
+                new PropertyInfo(PropertyNames.DESTINATION.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.DESTINATION, 0, -1)
         );
 
     }

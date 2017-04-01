@@ -18,52 +18,55 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
+package org.perfcake.ide.editor.swing;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
- * Represent page of the form. The page contains input swing controls which
- * are applied to application data.
- * <p>The FormPage has its model object which serves as container for the data.</p>
+ * Component factory manages creating of various swing components, which are used in the editor.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
-public interface FormPage {
+public interface SwingFactory {
 
     /**
-     * @return True if the data enterend into the form are valid.
+     * @return Swing label.
      */
-    boolean isValid();
+    JLabel createLabel();
 
     /**
-     * @return {@link FormManager} which manages this FormPage.
+     * @return Textfield.
      */
-    FormManager getFormManager();
+    JTextField createTextField();
 
     /**
-     * @return JPanel with the form.
+     * @return JPanel.
      */
-    JPanel getContentPanel();
+    JPanel createPanel();
 
     /**
-     * @return message which may be used by some {@link FormManager}s to display hint to the user.
+     * @return JScrollPane.
      */
-    String getMessage();
+    JScrollPane createSrollPane();
 
     /**
-     * Update visual representation of the form.
+     * @return Text area.
      */
-    void updateForm();
+    JTextArea createTextArea();
 
     /**
-     * Apply changes in this FormPage to the model of the data.
+     * @return JSeparator.
      */
-    void applyChanges();
+    JSeparator createSeparator();
 
     /**
-     * @return Object which is model for the form data.
+     * @return JButton.
      */
-    Object getModel();
-
+    JButton createButton();
 }

@@ -36,7 +36,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.xmlgraphics.java2d.Dimension2DDouble;
 import org.perfcake.ide.editor.awt.geom.DimensionDouble;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.LayoutData;
@@ -397,7 +396,7 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     /**
-     * @return List of additional pairs of key value, which this view will draw into surface along with header.
+     * @return ListIcon of additional pairs of key value, which this view will draw into surface along with header.
      */
     protected abstract List<Pair> getAdditionalData();
 

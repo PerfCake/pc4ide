@@ -62,7 +62,7 @@
             <property name="histogram" value="20,40,60,80" />
             <destination class="Log4jDestination">
                 <period type="time" value="1000"/>
-                <property name="level" value="info" />
+                <property name="level" value="propertyInfo" />
             </destination>
         </reporter>
     </reporting>

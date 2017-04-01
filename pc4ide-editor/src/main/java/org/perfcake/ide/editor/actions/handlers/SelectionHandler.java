@@ -22,6 +22,8 @@ package org.perfcake.ide.editor.actions.handlers;
 
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
+import org.perfcake.ide.editor.form.FormManager;
+import org.perfcake.ide.editor.form.impl.FormControllerImpl;
 
 /**
  * Handles selection event on a controller.
@@ -30,6 +32,9 @@ import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
  */
 public class SelectionHandler extends AbstractHandler {
 
+    /**
+     * Creates new Selection handler.
+     */
     public SelectionHandler() {
         super(ActionType.SELECT);
     }
@@ -39,8 +44,10 @@ public class SelectionHandler extends AbstractHandler {
         UnselectVisitor visitor = new UnselectVisitor();
         controller.getRoot().accept(visitor);
         controller.getView().setSelected(true);
+        FormManager formManager = controller.getRoot().getFormManger();
         //TODO: enable to obtain formManager
-        //formManager.removeAllPages();
+        formManager.removeAllPages();
+        formManager.addPage(new FormControllerImpl(controller.getModel(), formManager.getModelFactory()));
         //FormPage page = new SimpleFormPage(formManager, controller.getModel());
         //formManager.addFormPage(page);
     }

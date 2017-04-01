@@ -24,6 +24,7 @@
 package org.perfcake.ide.editor.controller;
 
 import javax.swing.JComponent;
+import org.perfcake.ide.editor.form.FormManager;
 
 /**
  * Represents top-level controller.
@@ -36,4 +37,9 @@ public interface RootController extends Controller {
      * @return Jcomponent on which the editor is drawn.
      */
     JComponent getJComponent();
+
+    /**
+     * @return Form manager for managing form panel.
+     */
+    FormManager getFormManger();
 }

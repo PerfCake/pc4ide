@@ -18,43 +18,33 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms.impl;
+package org.perfcake.ide.editor.form.impl;
 
-import org.perfcake.ide.editor.forms.EventHandler;
-import org.perfcake.ide.editor.forms.FormPageDirector;
+import javax.swing.JPanel;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 
 /**
- * TODO: implement this.
+ * Basic implementation of {@link org.perfcake.ide.editor.form.FormController}  interface.
+ *
  * @author Jakub Knetl
  */
-public class FormDirectorImpl implements FormPageDirector {
-    @Override
-    public boolean isValid() {
-        return true;
+public class FormControllerImpl extends AbstractFormController {
+
+    /**
+     * Creates new Form controller.
+     *
+     * @param model     model which is controlled by the controller
+     * @param modelFactory model factory
+     */
+    public FormControllerImpl(Model model, ModelFactory modelFactory) {
+        super(model, modelFactory);
     }
 
     @Override
-    public boolean isSynced() {
-        return true;
+    public void drawForm() {
+        JPanel panel = formManager.getContentPanel();
+        formBuilder.buildForm(panel, model, this);
     }
 
-    @Override
-    public void addHandler(EventHandler handler) {
-
-    }
-
-    @Override
-    public boolean removeHandler(EventHandler handler) {
-        return false;
-    }
-
-    @Override
-    public void applyChanges() {
-
-    }
-
-    @Override
-    public String getMessage() {
-        return null;
-    }
 }

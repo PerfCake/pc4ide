@@ -318,7 +318,7 @@ public abstract class AbstractController implements Controller, ModelListener {
         }
 
         if (model.getPropertyInfo() == null) {
-            throw new IllegalArgumentException("model must containt property info");
+            throw new IllegalArgumentException("model must containt property propertyInfo");
         }
 
         return null;

@@ -18,17 +18,29 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.forms;
+package org.perfcake.ide.editor.controller.visitor;
+
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.controller.Controller;
 
 /**
- * FormGenerator serves as tool for creating a forms dynamically.
+ * This visitor selects view of controller which contains particular model.
  *
- * @author jknetl
+ * @author Jakub Knetl
  */
-public interface FormGenerator {
+public class SelectModelVisitor extends SearchModelVisitor {
 
     /**
-     * Generates form with appropriate elements.
+     * Creates new search model visitor.
+     *
+     * @param model model for whose controller is being searched
      */
-    void createForm();
+    public SelectModelVisitor(Model model) {
+        super(model);
+    }
+
+    @Override
+    protected void performAction(Controller controller) {
+        controller.getView().setSelected(true);
+    }
 }

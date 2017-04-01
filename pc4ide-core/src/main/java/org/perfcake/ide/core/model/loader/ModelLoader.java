@@ -42,9 +42,14 @@ import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.converter.XmlConverter;
 import org.perfcake.model.Scenario;
 import org.perfcake.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 public class ModelLoader {
+
+    static final Logger logger = LoggerFactory.getLogger(ModelLoader.class);
+    public static final String PERFCAKE_COMMENT_PROPERTIES = "/perfcake-comment.properties";
 
     /**
      * Does the parsing itself by using JAXB.
@@ -95,12 +100,18 @@ public class ModelLoader {
      *
      * @param url URL of scenario
      * @return Scenario model
-     * @throws PerfCakeException when model cannot be loaded
+     * @throws PerfCakeException        when model cannot be loaded
      * @throws ModelConversionException when PerfCake model can't be converted to pc4ide model.
      */
     public ScenarioModel loadModel(URL url) throws PerfCakeException, ModelConversionException {
         final Scenario scenario = parse(url);
-        XmlConverter converter = new XmlConverter(new DocsServiceImpl(new Properties()));
+        Properties javadocProperties = new Properties();
+        try {
+            javadocProperties.load(this.getClass().getResourceAsStream(PERFCAKE_COMMENT_PROPERTIES));
+        } catch (IOException e) {
+            throw new ModelConversionException("Cannot load javadoc.", e);
+        }
+        XmlConverter converter = new XmlConverter(new DocsServiceImpl(javadocProperties));
         final ScenarioModel model = converter.convertToPc4ideModel(scenario);
         return model;
     }

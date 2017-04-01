@@ -23,7 +23,7 @@ package org.perfcake.ide.editor.view;
 import java.util.Objects;
 
 /**
- * Represent pair of string values (first value is referred as a key, second value is referred as a value).
+ * Represent pair of string values (first propertyInfo is referred as a key, second propertyInfo is referred as a propertyInfo).
  *
  * @author Jakub Knetl
  */
@@ -35,8 +35,8 @@ public class Pair {
     /**
      * Creates new pair.
      *
-     * @param key   first value
-     * @param value second value
+     * @param key   first propertyInfo
+     * @param value second propertyInfo
      */
     public Pair(String key, String value) {
         this.key = key;

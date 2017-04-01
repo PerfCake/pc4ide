@@ -31,6 +31,11 @@ import org.perfcake.ide.core.model.validation.error.ValidationError;
  */
 public interface Property {
     /**
+     * @return Type of the property.
+     */
+    PropertyType getPropertyType();
+
+    /**
      * Gets propertyInfo of this property.
      *
      * @return PropertyInfo or null, if the property is not part of any model; and thus it has no info associated
@@ -44,7 +49,7 @@ public interface Property {
      * @param clazz clazz which represents type of a property value
      * @return property value
      * @throws UnsupportedPropertyException if this property represents another than requested, thus it is not possible to cast property
-     *      to the requested type.
+     *                                      to the requested type.
      */
     <T extends Property> T cast(Class<T> clazz) throws UnsupportedPropertyException;
 
@@ -59,12 +64,14 @@ public interface Property {
 
     /**
      * Sets a model which owns this property.
+     *
      * @param model model which owns this property.
      */
     void setModel(Model model);
 
     /**
      * This method performs validation of this property and determines if property is valid.
+     *
      * @return true if and only if the content of a property is valid.
      */
     boolean isValid();
@@ -72,18 +79,21 @@ public interface Property {
     /**
      * This method performs validation of this property and in case that property is invalid it returns error
      * description.
+     *
      * @return validation error object or null if this property is valid.
      */
     ValidationError getValidationError();
 
     /**
      * Adds a listener for this property.
+     *
      * @param listener listener of the property.
      */
     void addPropertyListener(PropertyListener listener);
 
     /**
      * Removes a listener for this property.
+     *
      * @param listener listener to be removed
      */
     void removePropertyListener(PropertyListener listener);

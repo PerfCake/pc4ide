@@ -55,6 +55,16 @@ public class MinusIcon extends AbstractControlIcon {
     }
 
     /**
+     * Creates new minus icon.
+     *
+     * @param width  width of the icon
+     * @param height heigth of the icon
+     */
+    public MinusIcon(int width, int height) {
+        super(width, height, null);
+    }
+
+    /**
      * Creates a new transcoded SVG image.
      *
      * @param width  width of the icon

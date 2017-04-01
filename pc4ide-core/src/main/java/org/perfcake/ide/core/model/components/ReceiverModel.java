@@ -25,7 +25,6 @@ import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.message.receiver.Receiver;
 
 /**
  * Represents model of a Receiver.
@@ -64,7 +63,8 @@ public class ReceiverModel extends AbstractModel {
                 new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
                 new PropertyInfo(PropertyNames.THREADS.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
                 new PropertyInfo(PropertyNames.SOURCE.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.CORRELATOR.toString(), this, PropertyType.MODEL.getClazz(), null, 1, 1)
+                new PropertyInfo(PropertyNames.CORRELATOR.toString(), this, PropertyType.MODEL.getClazz(), null,
+                        PerfCakeComponent.CORRELATOR, 1, 1)
         );
 
     }

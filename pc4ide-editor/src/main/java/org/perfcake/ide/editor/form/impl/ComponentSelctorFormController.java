@@ -18,22 +18,28 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.swing.editor;
+package org.perfcake.ide.editor.form.impl;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.perfcake.ide.core.model.AbstractModel;
+import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.core.model.properties.Value;
 
 /**
- * Represent Swing container of a form.
+ * Component selector form controller manages a choosing implementation of some component.
+ *
+ * @author Jakub Knetl
  */
-public class FormPanel extends JPanel {
+public class ComponentSelctorFormController extends AbstractFormController {
 
-    /**
-     * Creates new form panel.
-     */
-    public FormPanel() {
-        super();
-        add(new JLabel("Settings"));
+    public ComponentSelctorFormController(Model model, ModelFactory modelFactory) {
+        super(model, modelFactory);
     }
 
+    @Override
+    public void drawForm() {
+        JPanel panel = formManager.getContentPanel();
+        formBuilder.buildForm(panel, model.getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class), this);
+    }
 }
