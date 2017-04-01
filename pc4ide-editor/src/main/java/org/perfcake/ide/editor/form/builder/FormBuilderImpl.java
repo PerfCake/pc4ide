@@ -27,8 +27,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,13 +56,22 @@ import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
-import org.perfcake.ide.editor.form.impl.ComponentSelctorFormController;
 import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
+import org.perfcake.ide.editor.swing.icons.control.ChevronRight;
 import org.perfcake.ide.editor.swing.icons.control.CogIcon;
 import org.perfcake.ide.editor.swing.icons.control.ListIcon;
 import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
 import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
+import org.perfcake.ide.editor.swing.listeners.AddModelListener;
+import org.perfcake.ide.editor.swing.listeners.AddPropertyListener;
+import org.perfcake.ide.editor.swing.listeners.ChooseImplementationListener;
+import org.perfcake.ide.editor.swing.listeners.ConfigureModelListener;
+import org.perfcake.ide.editor.swing.listeners.EnabledSwitchListener;
+import org.perfcake.ide.editor.swing.listeners.ImplementationChangedListener;
+import org.perfcake.ide.editor.swing.listeners.KeyValueChangeListener;
+import org.perfcake.ide.editor.swing.listeners.RemovePropertyControlsListener;
+import org.perfcake.ide.editor.swing.listeners.ValueChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +85,8 @@ public class FormBuilderImpl implements FormBuilder {
     static final Logger logger = LoggerFactory.getLogger(FormBuilderImpl.class);
     public static final int ICON_WIDTH = 16;
     public static final int ICON_HEIGHT = 16;
+    public static final int HORIZONTAL_INSETS = 5;
+    public static final int VERTICAL_INSETS = 2;
 
     private boolean useDebugBorders = false;
     private SwingFactory swingFactory = new DefaultSwingFactory();
@@ -106,11 +116,12 @@ public class FormBuilderImpl implements FormBuilder {
                 buildModelForm(controller, panel, property.cast(Model.class));
                 break;
             case KEY_VALUE:
-                logger.warn("Ignoring request to build form for key-value property: {}.", property);
+                logger.warn("Ignoring request to build form for key-propertyInfo property: {}.", property);
                 break;
             case VALUE:
                 if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(property.getPropertyInfo().getName())) {
-                    buildImplementationChooserForm(panel, property.cast(Value.class), controller.getFormManager().getComponentCatalogue());
+                    buildImplementationChooserForm(controller, panel, property.cast(Value.class),
+                            controller.getFormManager().getComponentCatalogue());
                 } else {
                     logger.warn("Ignoring request to build form for property: {}. Only class property is supported", property);
                 }
@@ -133,23 +144,23 @@ public class FormBuilderImpl implements FormBuilder {
             if (propertyInfo.getMaxOccurs() == 1) {
 
                 switch (propertyInfo.getType()) {
-                    // properties with single value
+                    // properties with single propertyInfo
                     case VALUE:
                         Value value = model.getSingleProperty(propertyInfo.getName(), Value.class);
                         if (AbstractModel.IMPLEMENTATION_CLASS_PROPERTY.equals(propertyInfo.getName())) {
                             JPanel implPanel = createDetailedValuePanel(controller, value);
                             additionalPanels.add(0, implPanel); //add always to the beginning
                         } else {
-                            addSimpleValueToPanel(valuesPanel, propertyInfo, value, valuesPanelSize);
+                            addSimpleValueToPanel(valuesPanel, controller, propertyInfo, value, valuesPanelSize);
                             valuesPanelSize++;
                         }
                         break;
                     case KEY_VALUE:
 
                         KeyValue keyValue = model.getSingleProperty(propertyInfo.getName(), KeyValue.class);
-                        //TODO(jknetl): Display plus icon if key-value is null (e.g. Receiver and correlator)
+                        //TODO(jknetl): Display plus icon if key-propertyInfo is null (e.g. Receiver and correlator)
                         if (keyValue != null) {
-                            JPanel keyValuePanel = createKeyValuePanel(propertyInfo.getDisplayName(), keyValue);
+                            JPanel keyValuePanel = createKeyValuePanel(controller, propertyInfo.getDisplayName(), keyValue);
                             additionalPanels.add(keyValuePanel);
                         }
                         break;
@@ -158,7 +169,7 @@ public class FormBuilderImpl implements FormBuilder {
                         Model childModel = model.getSingleProperty(propertyInfo.getName(), Model.class);
                         //TODO(jknetl): Display plus icon if model is null (e.g. Receiver and correlator)
                         if (childModel != null) {
-                            JPanel modelPanel = createModelPanel(childModel);
+                            JPanel modelPanel = createModelPanel(controller, childModel);
                             additionalPanels.add(modelPanel);
                         }
                         break;
@@ -171,11 +182,11 @@ public class FormBuilderImpl implements FormBuilder {
             } else {
 
                 switch (propertyInfo.getType()) {
-                    // properties with single value
+                    // properties with single propertyInfo
                     case VALUE:
                         List<Property> values = model.getProperties(propertyInfo);
 
-                        JPanel valueListPanel = createListOfValuesPanel(propertyInfo, values);
+                        JPanel valueListPanel = createListOfValuesPanel(controller, propertyInfo, values);
                         additionalPanels.add(valueListPanel);
                         break;
 
@@ -183,14 +194,14 @@ public class FormBuilderImpl implements FormBuilder {
 
                         List<Property> keyValues = model.getProperties(propertyInfo);
 
-                        JPanel keyValuesPanel = createListOfKeyValuesPanel(propertyInfo, keyValues);
+                        JPanel keyValuesPanel = createListOfKeyValuesPanel(controller, propertyInfo, keyValues);
                         additionalPanels.add(keyValuesPanel);
                         break;
 
                     case MODEL:
                         List<Property> models = model.getProperties(propertyInfo);
 
-                        JPanel modelsPanel = createListOfModelPanel(propertyInfo, models);
+                        JPanel modelsPanel = createListOfModelPanel(controller, propertyInfo, models);
                         additionalPanels.add(modelsPanel);
                         break;
                     default:
@@ -232,7 +243,7 @@ public class FormBuilderImpl implements FormBuilder {
 
     }
 
-    private void buildImplementationChooserForm(JPanel panel, Value value, ComponentCatalogue catalogue) {
+    private void buildImplementationChooserForm(FormController controller, JPanel panel, Value value, ComponentCatalogue catalogue) {
 
         List<JPanel> panels = new ArrayList<>();
 
@@ -250,7 +261,7 @@ public class FormBuilderImpl implements FormBuilder {
                 docs = "Description cannot be found!";
             }
 
-            JPanel componentPanel = createComponentChooserPanel(name, docs);
+            JPanel componentPanel = createComponentChooserPanel(controller, value.getPropertyInfo(), name, docs);
             panels.add(componentPanel);
         }
 
@@ -277,7 +288,7 @@ public class FormBuilderImpl implements FormBuilder {
         panel.add(dummy, c);
     }
 
-    private JPanel createKeyValuePanel(String sectionName, KeyValue keyValue) {
+    private JPanel createKeyValuePanel(FormController controller, String sectionName, KeyValue keyValue) {
 
         JPanel keyValuePanel = swingFactory.createPanel();
         keyValuePanel.setLayout(new GridBagLayout());
@@ -296,11 +307,16 @@ public class FormBuilderImpl implements FormBuilder {
         JLabel keyLabel = swingFactory.createLabel();
         keyLabel.setText("type: ");
         JLabel valueLabel = swingFactory.createLabel();
-        valueLabel.setText("value: ");
+        valueLabel.setText("propertyInfo: ");
         JTextField keyField = swingFactory.createTextField();
         keyField.setText(keyValue.getKey());
         JTextField valueField = swingFactory.createTextField();
         valueField.setText(keyValue.getValue());
+        KeyListener kvListener = new KeyValueChangeListener(keyField, valueField,
+                controller.getFormManager().getCommandInvoker(), keyValue);
+
+        keyField.addKeyListener(kvListener);
+        valueField.addKeyListener(kvListener);
 
         if (useDebugBorders) {
             keyValuePanel.setBorder(BorderFactory.createTitledBorder(sectionName));
@@ -328,7 +344,7 @@ public class FormBuilderImpl implements FormBuilder {
         return keyValuePanel;
     }
 
-    private JPanel createModelPanel(Model model) {
+    private JPanel createModelPanel(FormController controller, Model model) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -346,6 +362,7 @@ public class FormBuilderImpl implements FormBuilder {
         idLabel.setText(modelName);
 
         JButton button = createIconButton(new CogIcon(ICON_WIDTH, ICON_HEIGHT, iconColor), false);
+        button.addActionListener(new ConfigureModelListener(model, controller));
 
         GridBagConstraints c = createGridBagConstraints();
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -414,13 +431,7 @@ public class FormBuilderImpl implements FormBuilder {
         panel.add(docs, c);
 
         JButton button = createIconButton(new ListIcon(ICON_WIDTH, ICON_HEIGHT), true);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FormController selectorContorller = new ComponentSelctorFormController(controller.getModel());
-                controller.getFormManager().addPage(selectorContorller);
-            }
-        });
+        button.addActionListener(new ChooseImplementationListener(controller));
 
         c.gridy = 0;
         c.weightx = 0;
@@ -435,7 +446,7 @@ public class FormBuilderImpl implements FormBuilder {
         return panel;
     }
 
-    private JPanel createComponentChooserPanel(String name, String docs) {
+    private JPanel createComponentChooserPanel(FormController controller, PropertyInfo propertyInfo, String name, String docs) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -463,7 +474,8 @@ public class FormBuilderImpl implements FormBuilder {
         c.fill = GridBagConstraints.BOTH;
         panel.add(docsAre, c);
 
-        JButton button = createIconButton(new ListIcon(ICON_WIDTH, ICON_HEIGHT), true);
+        JButton button = createIconButton(new ChevronRight(ICON_WIDTH, ICON_HEIGHT), true);
+        button.addActionListener(new ImplementationChangedListener(controller, propertyInfo, name));
 
         c.gridy = 0;
         c.gridheight = 2;
@@ -498,7 +510,7 @@ public class FormBuilderImpl implements FormBuilder {
         return valuesPanel;
     }
 
-    private void addSimpleValueToPanel(JPanel panel, PropertyInfo info, Value value, int columnIndex) {
+    private void addSimpleValueToPanel(JPanel panel, FormController controller, PropertyInfo info, Value value, int columnIndex) {
         // gridbag layout with three columns is expected!
         GridBagConstraints constraints = createGridBagConstraints();
 
@@ -508,10 +520,14 @@ public class FormBuilderImpl implements FormBuilder {
         label.setText(info.getDisplayName() + ": ");
         JTextField field = swingFactory.createTextField();
         if (value == null) {
-            field.setText("null");
+            final String defaultValue = info.getDefaultValue(Value.class) == null ? "null" : info.getDefaultValue(Value.class).getValue();
+            field.setText(defaultValue);
             field.setEnabled(false);
         } else {
             field.setText(value.getValue());
+            ValueChangeListener valueChangedListener = new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(),
+                    value);
+            field.addKeyListener(valueChangedListener);
         }
 
         panel.add(label, constraints);
@@ -524,14 +540,14 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.gridx++;
         constraints.weightx = 0;
 
-        JButton button = createSwitchValueButton(info, value, field);
+        JButton button = createSwitchValueButton(controller, info, value, field);
 
         panel.add(button, constraints);
 
 
     }
 
-    private JPanel createListOfValuesPanel(PropertyInfo propertyInfo, List<Property> values) {
+    private JPanel createListOfValuesPanel(FormController controller, PropertyInfo propertyInfo, List<Property> values) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -541,7 +557,6 @@ public class FormBuilderImpl implements FormBuilder {
         c.gridwidth = 2;
         c.ipadx = 0;
         c.ipady = 0;
-        c.insets = new Insets(0, 0, 0, 0);
 
         JLabel headerLabel = swingFactory.createLabel();
         headerLabel.setFont(getHeaderFont(headerLabel.getFont()));
@@ -569,6 +584,8 @@ public class FormBuilderImpl implements FormBuilder {
             c.weightx = 0.05;
             c.fill = GridBagConstraints.NONE;
             JButton icon = createIconButton(new MinusIcon(ICON_WIDTH, ICON_HEIGHT, removeIconColor), false);
+            icon.addActionListener(new RemovePropertyControlsListener(controller, v, panel, textField, icon));
+
             panel.add(icon, c);
 
             gridy++;
@@ -590,13 +607,14 @@ public class FormBuilderImpl implements FormBuilder {
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.NONE;
         JButton addButton = createIconButton(new PlusIcon(ICON_WIDTH, ICON_HEIGHT, addIconColor), false);
+        addButton.addActionListener(new AddPropertyListener(controller, propertyInfo));
         panel.add(addButton, c);
 
         return panel;
 
     }
 
-    private JPanel createListOfKeyValuesPanel(PropertyInfo propertyInfo, List<Property> keyValues) {
+    private JPanel createListOfKeyValuesPanel(FormController controller, PropertyInfo propertyInfo, List<Property> keyValues) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -604,7 +622,6 @@ public class FormBuilderImpl implements FormBuilder {
         c.fill = GridBagConstraints.NONE;
         c.ipadx = 0;
         c.ipady = 0;
-        c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LINE_START;
         c.gridwidth = 3;
 
@@ -639,6 +656,7 @@ public class FormBuilderImpl implements FormBuilder {
             c.gridx = 2;
             c.fill = GridBagConstraints.NONE;
             JButton icon = createIconButton(new MinusIcon(ICON_WIDTH, ICON_HEIGHT, removeIconColor), false);
+            icon.addActionListener(new RemovePropertyControlsListener(controller, kv, panel, icon, keyTextField, valueTextField));
             panel.add(icon, c);
 
             gridy++;
@@ -660,12 +678,13 @@ public class FormBuilderImpl implements FormBuilder {
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.NONE;
         JButton addButton = createIconButton(new PlusIcon(ICON_WIDTH, ICON_HEIGHT, addIconColor), false);
+        addButton.addActionListener(new AddPropertyListener(controller, propertyInfo));
         panel.add(addButton, c);
 
         return panel;
     }
 
-    private JPanel createListOfModelPanel(PropertyInfo propertyInfo, List<Property> models) {
+    private JPanel createListOfModelPanel(FormController controller, PropertyInfo propertyInfo, List<Property> models) {
         JPanel panel = swingFactory.createPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -675,7 +694,6 @@ public class FormBuilderImpl implements FormBuilder {
         c.gridwidth = 3;
         c.ipadx = 0;
         c.ipady = 0;
-        c.insets = new Insets(0, 0, 0, 0);
 
         JLabel headerLabel = swingFactory.createLabel();
         headerLabel.setFont(getHeaderFont(headerLabel.getFont()));
@@ -710,6 +728,10 @@ public class FormBuilderImpl implements FormBuilder {
             JButton configureButton = createIconButton(new CogIcon(ICON_WIDTH, ICON_HEIGHT, iconColor), false);
             panel.add(configureButton, c);
 
+            removeButton.addActionListener(
+                    new RemovePropertyControlsListener(controller, m, panel, removeButton, configureButton, modelLabel));
+            configureButton.addActionListener(new ConfigureModelListener(m, controller));
+
             gridy++;
 
             //c.gridwidth = 3;
@@ -728,6 +750,7 @@ public class FormBuilderImpl implements FormBuilder {
         c.fill = GridBagConstraints.NONE;
         c.gridy = gridy;
         JButton addButton = createIconButton(new PlusIcon(ICON_WIDTH, ICON_HEIGHT, addIconColor), false);
+        addButton.addActionListener(new AddModelListener(controller, propertyInfo));
         panel.add(addButton, c);
 
         return panel;
@@ -737,8 +760,7 @@ public class FormBuilderImpl implements FormBuilder {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.LINE_START;
         constraints.ipady = 3;
-        int insetsSize = 2;
-        constraints.insets = new Insets(insetsSize, insetsSize, insetsSize, insetsSize);
+        constraints.insets = new Insets(VERTICAL_INSETS, HORIZONTAL_INSETS, VERTICAL_INSETS, HORIZONTAL_INSETS);
         constraints.weightx = 0.1;
         return constraints;
     }
@@ -746,7 +768,8 @@ public class FormBuilderImpl implements FormBuilder {
     private GridBagConstraints createSeparatorConstraints(GridBagConstraints c) {
         GridBagConstraints separatorConstraints = new GridBagConstraints();
         separatorConstraints.fill = GridBagConstraints.HORIZONTAL;
-        separatorConstraints.insets = new Insets(5, 5, 5, 5);
+        int insetsSize = HORIZONTAL_INSETS;
+        separatorConstraints.insets = new Insets(insetsSize, insetsSize, insetsSize, insetsSize);
         separatorConstraints.gridy = c.gridy;
         return separatorConstraints;
     }
@@ -793,40 +816,18 @@ public class FormBuilderImpl implements FormBuilder {
     /**
      * Creates a switch button which controls if another component is null or not.
      *
-     * @param value value of the button
+     * @param value propertyInfo of the button
      * @param field field which is controlled by this button
      * @return switch button
      */
-    private JButton createSwitchValueButton(PropertyInfo info, final Value value, final JTextField field) {
+    private JButton createSwitchValueButton(FormController controller, PropertyInfo info, final Value value, final JTextField field) {
         JButton button = swingFactory.createButton();
         button.setMargin(new Insets(0, 2, 0, 2));
         button.setContentAreaFilled(false);
-        final String nullifyText = "nullify";
-        final String enableText = "enable";
-        button.addActionListener(new ActionListener() {
-            private boolean isNull = value == null;
-            private String previousValue = "";
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (isNull) {
-                    field.setText(previousValue);
-                    if (info.getMinOccurs() > 0) {
-                        button.setEnabled(false);
-                    }
-                    field.setEnabled(true);
-                    button.setText(nullifyText);
-                    isNull = false;
-                } else {
-                    previousValue = field.getText();
-                    field.setText("null");
-                    field.setEnabled(false);
-                    field.repaint();
-                    button.setText(enableText);
-                    isNull = true;
-                }
-            }
-        });
+        final String nullifyText = "default";
+        final String enableText = "edit";
+        final String defaultValue = info.getDefaultValue(Value.class) == null ? "null" : info.getDefaultValue(Value.class).getValue();
+        button.addActionListener(new EnabledSwitchListener(value, controller, field, info, button));
 
         if (value == null) {
             button.setText(enableText);
@@ -891,7 +892,7 @@ public class FormBuilderImpl implements FormBuilder {
         Font font;
         Map<TextAttribute, Object> attributes = new HashMap<>(defaultFont.getAttributes());
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        attributes.put(TextAttribute.SIZE, 14);
+        attributes.put(TextAttribute.SIZE, 13);
         attributes.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
 
         font = defaultFont.deriveFont(attributes);

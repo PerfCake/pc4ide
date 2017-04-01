@@ -21,7 +21,6 @@
 package org.perfcake.ide.editor.form;
 
 import javax.swing.JPanel;
-import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.Property;
 
 /**
@@ -34,8 +33,8 @@ public interface FormBuilder {
     /**
      * Creates form and places it into panel.
      *
-     * @param panel    panel where form will be created
-     * @param property property which will be displayed in the form.
+     * @param panel      panel where form will be created
+     * @param property   property which will be displayed in the form.
      * @param controller controller of the form
      */
     void buildForm(JPanel panel, Property property, FormController controller);

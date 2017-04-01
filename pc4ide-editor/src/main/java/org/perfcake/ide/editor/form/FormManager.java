@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.form;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 
 /**
  * Form manager manages form which is used to modify component properties. Form manager can go back between multiple pages. It manages
@@ -47,11 +48,18 @@ public interface FormManager {
     void cleanContentPanel();
 
     /**
-     * Adds, creates and displayes page using controller.
+     * Adds, creates and displays page using controller.
      *
      * @param controller controller of the form page
      */
     void addPage(FormController controller);
+
+    /**
+     * Adds multiple pages into the manager and displays the last one.
+     *
+     * @param controllers controllers of the pages
+     */
+    void addPages(FormController... controllers);
 
     /**
      * Removes latest page from this manager.
@@ -70,6 +78,10 @@ public interface FormManager {
      */
     int getNumOfPages();
 
+    /**
+     * Deltes whole form and redraw form page from the beginning.
+     */
+    void redrawPage();
 
     /**
      * @return Controller of current page or null, if there is no page.
@@ -85,4 +97,9 @@ public interface FormManager {
      * @return Component catalogue.
      */
     ComponentCatalogue getComponentCatalogue();
+
+    /**
+     * @return model factory.
+     */
+    ModelFactory getModelFactory();
 }

@@ -28,6 +28,8 @@ import org.perfcake.ide.core.command.invoker.CommandInvokerImpl;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.core.model.factory.ValidModelFactory;
 import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.form.impl.FormManagerImpl;
 
@@ -65,7 +67,9 @@ public class Pc4ideEditor extends JSplitPane {
             componentCatalogue = createComponentCatalogue();
         }
 
-        formManager = new FormManagerImpl(scenario,commandInvoker, componentCatalogue);
+        ModelFactory modelFactory = new ValidModelFactory(scenario.getDocsService());
+
+        formManager = new FormManagerImpl(scenario,commandInvoker, componentCatalogue, modelFactory);
 
         graphicalEditorPanel = new GraphicalPanel(scenario, commandInvoker, formManager);
         // final FormPage generatorPage = new SimpleFormPage(formManager,

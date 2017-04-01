@@ -22,15 +22,12 @@ package org.perfcake.ide.editor.swing;
 
 import java.awt.Font;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import org.perfcake.ide.editor.colors.ColorScheme;
-import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.utils.FontUtils;
 
 /**
@@ -76,6 +73,7 @@ public class DefaultSwingFactory implements SwingFactory {
         JTextArea area = new JTextArea();
         area.setFont(font);
         area.setLineWrap(true);
+        area.setColumns(5);
         return area;
     }
 

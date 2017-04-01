@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.form.impl;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.properties.Value;
 
 /**
@@ -32,8 +33,8 @@ import org.perfcake.ide.core.model.properties.Value;
  */
 public class ComponentSelctorFormController extends AbstractFormController {
 
-    public ComponentSelctorFormController(Model model) {
-        super(model);
+    public ComponentSelctorFormController(Model model, ModelFactory modelFactory) {
+        super(model, modelFactory);
     }
 
     @Override

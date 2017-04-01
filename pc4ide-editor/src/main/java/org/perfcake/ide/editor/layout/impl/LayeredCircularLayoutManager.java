@@ -23,7 +23,6 @@ package org.perfcake.ide.editor.layout.impl;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
-import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.LayoutManager;
 import org.perfcake.ide.editor.view.View;

@@ -21,21 +21,37 @@
 package org.perfcake.ide.editor.form.impl;
 
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
 
 /**
  * Base class which implements majority of {@link FormController} methods.
+ *
  * @author Jakub Knetl
  */
 public abstract class AbstractFormController implements FormController {
     protected FormBuilder formBuilder;
     protected FormManager formManager;
+    protected ModelFactory modelFactory;
     protected Model model;
 
-    public AbstractFormController(Model model) {
+    /**
+     * Constructor for abstract controller.
+     *
+     * @param model        model which is controlled by this controller
+     * @param modelFactory model factory
+     */
+    public AbstractFormController(Model model, ModelFactory modelFactory) {
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null.");
+        }
+        if (modelFactory == null) {
+            throw new IllegalArgumentException("modelFactory cannot be null.");
+        }
         this.model = model;
+        this.modelFactory = modelFactory;
     }
 
     public void setFormManager(FormManager formManager) {
@@ -56,5 +72,10 @@ public abstract class AbstractFormController implements FormController {
 
     public FormBuilder getFormBuilder() {
         return formBuilder;
+    }
+
+    @Override
+    public ModelFactory getModelFactory() {
+        return modelFactory;
     }
 }

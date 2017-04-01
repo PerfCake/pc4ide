@@ -20,13 +20,9 @@
 
 package org.perfcake.ide.editor.form.impl;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.Model;
-import org.perfcake.ide.editor.form.FormBuilder;
-import org.perfcake.ide.editor.form.FormController;
-import org.perfcake.ide.editor.form.FormManager;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 
 /**
  * Basic implementation of {@link org.perfcake.ide.editor.form.FormController}  interface.
@@ -39,9 +35,10 @@ public class FormControllerImpl extends AbstractFormController {
      * Creates new Form controller.
      *
      * @param model     model which is controlled by the controller
+     * @param modelFactory model factory
      */
-    public FormControllerImpl(Model model) {
-        super(model);
+    public FormControllerImpl(Model model, ModelFactory modelFactory) {
+        super(model, modelFactory);
     }
 
     @Override

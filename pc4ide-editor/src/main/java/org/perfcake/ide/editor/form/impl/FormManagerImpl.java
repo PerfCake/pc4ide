@@ -21,7 +21,6 @@
 package org.perfcake.ide.editor.form.impl;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,12 +35,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
@@ -71,6 +70,7 @@ public class FormManagerImpl implements FormManager {
     private SwingFactory swingFactory;
     private FormBuilder formBuilder;
     private CommandInvoker commandInvoker;
+    private ModelFactory modelFactory;
 
     private boolean drawDebugBorders = false;
     private JButton backButton;
@@ -83,22 +83,32 @@ public class FormManagerImpl implements FormManager {
      * @param scenario           model of a scenario.
      * @param commandInvoker     invoker for executing commands
      * @param componentCatalogue catalogue of PerfCake components
+     * @param modelFactory  model factory
      */
-    public FormManagerImpl(ScenarioModel scenario, CommandInvoker commandInvoker, ComponentCatalogue componentCatalogue) {
+    public FormManagerImpl(ScenarioModel scenario, CommandInvoker commandInvoker,
+                           ComponentCatalogue componentCatalogue, ModelFactory modelFactory) {
+        if (scenario == null) {
+            throw new IllegalArgumentException("scenario cannot be null");
+        }
         if (commandInvoker == null) {
             throw new IllegalArgumentException("command invoker cannot be null.");
         }
         if (componentCatalogue == null) {
             throw new IllegalArgumentException("component catalogue cannot be null.");
         }
+        if (modelFactory == null) {
+            throw new IllegalArgumentException("modelFactory cannot be null.");
+        }
+
         this.componentCatalogue = componentCatalogue;
         this.commandInvoker = commandInvoker;
+        this.modelFactory = modelFactory;
         swingFactory = new DefaultSwingFactory();
         controllers = new Stack<>();
 
         initializePanels();
 
-        FormController scenarioController = new FormControllerImpl(scenario);
+        FormController scenarioController = new FormControllerImpl(scenario, modelFactory);
         addPage(scenarioController);
 
     }
@@ -186,6 +196,21 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
+    public void addPages(FormController... pageControllers) {
+        if (controllers != null) {
+            cleanContentPanel();
+            for (FormController c : pageControllers) {
+                controllers.push(c);
+                c.setFormManager(this);
+                c.setFormBuilder(formBuilder);
+            }
+            FormController last = pageControllers[pageControllers.length - 1];
+            last.drawForm();
+            updateAll();
+        }
+    }
+
+    @Override
     public boolean removePage() {
         boolean removed = false;
         if (controllers.size() > 1) { //we will never remove scenario from the stack on purpose.
@@ -221,6 +246,16 @@ public class FormManagerImpl implements FormManager {
     }
 
     @Override
+    public void redrawPage() {
+        FormController currentController = controllers.peek();
+        if (currentController != null) {
+            cleanContentPanel();
+            currentController.drawForm();
+            updateContentPanel();
+        }
+    }
+
+    @Override
     public FormController getCurrentPageController() {
         if (controllers.isEmpty()) {
             return null;
@@ -231,7 +266,7 @@ public class FormManagerImpl implements FormManager {
 
     @Override
     public CommandInvoker getCommandInvoker() {
-        return getCommandInvoker();
+        return commandInvoker;
     }
 
     @Override
@@ -239,13 +274,23 @@ public class FormManagerImpl implements FormManager {
         return componentCatalogue;
     }
 
+    @Override
+    public ModelFactory getModelFactory() {
+        return modelFactory;
+    }
+
     protected void updateAll() {
         updateBackButton();
         FormController current = controllers.peek();
         if (current != null) {
-            contentPanel.updateUI();
+            updateContentPanel();
         }
         updateHeader();
+    }
+
+    protected void updateContentPanel() {
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     protected void updateBackButton() {

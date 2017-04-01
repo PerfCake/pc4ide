@@ -69,7 +69,7 @@ public final class FontUtils {
         if (font == null) {
             font = Font.decode(Font.SANS_SERIF);
         }
-        font = font.deriveFont(13f);
+        font = font.deriveFont(12f);
 
         return font;
 

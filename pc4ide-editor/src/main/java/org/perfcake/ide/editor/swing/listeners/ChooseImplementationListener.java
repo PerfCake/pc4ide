@@ -18,45 +18,37 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.form.elements;
+package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JTextField;
-import org.perfcake.ide.editor.form.FormEvent;
-import org.perfcake.ide.editor.form.event.FormEventImpl;
+import org.perfcake.ide.editor.form.FormController;
+import org.perfcake.ide.editor.form.impl.ComponentSelctorFormController;
 
 /**
- * Simple propertyInfo element represents a simple Text field property.
+ * Choose implementation listener displays an implementation chooser form.
  *
  * @author Jakub Knetl
  */
-public class SimpleValueElement extends AbstractElement implements ActionListener {
+public class ChooseImplementationListener implements ActionListener {
 
-    private JTextField field;
+    // controller of component whose implementation should be chosen
+    private FormController controller;
 
     /**
-     * Creates simple propertyInfo element.
-     * @param field text field.
+     * Creates new ChooseImplementationListener.
+     *
+     * @param controller controller of the component
      */
-    public SimpleValueElement(JTextField field) {
-        super();
-        this.field = field;
-        field.addActionListener(this);
-    }
-
-    @Override
-    public String getValue() {
-        return field.getText();
-    }
-
-    @Override
-    public void setValue(String value) {
-        field.setText(value);
+    public ChooseImplementationListener(FormController controller) {
+        if (controller == null) {
+            throw new IllegalArgumentException("controller cannot be null");
+        }
+        this.controller = controller;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        fireEvent(new FormEventImpl(FormEvent.Type.MODIFY, this, e));
+        controller.getFormManager().addPage(new ComponentSelctorFormController(controller.getModel(), controller.getModelFactory()));
     }
 }

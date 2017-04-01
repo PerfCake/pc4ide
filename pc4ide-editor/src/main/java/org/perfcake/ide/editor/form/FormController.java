@@ -20,8 +20,8 @@
 
 package org.perfcake.ide.editor.form;
 
-import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.core.model.factory.ModelFactory;
 
 /**
  * Controls the form.
@@ -61,4 +61,9 @@ public interface FormController {
      * @return Form builder of this controller.
      */
     FormBuilder getFormBuilder();
+
+    /**
+     * @return Model factory.
+     */
+    ModelFactory getModelFactory();
 }
