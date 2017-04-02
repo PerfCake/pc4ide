@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Component loader tries to load component by its fully qualified domain name (FQDN). If only name of the component is used, then
+ * Component serialization tries to load component by its fully qualified domain name (FQDN). If only name of the component is used, then
  * it tries to load component from the default package.
  *
  * @author Jakub Knetl

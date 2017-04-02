@@ -27,15 +27,14 @@ import static org.junit.Assert.assertThat;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
-import org.perfcake.ide.core.model.loader.ModelLoader;
+import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.model.Scenario;
 
 /**
- * Tests for {@link org.perfcake.ide.core.model.loader.ModelLoader}.
+ * Tests for {@link org.perfcake.ide.core.model.serialization.ModelLoader}.
  * @author Jakub Knetl
  */
 public class ModelLoaderTest {
