@@ -23,6 +23,7 @@ package org.perfcake.ide.core.model.converter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.AbstractModel;
@@ -68,6 +69,7 @@ import org.slf4j.LoggerFactory;
 public class XmlConverter {
 
     static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
+    public static final String POST_PROCESSING_PROPERTY_NAME = "org.perfcake.ide.postprocessing.xml.xpath";
 
     private DocsService docsService;
 
@@ -75,6 +77,28 @@ public class XmlConverter {
 
     public XmlConverter(DocsService docsService) {
         this.docsService = docsService;
+    }
+
+    private class PostProcessingContext extends Message {
+        private int postProcessorCounter = 0;
+        private XPathPostProcessor xPathPostProcessor = new XPathPostProcessor();
+        private XpathNodeRemoverPostProcessor xpathNodeRemoverPostProcessor = new XpathNodeRemoverPostProcessor();
+
+        public int getPostProcessorCounter() {
+            return postProcessorCounter;
+        }
+
+        public void increaseCounter() {
+            postProcessorCounter++;
+        }
+
+        public XPathPostProcessor getXPathPostProcessor() {
+            return xPathPostProcessor;
+        }
+
+        public XpathNodeRemoverPostProcessor getXpathNodeRemoverPostProcessor() {
+            return xpathNodeRemoverPostProcessor;
+        }
     }
 
     /**
@@ -159,14 +183,18 @@ public class XmlConverter {
     }
 
     /**
-     * Converts valid pc4ide scenario model into PerfCake xml model.
+     * Converts valid pc4ide scenario model into PerfCake xml model. It may store required post processors int postProcessor arguments.
+     * These post processor should client execute after serialization of returned scenario in order to ensure proper conversion.
      *
-     * @param scenarioModel Model to be converted.
+     * @param scenarioModel  Model to be converted.
+     * @param postProcessors List to which required post processor will be stored.
      * @return XML representation of PerfCake scenario.
      * @throws ModelConversionException if scenarioModel cannot be converted.
      */
-    public Scenario convertToXmlModel(ScenarioModel scenarioModel) throws ModelConversionException {
+    public Scenario convertToXmlModel(ScenarioModel scenarioModel, List<SerializationPostProcessor> postProcessors)
+            throws ModelConversionException {
 
+        PostProcessingContext postProcessingContext = new PostProcessingContext();
         Scenario scenario = objectFactory.createScenario();
 
         // convert scenario properties
@@ -181,7 +209,7 @@ public class XmlConverter {
         // convert generator
         Model generatorModel = extractSingleProperty(scenarioModel, PropertyNames.GENERATOR.toString()).cast(Model.class);
         if (generatorModel != null) {
-            Scenario.Generator generator = convertGeneratorToXml(generatorModel);
+            Scenario.Generator generator = convertGeneratorToXml(generatorModel, postProcessingContext);
             scenario.setGenerator(generator);
 
             KeyValue runKeyValue = extractSinglePropertyKeyValue(generatorModel, GeneratorModel.PropertyNames.RUN.toString());
@@ -198,7 +226,7 @@ public class XmlConverter {
         // convert sender
         Model senderModel = extractSingleProperty(scenarioModel, PropertyNames.SENDER.toString()).cast(Model.class);
         if (senderModel != null) {
-            Scenario.Sender sender = convertSenderToXml(senderModel);
+            Scenario.Sender sender = convertSenderToXml(senderModel, postProcessingContext);
 
             scenario.setSender(sender);
         }
@@ -208,7 +236,7 @@ public class XmlConverter {
         if (!sequencesModel.isEmpty()) {
             Scenario.Sequences sequences = objectFactory.createScenarioSequences();
             for (Property sequenceModel : sequencesModel) {
-                Sequence sequence = convertSequenceToXml(sequenceModel.cast(Model.class));
+                Sequence sequence = convertSequenceToXml(sequenceModel.cast(Model.class), postProcessingContext);
                 sequences.getSequence().add(sequence);
             }
             scenario.setSequences(sequences);
@@ -217,7 +245,7 @@ public class XmlConverter {
         // convert receiver
         Model receiverModel = extractSingleProperty(scenarioModel, PropertyNames.RECEIVER.toString()).cast(Model.class);
         if (receiverModel != null) {
-            Receiver receiver = convertReceiverToXml(receiverModel);
+            Receiver receiver = convertReceiverToXml(receiverModel, postProcessingContext);
 
             scenario.setReceiver(receiver);
         }
@@ -240,7 +268,7 @@ public class XmlConverter {
                 scenario.setReporting(objectFactory.createScenarioReporting());
             }
             for (Property reporterModel : reportersModel) {
-                Reporter reporter = convertReporterToXml(reporterModel.cast(Model.class));
+                Reporter reporter = convertReporterToXml(reporterModel.cast(Model.class), postProcessingContext);
                 scenario.getReporting().getReporter().add(reporter);
             }
         }
@@ -251,7 +279,7 @@ public class XmlConverter {
             Scenario.Messages messages = objectFactory.createScenarioMessages();
 
             for (Property messageModel : messagesModel) {
-                messages.getMessage().add(convertMessageToXml(messageModel.cast(Model.class)));
+                messages.getMessage().add(convertMessageToXml(messageModel.cast(Model.class), postProcessingContext));
             }
 
             scenario.setMessages(messages);
@@ -262,7 +290,7 @@ public class XmlConverter {
         if (!validatorsModel.isEmpty()) {
             Scenario.Validation validation = objectFactory.createScenarioValidation();
             for (Property validatorModel : validatorsModel) {
-                validation.getValidator().add(convertValidatorToXml(validatorModel.cast(Model.class)));
+                validation.getValidator().add(convertValidatorToXml(validatorModel.cast(Model.class), postProcessingContext));
             }
             scenario.setValidation(validation);
         }
@@ -272,17 +300,31 @@ public class XmlConverter {
             Value enabled = extractSinglePropertyValue(scenarioModel, PropertyNames.VALIDATION_ENABLED.toString());
             if (enabled != null) {
                 scenario.getValidation().setEnabled(Boolean.valueOf(enabled.getValue()));
+
+                if (!enabled.getValue().equalsIgnoreCase("true") && !enabled.getValue().equalsIgnoreCase("false")) {
+                    postProcessingContext.getXPathPostProcessor().getExpressions().put("/scenario/validation/@enabled", enabled.getValue());
+                }
+
             }
             Value fastForward = extractSinglePropertyValue(scenarioModel, PropertyNames.VALIDATION_FAST_FORWARD.toString());
             if (fastForward != null) {
                 scenario.getValidation().setFastForward(Boolean.valueOf(fastForward.getValue()));
+                if (!fastForward.getValue().equalsIgnoreCase("true") && !fastForward.getValue().equalsIgnoreCase("false")) {
+                    postProcessingContext.getXPathPostProcessor().getExpressions()
+                            .put("/scenario/validation/@fastForward", fastForward.getValue());
+                }
             }
+        }
+
+        if (!postProcessingContext.getXPathPostProcessor().getExpressions().isEmpty()) {
+            String postProcessingProps = String.format("//property[@name=\"{}\"]", POST_PROCESSING_PROPERTY_NAME);
+            postProcessingContext.getXpathNodeRemoverPostProcessor().getExpressions().add(postProcessingProps);
         }
 
         return scenario;
     }
 
-    private Validator convertValidatorToXml(Model validatorModel) {
+    private Validator convertValidatorToXml(Model validatorModel, PostProcessingContext postProcessingContext) {
         Validator validator = objectFactory.createScenarioValidationValidator();
 
         Value clazz = extractSinglePropertyValue(validatorModel, ValidatorModel.PropertyNames.IMPLEMENTATION.toString());
@@ -300,7 +342,7 @@ public class XmlConverter {
         return validator;
     }
 
-    private Message convertMessageToXml(Model messageModel) {
+    private Message convertMessageToXml(Model messageModel, PostProcessingContext postProcessingContext) {
 
         Message message = objectFactory.createScenarioMessagesMessage();
 
@@ -350,7 +392,7 @@ public class XmlConverter {
         return message;
     }
 
-    private Reporter convertReporterToXml(Model reporterModel) {
+    private Reporter convertReporterToXml(Model reporterModel, PostProcessingContext postProcessingContext) {
         Reporter reporter = objectFactory.createScenarioReportingReporter();
 
         Value clazz = extractSinglePropertyValue(reporterModel, ReporterModel.PropertyNames.IMPLEMENTATION.toString());
@@ -358,29 +400,43 @@ public class XmlConverter {
             reporter.setClazz(clazz.getValue());
         }
 
-        Value enabled = extractSinglePropertyValue(reporterModel, ReporterModel.PropertyNames.ENABLED.toString());
-        if (enabled != null) {
-            //TODO: what if there is a placeholder???
-            reporter.setEnabled(Boolean.valueOf(enabled.getValue()));
-        }
+        // convert implementation properties
+        reporter.getProperty().addAll(extractImplProperties(reporterModel));
+
 
         // convert destinations
         List<Property> destinationsModel = reporterModel.getProperties(ReporterModel.PropertyNames.DESTINATION.toString());
 
         if (!destinationsModel.isEmpty()) {
             for (Property destinationModel : destinationsModel) {
-                Destination destination = convertDestinationToXml(destinationModel.cast(Model.class));
+                Destination destination = convertDestinationToXml(destinationModel.cast(Model.class), postProcessingContext);
                 reporter.getDestination().add(destination);
             }
         }
 
-        reporter.getProperty().addAll(extractImplProperties(reporterModel));
+        Value enabledValue = extractSinglePropertyValue(reporterModel, ReporterModel.PropertyNames.ENABLED.toString());
+        if (enabledValue != null) {
+
+            Boolean enabled = Boolean.valueOf(enabledValue.getValue());
+            reporter.setEnabled(enabled);
+
+            // if value is not simply true or false, then store postprocessing request into the post processing context
+            if (enabledValue.getValue().equalsIgnoreCase("true") || enabledValue.getValue().equalsIgnoreCase("false")) {
+                PropertyType postProccessingProperty = createPostProcessingProperty(postProcessingContext);
+                reporter.getProperty().add(postProccessingProperty);
+
+                // construct post processing xpath
+                String xPathExp = createEnabledPostProcessingXpath(Reporter.class, postProccessingProperty);
+
+                postProcessingContext.getXPathPostProcessor().getExpressions().put(xPathExp, enabledValue.getValue());
+            }
+        }
 
 
         return reporter;
     }
 
-    private Destination convertDestinationToXml(Model destinationModel) {
+    private Destination convertDestinationToXml(Model destinationModel, PostProcessingContext postProcessingContext) {
         Destination destination = objectFactory.createScenarioReportingReporterDestination();
 
         Value clazz = extractSinglePropertyValue(destinationModel, DestinationModel.PropertyNames.IMPLEMENTATION.toString());
@@ -388,10 +444,21 @@ public class XmlConverter {
             destination.setClazz(clazz.getValue());
         }
 
-        Value enabled = extractSinglePropertyValue(destinationModel, DestinationModel.PropertyNames.ENABLED.toString());
-        if (enabled != null) {
-            // TODO: what if there is placeholder???
-            destination.setEnabled(Boolean.valueOf(enabled.getValue()));
+        Value enabledValue = extractSinglePropertyValue(destinationModel, DestinationModel.PropertyNames.ENABLED.toString());
+        if (enabledValue != null) {
+            Boolean enabled = Boolean.valueOf(enabledValue.getValue());
+            destination.setEnabled(Boolean.valueOf(enabledValue.getValue()));
+
+            // if value is not simply true or false, then store postprocessing request into the post processing context
+            if (enabledValue.getValue().equalsIgnoreCase("true") || enabledValue.getValue().equalsIgnoreCase("false")) {
+                PropertyType postProccessingProperty = createPostProcessingProperty(postProcessingContext);
+                destination.getProperty().add(postProccessingProperty);
+
+                // construct post processing xpath
+                String xPathExp = createEnabledPostProcessingXpath(Destination.class, postProccessingProperty);
+
+                postProcessingContext.getXPathPostProcessor().getExpressions().put(xPathExp, enabledValue.getValue());
+            }
         }
 
         // parse periods
@@ -408,7 +475,7 @@ public class XmlConverter {
         return destination;
     }
 
-    private Receiver convertReceiverToXml(Model receiverModel) {
+    private Receiver convertReceiverToXml(Model receiverModel, PostProcessingContext postProcessingContext) {
         Receiver receiver = objectFactory.createScenarioReceiver();
 
         Value clazz = extractSinglePropertyValue(receiverModel, ReceiverModel.PropertyNames.IMPLEMENTATION.toString());
@@ -450,7 +517,7 @@ public class XmlConverter {
         return correlator;
     }
 
-    private Sequence convertSequenceToXml(Model sequenceModel) {
+    private Sequence convertSequenceToXml(Model sequenceModel, PostProcessingContext postProcessingContext) {
         Sequence sequence = objectFactory.createScenarioSequencesSequence();
         Value clazz = extractSinglePropertyValue(sequenceModel, SequenceModel.PropertyNames.IMPLEMENTATION.toString());
         if (clazz != null) {
@@ -467,7 +534,7 @@ public class XmlConverter {
         return sequence;
     }
 
-    private Scenario.Sender convertSenderToXml(Model senderModel) {
+    private Scenario.Sender convertSenderToXml(Model senderModel, PostProcessingContext postProcessingContext) {
         Scenario.Sender sender = objectFactory.createScenarioSender();
 
         Value target = extractSinglePropertyValue(senderModel, SenderModel.PropertyNames.TARGET.toString());
@@ -485,7 +552,7 @@ public class XmlConverter {
         return sender;
     }
 
-    private Scenario.Generator convertGeneratorToXml(Model generatorModel) {
+    private Scenario.Generator convertGeneratorToXml(Model generatorModel, PostProcessingContext postProcessingContext) {
         Scenario.Generator generator = objectFactory.createScenarioGenerator();
 
         Value clazz = extractSinglePropertyValue(generatorModel, GeneratorModel.PropertyNames.IMPLEMENTATION.toString());
@@ -877,4 +944,57 @@ public class XmlConverter {
 
         return properties;
     }
+
+    /**
+     * Creates xpath from the class name.
+     *
+     * @param clazz PerfCake XML model class (Except property and header)
+     * @return xpath from root of xml document to the given class.
+     */
+    private String constructXpath(Class<?> clazz) {
+        if (clazz == null) {
+            throw new IllegalArgumentException("clazz cannot be null");
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(clazz.getCanonicalName(), ".");
+        StringBuilder builder = new StringBuilder();
+        while (tokenizer.hasMoreTokens()) {
+            builder.append("/")
+                    .append(tokenizer.nextToken().toLowerCase());
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * Creates post processing xpath expression for enabled attribute of perfcake xml representation of a component.
+     *
+     * @param clazz    clazz of the PerfCake XML model which accept properties
+     * @param property postprocessing property
+     * @return xpath describing the node with given class
+     */
+    private String createEnabledPostProcessingXpath(Class<?> clazz, PropertyType property) {
+        StringBuilder xPathExp = new StringBuilder();
+        xPathExp.append(constructXpath(clazz))
+                .append(String.format("/property[@name=\"{}\" and @value=\"{}\"]", property.getName(), property.getValue()))
+                .append("/../@enabled");
+
+        return xPathExp.toString();
+    }
+
+    /**
+     * Creates property with post-processing identifier. It also automatically increases context counter
+     *
+     * @param context post processing  context
+     * @return Property which uniquely specifies point of post processing
+     */
+    private PropertyType createPostProcessingProperty(PostProcessingContext context) {
+        PropertyType postProccessingProperty = objectFactory.createPropertyType();
+        postProccessingProperty.setName(POST_PROCESSING_PROPERTY_NAME);
+        postProccessingProperty.setValue(String.valueOf(context.getPostProcessorCounter()));
+        context.increaseCounter();
+
+        return postProccessingProperty;
+    }
+
 }
