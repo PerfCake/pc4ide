@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.Collections;
+import java.util.List;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ReceiverModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -90,5 +92,10 @@ public class ReceiverController extends AbstractController {
         }
 
         return child;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Collections.emptyList();
     }
 }

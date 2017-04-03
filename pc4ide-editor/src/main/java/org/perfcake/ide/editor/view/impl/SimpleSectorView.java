@@ -73,6 +73,8 @@ public abstract class SimpleSectorView extends SectorView {
     protected ResizableIcon icon;
     protected String header;
 
+    private long[] executionInfo;
+
     /**
      * creates new sector view.
      *
@@ -108,6 +110,8 @@ public abstract class SimpleSectorView extends SectorView {
 
         // draw managementIcons
         drawManagementIcons(g2d);
+
+        drawExecutionInfo(g2d);
     }
 
     /**
@@ -207,6 +211,23 @@ public abstract class SimpleSectorView extends SectorView {
         }
     }
 
+    protected void drawExecutionInfo(Graphics2D g2d) {
+        Rectangle2D executionInfoBounds = computeExecutionInfoBounds(g2d, layoutData);
+
+        // don't draw execution info if there is no text
+        if (executionInfoBounds == null) {
+            return;
+        }
+
+        Font defaultFont = g2d.getFont();
+        Font font = getAdditionalTextFont(g2d);
+        g2d.setFont(font);
+
+        g2d.drawString(String.valueOf(executionInfo[0]), (float) executionInfoBounds.getX(), (float) executionInfoBounds.getY());
+
+        g2d.setFont(defaultFont);
+    }
+
     protected boolean isReversed(double theta) {
         return theta > 90 && theta < 270;
     }
@@ -270,6 +291,26 @@ public abstract class SimpleSectorView extends SectorView {
         return textRectangle;
     }
 
+    protected Rectangle2D computeExecutionInfoBounds(Graphics2D g2d, LayoutData layoutData) {
+        Dimension2D executionInfoDimension = computeExecutionInfoDimension(g2d);
+        if (executionInfoDimension == null) {
+            return null;
+        }
+
+
+        double diagonal = Utils2D.getRectangleDiagonal(executionInfoDimension);
+        double execInfoX = layoutData.getCenter().getX()
+                + (layoutData.getRadiusData().getInnerRadius() - PADDING - diagonal / 2);
+        double execInfoY = layoutData.getCenter().getY();
+
+        double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
+        Point2D location = Utils2D.rotatePoint(new Point2D.Double(execInfoX, execInfoY), theta, layoutData.getCenter());
+
+        Rectangle2D execInfoBounds = Utils2D.getUpperLeftCorner(location, execInfoX, execInfoY);
+
+        return execInfoBounds;
+    }
+
     /**
      * Computes dimension of a text.
      *
@@ -305,6 +346,17 @@ public abstract class SimpleSectorView extends SectorView {
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new DimensionDouble(totalWidth, totalHeight);
+    }
+
+    protected Dimension2D computeExecutionInfoDimension(Graphics2D g2d) {
+        if (executionInfo == null || executionInfo.length <= 0) {
+            return null;
+        }
+        final Font font = g2d.getFont();
+        Rectangle2D execInfoDimension = font.getStringBounds(String.valueOf(executionInfo[0]), g2d.getFontRenderContext());
+
+        DimensionDouble dimensionDouble = new DimensionDouble(execInfoDimension.getWidth(), execInfoDimension.getHeight());
+        return dimensionDouble;
     }
 
     /**
@@ -437,4 +489,12 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected abstract Color getIconColor();
 
+    public long[] getExecutionInfo() {
+        return executionInfo;
+    }
+
+    public SimpleSectorView setExecutionInfo(long[] executionInfo) {
+        this.executionInfo = executionInfo;
+        return this;
+    }
 }

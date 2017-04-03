@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.CorrelatorModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -60,5 +62,10 @@ public class CorrelatorController extends AbstractController {
             modified = true;
         }
         return modified;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Arrays.asList("CorrelatedMessages");
     }
 }

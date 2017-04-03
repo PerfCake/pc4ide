@@ -20,9 +20,11 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.components.DestinationModel;
@@ -81,5 +83,12 @@ public class DestinationController extends AbstractController {
         }
 
         return modified;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Arrays.asList("Reporting",
+                getModel().getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class).getValue(),
+                getModel().getModel().getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class).getValue());
     }
 }
