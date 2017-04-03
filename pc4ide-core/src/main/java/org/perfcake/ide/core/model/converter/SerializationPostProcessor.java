@@ -18,22 +18,23 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.components;
+package org.perfcake.ide.core.model.converter;
+
+import java.nio.file.Path;
+import org.perfcake.ide.core.exception.PostProcessingException;
 
 /**
- * Component serialization enables to get component clazz from classpath.
+ * Serialization post processor performs additional processing of a serialized model.
  *
  * @author Jakub Knetl
  */
-public interface ComponentLoader {
+public interface SerializationPostProcessor {
 
     /**
-     * Loads a PerfCake component class by its name. If name is not FQDN, then default packages for given component type are used
-     * as defined in {@link org.perfcake.scenario.ScenarioFactory}.
+     * Performs post processing on given file.
      *
-     * @param name      Name of the component.
-     * @param component type of the PerfCake component.
-     * @return Class of the component implementation or null if no such component can be found.
+     * @param file file which should be processed
+     * @throws PostProcessingException when it is not possible to post process file.
      */
-    Class<?> loadComponent(String name, PerfCakeComponent component);
+    void postProcess(Path file) throws PostProcessingException;
 }

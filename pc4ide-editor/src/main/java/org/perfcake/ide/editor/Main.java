@@ -31,7 +31,7 @@ import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.loader.ModelLoader;
+import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

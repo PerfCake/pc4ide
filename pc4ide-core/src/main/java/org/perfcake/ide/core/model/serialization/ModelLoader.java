@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.loader;
+package org.perfcake.ide.core.model.serialization;
 
 import java.io.IOException;
 import java.io.InputStream;

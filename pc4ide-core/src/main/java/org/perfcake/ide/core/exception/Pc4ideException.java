@@ -18,22 +18,31 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.components;
+package org.perfcake.ide.core.exception;
 
 /**
- * Component serialization enables to get component clazz from classpath.
+ * General exception in pc4ide.
  *
  * @author Jakub Knetl
  */
-public interface ComponentLoader {
+public class Pc4ideException extends Exception {
 
-    /**
-     * Loads a PerfCake component class by its name. If name is not FQDN, then default packages for given component type are used
-     * as defined in {@link org.perfcake.scenario.ScenarioFactory}.
-     *
-     * @param name      Name of the component.
-     * @param component type of the PerfCake component.
-     * @return Class of the component implementation or null if no such component can be found.
-     */
-    Class<?> loadComponent(String name, PerfCakeComponent component);
+    public Pc4ideException() {
+    }
+
+    public Pc4ideException(String message) {
+        super(message);
+    }
+
+    public Pc4ideException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public Pc4ideException(Throwable cause) {
+        super(cause);
+    }
+
+    public Pc4ideException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

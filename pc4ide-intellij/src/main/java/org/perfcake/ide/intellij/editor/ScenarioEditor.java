@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.loader.ModelLoader;
+import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 
 
@@ -115,7 +115,7 @@ public class ScenarioEditor implements FileEditor {
         final ModelLoader loader = new ModelLoader();
         final File scenarioFile = new File("src/main/resources/scenario/http.xml");
         try {
-            // model = loader.loadModel(scenarioFile.toURI().toURL());
+            // model = serialization.loadModel(scenarioFile.toURI().toURL());
             model = loader.loadModel(new URL(file.getUrl()));
         } catch (PerfCakeException e) {
             e.printStackTrace();
