@@ -327,6 +327,9 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
 
         ComponentLoader loader = new ComponentLoaderImpl();
         Class<?> newImplementation = loader.loadComponent(clazz, component);
+        if (newImplementation == null) {
+            throw new ImplementationNotFoundException("Cannot find implementation of " + clazz);
+        }
         PropertyInspector inspector = new PropertyUtilsInspector();
         List<ImplementationField> fields = inspector.getProperties(newImplementation);
 

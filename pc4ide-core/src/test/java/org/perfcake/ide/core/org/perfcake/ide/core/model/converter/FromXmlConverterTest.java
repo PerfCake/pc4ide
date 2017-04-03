@@ -60,11 +60,11 @@ import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario;
 
 /**
- * Tests for {@link org.perfcake.ide.core.model.converter.XmlConverter}.
+ * Tests for converting xml model to pc4ide model using {@link org.perfcake.ide.core.model.converter.XmlConverter}.
  *
  * @author Jakub Knetl
  */
-public class XmlConverterTest {
+public class FromXmlConverterTest {
     private DocsService docsService;
     private XmlConverter converter;
     private static ObjectFactory objectFactory;

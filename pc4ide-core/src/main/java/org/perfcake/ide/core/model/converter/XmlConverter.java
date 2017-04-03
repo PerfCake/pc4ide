@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 public class XmlConverter {
 
     static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
+
     public static final String POST_PROCESSING_PROPERTY_NAME = "org.perfcake.ide.postprocessing.xml.xpath";
 
     private DocsService docsService;
@@ -203,6 +204,10 @@ public class XmlConverter {
         if (!scenarioProperties.isEmpty()) {
             Scenario.Properties properties = objectFactory.createScenarioProperties();
             properties.getProperty().addAll(scenarioProperties);
+            if (scenario.getProperties() == null) {
+                scenario.setProperties(objectFactory.createScenarioProperties());
+            }
+            scenario.getProperties().getProperty().addAll(scenarioProperties);
         }
 
 
@@ -923,6 +928,7 @@ public class XmlConverter {
 
             property.setName(p.cast(KeyValue.class).getKey());
             property.setValue(p.cast(KeyValue.class).getValue());
+            scenarioProperties.add(property);
 
             //TODO(jknetl): handle "any" element
         }
