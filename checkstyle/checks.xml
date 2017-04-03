@@ -233,7 +233,7 @@
         </module>
         <module name="JavadocMethod">
             <property name="scope" value="public"/>
-            <property name="minLineCount" value="1"/>
+            <property name="minLineCount" value="3"/>
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="allowThrowsTagsForSubclasses" value="true"/>
         </module>

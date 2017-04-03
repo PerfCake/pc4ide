@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io/api/eclipse,intellij,netbeans,maven,java
 
+## Testing main classes
+pc4ide-core/src/main/java/org/perfcake/ide/core/exec/Main.java
 
 ### icons
 pc4ide-icons/swing-icons
