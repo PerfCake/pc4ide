@@ -21,12 +21,17 @@
 package org.perfcake.ide.core.exec;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +42,12 @@ import org.slf4j.LoggerFactory;
  */
 public class PerfCakeExecutor {
 
+    public static final String CLASSPATH_SEPARATOR = System.getProperty("path.separator");
+
     static final Logger logger = LoggerFactory.getLogger(PerfCakeExecutor.class);
 
-    private Path javaCmd;
-    private Path perfCakeJar;
+    private Path javaHome;
+    private Path perfCakeHome;
 
     private Map<String, String> systemProperties;
     private boolean debugMode;
@@ -52,7 +59,6 @@ public class PerfCakeExecutor {
     private Path replayFile;
     private String scenario;
     private Path scenarioDir;
-    private List<Path> additionalClassPath;
     private boolean skipTimerBenchmark;
     private boolean inheritIo;
 
@@ -60,19 +66,18 @@ public class PerfCakeExecutor {
     /**
      * Creates new perfcake executor.
      *
-     * @param perfCakeJar jar contianing perfcake with all dependencies
-     * @param scenario    name of the scenario to be executed
-     * @param scenarioDir directory which contains a scenario
+     * @param perfCakeHome jar contianing perfcake with all dependencies
+     * @param scenario     name of the scenario to be executed
+     * @param scenarioDir  directory which contains a scenario
      */
-    public PerfCakeExecutor(Path perfCakeJar, String scenario, Path scenarioDir) {
-        this.perfCakeJar = perfCakeJar;
+    public PerfCakeExecutor(Path perfCakeHome, String scenario, Path scenarioDir) {
+        this.perfCakeHome = perfCakeHome;
         this.scenario = scenario;
         this.scenarioDir = scenarioDir;
 
         this.systemProperties = new HashMap<>();
-        this.additionalClassPath = new ArrayList<>();
 
-        this.javaCmd = Paths.get(System.getProperty("java.home"), "bin", "java");
+        this.javaHome = Paths.get(System.getProperty("java.home"), "bin", "java");
     }
 
     /**
@@ -84,9 +89,10 @@ public class PerfCakeExecutor {
     public Process execute() throws IOException {
 
         List<String> command = new ArrayList<>();
-        command.add(javaCmd.toString());
-        command.add("-cp");
-        command.add(constructClassPath());
+        command.add(javaHome.resolve("bin").resolve("java").toString());
+        command.add(constructExtDirsParam());
+        command.add("-jar");
+        command.add(findPerfCakeJar().toString());
         command.add("org.perfcake.ScenarioExecution");
         command.add("-s");
         command.add(scenario);
@@ -143,31 +149,63 @@ public class PerfCakeExecutor {
         return pb.start();
     }
 
-    protected String constructClassPath() {
-        StringBuilder classPath = new StringBuilder();
-        classPath.append(perfCakeJar.toString());
-        for (Path additionalJar : additionalClassPath) {
-            classPath.append(":").append(additionalJar);
+    private Path findPerfCakeJar() {
+        Path libDir = perfCakeHome.resolve("lib");
+        Path perfCakeJar = null;
+        DirectoryStream.Filter<Path> regexFilter = new DirectoryStream.Filter<Path>() {
+            @Override
+            public boolean accept(Path entry) throws IOException {
+                Path filename = entry.getFileName();
+                String regex = "perfcake-\\d\\d*\\.\\d\\d*\\.jar";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(filename.toString());
+
+                return matcher.matches();
+            }
+        };
+
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(libDir, regexFilter)) {
+            Iterator<Path> it = directoryStream.iterator();
+            if (it.hasNext()) {
+                perfCakeJar = it.next();
+            }
+
+        } catch (IOException e) {
+            logger.warn("Cannot find perfcake jar.", e);
         }
 
-        return classPath.toString();
-    }
-
-    public Path getJavaCmd() {
-        return javaCmd;
-    }
-
-    public PerfCakeExecutor setJavaCmd(Path javaCmd) {
-        this.javaCmd = javaCmd;
-        return this;
-    }
-
-    public Path getPerfCakeJar() {
         return perfCakeJar;
     }
 
-    public PerfCakeExecutor setPerfCakeJar(Path perfCakeJar) {
-        this.perfCakeJar = perfCakeJar;
+    protected String constructExtDirsParam() {
+
+        StringBuilder extDirs = new StringBuilder();
+        extDirs.append("-Djava.ext.dirs=")
+                .append(javaHome.resolve("lib").resolve("ext")) //JAVA_HOME/lib/ext
+                .append(CLASSPATH_SEPARATOR)
+                .append(javaHome.resolve("jre").resolve("lib").resolve("ext")) //JAVA_HOME/jre/lib/ext
+                .append(perfCakeHome.resolve("lib").resolve("ext")) // PERFCAKE_HOME/lib/ext
+                .append(CLASSPATH_SEPARATOR)
+                .append(javaHome.resolve("lib")); //JAVA_HOME/lib
+
+        return extDirs.toString();
+    }
+
+    public Path getJavaHome() {
+        return javaHome;
+    }
+
+    public PerfCakeExecutor setJavaHome(Path javaHome) {
+        this.javaHome = javaHome;
+        return this;
+    }
+
+    public Path getPerfCakeHome() {
+        return perfCakeHome;
+    }
+
+    public PerfCakeExecutor setPerfCakeHome(Path perfCakeHome) {
+        this.perfCakeHome = perfCakeHome;
         return this;
     }
 
@@ -272,9 +310,5 @@ public class PerfCakeExecutor {
     public PerfCakeExecutor setInheritIo(boolean inheritIo) {
         this.inheritIo = inheritIo;
         return this;
-    }
-
-    public List<Path> getAdditionalClassPath() {
-        return additionalClassPath;
     }
 }
