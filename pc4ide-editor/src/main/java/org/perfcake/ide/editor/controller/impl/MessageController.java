@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,5 +90,10 @@ public class MessageController extends AbstractController {
         }
 
         return modified;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Collections.emptyList();
     }
 }

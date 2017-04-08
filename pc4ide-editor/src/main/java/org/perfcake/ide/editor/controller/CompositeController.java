@@ -29,7 +29,7 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  *
  * @author Jakub Knetl
  */
-public class CompositeController extends AbstractController {
+public abstract class CompositeController extends AbstractController {
 
     /**
      * Creates abstract controller which will manage a model.

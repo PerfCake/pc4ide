@@ -26,11 +26,13 @@ package org.perfcake.ide.editor.controller;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.exec.ExecutionEvent;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
@@ -46,6 +48,7 @@ import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.View;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
+import org.perfcake.ide.editor.view.impl.SimpleSectorView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -327,5 +330,21 @@ public abstract class AbstractController implements Controller, ModelListener {
     @Override
     public CommandInvoker getCommandInvoker() {
         return getRoot().getCommandInvoker();
+    }
+
+    @Override
+    public void handleEvent(ExecutionEvent event) {
+        if (event.getType() == ExecutionEvent.Type.JMX_DEBUG_MONITOR && event.getValue() != null) {
+            if (view instanceof SimpleSectorView) {
+
+                SimpleSectorView sectorView = (SimpleSectorView) this.view;
+                long[] previousExecInfo = sectorView.getExecutionInfo();
+                long[] newExecInfo = {Long.valueOf(event.getValue().toString())};
+                if (!Arrays.equals(previousExecInfo, newExecInfo)) {
+                    sectorView.setExecutionInfo(newExecInfo);
+                    sectorView.invalidate();
+                }
+            }
+        }
     }
 }

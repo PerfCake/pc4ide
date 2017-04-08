@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.controller;
 import java.awt.event.MouseListener;
 import java.util.Iterator;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.exec.ExecutionListener;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.actions.ActionType;
@@ -36,7 +37,7 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  *
  * @author jknetl
  */
-public interface Controller extends MouseListener {
+public interface Controller extends MouseListener, ExecutionListener {
 
     /**
      * @return Return model object which is managed by this controller.

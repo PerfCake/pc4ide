@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.exec;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,11 +46,14 @@ public class PerfCakeExecutor {
     public static final String CLASSPATH_SEPARATOR = System.getProperty("path.separator");
 
     static final Logger logger = LoggerFactory.getLogger(PerfCakeExecutor.class);
+    public static final int PORT_MAX = 65535;
+    public static final String DEFAULT_DEBUG_NAME = "perfcake-1";
 
     private Path javaHome;
     private Path perfCakeHome;
 
     private Map<String, String> systemProperties;
+    private List<String> javaOpts;
     private boolean debugMode;
     private String debugName;
     private String logLevel;
@@ -61,6 +65,7 @@ public class PerfCakeExecutor {
     private Path scenarioDir;
     private boolean skipTimerBenchmark;
     private boolean inheritIo;
+    private int jmxPort;
 
 
     /**
@@ -76,6 +81,7 @@ public class PerfCakeExecutor {
         this.scenarioDir = scenarioDir;
 
         this.systemProperties = new HashMap<>();
+        this.javaOpts = new ArrayList<>();
 
         this.javaHome = Paths.get(System.getProperty("java.home"), "bin", "java");
     }
@@ -88,9 +94,16 @@ public class PerfCakeExecutor {
      */
     public Process execute() throws IOException {
 
+        initializeJavaOpts();
+
         List<String> command = new ArrayList<>();
         command.add(javaHome.resolve("bin").resolve("java").toString());
         command.add(constructExtDirsParam());
+
+        // add java opts
+        for (String opt : javaOpts) {
+            command.add(opt);
+        }
         command.add("-jar");
         command.add(findPerfCakeJar().toString());
         command.add("org.perfcake.ScenarioExecution");
@@ -99,10 +112,6 @@ public class PerfCakeExecutor {
         command.add("-sd");
         command.add(scenarioDir.toString());
 
-        for (Map.Entry<String, String> entry : systemProperties.entrySet()) {
-            command.add("-D");
-            command.add(String.format("%s=%s", entry.getKey(), entry.getValue()));
-        }
 
         if (debugMode) {
             command.add("-d");
@@ -111,6 +120,8 @@ public class PerfCakeExecutor {
         if (debugName != null) {
             command.add("-dn");
             command.add(debugName);
+        } else {
+            debugName = DEFAULT_DEBUG_NAME;
         }
 
         if (logLevel != null) {
@@ -137,6 +148,9 @@ public class PerfCakeExecutor {
             command.add(messageDir.toString());
         }
 
+        for (Map.Entry<String, String> entry : systemProperties.entrySet()) {
+            command.add(String.format("-D%s=%s", entry.getKey(), entry.getValue()));
+        }
 
         logger.debug("Executing scenario using command: \"{}\"", String.join(" ", command));
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -147,6 +161,35 @@ public class PerfCakeExecutor {
         }
 
         return pb.start();
+    }
+
+    protected void initializeJavaOpts() {
+        if (debugMode) {
+            jmxPort = findOpenPort();
+            javaOpts.add("-Dcom.sun.management.jmxremote.port=" + jmxPort);
+            javaOpts.add("-Dcom.sun.management.jmxremote.authenticate=false");
+            javaOpts.add("-Dcom.sun.management.jmxremote.ssl=false");
+        }
+    }
+
+    private int findOpenPort() {
+        boolean available = false;
+        int port = 9999;
+        while (!available && port < PORT_MAX) {
+            try (ServerSocket socket = new ServerSocket(port)) {
+                available = true;
+                logger.debug("JMX port: {}", port);
+            } catch (IOException e) {
+                logger.trace("Port {} is in use. trying another one...", port);
+                port++;
+            }
+        }
+
+        if (!available) {
+            logger.warn("Couldn't find available port for JMX agent.");
+        }
+
+        return port;
     }
 
     private Path findPerfCakeJar() {
@@ -184,6 +227,7 @@ public class PerfCakeExecutor {
                 .append(javaHome.resolve("lib").resolve("ext")) //JAVA_HOME/lib/ext
                 .append(CLASSPATH_SEPARATOR)
                 .append(javaHome.resolve("jre").resolve("lib").resolve("ext")) //JAVA_HOME/jre/lib/ext
+                .append(CLASSPATH_SEPARATOR)
                 .append(perfCakeHome.resolve("lib").resolve("ext")) // PERFCAKE_HOME/lib/ext
                 .append(CLASSPATH_SEPARATOR)
                 .append(javaHome.resolve("lib")); //JAVA_HOME/lib
@@ -310,5 +354,9 @@ public class PerfCakeExecutor {
     public PerfCakeExecutor setInheritIo(boolean inheritIo) {
         this.inheritIo = inheritIo;
         return this;
+    }
+
+    public int getJmxPort() {
+        return jmxPort;
     }
 }

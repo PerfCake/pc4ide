@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ValidatorModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -66,5 +68,12 @@ public class ValidatorController extends AbstractController {
         }
 
         return modified;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Arrays.asList("Validation",
+                getModel().getSingleProperty(ValidatorModel.PropertyNames.ID.toString(), Value.class).getValue(),
+                "*"); // second category is either passed or failed
     }
 }

@@ -22,6 +22,8 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JComponent;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.model.Model;
@@ -41,7 +43,6 @@ import org.perfcake.ide.editor.view.impl.MessageView;
 import org.perfcake.ide.editor.view.impl.ScenarioView;
 import org.perfcake.ide.editor.view.impl.SequenceView;
 
-
 /**
  * Controller of the whole scenario. It is effectively controller of whole editor.
  */
@@ -56,12 +57,13 @@ public class ScenarioController extends AbstractController implements RootContro
 
     /**
      * Creates new editor controller.
-     *  @param jComponent   Swing inspector used as a container for editor visuals
-     * @param model        model of scenario managed by controller
-     * @param modelFactory model factory.
-     * @param viewFactory  Factory for creating views
+     *
+     * @param jComponent     Swing inspector used as a container for editor visuals
+     * @param model          model of scenario managed by controller
+     * @param modelFactory   model factory.
+     * @param viewFactory    Factory for creating views
      * @param commandInvoker command invoker for executing commands
-     * @param formManager  manager of forms to modify inspector properties
+     * @param formManager    manager of forms to modify inspector properties
      */
     public ScenarioController(JComponent jComponent, ScenarioModel model, ModelFactory modelFactory,
                               ViewFactory viewFactory, CommandInvoker commandInvoker, FormManager formManager) {
@@ -176,5 +178,10 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     public CommandInvoker getCommandInvoker() {
         return commandInvoker;
+    }
+
+    @Override
+    public List<String> getObjectNameHints() {
+        return Collections.emptyList();
     }
 }
