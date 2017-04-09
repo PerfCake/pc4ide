@@ -18,12 +18,18 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.intellij;
+
+import com.intellij.openapi.util.IconLoader;
+import javax.swing.Icon;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * PerfCakeIcons is a non instantiable class which contains PerfCake icons.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class PerfCakeIcons {
+
+    public static Icon SMALL_PERFCAKE_ICON = IconLoader.getIcon("/img/perfcake-logo-small.png");
+
 }

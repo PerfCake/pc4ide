@@ -18,12 +18,21 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.core;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Contains pc4ide constants.
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class Pc4ideConstants {
+
+    /**
+     * Location of PerfCake javadoc properties inside of pc4ide-core jar.
+     */
+    public static final String PERFCAKE_COMMENT_PROPERTIES = "/perfcake-comment.properties";
+
+    /**
+     * Fully qualified domain name id.
+     */
+    public static final String FQDN_ID = "org.perfcake.ide";
 }

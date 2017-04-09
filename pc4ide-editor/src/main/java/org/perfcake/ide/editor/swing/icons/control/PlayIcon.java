@@ -61,7 +61,7 @@ public class PlayIcon extends AbstractControlIcon {
      * @param color  color
      */
     public PlayIcon(int width, int height, Color color) {
-        super(width, height, color, ActionType.START);
+        super(width, height, color, ActionType.RUN);
     }
 
     @Override

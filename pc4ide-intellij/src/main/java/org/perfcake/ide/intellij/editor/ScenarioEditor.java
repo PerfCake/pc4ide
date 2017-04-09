@@ -22,6 +22,9 @@ package org.perfcake.ide.intellij.editor;
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -37,20 +40,19 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.LightVirtualFile;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.exception.PerfCakeResourceException;
+import org.perfcake.ide.core.manager.ScenarioManager;
+import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
-
-
-
+import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
+import org.perfcake.ide.intellij.VirtualFileConverter;
 
 
 /**
@@ -58,7 +60,6 @@ import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
  */
 public class ScenarioEditor implements FileEditor {
     private static final Logger LOG = Logger.getInstance(ScenarioEditor.class);
-    public static final String PERFCAKE_NOTIFICATION_ID = "PerfCake Plugin";
 
     private Project project;
     private VirtualFile file;
@@ -68,7 +69,7 @@ public class ScenarioEditor implements FileEditor {
     // private ScenarioManager manager;
     private boolean updateInProcess;
 
-    private final Pc4ideEditor editorGui;
+    private Pc4ideEditor editorGui;
     // private final ScenarioModelWrapper modelWrapper;
     private ScenarioModel model = null;
 
@@ -88,7 +89,7 @@ public class ScenarioEditor implements FileEditor {
                     .register(PERFCAKE_NOTIFICATION_ID, NotificationDisplayType.BALLOON);
             if (!PerfCakeModuleUtil.isPerfCakeModule(module)) {
                 String[] logMsg = Messages.Log.UNSUPPORTED_MODULE;
-                LOG.info(logMsg[0] + file.getName() + logMsg[1]);
+                LOG.info(logMsg[0] + file.getScenarioName() + logMsg[1]);
                 Notifications.Bus.notify(new Notification(PERFCAKE_NOTIFICATION_ID,
                         Messages.Title.UNSUPPORTED_MODULE,
                         Messages.Dialog.UNSUPPORTED_MODULE,
@@ -113,18 +114,16 @@ public class ScenarioEditor implements FileEditor {
         */
 
         final ModelLoader loader = new ModelLoader();
-        final File scenarioFile = new File("src/main/resources/scenario/http.xml");
+
+        ScenarioManager manager = null;
         try {
-            // model = serialization.loadModel(scenarioFile.toURI().toURL());
-            model = loader.loadModel(new URL(file.getUrl()));
-        } catch (PerfCakeException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ModelConversionException e) {
-            e.printStackTrace();
+            manager = ScenarioManagers.createXmlManager(VirtualFileConverter.convertPath(file));
+            editorGui = new Pc4ideEditor(manager, new ReflectionComponentCatalogue());
+        } catch (PerfCakeException | PerfCakeResourceException e) {
+            Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
+                    "Cannot create scenario", NotificationType.ERROR);
+            Notifications.Bus.notify(notification);
         }
-        editorGui = new Pc4ideEditor(model);
     }
 
     @Override

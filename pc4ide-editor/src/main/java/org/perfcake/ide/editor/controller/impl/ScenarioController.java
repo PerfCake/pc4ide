@@ -22,15 +22,22 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JComponent;
+import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.exception.ModelSerializationException;
+import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
 import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.core.model.serialization.ModelLoader;
+import org.perfcake.ide.core.model.serialization.ModelWriter;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.RootController;
@@ -52,22 +59,28 @@ public class ScenarioController extends AbstractController implements RootContro
     private FormManager formManager;
 
     private CommandInvoker commandInvoker;
+    private ScenarioManager scenarioManager;
+    private ModelLoader modelLoader;
+    private ModelWriter modelWriter;
+    private Path scenarioPath;
 
     private LayeredView messagesAndSequencesView;
 
     /**
      * Creates new editor controller.
      *
-     * @param jComponent     Swing inspector used as a container for editor visuals
-     * @param model          model of scenario managed by controller
-     * @param modelFactory   model factory.
-     * @param viewFactory    Factory for creating views
-     * @param commandInvoker command invoker for executing commands
-     * @param formManager    manager of forms to modify inspector properties
+     * @param jComponent      Swing inspector used as a container for editor visuals
+     * @param model           Model of the scenario
+     * @param scenarioManager Manager of the scenario
+     * @param modelFactory    model factory.
+     * @param viewFactory     Factory for creating views
+     * @param commandInvoker  command invoker for executing commands
+     * @param formManager     manager of forms to modify inspector properties
      */
-    public ScenarioController(JComponent jComponent, ScenarioModel model, ModelFactory modelFactory,
+    public ScenarioController(JComponent jComponent, ScenarioModel model, ScenarioManager scenarioManager, ModelFactory modelFactory,
                               ViewFactory viewFactory, CommandInvoker commandInvoker, FormManager formManager) {
         super(model, modelFactory, viewFactory);
+        this.scenarioManager = scenarioManager;
         this.jComponent = jComponent;
         this.formManager = formManager;
         ScenarioView scenarioView = (ScenarioView) view;
@@ -92,6 +105,7 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     protected void initActionHandlers() {
         // no handlers
+
     }
 
     @Override
@@ -110,6 +124,12 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     public FormManager getFormManger() {
         return formManager;
+    }
+
+
+    @Override
+    public ScenarioManager getScenarioManager() {
+        return scenarioManager;
     }
 
     @Override

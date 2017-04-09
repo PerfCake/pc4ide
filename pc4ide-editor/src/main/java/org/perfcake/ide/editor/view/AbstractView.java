@@ -188,7 +188,7 @@ public abstract class AbstractView implements View {
 
             for (ControlIcon controlIcon : managementIcons) {
                 Shape iconBounds = controlIcon.getBounds();
-                if (iconBounds.contains(location) && controlIcon.getAction() != null) {
+                if (iconBounds != null && iconBounds.contains(location) && controlIcon.getAction() != null) {
                     action = controlIcon.getAction();
                 }
             }

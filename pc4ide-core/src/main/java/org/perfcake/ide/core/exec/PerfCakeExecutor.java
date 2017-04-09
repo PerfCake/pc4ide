@@ -22,17 +22,12 @@ package org.perfcake.ide.core.exec;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +100,8 @@ public class PerfCakeExecutor {
             command.add(opt);
         }
         command.add("-jar");
-        command.add(findPerfCakeJar().toString());
+        String perfCakeJar = new SimpleInstallationValidator().findPerfCakeJar(perfCakeHome).toString();
+        command.add(perfCakeJar);
         command.add("org.perfcake.ScenarioExecution");
         command.add("-s");
         command.add(scenario);
@@ -190,34 +186,6 @@ public class PerfCakeExecutor {
         }
 
         return port;
-    }
-
-    private Path findPerfCakeJar() {
-        Path libDir = perfCakeHome.resolve("lib");
-        Path perfCakeJar = null;
-        DirectoryStream.Filter<Path> regexFilter = new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept(Path entry) throws IOException {
-                Path filename = entry.getFileName();
-                String regex = "perfcake-\\d\\d*\\.\\d\\d*\\.jar";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(filename.toString());
-
-                return matcher.matches();
-            }
-        };
-
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(libDir, regexFilter)) {
-            Iterator<Path> it = directoryStream.iterator();
-            if (it.hasNext()) {
-                perfCakeJar = it.next();
-            }
-
-        } catch (IOException e) {
-            logger.warn("Cannot find perfcake jar.", e);
-        }
-
-        return perfCakeJar;
     }
 
     protected String constructExtDirsParam() {

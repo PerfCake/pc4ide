@@ -18,12 +18,23 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.intellij.filetype;
+
+import com.intellij.openapi.fileTypes.FileNameMatcher;
+import com.intellij.openapi.fileTypes.FileTypeConsumer;
+import com.intellij.openapi.fileTypes.FileTypeFactory;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * PerfCake xml file factory.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class PerfCakeXmlFileFactory extends FileTypeFactory {
+    @Override
+    public void createFileTypes(@NotNull FileTypeConsumer consumer) {
+
+        FileNameMatcher matcher;
+        consumer.consume(PerfCakeXmlScenarioFileType.INSTANCE, "xml");
+    }
 }

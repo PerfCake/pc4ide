@@ -18,12 +18,16 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.core.exec;
+
+import java.nio.file.Path;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Validates if PerfCake installation dir is valid.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public interface PerfCakeInstallationValidator {
+
+    boolean isValid(Path installationDir);
 }

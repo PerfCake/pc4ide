@@ -40,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
  * User: Stanislav Kaleta
  * Updated by: Jakub Knetl
  * Date: 17.9.2014
+ *
+ * @author Stanislav Kaleta, Jakub Knetl
  */
 public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
     private static final Logger LOG = Logger.getInstance(ScenarioEditorProvider.class);

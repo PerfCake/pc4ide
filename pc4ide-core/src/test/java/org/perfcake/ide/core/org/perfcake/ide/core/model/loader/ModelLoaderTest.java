@@ -25,16 +25,18 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Test;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.exception.ModelSerializationException;
 import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.model.Scenario;
 
 /**
  * Tests for {@link org.perfcake.ide.core.model.serialization.ModelLoader}.
+ *
  * @author Jakub Knetl
  */
 public class ModelLoaderTest {
@@ -42,7 +44,7 @@ public class ModelLoaderTest {
     private ModelLoader loader = new ModelLoader();
 
     @Test
-    public void testParsing() throws ModelConversionException, PerfCakeException, MalformedURLException {
+    public void testParsing() throws ModelConversionException, PerfCakeException, MalformedURLException, ModelSerializationException {
 
         String[] scenarios = new String[] {
                 "bob.xml",
@@ -50,8 +52,8 @@ public class ModelLoaderTest {
                 "maria.xml"
         };
         for (String scenario : scenarios) {
-            URL scenarioUrl = Paths.get("src/test/resources/users/scenarios/" + scenario).toUri().toURL();
-            Scenario xmlScenario =  loader.parse(scenarioUrl);
+            Path scenarioPath = Paths.get("src/test/resources/users/scenarios/" + scenario);
+            Scenario xmlScenario = loader.parse(scenarioPath);
             assertThat(xmlScenario, not(nullValue()));
         }
     }

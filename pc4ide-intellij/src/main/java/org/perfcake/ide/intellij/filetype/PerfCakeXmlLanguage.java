@@ -18,12 +18,19 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.intellij.filetype;
+
+import com.intellij.lang.Language;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Represents a PerfCake XML language.
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class PerfCakeXmlLanguage extends Language {
+
+    public static final PerfCakeXmlLanguage INSTANCE = new PerfCakeXmlLanguage();
+
+    private PerfCakeXmlLanguage() {
+        super("PerfCake XML");
+    }
 }

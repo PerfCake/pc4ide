@@ -25,10 +25,29 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="org.perfcake.ide.intellij.editor.ScenarioEditorProvider"/>
+        <moduleType id="PERFCAKE_MODULE" implementationClass="org.perfcake.ide.intellij.module.PerfCakeModuleType"/>
+        <applicationConfigurable instance="org.perfcake.ide.intellij.settings.Pc4ideSettings" />
+        <!-- PerfCake file factory is disabled, since it can register files only by extension. Therefore all xml files
+        would be registered as PerfCake scenarios which is not desired. -->
+        <!--<fileTypeFactory implementation="org.perfcake.ide.intellij.filetype.PerfCakeXmlFileFactory"/>-->
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
+        <action id="org.perfcake.ide.intellij.newscenario" class="org.perfcake.ide.intellij.NewScenarioAction" text="PerfCake scenario"
+                description="Creates new scenario file" icon="/img/perfcake-logo-small.png">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
     </actions>
+
+    <application-components>
+        <component>
+            <interface-class>org.perfcake.ide.editor.ServiceManager</interface-class>
+            <implementation-class>org.perfcake.ide.intellij.components.IntellijServiceManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.perfcake.ide.intellij.components.PerfCakeInstallationChecker</implementation-class>
+        </component>
+    </application-components>
 
 </idea-plugin>

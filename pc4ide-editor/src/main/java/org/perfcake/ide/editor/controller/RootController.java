@@ -23,7 +23,10 @@
 
 package org.perfcake.ide.editor.controller;
 
+import java.nio.file.Path;
 import javax.swing.JComponent;
+import org.perfcake.ide.core.exception.ModelSerializationException;
+import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.editor.form.FormManager;
 
 /**
@@ -42,4 +45,9 @@ public interface RootController extends Controller {
      * @return Form manager for managing form panel.
      */
     FormManager getFormManger();
+
+    /**
+     * @return Manager of the scenario file.
+     */
+    ScenarioManager getScenarioManager();
 }

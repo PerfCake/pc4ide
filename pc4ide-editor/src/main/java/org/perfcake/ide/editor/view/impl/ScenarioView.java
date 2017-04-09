@@ -32,6 +32,8 @@ import org.perfcake.ide.editor.layout.AngularData;
 import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
+import org.perfcake.ide.editor.swing.icons.ControlIcon;
+import org.perfcake.ide.editor.swing.icons.control.DebugIcon;
 import org.perfcake.ide.editor.swing.icons.control.PlayIcon;
 import org.perfcake.ide.editor.swing.icons.control.StopIcon;
 import org.perfcake.ide.editor.view.AbstractView;
@@ -47,8 +49,15 @@ public class ScenarioView extends AbstractView {
     private static final int MAXIMUM_ANGLE_EXTENT = 340;
     private static final int MAXIMUM_INNER_RADIUS = 200;
     public static final int START_ANGLE = 150;
+    public static final int ICON_WIDTH = 28;
+    public static final int ICON_HEIGTH = 28;
+    private static final int PADDING_BEETWEN_ICONS = 35;
 
     private JComponent jComponent;
+    private boolean isRunning = false;
+    private PlayIcon playIcon;
+    private StopIcon stopIcon;
+    private DebugIcon debugIcon;
 
     /**
      * Creates new editor view inside of swing container.
@@ -63,9 +72,33 @@ public class ScenarioView extends AbstractView {
      */
     @Override
     public void draw(Graphics2D g2d) {
+        layoutData = getConstraints();
         for (View child : getChildren()) {
             child.draw(g2d);
         }
+
+        // draw management icons
+        drawManagementIcons(g2d, layoutData);
+    }
+
+    protected void drawManagementIcons(Graphics2D g2d, LayoutData layoutData) {
+
+        double iconsWidth = 0;
+
+        for (ControlIcon icon : managementIcons) {
+            iconsWidth += icon.getIconWidth();
+        }
+
+        iconsWidth += ((managementIcons.size() - 1) * PADDING_BEETWEN_ICONS);
+
+        int iconX = (int) (layoutData.getCenter().getX() - iconsWidth / 2);
+        int iconY = (int) (layoutData.getCenter().getY() - ICON_HEIGTH / 2);
+
+        for (ControlIcon icon : managementIcons) {
+            icon.paintIcon(null, g2d, iconX, iconY);
+            iconX += PADDING_BEETWEN_ICONS + icon.getIconWidth();
+        }
+
     }
 
     /* (non-Javadoc)
@@ -120,8 +153,34 @@ public class ScenarioView extends AbstractView {
 
     @Override
     protected void initManagementIcons() {
-        managementIcons.add(new PlayIcon(colorScheme.getColor(NamedColor.ACCENT_4)));
-        managementIcons.add(new StopIcon(colorScheme.getColor(NamedColor.ACCENT_1)));
+        playIcon = new PlayIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
+        stopIcon = new StopIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_1));
+        debugIcon = new DebugIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
+        managementIcons.add(playIcon);
+        managementIcons.add(debugIcon);
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    /**
+     * Is scenario running.
+     *
+     * @param running running
+     */
+    public void setRunning(boolean running) {
+        if (isRunning != running) {
+            isRunning = running;
+            managementIcons.clear();
+            if (isRunning) {
+                managementIcons.add(stopIcon);
+            } else {
+                managementIcons.add(playIcon);
+                managementIcons.add(debugIcon);
+            }
+            invalidate();
+        }
     }
 
     /**

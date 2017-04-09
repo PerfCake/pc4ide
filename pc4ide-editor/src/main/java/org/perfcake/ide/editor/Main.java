@@ -24,14 +24,15 @@
 package org.perfcake.ide.editor;
 
 import java.awt.EventQueue;
-import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JFrame;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
-import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.serialization.ModelLoader;
+import org.perfcake.ide.core.manager.ScenarioManager;
+import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +64,10 @@ public class Main {
 
         logger.info("Application is starting. Loading scenario: {}", args[0]);
 
-        final File scenarioFile = new File(args[0]);
-        ModelLoader loader = new ModelLoader();
-        final ScenarioModel model = loader.loadModel(scenarioFile.toURI().toURL());
+        final Path scenarioPath = Paths.get(args[0]);
+
+        ScenarioManager scenarioManager = ScenarioManagers.createXmlManager(scenarioPath);
+
 
         EventQueue.invokeLater(new Runnable() {
 
@@ -89,9 +91,14 @@ public class Main {
                 frame.setTitle("Perfcake editor");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 // final GraphicalPanel editor = new GraphicalPanel(model);
-                final Pc4ideEditor editor = new Pc4ideEditor(model, new ReflectionComponentCatalogue());
-                frame.add(editor);
-                frame.setVisible(true);
+                final Pc4ideEditor editor;
+                try {
+                    editor = new Pc4ideEditor(scenarioManager, new ReflectionComponentCatalogue());
+                    frame.add(editor);
+                    frame.setVisible(true);
+                } catch (PerfCakeException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

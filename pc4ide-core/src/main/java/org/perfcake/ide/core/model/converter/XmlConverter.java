@@ -212,7 +212,7 @@ public class XmlConverter {
 
 
         // convert generator
-        Model generatorModel = extractSingleProperty(scenarioModel, PropertyNames.GENERATOR.toString()).cast(Model.class);
+        Model generatorModel = scenarioModel.getSingleProperty(PropertyNames.GENERATOR.toString(), Model.class);
         if (generatorModel != null) {
             Scenario.Generator generator = convertGeneratorToXml(generatorModel, postProcessingContext);
             scenario.setGenerator(generator);
@@ -229,7 +229,7 @@ public class XmlConverter {
         }
 
         // convert sender
-        Model senderModel = extractSingleProperty(scenarioModel, PropertyNames.SENDER.toString()).cast(Model.class);
+        Model senderModel = scenarioModel.getSingleProperty(PropertyNames.SENDER.toString(), Model.class);
         if (senderModel != null) {
             Scenario.Sender sender = convertSenderToXml(senderModel, postProcessingContext);
 
@@ -248,7 +248,7 @@ public class XmlConverter {
         }
 
         // convert receiver
-        Model receiverModel = extractSingleProperty(scenarioModel, PropertyNames.RECEIVER.toString()).cast(Model.class);
+        Model receiverModel = scenarioModel.getSingleProperty(PropertyNames.RECEIVER.toString(), Model.class);
         if (receiverModel != null) {
             Receiver receiver = convertReceiverToXml(receiverModel, postProcessingContext);
 
@@ -500,7 +500,7 @@ public class XmlConverter {
 
         receiver.getProperty().addAll(extractImplProperties(receiverModel));
 
-        Model correlatorModel = extractSingleProperty(receiverModel, ReceiverModel.PropertyNames.CORRELATOR.toString()).cast(Model.class);
+        Model correlatorModel = receiverModel.getSingleProperty(ReceiverModel.PropertyNames.CORRELATOR.toString(), Model.class);
         if (correlatorModel != null) {
             Correlator correlator = convertCorrelatorToXml(correlatorModel);
             receiver.setCorrelator(correlator);

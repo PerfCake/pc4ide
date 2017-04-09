@@ -18,12 +18,30 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.core.exception;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Represents exception with perfcake resource (e.g. some file)
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class PerfCakeResourceException  extends Exception {
+
+    public PerfCakeResourceException() {
+    }
+
+    public PerfCakeResourceException(String message) {
+        super(message);
+    }
+
+    public PerfCakeResourceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PerfCakeResourceException(Throwable cause) {
+        super(cause);
+    }
+
+    public PerfCakeResourceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

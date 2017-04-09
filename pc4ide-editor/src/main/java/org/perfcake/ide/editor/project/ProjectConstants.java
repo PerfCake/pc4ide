@@ -18,12 +18,18 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.editor.project;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Contains some project related constants.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class ProjectConstants {
+
+    public static final String MESSAGES_DIR = "messages";
+    public static final String SCENARIO_DIR = "scenario";
+    public static final String EXTENSIONS_DIR = "ext";
+
+    private ProjectConstants(){}
 }

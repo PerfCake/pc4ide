@@ -36,6 +36,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.perfcake.PerfCakeConst;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.Pc4ideConstants;
 import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.exception.ModelSerializationException;
@@ -65,7 +66,7 @@ public class ModelWriter {
     public ModelWriter() {
         Properties javadocProperties = new Properties();
         try {
-            javadocProperties.load(this.getClass().getResourceAsStream(ModelLoader.PERFCAKE_COMMENT_PROPERTIES));
+            javadocProperties.load(this.getClass().getResourceAsStream(Pc4ideConstants.PERFCAKE_COMMENT_PROPERTIES));
         } catch (IOException e) {
             logger.warn("Cannot load javadoc for loader.", e);
         }

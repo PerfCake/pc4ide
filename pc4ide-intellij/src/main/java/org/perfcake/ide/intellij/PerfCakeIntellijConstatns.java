@@ -18,12 +18,14 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.intellij;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Contains Pc4ide constanst constatns for Intellij idea.
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class PerfCakeIntellijConstatns {
+
+    public static final String PERFCAKE_NOTIFICATION_ID = "PerfCake Plugin";
+    public static final String PLUGIN_ID = "perfcake-plugin";
 }

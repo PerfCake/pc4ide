@@ -18,12 +18,24 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions;
+package org.perfcake.ide.editor.actions.handlers;
+
+import org.perfcake.ide.core.exec.PerfCakeExecutor;
+import org.perfcake.ide.editor.actions.ActionType;
 
 /**
- * Type of an action. ActionType is returned from management icons.
+ * Run Handler is able to run PerfCake scenario.
+ *
  * @author Jakub Knetl
  */
-public enum ActionType {
-    ADD, REMOVE, ENABLE, DISABLE, RUN, DEBUG, STOP, SELECT, OTHER, NONE;
+public class RunHandler extends AbstractHandler {
+
+    public RunHandler(PerfCakeExecutor executor) {
+        super(ActionType.RUN);
+    }
+
+    @Override
+    public void handleAction() {
+        //TODO(jknetl): handle action
+    }
 }

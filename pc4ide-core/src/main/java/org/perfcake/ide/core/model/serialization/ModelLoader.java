@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -36,8 +38,10 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.perfcake.PerfCakeConst;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.Pc4ideConstants;
 import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.exception.ModelSerializationException;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.converter.XmlConverter;
 import org.perfcake.model.Scenario;
@@ -49,18 +53,17 @@ import org.xml.sax.SAXException;
 public class ModelLoader {
 
     static final Logger logger = LoggerFactory.getLogger(ModelLoader.class);
-    public static final String PERFCAKE_COMMENT_PROPERTIES = "/perfcake-comment.properties";
 
     /**
      * Does the parsing itself by using JAXB.
      *
-     * @param scenarioLocation url to scenario file.
+     * @param scenarioLocation scenario location path
      * @return Parsed JAXB scenario model.
-     * @throws PerfCakeException If XML is not valid or cannot be successfully parsed.
+     * @throws ModelSerializationException if file cannot be parsed.
      */
-    public Scenario parse(URL scenarioLocation) throws PerfCakeException {
+    public Scenario parse(Path scenarioLocation) throws ModelSerializationException {
         try {
-            final Source scenarioXml = new StreamSource(scenarioLocation.openStream());
+            final Source scenarioXml = new StreamSource(Files.newInputStream(scenarioLocation));
             final String schemaFileName = "perfcake-scenario-" + PerfCakeConst.XSD_SCHEMA_VERSION + ".xsd";
             final URL backupUrl = new URL("http://schema.perfcake.org/" + schemaFileName);
 
@@ -83,31 +86,33 @@ public class ModelLoader {
             unmarshaller.setSchema(schema);
             return (org.perfcake.model.Scenario) unmarshaller.unmarshal(scenarioXml);
         } catch (final SAXException e) {
-            throw new PerfCakeException("Cannot validate scenario configuration. PerfCake installation seems broken. ", e);
+            throw new ModelSerializationException("Cannot validate scenario configuration. PerfCake installation seems broken. ", e);
         } catch (final JAXBException e) {
-            throw new PerfCakeException("Cannot parse scenario configuration: ", e);
+            throw new ModelSerializationException("Cannot parse scenario configuration: ", e);
         } catch (final MalformedURLException e) {
-            throw new PerfCakeException("Cannot read scenario schema to validate it: ", e);
+            throw new ModelSerializationException("Cannot read scenario schema to validate it: ", e);
         } catch (final UnsupportedEncodingException e) {
-            throw new PerfCakeException("set encoding is not supported: ", e);
+            throw new ModelSerializationException("set encoding is not supported: ", e);
         } catch (final IOException e) {
-            throw new PerfCakeException("Wrong scenario url.", e);
+            throw new ModelSerializationException("Wrong scenario url.", e);
+        } catch (PerfCakeException e) {
+            throw new ModelSerializationException("Cannot find scenario XSD file.", e);
         }
     }
 
     /**
      * Loads a model of given scenario.
      *
-     * @param url URL of scenario
+     * @param path path to scenario file
      * @return Scenario model
-     * @throws PerfCakeException        when model cannot be loaded
-     * @throws ModelConversionException when PerfCake model can't be converted to pc4ide model.
+     * @throws ModelSerializationException when model cannot be deserialized.
+     * @throws ModelConversionException    when PerfCake model can't be converted to pc4ide model.
      */
-    public ScenarioModel loadModel(URL url) throws PerfCakeException, ModelConversionException {
-        final Scenario scenario = parse(url);
+    public ScenarioModel loadModel(Path path) throws ModelSerializationException, ModelConversionException {
+        final Scenario scenario = parse(path);
         Properties javadocProperties = new Properties();
         try {
-            javadocProperties.load(this.getClass().getResourceAsStream(PERFCAKE_COMMENT_PROPERTIES));
+            javadocProperties.load(this.getClass().getResourceAsStream(Pc4ideConstants.PERFCAKE_COMMENT_PROPERTIES));
         } catch (IOException e) {
             throw new ModelConversionException("Cannot load javadoc.", e);
         }
