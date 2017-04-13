@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor;
 
+import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -32,15 +33,44 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  * @author Jakub Knetl
  */
 public interface ServiceManager {
+
+    /**
+     * @return Component loader instance.
+     */
+    ComponentLoader getComponentLoader();
+
+    /**
+     * @return Docs service instance.
+     */
     DocsService getDocsService();
 
+    /**
+     * @return model factory instance.
+     */
     ModelFactory getModelFactory();
 
+    /**
+     * @return view factory instance.
+     */
     ViewFactory getViewFactory();
 
+    /**
+     * @return swing factory instance.
+     */
     SwingFactory getSwingFactory();
 
+    /**
+     * @return installation validator instance.
+     */
     PerfCakeInstallationValidator getInstallationValidator();
+
+    /**
+     * Sets componentLoader.
+     *
+     * @param componentLoader component loader
+     * @return this instance
+     */
+    ServiceManager setComponentLoader(ComponentLoader componentLoader);
 
     /**
      * Sets docs service.
@@ -59,7 +89,7 @@ public interface ServiceManager {
     ServiceManager setModelFactory(ModelFactory modelFactory);
 
     /**
-     * Sets view factory
+     * Sets view factory.
      *
      * @param viewFactory view factory
      * @return this instance
@@ -81,4 +111,5 @@ public interface ServiceManager {
      * @return this instance
      */
     ServiceManager setPerfCakeInstallationValidator(PerfCakeInstallationValidator validator);
+
 }

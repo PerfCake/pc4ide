@@ -20,8 +20,10 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import java.util.Arrays;
 import java.util.List;
+import org.perfcake.ide.core.components.PerfCakeComponent;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.core.exec.MBeanSubscription;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
@@ -89,8 +91,13 @@ public class ReporterController extends AbstractController {
     }
 
     @Override
-    public List<String> getObjectNameHints() {
-        return Arrays.asList("Reporting",
-                getModel().getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class).getValue());
+    public void subscribeToDebugManager(ExecutionManager manager) {
+        String className = getModel().getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class).getValue();
+        Class<?> impl = getRoot().getServiceManager().getComponentLoader().loadComponent(className, PerfCakeComponent.REPORTER);
+
+        String mbean = manager.createCounterMBeanQuery("Reporting", impl.getCanonicalName());
+
+        manager.addListener(this, new MBeanSubscription(mbean));
+
     }
 }

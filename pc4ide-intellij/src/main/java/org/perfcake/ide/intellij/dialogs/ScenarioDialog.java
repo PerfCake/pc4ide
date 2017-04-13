@@ -75,7 +75,8 @@ public class ScenarioDialog extends DialogWrapper {
             return new ValidationInfo("Fill in scenario file.", scenarioForm.getNameTextField());
         }
         if (getScenarioDir().findChild(getScenarioFileName()) != null) {
-            return new ValidationInfo(String.format("Scenario file '%s' already exists.", getScenarioName()), scenarioForm.getNameTextField());
+            return new ValidationInfo(String.format("Scenario file '%s' already exists.",
+                    getScenarioName()), scenarioForm.getNameTextField());
         }
 
         return null;

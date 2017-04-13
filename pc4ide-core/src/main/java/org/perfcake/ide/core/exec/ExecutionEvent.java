@@ -34,9 +34,15 @@ public class ExecutionEvent {
         JMX_DEBUG_MONITOR,
 
         /**
-         * Represents information about progress.
+         * Represents event that execution has started.
          */
-        PROGRESS
+        STARTED,
+
+        /**
+         * Represents event, that execution has stopped.
+         */
+        STOPED
+
     }
 
     private Type type;

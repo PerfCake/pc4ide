@@ -20,8 +20,11 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
-import org.perfcake.ide.core.exec.PerfCakeExecutor;
+import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Run Handler is able to run PerfCake scenario.
@@ -30,12 +33,24 @@ import org.perfcake.ide.editor.actions.ActionType;
  */
 public class RunHandler extends AbstractHandler {
 
-    public RunHandler(PerfCakeExecutor executor) {
+    static final Logger logger = LoggerFactory.getLogger(RunHandler.class);
+
+    public RunHandler() {
         super(ActionType.RUN);
     }
 
     @Override
     public void handleAction() {
-        //TODO(jknetl): handle action
+        ExecutionFactory executionFactory = getController().getRoot().getExecutionFactory();
+
+        if (executionFactory == null) {
+            logger.warn("Skipping execution. Execution manager has not been set");
+        } else {
+            try {
+                executionFactory.execute(getController().getRoot().getScenarioManager());
+            } catch (Pc4ideException e) {
+                logger.warn("Exception when executing scenario", e);
+            }
+        }
     }
 }

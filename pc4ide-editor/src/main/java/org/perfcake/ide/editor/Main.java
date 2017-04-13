@@ -33,6 +33,7 @@ import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
+import org.perfcake.ide.editor.controller.NoopExecutionFactory;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,8 @@ public class Main {
                 // final GraphicalPanel editor = new GraphicalPanel(model);
                 final Pc4ideEditor editor;
                 try {
-                    editor = new Pc4ideEditor(scenarioManager, new ReflectionComponentCatalogue());
+                    editor = new Pc4ideEditor(scenarioManager, new NoopExecutionFactory(), DefaultServiceManager.getInstance(),
+                            new ReflectionComponentCatalogue());
                     frame.add(editor);
                     frame.setVisible(true);
                 } catch (PerfCakeException e) {

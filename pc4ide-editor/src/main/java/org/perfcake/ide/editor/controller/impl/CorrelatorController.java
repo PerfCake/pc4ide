@@ -20,8 +20,8 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import java.util.Arrays;
-import java.util.List;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.core.exec.MBeanSubscription;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.CorrelatorModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -65,7 +65,8 @@ public class CorrelatorController extends AbstractController {
     }
 
     @Override
-    public List<String> getObjectNameHints() {
-        return Arrays.asList("CorrelatedMessages");
+    public void subscribeToDebugManager(ExecutionManager manager) {
+        String mbean = manager.createCounterMBeanQuery("CorrelatedMessages");
+        manager.addListener(this, new MBeanSubscription(mbean));
     }
 }

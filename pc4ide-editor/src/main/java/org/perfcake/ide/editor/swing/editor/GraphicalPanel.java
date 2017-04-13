@@ -26,17 +26,17 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.nio.file.Path;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.factory.ValidModelFactory;
-import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.core.model.serialization.ModelWriter;
+import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.colors.NamedColor;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
 import org.perfcake.ide.editor.form.FormManager;
@@ -53,11 +53,15 @@ public class GraphicalPanel extends JPanel {
     /**
      * Creates new graphical editor.
      *
-     * @param scenarioManager manager of the scenario
-     * @param commandInvoker command invoker for executing commands
-     * @param formManager    manager which manages the forms
+     * @param scenarioManager  manager of the scenario
+     * @param scenarioModel    model of the scenario
+     * @param executionFactory execution manager
+     * @param serviceManager   service manager
+     * @param commandInvoker   command invoker for executing commands
+     * @param formManager      manager which manages the forms
      */
-    public GraphicalPanel(ScenarioManager scenarioManager, ScenarioModel scenarioModel, CommandInvoker commandInvoker, FormManager formManager) {
+    public GraphicalPanel(ScenarioManager scenarioManager, ScenarioModel scenarioModel, ExecutionFactory executionFactory,
+                          ServiceManager serviceManager, CommandInvoker commandInvoker, FormManager formManager) {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
@@ -66,8 +70,8 @@ public class GraphicalPanel extends JPanel {
         DefaultColorScheme colorScheme = new DefaultColorScheme();
         viewFactory.setColorScheme(colorScheme);
         ModelWriter writer = new ModelWriter();
-        scenarioController = new ScenarioController(this, scenarioModel, scenarioManager, modelFactory,
-                viewFactory, commandInvoker, formManager);
+        scenarioController = new ScenarioController(this, scenarioModel, scenarioManager, executionFactory, serviceManager,
+                modelFactory, viewFactory, commandInvoker, formManager);
         this.setBackground(colorScheme.getColor(NamedColor.BASE_1));
     }
 

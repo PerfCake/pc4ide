@@ -18,19 +18,31 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.exec;
+package org.perfcake.ide.core.exception;
 
 /**
- * Execution listener listens for information about PerfCake scenario execution.
+ * Represents exception in JMX.
  *
  * @author Jakub Knetl
  */
-public interface ExecutionListener {
+public class RuntimeJmxException extends RuntimeException {
 
-    /**
-     * Handles execution event.
-     *
-     * @param event Execution event.
-     */
-    void handleEvent(ExecutionEvent event);
+    public RuntimeJmxException() {
+    }
+
+    public RuntimeJmxException(String message) {
+        super(message);
+    }
+
+    public RuntimeJmxException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public RuntimeJmxException(Throwable cause) {
+        super(cause);
+    }
+
+    public RuntimeJmxException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

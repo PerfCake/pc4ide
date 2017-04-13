@@ -22,24 +22,23 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 import javax.swing.JComponent;
-import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
-import org.perfcake.ide.core.exception.ModelConversionException;
-import org.perfcake.ide.core.exception.ModelSerializationException;
+import org.perfcake.ide.core.exec.ExecutionEvent;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.core.exec.MBeanSubscription;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
 import org.perfcake.ide.core.model.factory.ModelFactory;
-import org.perfcake.ide.core.model.serialization.ModelLoader;
-import org.perfcake.ide.core.model.serialization.ModelWriter;
+import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.editor.actions.handlers.DebugHandler;
+import org.perfcake.ide.editor.actions.handlers.RunHandler;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
 import org.perfcake.ide.editor.form.FormManager;
@@ -60,29 +59,33 @@ public class ScenarioController extends AbstractController implements RootContro
 
     private CommandInvoker commandInvoker;
     private ScenarioManager scenarioManager;
-    private ModelLoader modelLoader;
-    private ModelWriter modelWriter;
-    private Path scenarioPath;
+    private ExecutionFactory executionFactory;
+    private ServiceManager serviceManager;
 
     private LayeredView messagesAndSequencesView;
 
     /**
      * Creates new editor controller.
      *
-     * @param jComponent      Swing inspector used as a container for editor visuals
-     * @param model           Model of the scenario
-     * @param scenarioManager Manager of the scenario
-     * @param modelFactory    model factory.
-     * @param viewFactory     Factory for creating views
-     * @param commandInvoker  command invoker for executing commands
-     * @param formManager     manager of forms to modify inspector properties
+     * @param jComponent       Swing inspector used as a container for editor visuals
+     * @param model            Model of the scenario
+     * @param scenarioManager  Manager of the scenario
+     * @param executionFactory execution manager
+     * @param modelFactory     model factory.
+     * @param serviceManager   service manger
+     * @param viewFactory      Factory for creating views
+     * @param commandInvoker   command invoker for executing commands
+     * @param formManager      manager of forms to modify inspector properties
      */
-    public ScenarioController(JComponent jComponent, ScenarioModel model, ScenarioManager scenarioManager, ModelFactory modelFactory,
+    public ScenarioController(JComponent jComponent, ScenarioModel model, ScenarioManager scenarioManager,
+                              ExecutionFactory executionFactory, ServiceManager serviceManager, ModelFactory modelFactory,
                               ViewFactory viewFactory, CommandInvoker commandInvoker, FormManager formManager) {
         super(model, modelFactory, viewFactory);
         this.scenarioManager = scenarioManager;
         this.jComponent = jComponent;
         this.formManager = formManager;
+        this.executionFactory = executionFactory;
+        this.serviceManager = serviceManager;
         ScenarioView scenarioView = (ScenarioView) view;
         scenarioView.setJComponent(jComponent);
         this.commandInvoker = commandInvoker;
@@ -105,6 +108,8 @@ public class ScenarioController extends AbstractController implements RootContro
     @Override
     protected void initActionHandlers() {
         // no handlers
+        addActionHandler(new RunHandler());
+        addActionHandler(new DebugHandler());
 
     }
 
@@ -126,10 +131,18 @@ public class ScenarioController extends AbstractController implements RootContro
         return formManager;
     }
 
-
     @Override
     public ScenarioManager getScenarioManager() {
         return scenarioManager;
+    }
+
+    public ExecutionFactory getExecutionFactory() {
+        return executionFactory;
+    }
+
+    @Override
+    public ServiceManager getServiceManager() {
+        return serviceManager;
     }
 
     @Override
@@ -201,7 +214,21 @@ public class ScenarioController extends AbstractController implements RootContro
     }
 
     @Override
-    public List<String> getObjectNameHints() {
-        return Collections.emptyList();
+    public void handleEvent(ExecutionEvent event) {
+        super.handleEvent(event);
+
+        ScenarioView scenarioView = (ScenarioView) getView();
+        if (event.getType() == ExecutionEvent.Type.STARTED) {
+            scenarioView.setRunning(true);
+        }
+        if (event.getType() == ExecutionEvent.Type.STOPED) {
+            scenarioView.setRunning(false);
+        }
+    }
+
+    @Override
+    public void subscribeToDebugManager(ExecutionManager manager) {
+        // subscribe only for high level events
+        manager.addListener(this, MBeanSubscription.createEmptySubscription());
     }
 }

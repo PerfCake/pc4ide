@@ -25,7 +25,6 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.geom.Area;
 import javax.swing.JComponent;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.AngularData;
@@ -106,13 +105,7 @@ public class ScenarioView extends AbstractView {
      */
     @Override
     public Shape getViewBounds() {
-        Area area = new Area();
-        for (View v : getChildren()) {
-            Area childArea = new Area(v.getViewBounds());
-            area.add(childArea);
-        }
-
-        return area;
+        return jComponent.getBounds();
     }
 
     @Override

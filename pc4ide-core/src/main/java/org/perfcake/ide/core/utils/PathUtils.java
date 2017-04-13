@@ -18,19 +18,29 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.exec;
+package org.perfcake.ide.core.utils;
+
+import java.nio.file.Path;
 
 /**
- * Execution listener listens for information about PerfCake scenario execution.
+ * Class with static helper methods for paths.
  *
  * @author Jakub Knetl
  */
-public interface ExecutionListener {
+public class PathUtils {
+
+    private PathUtils() {
+    }
 
     /**
-     * Handles execution event.
+     * Converts path to string.
      *
-     * @param event Execution event.
+     * @param path path
+     * @return Path represented as a string. if path is null then empty string is returned.
      */
-    void handleEvent(ExecutionEvent event);
+    public static String pathToString(Path path) {
+
+        return path == null ? "" : path.toString();
+    }
+
 }

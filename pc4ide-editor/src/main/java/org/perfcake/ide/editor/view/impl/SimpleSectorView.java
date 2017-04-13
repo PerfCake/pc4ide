@@ -73,6 +73,10 @@ public abstract class SimpleSectorView extends SectorView {
     protected ResizableIcon icon;
     protected String header;
 
+    /* determines whether execution info should be drawn inside ( next to inner radius, which means near to center)
+     * or outside (next to outer radius far from center) */
+    protected boolean drawExecInfoInside = true;
+
     private long[] executionInfo;
 
     /**
@@ -96,6 +100,7 @@ public abstract class SimpleSectorView extends SectorView {
             return;
         }
 
+
         // antialiasing of the shapes
         addRenderingHints(g2d);
 
@@ -111,7 +116,9 @@ public abstract class SimpleSectorView extends SectorView {
         // draw managementIcons
         drawManagementIcons(g2d);
 
+        // draw execution info
         drawExecutionInfo(g2d);
+
     }
 
     /**
@@ -299,14 +306,19 @@ public abstract class SimpleSectorView extends SectorView {
 
 
         double diagonal = Utils2D.getRectangleDiagonal(executionInfoDimension);
-        double execInfoX = layoutData.getCenter().getX()
-                + (layoutData.getRadiusData().getInnerRadius() - PADDING - diagonal / 2);
+        double execInfoX = layoutData.getCenter().getX();
         double execInfoY = layoutData.getCenter().getY();
+        if (drawExecInfoInside) {
+            execInfoX += (layoutData.getRadiusData().getInnerRadius() - PADDING - diagonal / 2);
+        } else {
+            execInfoX += (layoutData.getRadiusData().getOuterRadius() + PADDING + diagonal / 2);
+        }
 
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
         Point2D location = Utils2D.rotatePoint(new Point2D.Double(execInfoX, execInfoY), theta, layoutData.getCenter());
 
-        Rectangle2D execInfoBounds = Utils2D.getUpperLeftCorner(location, execInfoX, execInfoY);
+        Rectangle2D execInfoBounds = Utils2D.getUpperLeftCorner(location,
+                executionInfoDimension.getWidth(), executionInfoDimension.getHeight());
 
         return execInfoBounds;
     }
@@ -495,6 +507,7 @@ public abstract class SimpleSectorView extends SectorView {
 
     public SimpleSectorView setExecutionInfo(long[] executionInfo) {
         this.executionInfo = executionInfo;
+        invalidate();
         return this;
     }
 }

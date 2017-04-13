@@ -23,10 +23,9 @@
 
 package org.perfcake.ide.editor.controller;
 
-import java.nio.file.Path;
 import javax.swing.JComponent;
-import org.perfcake.ide.core.exception.ModelSerializationException;
 import org.perfcake.ide.core.manager.ScenarioManager;
+import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.form.FormManager;
 
 /**
@@ -50,4 +49,14 @@ public interface RootController extends Controller {
      * @return Manager of the scenario file.
      */
     ScenarioManager getScenarioManager();
+
+    /**
+     * @return Execution manager or null. If scenario cannot be executed.
+     */
+    ExecutionFactory getExecutionFactory();
+
+    /**
+     * @return Instance of service manager.
+     */
+    ServiceManager getServiceManager();
 }

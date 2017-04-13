@@ -342,9 +342,13 @@ public abstract class AbstractController implements Controller, ModelListener {
                 long[] newExecInfo = {Long.valueOf(event.getValue().toString())};
                 if (!Arrays.equals(previousExecInfo, newExecInfo)) {
                     sectorView.setExecutionInfo(newExecInfo);
-                    sectorView.invalidate();
                 }
             }
+        }
+
+        if (event.getType() == ExecutionEvent.Type.STOPED && view instanceof SimpleSectorView) {
+            SimpleSectorView sectorView = (SimpleSectorView) this.view;
+            sectorView.setExecutionInfo(null);
         }
     }
 }

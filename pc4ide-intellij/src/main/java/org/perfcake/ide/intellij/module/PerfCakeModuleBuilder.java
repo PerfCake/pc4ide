@@ -33,9 +33,9 @@ import java.io.IOException;
 import org.jetbrains.annotations.NonNls;
 
 /**
- * Created by miron on 21.1.2014. + Stanley Kaleta
- * <p>
- * Represents Perfcake module builder.
+ * <p>Created by miron on 21.1.2014. + Stanley Kaleta</p>
+ *
+ * <p>Represents Perfcake module builder.</p>
  *
  * @author Miron Michalko, Stanislav Kaleta, Jakub Knetl
  */
@@ -43,11 +43,11 @@ public class PerfCakeModuleBuilder extends JavaModuleBuilder {
     private static final Logger LOG = Logger.getInstance(PerfCakeModuleBuilder.class);
 
     @NonNls
-    private final String messagesDirName = "messages";
+    private final String messagesDirName = PerfCakeModuleType.MESSAGES_DIR_NAME;
     @NonNls
-    private final String scenariosDirName = "scenarios";
+    private final String scenariosDirName = PerfCakeModuleType.SCENARIOS_DIR_NAME;
     @NonNls
-    private final String libDirName = "lib";
+    private final String libDirName = PerfCakeModuleType.PLUGINS_DIR_NAME;
 
     @Override
     public ModuleType getModuleType() {

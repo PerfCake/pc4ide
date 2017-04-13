@@ -37,7 +37,6 @@ import org.perfcake.ide.editor.actions.ActionType;
  */
 public class DebugIcon extends AbstractControlIcon {
 
-
     public static final int DEFAULT_WIDTH = 8;
     public static final int DEFAULT_HEIGHT = 8;
     /**

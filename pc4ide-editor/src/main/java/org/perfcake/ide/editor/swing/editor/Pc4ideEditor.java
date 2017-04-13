@@ -34,6 +34,8 @@ import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.core.model.factory.ValidModelFactory;
+import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.form.impl.FormManagerImpl;
 
@@ -51,14 +53,18 @@ public class Pc4ideEditor extends JSplitPane {
      * Creates new editor panel.
      *
      * @param scenarioManager    Path to the scenarioManager
+     * @param executionFactory   execution manager
+     * @param serviceManager     service manager
      * @param componentCatalogue PerfCake inspector manager
      * @throws PerfCakeException When it is impossible to load scenario from scenario path
      */
-    public Pc4ideEditor(ScenarioManager scenarioManager, ComponentCatalogue componentCatalogue) throws PerfCakeException {
+    public Pc4ideEditor(ScenarioManager scenarioManager, ExecutionFactory executionFactory, ServiceManager serviceManager,
+                        ComponentCatalogue componentCatalogue) throws PerfCakeException {
         super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
         this.scenarioManager = scenarioManager;
+
 
         final ScenarioModel model;
         try {
@@ -79,7 +85,7 @@ public class Pc4ideEditor extends JSplitPane {
         ModelFactory modelFactory = new ValidModelFactory(model.getDocsService());
         FormManager formManager = new FormManagerImpl(model, commandInvoker, componentCatalogue, modelFactory);
 
-        graphicalEditorPanel = new GraphicalPanel(scenarioManager, model, commandInvoker, formManager);
+        graphicalEditorPanel = new GraphicalPanel(scenarioManager, model, executionFactory, serviceManager, commandInvoker, formManager);
         formManager.setGraphicalController(graphicalEditorPanel.getScenarioController());
 
         // final FormPage generatorPage = new SimpleFormPage(formManager,
@@ -111,5 +117,9 @@ public class Pc4ideEditor extends JSplitPane {
 
     private ComponentCatalogue createComponentCatalogue() {
         return new ReflectionComponentCatalogue();
+    }
+
+    public GraphicalPanel getGraphicalEditorPanel() {
+        return graphicalEditorPanel;
     }
 }

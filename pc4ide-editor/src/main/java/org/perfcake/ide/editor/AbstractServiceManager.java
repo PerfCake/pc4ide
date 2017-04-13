@@ -24,6 +24,7 @@ import static org.perfcake.ide.core.Pc4ideConstants.PERFCAKE_COMMENT_PROPERTIES;
 
 import java.io.IOException;
 import java.util.Properties;
+import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
@@ -38,6 +39,7 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
  */
 public abstract class AbstractServiceManager implements ServiceManager {
 
+    protected ComponentLoader componentLoader;
     protected DocsService docsService;
     protected ModelFactory modelFactory;
     protected ViewFactory viewFactory;
@@ -63,6 +65,10 @@ public abstract class AbstractServiceManager implements ServiceManager {
         return swingFactory;
     }
 
+    @Override
+    public ComponentLoader getComponentLoader() {
+        return componentLoader;
+    }
 
     @Override
     public PerfCakeInstallationValidator getInstallationValidator() {
@@ -111,6 +117,15 @@ public abstract class AbstractServiceManager implements ServiceManager {
             throw new IllegalArgumentException("PerfCakeInstallation validator is null");
         }
         installationValidator = validator;
+        return this;
+    }
+
+    @Override
+    public ServiceManager setComponentLoader(ComponentLoader componentLoader) {
+        if (componentLoader == null) {
+            throw new IllegalArgumentException("Component loader cannot be null");
+        }
+        this.componentLoader = componentLoader;
         return this;
     }
 

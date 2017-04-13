@@ -21,7 +21,6 @@
 package org.perfcake.ide.intellij.dialogs;
 
 import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.ValidationInfo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,9 +31,10 @@ import javax.swing.JTextField;
 
 /**
  * Conetn panel of the new Scenario Form.
+ *
  * @author Jakub Knetl
  */
-public class ScenarioForm extends JPanel{
+public class ScenarioForm extends JPanel {
 
     private JTextField nameTextField;
     private JComboBox typeComboBox;
@@ -42,10 +42,10 @@ public class ScenarioForm extends JPanel{
     private JLabel typeLabel;
 
     public ScenarioForm() {
-        createUI();
+        createUiComponents();
     }
 
-    protected void createUI() {
+    protected void createUiComponents() {
         setLayout(new GridBagLayout());
 
         nameLabel = new JLabel("Scenario name:");
@@ -56,7 +56,7 @@ public class ScenarioForm extends JPanel{
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(2,10,2,10);
+        c.insets = new Insets(2, 10, 2, 10);
         c.fill = GridBagConstraints.NONE;
 
         add(nameLabel, c);

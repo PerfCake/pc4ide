@@ -18,19 +18,23 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.exec;
+package org.perfcake.ide.editor.controller;
+
+import org.perfcake.ide.core.exception.Pc4ideException;
+import org.perfcake.ide.core.manager.ScenarioManager;
 
 /**
- * Execution listener listens for information about PerfCake scenario execution.
+ * Execution manager is able to execute scenario. Individual plugins for specific IDE should implement the behaviour.
  *
  * @author Jakub Knetl
  */
-public interface ExecutionListener {
+public interface ExecutionFactory {
 
     /**
-     * Handles execution event.
+     * Executes scenario.
      *
-     * @param event Execution event.
+     * @param scenarioManager manager of the scenario.
+     * @throws Pc4ideException if error with execution occurs.
      */
-    void handleEvent(ExecutionEvent event);
+    void execute(ScenarioManager scenarioManager) throws Pc4ideException;
 }

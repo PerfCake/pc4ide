@@ -18,19 +18,20 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.exec;
+package org.perfcake.ide.editor.controller;
+
+import org.perfcake.ide.core.exception.Pc4ideException;
+import org.perfcake.ide.core.manager.ScenarioManager;
 
 /**
- * Execution listener listens for information about PerfCake scenario execution.
+ * Noop execution manager ignores run and debug events. It is designed for testing purposes or for disabling launching. When execute
+ * method of this instance is invoked then nothing happens.
  *
  * @author Jakub Knetl
  */
-public interface ExecutionListener {
-
-    /**
-     * Handles execution event.
-     *
-     * @param event Execution event.
-     */
-    void handleEvent(ExecutionEvent event);
+public class NoopExecutionFactory implements ExecutionFactory {
+    @Override
+    public void execute(ScenarioManager scenarioManager) throws Pc4ideException {
+        // No operation
+    }
 }

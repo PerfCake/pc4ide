@@ -18,23 +18,34 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
+package org.perfcake.ide.editor.controller.visitor;
 
-import org.perfcake.ide.editor.actions.ActionType;
+import java.util.Iterator;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.editor.controller.Controller;
 
 /**
- * Debug handlers handles a debug action.
+ * Attaches controllers to the debug manager.
  *
  * @author Jakub Knetl
  */
-public class DebugHandler extends AbstractHandler {
+public class AttachDebugManagerVisitor implements ControllerVisitor {
 
-    public DebugHandler() {
-        super(ActionType.DEBUG);
+    private ExecutionManager executionManager;
+
+    public AttachDebugManagerVisitor(ExecutionManager executionManager) {
+        this.executionManager = executionManager;
     }
 
     @Override
-    public void handleAction() {
-        //TODO(jknetl): handle action
+    public void visit(Controller controller) {
+
+        controller.subscribeToDebugManager(executionManager);
+
+        Iterator<Controller> childrenIterator = controller.getChildrenIterator();
+        while (childrenIterator.hasNext()) {
+            Controller child = childrenIterator.next();
+            child.accept(this);
+        }
     }
 }

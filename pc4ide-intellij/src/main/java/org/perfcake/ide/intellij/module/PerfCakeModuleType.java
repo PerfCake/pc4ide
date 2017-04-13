@@ -20,12 +20,19 @@
 
 package org.perfcake.ide.intellij.module;
 
+import com.intellij.ide.util.projectWizard.ModuleBuilder;
+import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
+import com.intellij.ide.util.projectWizard.SettingsStep;
+import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.perfcake.ide.intellij.PerfCakeIcons;
 
 /**
@@ -37,6 +44,9 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
 
     @NonNls
     public static final String ID = "PERFCAKE_MODULE";
+    public static final String MESSAGES_DIR_NAME = "messages";
+    public static final String SCENARIOS_DIR_NAME = "scenarios";
+    public static final String PLUGINS_DIR_NAME = "lib";
 
     public PerfCakeModuleType() {
         super(ID);
@@ -50,13 +60,11 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
         return get(module) instanceof PerfCakeModuleType;
     }
 
-
     @NotNull
     @Override
     public PerfCakeModuleBuilder createModuleBuilder() {
         return new PerfCakeModuleBuilder();
     }
-
 
     @NotNull
     @Override
@@ -70,7 +78,6 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
         return "PerfCake scenario editor";
     }
 
-
     @Override
     public Icon getBigIcon() {
         return PerfCakeIcons.SMALL_PERFCAKE_ICON;
@@ -79,5 +86,19 @@ public class PerfCakeModuleType extends ModuleType<PerfCakeModuleBuilder> {
     @Override
     public Icon getNodeIcon(boolean isOpened) {
         return PerfCakeIcons.SMALL_PERFCAKE_ICON;
+    }
+
+    @NotNull
+    @Override
+    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull PerfCakeModuleBuilder moduleBuilder,
+                                                @NotNull ModulesProvider modulesProvider) {
+        return super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider);
+    }
+
+    @Nullable
+    @Override
+    public ModuleWizardStep modifyProjectTypeStep(@NotNull SettingsStep settingsStep, @NotNull final ModuleBuilder moduleBuilder) {
+        return ProjectWizardStepFactory.getInstance().createJavaSettingsStep(settingsStep, moduleBuilder,
+                moduleBuilder::isSuitableSdkType);
     }
 }

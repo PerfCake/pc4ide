@@ -25,6 +25,7 @@ import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -50,6 +51,9 @@ import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.serialization.ModelLoader;
+import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
+import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
 import org.perfcake.ide.intellij.VirtualFileConverter;
@@ -60,6 +64,7 @@ import org.perfcake.ide.intellij.VirtualFileConverter;
  */
 public class ScenarioEditor implements FileEditor {
     private static final Logger LOG = Logger.getInstance(ScenarioEditor.class);
+    public static final String EDITOR_NAME = "PerfCake designer";
 
     private Project project;
     private VirtualFile file;
@@ -77,7 +82,7 @@ public class ScenarioEditor implements FileEditor {
      * Creates new scenario editor.
      *
      * @param project project to which scenario belongs
-     * @param file file with the scenario
+     * @param file    file with the scenario
      */
     public ScenarioEditor(@NotNull Project project, @NotNull VirtualFile file) {
         this.project = project;
@@ -118,7 +123,11 @@ public class ScenarioEditor implements FileEditor {
         ScenarioManager manager = null;
         try {
             manager = ScenarioManagers.createXmlManager(VirtualFileConverter.convertPath(file));
-            editorGui = new Pc4ideEditor(manager, new ReflectionComponentCatalogue());
+            ExecutionFactory executionFactory = new IntellijExecutionFactory();
+
+            ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
+
+            editorGui = new Pc4ideEditor(manager, executionFactory, serviceManager, new ReflectionComponentCatalogue());
         } catch (PerfCakeException | PerfCakeResourceException e) {
             Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
                     "Cannot create scenario", NotificationType.ERROR);
@@ -157,7 +166,7 @@ public class ScenarioEditor implements FileEditor {
     @NotNull
     @Override
     public String getName() {
-        return "Designer";
+        return EDITOR_NAME;
     }
 
     @Override
@@ -255,6 +264,20 @@ public class ScenarioEditor implements FileEditor {
     @Override
     public <T> void putUserData(@NotNull Key<T> tKey, @Nullable T t) {
         // not used
+    }
+
+    /**
+     * @return File which is edited by this editor.
+     */
+    public VirtualFile getFile() {
+        return file;
+    }
+
+    /**
+     * @return Scenario controller or null, if no controller has been loaded yet.
+     */
+    public RootController getScenarioController() {
+        return editorGui.getGraphicalEditorPanel().getScenarioController();
     }
 }
 

@@ -27,7 +27,6 @@ import javax.swing.JComponent;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.ide.core.Pc4ideConstants;
-import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
 
 /**
  * Represents settings of Pc4ide intellij plugin.
@@ -63,7 +62,7 @@ public class Pc4ideSettings implements Configurable {
     public boolean isModified() {
         String storedInstallation = PropertiesComponent.getInstance().getValue(INSTALLATION_DIR_KEY);
         String selectedInstallation = perfCakeSettingsForm.getInstallationFolder();
-        if (storedInstallation == null && selectedInstallation.isEmpty())  {
+        if (storedInstallation == null && selectedInstallation.isEmpty()) {
             return false;
         } else {
             return !selectedInstallation.equals(storedInstallation);

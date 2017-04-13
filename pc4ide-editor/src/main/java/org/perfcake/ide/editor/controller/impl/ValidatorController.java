@@ -20,8 +20,8 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import java.util.Arrays;
-import java.util.List;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.core.exec.MBeanSubscription;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ValidatorModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -71,9 +71,10 @@ public class ValidatorController extends AbstractController {
     }
 
     @Override
-    public List<String> getObjectNameHints() {
-        return Arrays.asList("Validation",
-                getModel().getSingleProperty(ValidatorModel.PropertyNames.ID.toString(), Value.class).getValue(),
-                "*"); // second category is either passed or failed
+    public void subscribeToDebugManager(ExecutionManager manager) {
+        String id = getModel().getSingleProperty(ValidatorModel.PropertyNames.ID.toString(), Value.class).getValue();
+        String mbean = manager.createCounterMBeanQuery("Validation", id);
+
+        manager.addListener(this, new MBeanSubscription(mbean));
     }
 }

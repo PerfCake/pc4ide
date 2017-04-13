@@ -22,9 +22,11 @@ package org.perfcake.ide.intellij.components;
 
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
+import org.perfcake.ide.core.components.ComponentLoaderImpl;
 import org.perfcake.ide.core.exec.SimpleInstallationValidator;
 import org.perfcake.ide.core.model.factory.ValidModelFactory;
 import org.perfcake.ide.editor.AbstractServiceManager;
+import org.perfcake.ide.editor.DefaultServiceManager;
 import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
 import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
@@ -36,6 +38,8 @@ import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
  */
 public class IntellijServiceManager extends AbstractServiceManager implements ApplicationComponent {
 
+    private DefaultServiceManager defaultServiceManager;
+
     public static final String NAME = "ServiceManager";
 
     @Override
@@ -45,6 +49,7 @@ public class IntellijServiceManager extends AbstractServiceManager implements Ap
         viewFactory = new GraphicalViewFactory();
         swingFactory = new DefaultSwingFactory();
         installationValidator = new SimpleInstallationValidator();
+        componentLoader = new ComponentLoaderImpl();
     }
 
     @Override

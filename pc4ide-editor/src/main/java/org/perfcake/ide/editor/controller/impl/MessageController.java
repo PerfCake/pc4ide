@@ -20,10 +20,10 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.perfcake.ide.core.exec.ExecutionManager;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.components.MessageModel;
@@ -93,7 +93,7 @@ public class MessageController extends AbstractController {
     }
 
     @Override
-    public List<String> getObjectNameHints() {
-        return Collections.emptyList();
+    public void subscribeToDebugManager(ExecutionManager manager) {
+        // do not listen to debug events.
     }
 }

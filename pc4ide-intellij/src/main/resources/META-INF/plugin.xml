@@ -27,6 +27,8 @@
         <fileEditorProvider implementation="org.perfcake.ide.intellij.editor.ScenarioEditorProvider"/>
         <moduleType id="PERFCAKE_MODULE" implementationClass="org.perfcake.ide.intellij.module.PerfCakeModuleType"/>
         <applicationConfigurable instance="org.perfcake.ide.intellij.settings.Pc4ideSettings" />
+        <configurationType implementation="org.perfcake.ide.intellij.exec.PerfCakeRunConfigurationType"/>
+        <runConfigurationProducer implementation="org.perfcake.ide.intellij.exec.PerfCakeRunConfigurationProducer"/>
         <!-- PerfCake file factory is disabled, since it can register files only by extension. Therefore all xml files
         would be registered as PerfCake scenarios which is not desired. -->
         <!--<fileTypeFactory implementation="org.perfcake.ide.intellij.filetype.PerfCakeXmlFileFactory"/>-->

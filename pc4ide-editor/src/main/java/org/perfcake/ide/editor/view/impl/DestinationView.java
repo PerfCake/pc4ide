@@ -45,6 +45,7 @@ public class DestinationView extends CondensedSectorView {
     public DestinationView() {
         super(new DestinationIcon());
         periods = new HashSet<>();
+        drawExecInfoInside = false;
     }
 
     @Override

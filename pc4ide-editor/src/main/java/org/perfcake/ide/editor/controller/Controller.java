@@ -24,6 +24,7 @@ import java.awt.event.MouseListener;
 import java.util.Iterator;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.exec.ExecutionListener;
+import org.perfcake.ide.core.exec.ExecutionManager;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.actions.ActionType;
@@ -136,4 +137,11 @@ public interface Controller extends MouseListener, ExecutionListener {
      * @return Command invoker.
      */
     CommandInvoker getCommandInvoker();
+
+    /**
+     * Subscribes to {@link ExecutionManager} for listening events.
+     *
+     * @param manager debug manager which generates events.
+     */
+    void subscribeToDebugManager(ExecutionManager manager);
 }

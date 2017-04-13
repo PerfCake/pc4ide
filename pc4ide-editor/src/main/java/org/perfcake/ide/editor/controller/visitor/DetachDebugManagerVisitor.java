@@ -18,19 +18,35 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.exec;
+package org.perfcake.ide.editor.controller.visitor;
+
+import java.util.Iterator;
+import org.perfcake.ide.core.exec.ExecutionManager;
+import org.perfcake.ide.editor.controller.Controller;
 
 /**
- * Execution listener listens for information about PerfCake scenario execution.
+ * Detaches controllers from Debug manager.
  *
  * @author Jakub Knetl
  */
-public interface ExecutionListener {
+public class DetachDebugManagerVisitor implements ControllerVisitor {
 
-    /**
-     * Handles execution event.
-     *
-     * @param event Execution event.
-     */
-    void handleEvent(ExecutionEvent event);
+    private ExecutionManager executionManager;
+
+    public DetachDebugManagerVisitor(ExecutionManager executionManager) {
+        this.executionManager = executionManager;
+    }
+
+    @Override
+    public void visit(Controller controller) {
+
+        executionManager.removeListener(controller);
+
+        Iterator<Controller> it = controller.getChildrenIterator();
+
+        while (it.hasNext()) {
+            Controller child = it.next();
+            child.accept(this);
+        }
+    }
 }

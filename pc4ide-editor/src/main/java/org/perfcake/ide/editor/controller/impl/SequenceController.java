@@ -20,8 +20,7 @@
 
 package org.perfcake.ide.editor.controller.impl;
 
-import java.util.Collections;
-import java.util.List;
+import org.perfcake.ide.core.exec.ExecutionManager;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.SequenceModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
@@ -72,8 +71,7 @@ public class SequenceController extends AbstractController {
     }
 
     @Override
-    public List<String> getObjectNameHints() {
+    public void subscribeToDebugManager(ExecutionManager manager) {
         //TODO(jknetl): get sequence snapshot
-        return Collections.emptyList();
     }
 }

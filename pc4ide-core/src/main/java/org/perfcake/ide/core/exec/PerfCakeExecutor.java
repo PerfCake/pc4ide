@@ -25,9 +25,8 @@ import java.net.ServerSocket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +42,12 @@ public class PerfCakeExecutor {
     static final Logger logger = LoggerFactory.getLogger(PerfCakeExecutor.class);
     public static final int PORT_MAX = 65535;
     public static final String DEFAULT_DEBUG_NAME = "perfcake-1";
+    public static final String DEFAULT_DEBUG_AGENT_NAME = "perfcake-1";
 
     private Path javaHome;
     private Path perfCakeHome;
 
-    private Map<String, String> systemProperties;
+    private List<SystemProperty> systemProperties;
     private List<String> javaOpts;
     private boolean debugMode;
     private String debugName;
@@ -62,23 +62,27 @@ public class PerfCakeExecutor {
     private boolean inheritIo;
     private int jmxPort;
 
+    /**
+     * Creates PerfCakeExecutor which has no options set. Therefore instance returned from this constructor is not valid and it is
+     * required to set required options to be able to run PerfCake.
+     */
+    public PerfCakeExecutor() {
+        this.systemProperties = new ArrayList<>();
+        this.javaOpts = new ArrayList<>();
+    }
 
     /**
-     * Creates new perfcake executor.
+     * Creates new perfcake executor which has mandatory options set.
      *
      * @param perfCakeHome jar contianing perfcake with all dependencies
      * @param scenario     name of the scenario to be executed
      * @param scenarioDir  directory which contains a scenario
      */
     public PerfCakeExecutor(Path perfCakeHome, String scenario, Path scenarioDir) {
+        this();
         this.perfCakeHome = perfCakeHome;
         this.scenario = scenario;
         this.scenarioDir = scenarioDir;
-
-        this.systemProperties = new HashMap<>();
-        this.javaOpts = new ArrayList<>();
-
-        this.javaHome = Paths.get(System.getProperty("java.home"), "bin", "java");
     }
 
     /**
@@ -87,8 +91,28 @@ public class PerfCakeExecutor {
      * @return Process which represents execution
      * @throws IOException if an IO error occurs
      */
-    public Process execute() throws IOException {
+    public ExecutionManager execute() throws IOException {
 
+        List<String> command = createCommandLine();
+
+        logger.debug("Executing scenario using command: \"{}\"", String.join(" ", command));
+        ProcessBuilder pb = new ProcessBuilder(command);
+
+        if (inheritIo) {
+            logger.debug("Inheritng IO from parent process.");
+            pb.inheritIO();
+        }
+
+        Process process = pb.start();
+        ExecutionManager manager = createExecutionManager(process);
+
+        return manager;
+    }
+
+    /**
+     * @return List of command line tokens.
+     */
+    public List<String> createCommandLine() {
         initializeJavaOpts();
 
         List<String> command = new ArrayList<>();
@@ -144,19 +168,10 @@ public class PerfCakeExecutor {
             command.add(messageDir.toString());
         }
 
-        for (Map.Entry<String, String> entry : systemProperties.entrySet()) {
-            command.add(String.format("-D%s=%s", entry.getKey(), entry.getValue()));
+        for (SystemProperty property : systemProperties) {
+            command.add(String.format("-D%s=%s", property.getKey(), property.getValue()));
         }
-
-        logger.debug("Executing scenario using command: \"{}\"", String.join(" ", command));
-        ProcessBuilder pb = new ProcessBuilder(command);
-
-        if (inheritIo) {
-            logger.debug("Inheritng IO from parent process.");
-            pb.inheritIO();
-        }
-
-        return pb.start();
+        return command;
     }
 
     protected void initializeJavaOpts() {
@@ -221,8 +236,13 @@ public class PerfCakeExecutor {
         return this;
     }
 
-    public Map<String, String> getSystemProperties() {
+    public List<SystemProperty> getSystemProperties() {
         return systemProperties;
+    }
+
+    public PerfCakeExecutor setSystemProperties(List<SystemProperty> systemProperties) {
+        this.systemProperties = systemProperties;
+        return this;
     }
 
     public boolean isDebugMode() {
@@ -315,6 +335,16 @@ public class PerfCakeExecutor {
         return this;
     }
 
+    /**
+     * Detects and sets java home based on JRE which this application runs on.
+     *
+     * @return this instance
+     */
+    public PerfCakeExecutor detectJavaHome() {
+        javaHome = Paths.get(System.getProperty("java.home"));
+        return this;
+    }
+
     public boolean isInheritIo() {
         return inheritIo;
     }
@@ -326,5 +356,23 @@ public class PerfCakeExecutor {
 
     public int getJmxPort() {
         return jmxPort;
+    }
+
+    /**
+     * Creates an execution manager.
+     *
+     * @param process process which will be managed by created manger.
+     * @return execution manager.
+     */
+    public ExecutionManager createExecutionManager(Process process) {
+
+        ExecutionManager manager = null;
+        if (isDebugMode()) {
+            String debugAgentName = StringUtils.isBlank(debugName) ? DEFAULT_DEBUG_AGENT_NAME : debugName;
+            manager = new ExecutionManagerImpl(process, "localhost", jmxPort, debugAgentName);
+        } else {
+            manager = new ExecutionManagerImpl(process);
+        }
+        return manager;
     }
 }
