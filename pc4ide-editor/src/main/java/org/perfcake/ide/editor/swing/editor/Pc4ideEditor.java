@@ -143,4 +143,8 @@ public class Pc4ideEditor extends JSplitPane {
     public GraphicalPanel getGraphicalEditorPanel() {
         return graphicalEditorPanel;
     }
+
+    public FormManager getFormManager() {
+        return formManager;
+    }
 }

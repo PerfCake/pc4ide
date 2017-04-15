@@ -184,6 +184,8 @@ public class ScenarioEditor implements FileEditor {
     @Override
     public void selectNotify() {
         documentListener.setEnabled(true);
+        // redraw form to re-size properly
+        pc4ideEditor.getFormManager().getCurrentPageController().drawForm();
     }
 
     @Override

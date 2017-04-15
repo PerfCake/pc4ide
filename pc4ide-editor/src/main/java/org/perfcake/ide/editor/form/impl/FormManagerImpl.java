@@ -27,6 +27,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Stack;
@@ -120,6 +122,7 @@ public class FormManagerImpl implements FormManager {
 
     protected void createUiComponents() {
         masterPanel = swingFactory.createPanel();
+
         masterPanel.setLayout(new GridBagLayout());
 
         headerPanel = swingFactory.createPanel();
@@ -136,6 +139,14 @@ public class FormManagerImpl implements FormManager {
 
         contentPanel = swingFactory.createPanel();
         scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                redrawPage();
+            }
+        });
 
         bottomPanel = swingFactory.createPanel();
 

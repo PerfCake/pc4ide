@@ -643,6 +643,9 @@ public class FormBuilderImpl implements FormBuilder {
 
             JTextField valueTextField = swingFactory.createTextField();
             valueTextField.setText(kv.getValue());
+
+            KeyValueChangeListener kvListener = new KeyValueChangeListener(keyTextField, valueTextField,
+                    controller.getFormManager().getCommandInvoker(), keyValue.cast(KeyValue.class));
             c.weightx = 0.45;
             c.gridx = 0;
             c.gridwidth = 1;
