@@ -27,7 +27,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.KeyListener;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +41,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentListener;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.components.ComponentLoaderImpl;
@@ -312,11 +312,11 @@ public class FormBuilderImpl implements FormBuilder {
         keyField.setText(keyValue.getKey());
         JTextField valueField = swingFactory.createTextField();
         valueField.setText(keyValue.getValue());
-        KeyListener kvListener = new KeyValueChangeListener(keyField, valueField,
+        DocumentListener kvListener = new KeyValueChangeListener(keyField, valueField,
                 controller.getFormManager().getCommandInvoker(), keyValue);
 
-        keyField.addKeyListener(kvListener);
-        valueField.addKeyListener(kvListener);
+        keyField.getDocument().addDocumentListener(kvListener);
+        valueField.getDocument().addDocumentListener(kvListener);
 
         if (useDebugBorders) {
             keyValuePanel.setBorder(BorderFactory.createTitledBorder(sectionName));
@@ -527,7 +527,7 @@ public class FormBuilderImpl implements FormBuilder {
             field.setText(value.getValue());
             ValueChangeListener valueChangedListener = new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(),
                     value);
-            field.addKeyListener(valueChangedListener);
+            field.getDocument().addDocumentListener(valueChangedListener);
         }
 
         panel.add(label, constraints);

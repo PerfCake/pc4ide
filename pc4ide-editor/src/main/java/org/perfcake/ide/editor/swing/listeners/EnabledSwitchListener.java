@@ -22,7 +22,6 @@ package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import org.perfcake.ide.core.command.AddPropertyCommand;
@@ -49,6 +48,7 @@ public class EnabledSwitchListener implements ActionListener {
     private final FormController controller;
     private boolean isNull;
     private String previousValue;
+    private ValueChangeListener fieldChangeListener;
 
     /**
      * Creates new enabled switch listener.
@@ -103,8 +103,9 @@ public class EnabledSwitchListener implements ActionListener {
                 Command command = new AddPropertyCommand(model, value, info);
                 controller.getFormManager().getCommandInvoker().executeCommand(command);
 
-                // add key listener to button which will control the propertyInfo
-                field.addKeyListener(new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(),value));
+                // add listener to button which will control the propertyInfo
+                fieldChangeListener = new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(), value);
+                field.getDocument().addDocumentListener(fieldChangeListener);
             }
         } else {
             previousValue = field.getText();
@@ -120,10 +121,9 @@ public class EnabledSwitchListener implements ActionListener {
                 Command command = new RemovePropertyCommand(model, value, info);
                 controller.getFormManager().getCommandInvoker().executeCommand(command);
 
-                // remove all key listeners because there is no propertyInfo in the field which should be controlled
-                KeyListener[] listeners = field.getKeyListeners();
-                for (KeyListener l : listeners) {
-                    field.removeKeyListener(l);
+                if (fieldChangeListener != null) {
+                    field.getDocument().removeDocumentListener(fieldChangeListener);
+                    fieldChangeListener = null;
                 }
             }
         }

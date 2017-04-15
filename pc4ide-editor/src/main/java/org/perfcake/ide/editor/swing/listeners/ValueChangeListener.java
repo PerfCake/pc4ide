@@ -22,8 +22,8 @@ package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.SimplePropertyCommand;
@@ -35,7 +35,7 @@ import org.perfcake.ide.core.model.properties.Value;
  *
  * @author Jakub Knetl
  */
-public class ValueChangeListener implements ActionListener, KeyListener {
+public class ValueChangeListener implements ActionListener, DocumentListener {
 
     private JTextComponent textComponent;
     private CommandInvoker invoker;
@@ -43,9 +43,10 @@ public class ValueChangeListener implements ActionListener, KeyListener {
 
     /**
      * creates new propertyInfo change listener.
+     *
      * @param textComponent text component
-     * @param invoker invoker
-     * @param value property
+     * @param invoker       invoker
+     * @param value         property
      */
     public ValueChangeListener(JTextComponent textComponent, CommandInvoker invoker, Value value) {
         this.textComponent = textComponent;
@@ -60,18 +61,18 @@ public class ValueChangeListener implements ActionListener, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        fireCommand(textComponent.getText() + e.getKeyChar());
+    public void insertUpdate(DocumentEvent e) {
+        changedUpdate(e);
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        // do nothing
+    public void removeUpdate(DocumentEvent e) {
+        changedUpdate(e);
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        // do nothing
+    public void changedUpdate(DocumentEvent e) {
+        fireCommand(textComponent.getText());
     }
 
     protected void fireCommand(String text) {

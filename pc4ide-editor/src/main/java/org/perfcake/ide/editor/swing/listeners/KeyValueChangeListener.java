@@ -22,8 +22,8 @@ package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.KeyValueCommand;
@@ -35,7 +35,7 @@ import org.perfcake.ide.core.model.properties.KeyValue;
  *
  * @author Jakub Knetl
  */
-public class KeyValueChangeListener implements ActionListener, KeyListener {
+public class KeyValueChangeListener implements ActionListener, DocumentListener {
 
     private JTextComponent keyComponent;
     private JTextComponent valueComopnent;
@@ -64,31 +64,23 @@ public class KeyValueChangeListener implements ActionListener, KeyListener {
         fireCommand(keyComponent.getText(), valueComopnent.getText());
     }
 
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        changedUpdate(e);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        changedUpdate(e);
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        fireCommand(keyComponent.getText(), valueComopnent.getText());
+    }
+
     protected void fireCommand(String key, String value) {
         Command command = new KeyValueCommand(keyValue, key, value);
         invoker.executeCommand(command);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        String key = keyComponent.getText();
-        String value = valueComopnent.getText();
-        if (e.getSource() == keyComponent) {
-            key += e.getKeyChar();
-        }
-        if (e.getSource() == valueComopnent) {
-            value += e.getKeyChar();
-        }
-        fireCommand(key, value);
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // do nothing
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // do nothing
     }
 }
