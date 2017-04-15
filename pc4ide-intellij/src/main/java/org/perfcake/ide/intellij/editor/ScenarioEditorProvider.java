@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
     private static final Logger LOG = Logger.getInstance(ScenarioEditorProvider.class);
     private static final String EDITOR_TYPE_ID = "PerfCakeEditor";
+    private ScenarioEditor scenarioEditor;
 
     public static ScenarioEditorProvider getInstance() {
         return ApplicationManager.getApplication().getComponent(ScenarioEditorProvider.class);
@@ -63,7 +64,8 @@ public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
     public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
         LOG.assertTrue(accept(project, file));
 
-        return new ScenarioEditor(project, file);
+        scenarioEditor = new ScenarioEditor(project, file);
+        return scenarioEditor;
     }
 
     @Override

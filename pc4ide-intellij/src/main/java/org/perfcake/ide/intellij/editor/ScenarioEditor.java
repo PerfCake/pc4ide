@@ -51,7 +51,6 @@ import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
@@ -70,7 +69,7 @@ public class ScenarioEditor implements FileEditor {
     private Project project;
     private VirtualFile file;
     private long modificationStamp = 0L;
-    // private ScenarioDocumentAdapter documentAdapter;
+    // private ScenarioDocumentAdapter documentListener;
     private Module module;
     // private ScenarioManager manager;
     private boolean updateInProcess;
@@ -78,6 +77,8 @@ public class ScenarioEditor implements FileEditor {
     private Pc4ideEditor pc4ideEditor;
     // private final ScenarioModelWrapper modelWrapper;
     private ScenarioModel model = null;
+    private Document document;
+    private ScenarioDocumentListener documentListener = null;
 
     /**
      * Creates new scenario editor.
@@ -106,15 +107,13 @@ public class ScenarioEditor implements FileEditor {
             throw new IllegalArgumentException(eMsg[0] + file + eMsg[1] + project);
         }
 
-        documentAdapter = new ScenarioDocumentAdapter(this);
+        documentListener = new ScenarioDocumentAdapter(this);
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document != null) {
-            document.addDocumentListener(documentAdapter);
+            document.addDocumentListener(documentListener);
         }
         updateInProcess = false;
         */
-
-        final ModelLoader loader = new ModelLoader();
 
         ScenarioManager manager = null;
         try {
@@ -124,6 +123,13 @@ public class ScenarioEditor implements FileEditor {
             ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
 
             pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, new ReflectionComponentCatalogue());
+            documentListener = new ScenarioDocumentListener(getPc4ideEditor());
+            document = FileDocumentManager.getInstance().getDocument(file);
+            if (document != null) {
+                //todo: log and notify
+                document.addDocumentListener(documentListener);
+            }
+
         } catch (PerfCakeException | PerfCakeResourceException e) {
             Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
                     "Cannot create scenario", NotificationType.ERROR);
@@ -142,7 +148,7 @@ public class ScenarioEditor implements FileEditor {
 
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document != null) {
-            // document.removeDocumentListener(documentAdapter);
+            document.removeDocumentListener(documentListener);
         }
     }
 
@@ -156,7 +162,7 @@ public class ScenarioEditor implements FileEditor {
     @Override
     public JComponent getPreferredFocusedComponent() {
         // return pc4ideEditor.getPreferredFocusedComponent();
-        return pc4ideEditor;
+        return pc4ideEditor.getGraphicalEditorPanel();
     }
 
     @NotNull
@@ -177,37 +183,23 @@ public class ScenarioEditor implements FileEditor {
 
     @Override
     public void selectNotify() {
-
-    /*
-        Document document = FileDocumentManager.getInstance().getDocument(file);
-        if (document != null) {
-            if (modificationStamp != document.getModificationStamp()) {
-                FileDocumentManager.getInstance().saveDocument(document);
-                update();
-            }
-        }
-        modelWrapper.repaintDependencies();
-        documentAdapter.enable();*/
+        documentListener.setEnabled(true);
     }
 
     @Override
     public void deselectNotify() {
         try {
             pc4ideEditor.save();
+            if (document != null && modificationStamp != document.getModificationStamp()) {
+                // reloads document from disk --> causes update for other editors (e.g. XML editors)
+                FileDocumentManager.getInstance().reloadFromDisk(document);
+            }
         } catch (Pc4ideException e) {
             //TODO: log and notify user
             e.printStackTrace();
         }
-        /*
-        Document document = FileDocumentManager.getInstance().getDocument(file);
-        if (document != null) {
-            if (modificationStamp != document.getModificationStamp()) {
-                FileDocumentManager.getInstance().saveDocument(document);
-                modificationStamp = document.getModificationStamp();
-            }
-        }
-        documentAdapter.disable();
-        */
+
+        documentListener.setEnabled(false);
     }
 
     @Override
@@ -282,5 +274,10 @@ public class ScenarioEditor implements FileEditor {
     public RootController getScenarioController() {
         return pc4ideEditor.getGraphicalEditorPanel().getController();
     }
+
+    public Pc4ideEditor getPc4ideEditor() {
+        return pc4ideEditor;
+    }
+
 }
 
