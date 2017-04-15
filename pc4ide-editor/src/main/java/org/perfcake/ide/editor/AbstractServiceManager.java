@@ -25,11 +25,19 @@ import static org.perfcake.ide.core.Pc4ideConstants.PERFCAKE_COMMENT_PROPERTIES;
 import java.io.IOException;
 import java.util.Properties;
 import org.perfcake.ide.core.components.ComponentLoader;
+import org.perfcake.ide.core.components.ComponentLoaderImpl;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
+import org.perfcake.ide.core.exec.SimpleInstallationValidator;
 import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.core.model.factory.ValidModelFactory;
+import org.perfcake.ide.editor.colors.DefaultColorScheme;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
+import org.perfcake.ide.editor.controller.NoopExecutionFactory;
+import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
+import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 
 /**
@@ -44,9 +52,21 @@ public abstract class AbstractServiceManager implements ServiceManager {
     protected ModelFactory modelFactory;
     protected ViewFactory viewFactory;
     protected SwingFactory swingFactory;
+    protected ExecutionFactory executionFactory;
     protected PerfCakeInstallationValidator installationValidator;
 
+    /**
+     * Creates service manager with all services initialized.
+     */
     public AbstractServiceManager() {
+        docsService = createDocsService();
+        modelFactory = new ValidModelFactory(docsService);
+        viewFactory = new GraphicalViewFactory();
+        viewFactory.setColorScheme(new DefaultColorScheme());
+        swingFactory = new DefaultSwingFactory();
+        installationValidator = new SimpleInstallationValidator();
+        componentLoader = new ComponentLoaderImpl();
+        executionFactory = new NoopExecutionFactory();
     }
 
     public DocsService getDocsService() {
@@ -63,6 +83,11 @@ public abstract class AbstractServiceManager implements ServiceManager {
 
     public SwingFactory getSwingFactory() {
         return swingFactory;
+    }
+
+    @Override
+    public ExecutionFactory getExecutionFactory() {
+        return executionFactory;
     }
 
     @Override
@@ -139,4 +164,12 @@ public abstract class AbstractServiceManager implements ServiceManager {
         return new DocsServiceImpl(javadocProperties);
     }
 
+    @Override
+    public ServiceManager setExecutinFactory(ExecutionFactory executionFactory) {
+        if (executionFactory == null) {
+            throw new IllegalArgumentException("Exectuion factory cannot be null");
+        }
+        this.executionFactory = executionFactory;
+        return this;
+    }
 }

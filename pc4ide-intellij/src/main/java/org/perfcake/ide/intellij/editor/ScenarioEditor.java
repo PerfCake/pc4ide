@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
+import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
@@ -74,7 +75,7 @@ public class ScenarioEditor implements FileEditor {
     // private ScenarioManager manager;
     private boolean updateInProcess;
 
-    private Pc4ideEditor editorGui;
+    private Pc4ideEditor pc4ideEditor;
     // private final ScenarioModelWrapper modelWrapper;
     private ScenarioModel model = null;
 
@@ -111,11 +112,6 @@ public class ScenarioEditor implements FileEditor {
             document.addDocumentListener(documentAdapter);
         }
         updateInProcess = false;
-
-        manager = PerfCakeScenarioUtil.getScenarioManager(project, file);
-        modelWrapper = new ScenarioModelWrapper(this);
-        editorGui = new ScenarioEditorGui(modelWrapper.getScenarioGui());
-        update();
         */
 
         final ModelLoader loader = new ModelLoader();
@@ -127,7 +123,7 @@ public class ScenarioEditor implements FileEditor {
 
             ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
 
-            editorGui = new Pc4ideEditor(manager, executionFactory, serviceManager, new ReflectionComponentCatalogue());
+            pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, new ReflectionComponentCatalogue());
         } catch (PerfCakeException | PerfCakeResourceException e) {
             Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
                     "Cannot create scenario", NotificationType.ERROR);
@@ -153,14 +149,14 @@ public class ScenarioEditor implements FileEditor {
     @NotNull
     @Override
     public JComponent getComponent() {
-        return editorGui;
+        return pc4ideEditor;
     }
 
     @Nullable
     @Override
     public JComponent getPreferredFocusedComponent() {
-        // return editorGui.getPreferredFocusedComponent();
-        return editorGui;
+        // return pc4ideEditor.getPreferredFocusedComponent();
+        return pc4ideEditor;
     }
 
     @NotNull
@@ -181,6 +177,7 @@ public class ScenarioEditor implements FileEditor {
 
     @Override
     public void selectNotify() {
+
     /*
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document != null) {
@@ -195,6 +192,12 @@ public class ScenarioEditor implements FileEditor {
 
     @Override
     public void deselectNotify() {
+        try {
+            pc4ideEditor.save();
+        } catch (Pc4ideException e) {
+            //TODO: log and notify user
+            e.printStackTrace();
+        }
         /*
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document != null) {
@@ -277,7 +280,7 @@ public class ScenarioEditor implements FileEditor {
      * @return Scenario controller or null, if no controller has been loaded yet.
      */
     public RootController getScenarioController() {
-        return editorGui.getGraphicalEditorPanel().getScenarioController();
+        return pc4ideEditor.getGraphicalEditorPanel().getController();
     }
 }
 

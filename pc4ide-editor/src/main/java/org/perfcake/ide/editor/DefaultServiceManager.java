@@ -20,11 +20,6 @@
 
 package org.perfcake.ide.editor;
 
-import org.perfcake.ide.core.components.ComponentLoaderImpl;
-import org.perfcake.ide.core.exec.SimpleInstallationValidator;
-import org.perfcake.ide.core.model.factory.ValidModelFactory;
-import org.perfcake.ide.editor.swing.DefaultSwingFactory;
-import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +36,6 @@ public class DefaultServiceManager extends AbstractServiceManager implements Ser
 
     private DefaultServiceManager() {
         super();
-
-        docsService = createDocsService();
-        modelFactory = new ValidModelFactory(docsService);
-        viewFactory = new GraphicalViewFactory();
-        swingFactory = new DefaultSwingFactory();
-        installationValidator = new SimpleInstallationValidator();
-        componentLoader = new ComponentLoaderImpl();
     }
 
     /**

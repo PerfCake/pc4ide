@@ -64,7 +64,6 @@ public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
         LOG.assertTrue(accept(project, file));
 
         return new ScenarioEditor(project, file);
-        // return null;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class ScenarioEditorProvider implements FileEditorProvider, DumbAware {
 
     @Override
     public void writeState(@NotNull FileEditorState fileEditorState, @NotNull Project project, @NotNull Element element) {
-        // not used
+        //null
     }
 
     @NotNull

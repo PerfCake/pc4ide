@@ -39,7 +39,7 @@ public interface ActionHandler {
     void handleAction();
 
     /**
-     * @return Controller which owns this handler. If this handler is not assigned to a controller, then getController return null.
+     * @return Controller which owns this handler. If this handler is not assigned to a controller, then createControllers return null.
      */
     Controller getController();
 

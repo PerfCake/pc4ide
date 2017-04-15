@@ -30,18 +30,12 @@ import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.factory.ModelFactory;
-import org.perfcake.ide.core.model.factory.ValidModelFactory;
-import org.perfcake.ide.core.model.serialization.ModelWriter;
 import org.perfcake.ide.editor.ServiceManager;
-import org.perfcake.ide.editor.colors.DefaultColorScheme;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
 import org.perfcake.ide.editor.form.FormManager;
-import org.perfcake.ide.editor.view.factory.GraphicalViewFactory;
-import org.perfcake.ide.editor.view.factory.ViewFactory;
 
 /**
  * GraphicalPanel represents a graphical part of pc4ide editor.
@@ -49,6 +43,11 @@ import org.perfcake.ide.editor.view.factory.ViewFactory;
 public class GraphicalPanel extends JPanel {
 
     private RootController scenarioController;
+    private ScenarioModel scenarioModel;
+    private ScenarioManager scenarioManager;
+    private ServiceManager serviceManager;
+    private FormManager formManager;
+    private CommandInvoker commandInvoker;
 
     /**
      * Creates new graphical editor.
@@ -65,14 +64,19 @@ public class GraphicalPanel extends JPanel {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
-        ViewFactory viewFactory = new GraphicalViewFactory();
-        ModelFactory modelFactory = new ValidModelFactory(scenarioModel.getDocsService());
-        DefaultColorScheme colorScheme = new DefaultColorScheme();
-        viewFactory.setColorScheme(colorScheme);
-        ModelWriter writer = new ModelWriter();
-        scenarioController = new ScenarioController(this, scenarioModel, scenarioManager, executionFactory, serviceManager,
-                modelFactory, viewFactory, commandInvoker, formManager);
-        this.setBackground(colorScheme.getColor(NamedColor.BASE_1));
+        this.scenarioModel = scenarioModel;
+        this.serviceManager = serviceManager;
+        this.formManager = formManager;
+        this.commandInvoker = commandInvoker;
+        this.scenarioManager = scenarioManager;
+
+        scenarioController = createControllers(scenarioManager, scenarioModel);
+        this.setBackground(serviceManager.getViewFactory().getColorScheme().getColor(NamedColor.BASE_1));
+    }
+
+    public ScenarioController createControllers(ScenarioManager scenarioManager, ScenarioModel scenarioModel) {
+        return new ScenarioController(this, scenarioModel, scenarioManager, serviceManager.getExecutionFactory(),
+                serviceManager, serviceManager.getModelFactory(), serviceManager.getViewFactory(), commandInvoker, formManager);
     }
 
     @Override
@@ -152,10 +156,20 @@ public class GraphicalPanel extends JPanel {
             // TODO Auto-generated method stub
 
         }
-
     }
 
-    public RootController getScenarioController() {
+    /**
+     * Changes editor to use new model.
+     *
+     * @param model model to be used
+     */
+    public void setModel(ScenarioModel model) {
+        this.scenarioController = createControllers(scenarioManager, model);
+        //TODO: Create history event, to be able to switch back to previous model!
+        scenarioController.getView().invalidate();
+    }
+
+    public RootController getController() {
         return scenarioController;
     }
 }

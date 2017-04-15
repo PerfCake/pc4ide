@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.form;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
+import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.controller.RootController;
 
@@ -110,7 +111,15 @@ public interface FormManager {
 
     /**
      * Sets graphical editor controller.
+     *
      * @param controller controller of the graphical editor.
      */
     void setGraphicalController(RootController controller);
+
+    /**
+     * Sets model to be managed  with this manager.
+     *
+     * @param model model
+     */
+    void setModel(ScenarioModel model);
 }

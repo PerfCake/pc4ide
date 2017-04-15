@@ -24,6 +24,7 @@ import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
 import org.perfcake.ide.core.model.factory.ModelFactory;
+import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
 
@@ -58,6 +59,11 @@ public interface ServiceManager {
      * @return swing factory instance.
      */
     SwingFactory getSwingFactory();
+
+    /**
+     * @return executionFactory.
+     */
+    ExecutionFactory getExecutionFactory();
 
     /**
      * @return installation validator instance.
@@ -111,5 +117,13 @@ public interface ServiceManager {
      * @return this instance
      */
     ServiceManager setPerfCakeInstallationValidator(PerfCakeInstallationValidator validator);
+
+    /**
+     * Sets PerfCake execution factory.
+     *
+     * @param executionFactory execution factory
+     * @return this instance
+     */
+    ServiceManager setExecutinFactory(ExecutionFactory executionFactory);
 
 }

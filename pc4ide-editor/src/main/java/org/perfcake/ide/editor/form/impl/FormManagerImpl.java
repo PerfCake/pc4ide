@@ -108,14 +108,17 @@ public class FormManagerImpl implements FormManager {
         swingFactory = new DefaultSwingFactory();
         controllers = new Stack<>();
 
-        initializePanels();
+        createUiComponents();
 
-        FormController scenarioController = new FormControllerImpl(scenario, modelFactory);
-        addPage(scenarioController);
-
+        initializeManager(scenario, modelFactory);
     }
 
-    protected void initializePanels() {
+    public void initializeManager(ScenarioModel scenario, ModelFactory modelFactory) {
+        FormController scenarioController = new FormControllerImpl(scenario, modelFactory);
+        addPage(scenarioController);
+    }
+
+    protected void createUiComponents() {
         masterPanel = swingFactory.createPanel();
         masterPanel.setLayout(new GridBagLayout());
 
@@ -349,5 +352,10 @@ public class FormManagerImpl implements FormManager {
                 graphicalRootController.accept(new SelectModelVisitor(currentPage.getModel()));
             }
         }
+    }
+
+    @Override
+    public void setModel(ScenarioModel model) {
+        initializeManager(model, modelFactory);
     }
 }
