@@ -20,16 +20,23 @@
 
 package org.perfcake.ide.intellij.editor;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.event.DocumentAdapter;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
+import org.perfcake.ide.intellij.IntellijUtils;
 
 /**
  * Manages updating scenario editor content on document change.
  * @author Jakub Knetl
  */
 class ScenarioDocumentListener extends DocumentAdapter {
+
+    static final Logger logger = Logger.getInstance(ScenarioDocumentListener.class);
 
     private boolean enabled;
     private Pc4ideEditor editor;
@@ -49,8 +56,14 @@ class ScenarioDocumentListener extends DocumentAdapter {
             //TODO: this is called too often, try to filter events which doesn't need to be handled!
             editor.load();
         } catch (Pc4ideException e1) {
-            //todo: log and notify
-            e1.printStackTrace();
+            Notification notification = IntellijUtils.createNotification("Cannot load scenario", NotificationType.ERROR)
+                    .setSubtitle(e1.getClass().getSimpleName())
+                    .setContent("Cannot load scenario. See Intellij log file for more details");
+
+            Notifications.Bus.notify(notification);
+            logger.error("Cannot load scenario", e1);
+
+
         }
     }
 

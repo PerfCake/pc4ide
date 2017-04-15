@@ -26,6 +26,10 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -37,6 +41,7 @@ import org.perfcake.ide.core.exec.PerfCakeExecutor;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.visitor.AttachDebugManagerVisitor;
 import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 import org.perfcake.ide.intellij.editor.ScenarioEditor;
 
@@ -46,6 +51,8 @@ import org.perfcake.ide.intellij.editor.ScenarioEditor;
  * @author Jakub Knetl
  */
 public class PerfCakeCommandLineState extends CommandLineState {
+
+    static final Logger logger = Logger.getInstance(PerfCakeCommandLineState.class);
 
     private PerfCakeExecutor perfCakeExecutor;
 
@@ -69,8 +76,11 @@ public class PerfCakeCommandLineState extends CommandLineState {
             osProcessHandler.startNotify();
             ProcessTerminatedListener.attach(osProcessHandler);
         } catch (IOException e) {
-            //todo: log exception
-            e.printStackTrace();
+            Notification notification = IntellijUtils.createNotification("PerfCake execution error", NotificationType.WARNING)
+                    .setContent("Execution cannot finish due to error");
+
+            Notifications.Bus.notify(notification);
+            logger.warn("Cannot execute perfcake scenario", e);
         }
 
         return osProcessHandler;

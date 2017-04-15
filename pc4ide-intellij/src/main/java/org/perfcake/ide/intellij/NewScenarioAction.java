@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -42,8 +43,6 @@ import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.intellij.dialogs.ScenarioDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Action which creates new scenario.
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NewScenarioAction extends AnAction {
 
-    static final Logger logger = LoggerFactory.getLogger(NewScenarioAction.class);
+    static final Logger logger = Logger.getInstance(NewScenarioAction.class);
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -70,9 +69,10 @@ public class NewScenarioAction extends AnAction {
             try {
                 scenarioPath = VirtualFileConverter.convertPath(scenarioDir);
             } catch (PerfCakeResourceException e1) {
-                Notification error = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
-                        String.format("Cannot locate dir scenario dir: %s", scenarioDir.getPath()), NotificationType.ERROR);
+                Notification error = IntellijUtils.createNotification("Cannot create scenario", NotificationType.ERROR)
+                        .setContent("Cannot convert path. See log file for more details");
                 Notifications.Bus.notify(error, project);
+                logger.error("Cannot create scenario file in directory: " + scenarioDir, e1);
             }
 
             scenarioPath = scenarioPath.resolve(scenarioName);
@@ -86,7 +86,7 @@ public class NewScenarioAction extends AnAction {
                     manager = ScenarioManagers.createDslManager(scenarioPath);
                     break;
                 default:
-                    logger.warn("Unknown type of scenario: '{}'", dialog.getType());
+                    logger.warn("Unknown type of scenario: " + dialog.getType());
                     return;
             }
 
@@ -100,9 +100,10 @@ public class NewScenarioAction extends AnAction {
                 OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, scenarioFile);
                 openFileDescriptor.navigate(true);
             } catch (ModelSerializationException | ModelConversionException e1) {
-                Notification error = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
-                        "Cannot create scenario", NotificationType.ERROR);
+                Notification error = IntellijUtils.createNotification("Cannot create scenario", NotificationType.ERROR)
+                        .setContent(String.format("Caused by: %s. See log for more details"));
                 Notifications.Bus.notify(error, project);
+                logger.error("Cannot create scenario", e1);
                 return;
             }
 

@@ -55,7 +55,7 @@ import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
-import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 
 
@@ -63,8 +63,8 @@ import org.perfcake.ide.intellij.VirtualFileConverter;
  * Represents a PerfCake scenario editor for IntelliJ Idea.
  */
 public class ScenarioEditor implements FileEditor {
-    private static final Logger LOG = Logger.getInstance(ScenarioEditor.class);
     public static final String EDITOR_NAME = "PerfCake designer";
+    static final Logger logger = Logger.getInstance(ScenarioEditor.class);
 
     private Project project;
     private VirtualFile file;
@@ -90,30 +90,6 @@ public class ScenarioEditor implements FileEditor {
         this.project = project;
         this.file = file instanceof LightVirtualFile ? ((LightVirtualFile) file).getOriginalFile() : file;
         module = ModuleUtil.findModuleForFile(this.file, project);
-        /*
-          if (module != null) {
-            NotificationsConfiguration.getNotificationsConfiguration()
-                    .register(PERFCAKE_NOTIFICATION_ID, NotificationDisplayType.BALLOON);
-            if (!PerfCakeModuleUtil.isPerfCakeModule(module)) {
-                String[] logMsg = Messages.Log.UNSUPPORTED_MODULE;
-                LOG.info(logMsg[0] + file.getScenarioName() + logMsg[1]);
-                Notifications.Bus.notify(new Notification(PERFCAKE_NOTIFICATION_ID,
-                        Messages.Title.UNSUPPORTED_MODULE,
-                        Messages.Dialog.UNSUPPORTED_MODULE,
-                        NotificationType.INFORMATION), project);
-            }
-        } else {
-            String[] eMsg = Messages.Exception.NULL_MODULE;
-            throw new IllegalArgumentException(eMsg[0] + file + eMsg[1] + project);
-        }
-
-        documentListener = new ScenarioDocumentAdapter(this);
-        Document document = FileDocumentManager.getInstance().getDocument(file);
-        if (document != null) {
-            document.addDocumentListener(documentListener);
-        }
-        updateInProcess = false;
-        */
 
         ScenarioManager manager = null;
         try {
@@ -126,12 +102,13 @@ public class ScenarioEditor implements FileEditor {
             documentListener = new ScenarioDocumentListener(getPc4ideEditor());
             document = FileDocumentManager.getInstance().getDocument(file);
             if (document != null) {
-                //todo: log and notify
+                Notification notification = IntellijUtils.createNotification("Cannot locate file", NotificationType.WARNING)
+                        .setContent("File won't be updated on external changes");
                 document.addDocumentListener(documentListener);
             }
 
         } catch (PerfCakeException | PerfCakeResourceException e) {
-            Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID, "Error",
+            Notification notification = new Notification(IntellijUtils.PERFCAKE_NOTIFICATION_ID, "Error",
                     "Cannot create scenario", NotificationType.ERROR);
             Notifications.Bus.notify(notification);
         }
@@ -190,6 +167,12 @@ public class ScenarioEditor implements FileEditor {
 
     @Override
     public void deselectNotify() {
+        saveContent();
+
+        documentListener.setEnabled(false);
+    }
+
+    private void saveContent() {
         try {
             pc4ideEditor.save();
             if (document != null && modificationStamp != document.getModificationStamp()) {
@@ -197,11 +180,12 @@ public class ScenarioEditor implements FileEditor {
                 FileDocumentManager.getInstance().reloadFromDisk(document);
             }
         } catch (Pc4ideException e) {
-            //TODO: log and notify user
-            e.printStackTrace();
-        }
+            logger.error("Cannot save scenacrio", e);
+            Notification notification = IntellijUtils.createNotification("Cannot save editor", NotificationType.ERROR)
+                    .setContent(String.format("Caused by %s. See log for more details.", e.getClass().getName()));
 
-        documentListener.setEnabled(false);
+            Notifications.Bus.notify(notification);
+        }
     }
 
     @Override

@@ -24,6 +24,9 @@ import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import java.nio.file.Paths;
@@ -31,6 +34,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.exec.PerfCakeExecutor;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.PerfCakeIcons;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 import org.perfcake.ide.intellij.module.PerfCakeModuleType;
@@ -42,6 +46,8 @@ import org.perfcake.ide.intellij.settings.Pc4ideSettings;
  * @author Jakub Knetl
  */
 public class PerfCakeConfigurationFactory extends ConfigurationFactory {
+
+    static final Logger logger = Logger.getInstance(PerfCakeConfigurationFactory.class);
 
     protected PerfCakeConfigurationFactory(@NotNull ConfigurationType type) {
         super(type);
@@ -57,8 +63,8 @@ public class PerfCakeConfigurationFactory extends ConfigurationFactory {
             try {
                 executor.setMessageDir(VirtualFileConverter.convertPath(messagesDir));
             } catch (PerfCakeResourceException e) {
-                //TODO: log error
-                e.printStackTrace();
+                Notification notification = IntellijUtils.createNotification("Cannot set messages dir", NotificationType.WARNING);
+                logger.warn("Cannot set messages dir", e);
             }
         }
 
@@ -67,8 +73,8 @@ public class PerfCakeConfigurationFactory extends ConfigurationFactory {
             try {
                 executor.setPluginDir(VirtualFileConverter.convertPath(pluginDir));
             } catch (PerfCakeResourceException e) {
-                //TODO: log error
-                e.printStackTrace();
+                Notification notification = IntellijUtils.createNotification("Cannot set plugin dir", NotificationType.WARNING);
+                logger.warn("Cannot set plugin dir", e);
             }
         }
 
@@ -77,8 +83,8 @@ public class PerfCakeConfigurationFactory extends ConfigurationFactory {
             try {
                 executor.setScenarioDir(VirtualFileConverter.convertPath(scenarioDir));
             } catch (PerfCakeResourceException e) {
-                //TODO: log error
-                e.printStackTrace();
+                Notification notification = IntellijUtils.createNotification("Cannot set scenario dir", NotificationType.WARNING);
+                logger.warn("Cannot set scenario dir", e);
             }
         }
 

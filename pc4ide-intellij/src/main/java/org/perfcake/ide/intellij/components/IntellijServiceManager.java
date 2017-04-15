@@ -23,8 +23,7 @@ package org.perfcake.ide.intellij.components;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.editor.AbstractServiceManager;
-import org.perfcake.ide.editor.DefaultServiceManager;
-import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.editor.IntellijExecutionFactory;
 
 /**
@@ -33,8 +32,6 @@ import org.perfcake.ide.intellij.editor.IntellijExecutionFactory;
  * @author Jakub Knetl
  */
 public class IntellijServiceManager extends AbstractServiceManager implements ApplicationComponent {
-
-    private DefaultServiceManager defaultServiceManager;
 
     public static final String NAME = "ServiceManager";
 
@@ -51,6 +48,6 @@ public class IntellijServiceManager extends AbstractServiceManager implements Ap
     @NotNull
     @Override
     public String getComponentName() {
-        return String.format("%s.%s", PerfCakeIntellijConstatns.PLUGIN_ID, NAME);
+        return String.format("%s.%s", IntellijUtils.PLUGIN_ID, NAME);
     }
 }

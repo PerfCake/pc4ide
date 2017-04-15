@@ -24,6 +24,10 @@ import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.execution.actions.RunConfigurationProducer;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -33,6 +37,7 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.exec.PerfCakeExecutor;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 import org.perfcake.ide.intellij.editor.PerfCakeScenarioUtil;
 
@@ -42,6 +47,8 @@ import org.perfcake.ide.intellij.editor.PerfCakeScenarioUtil;
  * @author Jakub Knetl
  */
 public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<PerfCakeRunConfiguration> {
+
+    static final Logger logger = Logger.getInstance(PerfCakeRunConfigurationProducer.class);
 
     public PerfCakeRunConfigurationProducer() {
         this(new PerfCakeRunConfigurationType());
@@ -74,8 +81,11 @@ public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<P
                 isPerfcake = true;
                 configuration.setGeneratedName();
             } catch (PerfCakeResourceException e) {
-                //todo: log exception
-                e.printStackTrace();
+                Notification notification = IntellijUtils.createNotification("Cannot execute scenario", NotificationType.WARNING)
+                        .setContent("Cannot convert path: " + file.getParent());
+
+                Notifications.Bus.notify(notification);
+                logger.warn("Cannot execute scenario", e);
             }
         }
         return isPerfcake;
@@ -92,14 +102,8 @@ public class PerfCakeRunConfigurationProducer extends RunConfigurationProducer<P
                 file = context.getLocation().getVirtualFile();
                 Path contextPath = VirtualFileConverter.convertPath(file);
                 return Files.isSameFile(contextPath, perfCakeExecutor.getScenarioDir().resolve(perfCakeExecutor.getScenario()));
-            } catch (NullPointerException e) {
-                // do nothing
-            } catch (PerfCakeResourceException e) {
-                //todo: log exception
-                e.printStackTrace();
-            } catch (IOException e) {
-                //todo: log exception
-                e.printStackTrace();
+            } catch (NullPointerException | PerfCakeResourceException | IOException e) {
+                logger.warn("Cannot verify if configuration file was created from context", e);
             }
 
         }

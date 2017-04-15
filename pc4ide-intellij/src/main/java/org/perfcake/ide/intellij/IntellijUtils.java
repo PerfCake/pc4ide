@@ -20,12 +20,28 @@
 
 package org.perfcake.ide.intellij;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationType;
+
 /**
- * Contains Pc4ide constanst constatns for Intellij idea.
+ * Class with static helper methods related to intellij.
+ *
  * @author Jakub Knetl
  */
-public class PerfCakeIntellijConstatns {
+public class IntellijUtils {
 
     public static final String PERFCAKE_NOTIFICATION_ID = "PerfCake Plugin";
     public static final String PLUGIN_ID = "perfcake-plugin";
+    private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup(PERFCAKE_NOTIFICATION_ID,
+            NotificationDisplayType.BALLOON, true, "Event log", PerfCakeIcons.SMALL_PERFCAKE_ICON);
+
+    private IntellijUtils() {
+    }
+
+    public static Notification createNotification(String title, NotificationType type) {
+        return NOTIFICATION_GROUP.createNotification(title, type);
+    }
+
 }

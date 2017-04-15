@@ -33,7 +33,7 @@ import javax.swing.event.HyperlinkEvent;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
 import org.perfcake.ide.editor.ServiceManager;
-import org.perfcake.ide.intellij.PerfCakeIntellijConstatns;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.settings.Pc4ideSettings;
 
 /**
@@ -75,17 +75,17 @@ public class PerfCakeInstallationChecker implements ApplicationComponent {
 
         }
         if (content != null) {
-            Notification notification = new Notification(PerfCakeIntellijConstatns.PERFCAKE_NOTIFICATION_ID,
-                    "Invalid PerfCake installation dir",
-                    content, NotificationType.WARNING, (n, e) -> {
-                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    if (PERFCAKE_DIR_CONFIG.equals(e.getDescription())) {
-                        Project project = ProjectManager.getInstance().getDefaultProject();
-                        ShowSettingsUtil.getInstance().showSettingsDialog(project, Pc4ideSettings.class);
-                    }
-                }
+            Notification notification = IntellijUtils.createNotification("Invalid PerfCake installation dir", NotificationType.WARNING)
+                    .setContent(content)
+                    .setListener((n, e) -> {
+                        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                            if (PERFCAKE_DIR_CONFIG.equals(e.getDescription())) {
+                                Project project = ProjectManager.getInstance().getDefaultProject();
+                                ShowSettingsUtil.getInstance().showSettingsDialog(project, Pc4ideSettings.class);
+                            }
+                        }
 
-            });
+                    });
             Notifications.Bus.notify(notification);
         }
     }

@@ -20,19 +20,18 @@
 
 package org.perfcake.ide.intellij.editor;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.playback.commands.ActionCommand;
 import com.intellij.openapi.util.ActionCallback;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
+import org.perfcake.ide.intellij.IntellijUtils;
 
 /**
  * Retrieves or creates  Intellij  PerfCake run configuration and executes scenario.
@@ -47,18 +46,10 @@ public class IntellijExecutionFactory implements ExecutionFactory {
         AnAction action = ActionManager.getInstance().getAction(actionId);
         String[] actionIds = ActionManager.getInstance().getActionIds("");
 
-        Path file = Paths.get("/home/jknetl/tmp/idea-actions");
-
-        try (BufferedWriter writer = Files.newBufferedWriter(file)) {
-            for (String id : actionIds) {
-                writer.write(id);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         if (action == null) {
-            //TODO: log and notify
+            Notification notification = IntellijUtils.createNotification("Cannot launch scenario", NotificationType.WARNING)
+                    .setContent("Cannot locate Intellij launch action");
+            Notifications.Bus.notify(notification);
             return;
         }
 
