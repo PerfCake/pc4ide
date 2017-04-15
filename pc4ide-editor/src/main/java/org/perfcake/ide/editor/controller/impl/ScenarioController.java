@@ -36,6 +36,7 @@ import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.actions.handlers.DebugHandler;
 import org.perfcake.ide.editor.actions.handlers.RunHandler;
+import org.perfcake.ide.editor.actions.handlers.StopHandler;
 import org.perfcake.ide.editor.controller.AbstractController;
 import org.perfcake.ide.editor.controller.Controller;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
@@ -63,6 +64,7 @@ public class ScenarioController extends AbstractController implements RootContro
     private ServiceManager serviceManager;
 
     private LayeredView messagesAndSequencesView;
+    private ExecutionManager executionManager;
 
     /**
      * Creates new editor controller.
@@ -110,6 +112,7 @@ public class ScenarioController extends AbstractController implements RootContro
         // no handlers
         addActionHandler(new RunHandler());
         addActionHandler(new DebugHandler());
+        addActionHandler(new StopHandler());
 
     }
 
@@ -223,6 +226,7 @@ public class ScenarioController extends AbstractController implements RootContro
         }
         if (event.getType() == ExecutionEvent.Type.STOPED) {
             scenarioView.setRunning(false);
+            this.executionManager = null;  // clear debug manager
         }
     }
 
@@ -230,5 +234,13 @@ public class ScenarioController extends AbstractController implements RootContro
     public void subscribeToDebugManager(ExecutionManager manager) {
         // subscribe only for high level events
         manager.addListener(this, MBeanSubscription.createEmptySubscription());
+
+        // cached debug manager.
+        this.executionManager = manager;
+    }
+
+    @Override
+    public ExecutionManager getExecutionManager() {
+        return executionManager;
     }
 }

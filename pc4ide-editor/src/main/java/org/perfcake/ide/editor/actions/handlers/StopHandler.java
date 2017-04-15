@@ -21,22 +21,33 @@
 package org.perfcake.ide.editor.actions.handlers;
 
 import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.editor.controller.RootController;
 
 /**
- * Debug handlers handles a debug action.
+ * Stops scenario execution.
  *
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
+public class StopHandler extends AbstractHandler {
 
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
+    public StopHandler() {
+        super(ActionType.STOP);
     }
 
     @Override
     public void handleAction() {
-        super.handleAction();
-        //TODO: forcibly set debug option to true
+        if (getController() instanceof RootController) {
+            RootController root = (RootController) getController();
+
+            if (root.getExecutionManager() != null) {
+                try {
+                    root.getExecutionManager().getProcess().destroyForcibly();
+                } catch (NullPointerException e) {
+                    /* we need to catch null pointer exception since root.getExecutionManager() could be non null in if condition, however
+                     * it may become null any time in other trhead if execution has stopped..
+                     */
+                }
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@
 package org.perfcake.ide.editor.controller;
 
 import javax.swing.JComponent;
+import org.perfcake.ide.core.exec.ExecutionManager;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.form.FormManager;
@@ -59,4 +60,9 @@ public interface RootController extends Controller {
      * @return Instance of service manager.
      */
     ServiceManager getServiceManager();
+
+    /**
+     * @return An execution manager if this model is currently being executed. This call will return null otherwise.
+     */
+    ExecutionManager getExecutionManager();
 }
