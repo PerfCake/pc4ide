@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JFrame;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.command.invoker.DefaultCommandInvoker;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.manager.ScenarioManager;
@@ -95,7 +96,7 @@ public class Main {
                 final Pc4ideEditor editor;
                 try {
                     editor = new Pc4ideEditor(scenarioManager, new NoopExecutionFactory(), DefaultServiceManager.getInstance(),
-                            new ReflectionComponentCatalogue());
+                            new DefaultCommandInvoker(), new ReflectionComponentCatalogue());
                     frame.add(editor);
                     frame.setVisible(true);
                 } catch (PerfCakeException e) {

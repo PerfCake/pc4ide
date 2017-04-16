@@ -25,7 +25,6 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JSplitPane;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
-import org.perfcake.ide.core.command.invoker.CommandInvokerImpl;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
@@ -47,6 +46,7 @@ import org.perfcake.ide.editor.form.impl.FormManagerImpl;
 public class Pc4ideEditor extends JSplitPane {
 
     private ScenarioManager scenarioManager;
+    private CommandInvoker commandInvoker;
     private GraphicalPanel graphicalEditorPanel;
     private final FormManager formManager;
 
@@ -57,14 +57,16 @@ public class Pc4ideEditor extends JSplitPane {
      * @param executionFactory   execution manager
      * @param serviceManager     service manager
      * @param componentCatalogue PerfCake inspector manager
+     * @param commandInvoker     Command invoker
      * @throws PerfCakeException When it is impossible to load scenario from scenario path
      */
     public Pc4ideEditor(ScenarioManager scenarioManager, ExecutionFactory executionFactory, ServiceManager serviceManager,
-                        ComponentCatalogue componentCatalogue) throws PerfCakeException {
+                        CommandInvoker commandInvoker, ComponentCatalogue componentCatalogue) throws PerfCakeException {
         super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
         this.scenarioManager = scenarioManager;
+        this.commandInvoker = commandInvoker;
 
 
         final ScenarioModel model;
@@ -73,9 +75,6 @@ public class Pc4ideEditor extends JSplitPane {
         } catch (ModelConversionException | ModelSerializationException e) {
             throw new PerfCakeException("Cannot load model of a scenario.", e);
         }
-
-        // init invoker
-        CommandInvoker commandInvoker = new CommandInvokerImpl();
 
         // init catalogue
         if (componentCatalogue == null) {
@@ -95,7 +94,7 @@ public class Pc4ideEditor extends JSplitPane {
 
             @Override
             public void componentResized(ComponentEvent e) {
-                setDividerLocation(0.85);
+                setDividerLocation(0.80);
                 super.componentResized(e);
             }
         });
@@ -125,15 +124,22 @@ public class Pc4ideEditor extends JSplitPane {
         RootController controller = getGraphicalEditorPanel().getController();
         try {
             ScenarioModel model = controller.getScenarioManager().loadScenarioModel();
-            getGraphicalEditorPanel().setModel(model);
-            formManager.setGraphicalController(graphicalEditorPanel.getController());
-            formManager.setModel(model);
-
-
+            updateModel(model);
         } catch (ModelSerializationException | ModelConversionException e) {
             throw new Pc4ideException("Cannot load scenario: " + controller.getScenarioManager().getScenarioLocation(), e);
         }
 
+    }
+
+    /**
+     * Updates model and all dependent controllers.
+     *
+     * @param model new model instance
+     */
+    public void updateModel(ScenarioModel model) {
+        getGraphicalEditorPanel().setModel(model);
+        formManager.setGraphicalController(graphicalEditorPanel.getController());
+        formManager.setModel(model);
     }
 
     private ComponentCatalogue createComponentCatalogue() {
@@ -146,5 +152,13 @@ public class Pc4ideEditor extends JSplitPane {
 
     public FormManager getFormManager() {
         return formManager;
+    }
+
+    public CommandInvoker getCommandInvoker() {
+        return commandInvoker;
+    }
+
+    public ScenarioManager getScenarioManager() {
+        return scenarioManager;
     }
 }

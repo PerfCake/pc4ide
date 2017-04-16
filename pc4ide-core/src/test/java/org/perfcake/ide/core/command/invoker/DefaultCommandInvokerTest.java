@@ -34,11 +34,11 @@ import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.exception.CommandException;
 
 /**
- * Tests for {@link CommandInvokerImpl}.
+ * Tests for {@link DefaultCommandInvoker}.
  *
  * @author Jakub Knetl
  */
-public class CommandInvokerImplTest {
+public class DefaultCommandInvokerTest {
 
     private CommandInvoker history;
     private Command c1;
@@ -48,7 +48,7 @@ public class CommandInvokerImplTest {
 
     @Before
     public void setUp() {
-        history = new CommandInvokerImpl();
+        history = new DefaultCommandInvoker();
         c1 = mock(Command.class);
         c2 = mock(Command.class);
         c3 = mock(Command.class);

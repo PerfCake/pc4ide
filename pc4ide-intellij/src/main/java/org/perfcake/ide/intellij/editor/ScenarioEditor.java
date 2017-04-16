@@ -41,12 +41,12 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.LightVirtualFile;
 import java.beans.PropertyChangeListener;
+import java.util.Objects;
 import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
-import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
@@ -55,6 +55,7 @@ import org.perfcake.ide.editor.ServiceManager;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
+import org.perfcake.ide.intellij.IntellijCommandInvoker;
 import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 
@@ -68,7 +69,10 @@ public class ScenarioEditor implements FileEditor {
 
     private Project project;
     private VirtualFile file;
-    private long modificationStamp = 0L;
+
+    // revision (timestamp) of the currently drawed document
+    private long currentDocumentRevision = 0L;
+
     // private ScenarioDocumentAdapter documentListener;
     private Module module;
     // private ScenarioManager manager;
@@ -77,7 +81,6 @@ public class ScenarioEditor implements FileEditor {
     private Pc4ideEditor pc4ideEditor;
     // private final ScenarioModelWrapper modelWrapper;
     private ScenarioModel model = null;
-    private Document document;
     private ScenarioDocumentListener documentListener = null;
 
     /**
@@ -98,10 +101,12 @@ public class ScenarioEditor implements FileEditor {
 
             ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
 
-            pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, new ReflectionComponentCatalogue());
-            documentListener = new ScenarioDocumentListener(getPc4ideEditor());
-            document = FileDocumentManager.getInstance().getDocument(file);
+            Document document = FileDocumentManager.getInstance().getDocument(file);
+            IntellijCommandInvoker commandInvoker = new IntellijCommandInvoker(project, this);
+            pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, commandInvoker, new ReflectionComponentCatalogue());
+            documentListener = new ScenarioDocumentListener(this);
             if (document != null) {
+                currentDocumentRevision = document.getModificationStamp();
                 Notification notification = IntellijUtils.createNotification("Cannot locate file", NotificationType.WARNING)
                         .setContent("File won't be updated on external changes");
                 document.addDocumentListener(documentListener);
@@ -161,8 +166,15 @@ public class ScenarioEditor implements FileEditor {
     @Override
     public void selectNotify() {
         documentListener.setEnabled(true);
-        // redraw form to re-size properly
-        pc4ideEditor.getFormManager().getCurrentPageController().drawForm();
+        Document document = FileDocumentManager.getInstance().getDocument(file);
+        if (document != null && document.getModificationStamp() != currentDocumentRevision) {
+            // document has changed during editor inactivity, update needed
+            IntellijUtils.updateEditorContent(this, document);
+            currentDocumentRevision = document.getModificationStamp();
+        } else {
+            // form manager needs to be redrawn even if document didn't changed in order to resize itself properly
+            pc4ideEditor.getFormManager().getCurrentPageController().drawForm();
+        }
     }
 
     @Override
@@ -173,35 +185,24 @@ public class ScenarioEditor implements FileEditor {
     }
 
     private void saveContent() {
-        try {
-            pc4ideEditor.save();
-            if (document != null && modificationStamp != document.getModificationStamp()) {
-                // reloads document from disk --> causes update for other editors (e.g. XML editors)
-                FileDocumentManager.getInstance().reloadFromDisk(document);
-            }
-        } catch (Pc4ideException e) {
-            logger.error("Cannot save scenacrio", e);
-            Notification notification = IntellijUtils.createNotification("Cannot save editor", NotificationType.ERROR)
-                    .setContent(String.format("Caused by %s. See log for more details.", e.getClass().getName()));
-
-            Notifications.Bus.notify(notification);
+        Document document = FileDocumentManager.getInstance().getDocument(file);
+        if (document != null) {
+            ApplicationManager.getApplication().runWriteAction(() -> {
+                FileDocumentManager.getInstance().saveDocument(document);
+                currentDocumentRevision = document.getModificationStamp();
+            });
         }
     }
 
     @Override
     public void setState(@NotNull FileEditorState state) {
-        // not used
+        // do nothing
     }
 
     @NotNull
     @Override
     public FileEditorState getState(@NotNull FileEditorStateLevel level) {
-        return new FileEditorState() {
-            @Override
-            public boolean canBeMergedWith(FileEditorState fileEditorState, FileEditorStateLevel fileEditorStateLevel) {
-                return true;
-            }
-        };
+        return new ScenarioEditorState(currentDocumentRevision);
     }
 
     @Override
@@ -265,5 +266,55 @@ public class ScenarioEditor implements FileEditor {
         return pc4ideEditor;
     }
 
+    public long getCurrentDocumentRevision() {
+        return currentDocumentRevision;
+    }
+
+    /**
+     * Updates stored document revision to latest version. This method should be called if some external class makes changes to
+     * the document and updates editor view in order to keep track which version of the document was drawn.
+     */
+    public void updateDocumentRevision() {
+        Document document = FileDocumentManager.getInstance().getDocument(file);
+        if (document == null) {
+            logger.warn("Cannot update document revision. Document is null");
+        }
+        currentDocumentRevision = document.getModificationStamp();
+    }
+
+    private static class ScenarioEditorState implements FileEditorState {
+
+        long documentRevision;
+
+        public ScenarioEditorState(long documentRevision) {
+            this.documentRevision = documentRevision;
+        }
+
+        public long getDocumentRevision() {
+            return documentRevision;
+        }
+
+        @Override
+        public boolean canBeMergedWith(FileEditorState fileEditorState, FileEditorStateLevel fileEditorStateLevel) {
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ScenarioEditorState that = (ScenarioEditorState) o;
+            return documentRevision == that.documentRevision;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(documentRevision);
+        }
+    }
 }
 

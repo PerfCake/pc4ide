@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jakub Knetl
  */
-public class CommandInvokerImpl implements CommandInvoker {
+public class DefaultCommandInvoker implements CommandInvoker {
 
-    static final Logger logger = LoggerFactory.getLogger(CommandInvokerImpl.class);
+    static final Logger logger = LoggerFactory.getLogger(DefaultCommandInvoker.class);
 
     // invoker list
     private List<Command> historyList = new ArrayList<>();
