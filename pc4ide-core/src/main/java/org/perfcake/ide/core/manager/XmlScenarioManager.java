@@ -20,10 +20,13 @@
 
 package org.perfcake.ide.core.manager;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.exception.ModelSerializationException;
-import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.serialization.ModelLoader;
 import org.perfcake.ide.core.model.serialization.ModelWriter;
@@ -55,12 +58,33 @@ public class XmlScenarioManager implements ScenarioManager {
 
     @Override
     public ScenarioModel loadScenarioModel() throws ModelSerializationException, ModelConversionException {
-        return loader.loadModel(location);
+        ScenarioModel scenarioModel = null;
+        try (InputStream inputStream = Files.newInputStream(location)) {
+            scenarioModel = loadScenarioModel(inputStream);
+        } catch (IOException e) {
+            throw new ModelSerializationException("Cannot create inputstream", e);
+        }
+        return scenarioModel;
+    }
+
+    @Override
+    public ScenarioModel loadScenarioModel(InputStream inputStream) throws ModelSerializationException, ModelConversionException {
+        return loader.loadModel(inputStream);
     }
 
     @Override
     public void writeScenario(ScenarioModel model) throws ModelSerializationException, ModelConversionException {
-        writer.writeScenario(model, location);
+
+        try (OutputStream outputStream = Files.newOutputStream(location)) {
+            writeScenario(model, outputStream);
+        } catch (IOException e) {
+            throw new ModelSerializationException("Cannot create output stream.", e);
+        }
+    }
+
+    @Override
+    public void writeScenario(ScenarioModel model, OutputStream outputStream) throws ModelSerializationException, ModelConversionException {
+        writer.writeScenario(model, outputStream);
     }
 
     @Override

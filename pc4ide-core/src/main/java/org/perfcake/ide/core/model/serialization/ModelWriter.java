@@ -22,9 +22,9 @@ package org.perfcake.ide.core.model.serialization;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -77,18 +77,19 @@ public class ModelWriter {
      * Writes scenario to the file.
      *
      * @param scenarioModel model of a scenario
-     * @param file          file for storing scenario
+     * @param outputStream  Output stream where scenario will be written.
      * @throws ModelConversionException    when model cannot be converted to PerfCake XML model
      * @throws ModelSerializationException when model cannot be serialized
      */
-    public void writeScenario(ScenarioModel scenarioModel, Path file) throws ModelConversionException, ModelSerializationException {
+    public void writeScenario(ScenarioModel scenarioModel, OutputStream outputStream) throws ModelConversionException,
+            ModelSerializationException {
         ArrayList<SerializationPostProcessor> postProcessors = new ArrayList<>();
         Scenario scenario = converter.convertToXmlModel(scenarioModel, postProcessors);
 
-        writeScenario(scenario, file, postProcessors);
+        writeScenario(scenario, outputStream, postProcessors);
     }
 
-    private void writeScenario(Scenario scenario, Path file, List<SerializationPostProcessor> postProcessors)
+    private void writeScenario(Scenario scenario, OutputStream outputStream, List<SerializationPostProcessor> postProcessors)
             throws ModelSerializationException {
         try {
             JAXBContext context = JAXBContext.newInstance(org.perfcake.model.Scenario.class);
@@ -114,7 +115,7 @@ public class ModelWriter {
 
             //add line breaks and indentation into output
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(scenario, file.toFile());
+            marshaller.marshal(scenario, outputStream);
         } catch (JAXBException e) {
             throw new ModelSerializationException("JAXB error when saving scenario", e);
         } catch (MalformedURLException e) {

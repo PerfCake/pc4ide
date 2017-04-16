@@ -24,7 +24,10 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Test;
@@ -44,7 +47,7 @@ public class ModelLoaderTest {
     private ModelLoader loader = new ModelLoader();
 
     @Test
-    public void testParsing() throws ModelConversionException, PerfCakeException, MalformedURLException, ModelSerializationException {
+    public void testParsing() throws ModelConversionException, PerfCakeException, IOException, ModelSerializationException {
 
         String[] scenarios = new String[] {
                 "bob.xml",
@@ -53,8 +56,10 @@ public class ModelLoaderTest {
         };
         for (String scenario : scenarios) {
             Path scenarioPath = Paths.get("src/test/resources/users/scenarios/" + scenario);
-            Scenario xmlScenario = loader.parse(scenarioPath);
-            assertThat(xmlScenario, not(nullValue()));
+            try (InputStream inputStream = Files.newInputStream(scenarioPath)) {
+                Scenario xmlScenario = loader.parse(inputStream);
+                assertThat(xmlScenario, not(nullValue()));
+            }
         }
     }
 }

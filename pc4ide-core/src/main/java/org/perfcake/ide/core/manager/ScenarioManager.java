@@ -20,11 +20,11 @@
 
 package org.perfcake.ide.core.manager;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
-import org.apache.commons.lang3.SerializationException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.exception.ModelSerializationException;
-import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.components.ScenarioModel;
 
 /**
@@ -35,23 +35,43 @@ import org.perfcake.ide.core.model.components.ScenarioModel;
 public interface ScenarioManager {
 
     /**
-     * Loads scenario from its location and build Scenario Model.
+     * Loads scenario and build Scenario Model.
      *
      * @return Scenario model
-     * @throws ModelSerializationException   If scenario cannot be loaded.
-     * @throws ModelConversionException if model cannot be converted from its persistent representation.
+     * @throws ModelSerializationException If scenario cannot be loaded.
+     * @throws ModelConversionException    if model cannot be converted from its persistent representation.
      */
     ScenarioModel loadScenarioModel() throws ModelSerializationException, ModelConversionException;
 
+    /**
+     * Loads scenario from specific input streamt and build Scenario Model.
+     *
+     * @param inputStream InputStream which contains scenario definition
+     * @return Scenario model
+     * @throws ModelSerializationException If scenario cannot be loaded.
+     * @throws ModelConversionException    if model cannot be converted from its persistent representation.
+     */
+    ScenarioModel loadScenarioModel(InputStream inputStream) throws ModelSerializationException, ModelConversionException;
+
 
     /**
-     * Writes scenario model to a file.
+     * Writes scenario model into scenario file.
      *
      * @param model Model to be written.
-     * @throws ModelSerializationException   if model cannot be serialized
-     * @throws ModelConversionException if model cannot be converted to its persistent representaiton.
+     * @throws ModelSerializationException if model cannot be serialized
+     * @throws ModelConversionException    if model cannot be converted to its persistent representaiton.
      */
     void writeScenario(ScenarioModel model) throws ModelSerializationException, ModelConversionException;
+
+    /**
+     * Writes scenario model into specified output stream.
+     *
+     * @param model        Model to be written.
+     * @param outputStream output stream wher scenario will be written
+     * @throws ModelSerializationException if model cannot be serialized
+     * @throws ModelConversionException    if model cannot be converted to its persistent representaiton.
+     */
+    void writeScenario(ScenarioModel model, OutputStream outputStream) throws ModelSerializationException, ModelConversionException;
 
     Path getScenarioLocation();
 

@@ -35,6 +35,7 @@ public class ScenarioManagers {
     /**
      * Creates new scenario manager which manages file in XML format.
      *
+     * @param path path to scenario location
      * @return scenario manager of XML file
      * @throws NullPointerException if path is null.
      */
@@ -49,6 +50,7 @@ public class ScenarioManagers {
     /**
      * Creates new scenario manager which manages file in DSL format.
      *
+     * @param path path to scenario location
      * @return scenario manager of DSL file
      * @throws NullPointerException if path is null.
      */
