@@ -18,7 +18,7 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.converter;
+package org.perfcake.ide.core.model.converter.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

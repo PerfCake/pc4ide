@@ -51,7 +51,7 @@ import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.SenderModel;
 import org.perfcake.ide.core.model.components.SequenceModel;
 import org.perfcake.ide.core.model.components.ValidatorModel;
-import org.perfcake.ide.core.model.converter.XmlConverter;
+import org.perfcake.ide.core.model.converter.xml.XmlConverter;
 import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.model.HeaderType;
@@ -60,7 +60,7 @@ import org.perfcake.model.PropertyType;
 import org.perfcake.model.Scenario;
 
 /**
- * Tests for converting xml model to pc4ide model using {@link org.perfcake.ide.core.model.converter.XmlConverter}.
+ * Tests for converting xml model to pc4ide model using {@link XmlConverter}.
  *
  * @author Jakub Knetl
  */
