@@ -22,9 +22,11 @@ package org.perfcake.ide.core.model.converter.dsl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.perfcake.ide.core.exception.ModelConversionException;
@@ -77,6 +79,11 @@ public class ScenarioParser {
 
         // TODO: is run required to be on the second line  (in other words is order important?)
         for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(" ");
+            if (parts.length == 0 || isComment(lines[i])) {
+                // skip empty line or line which starts with comment
+                continue;
+            }
             if (i == 1 && !lines[i].contains("run ")) {
                 propertiesLine = lines[i];
             }
@@ -288,12 +295,15 @@ public class ScenarioParser {
             }
             Scenario.Reporting.Reporter reporterModel = new Scenario.Reporting.Reporter();
             reporterModel.setClazz(parts[1].substring(1, parts[1].length() - 1));
-            if (parts.length - 2 > 1) {
-                String[] properties = Arrays.copyOfRange(parts, 2, parts.length - 1);
-                reporterModel.getProperty().addAll(parseProperties(properties));
-                reporterModel.setEnabled(parseEnabled(parts[parts.length - 1]));
+
+            if (reporterLine.contains("disabled")) {
+                reporterModel.setEnabled(false);
             } else {
-                reporterModel.setEnabled(parseEnabled(parts[2]));
+                reporterModel.setEnabled(true);
+            }
+            if (parts.length - 2 > 1) {
+                String[] properties = removeTokens(2, parts, "enabled", "disabled");
+                reporterModel.getProperty().addAll(parseProperties(properties));
             }
             for (String destinationLine : destinationLines) {
                 reporterModel.getDestination().add(parseDestination(destinationLine));
@@ -413,12 +423,14 @@ public class ScenarioParser {
             period.setValue(p.getValue());
             destinationModel.getPeriod().add(period);
         }
-        if (parts.length - 4 > 1) {
-            String[] properties = Arrays.copyOfRange(parts, 4, parts.length - 1);
-            destinationModel.getProperty().addAll(parseProperties(properties));
-            destinationModel.setEnabled(parseEnabled(parts[parts.length - 1]));
+        if (destinationLine.contains("disabled")) {
+            destinationModel.setEnabled(false);
         } else {
-            destinationModel.setEnabled(parseEnabled(parts[4]));
+            destinationModel.setEnabled(true);
+        }
+        if (parts.length - 4 > 1) {
+            String[] properties = removeTokens(4, parts, "enabled", "disabled");
+            destinationModel.getProperty().addAll(parseProperties(properties));
         }
         return destinationModel;
     }
@@ -426,6 +438,7 @@ public class ScenarioParser {
     private Scenario.Validation.Validator parseValidator(String validatorLine) throws ModelConversionException {
         validatorLine = removeFirstSpaces(validatorLine);
         String[] parts = validatorLine.split(" ");
+        parts = mergeTokens(parts); //merge tokens which belong together because of quotation marks
         if (!parts[0].equals("validator")) {
             throw new ModelConversionException("validator line not starting with \"validator\"!");
         }
@@ -511,7 +524,7 @@ public class ScenarioParser {
         if (periodAsString == null) {
             throw new ModelConversionException("unable to parse period!");
         }
-        if (periodAsString.contains("%")) {
+        if (periodAsString.contains(".percent") || periodAsString.contains("%")) {
             Period period = new Period();
             period.setType("percentage");
             period.setValue(periodAsString.substring(0, periodAsString.length() - 1));
@@ -553,7 +566,83 @@ public class ScenarioParser {
             period.setValue(countMilliseconds(periodAsString.substring(0, periodAsString.length() - 2), 86400000L));
             return period;
         }
-        throw new ModelConversionException("unable to parse period - invalid period type!");
+        throw new ModelConversionException("unable to parse period - invalid period type: " + periodAsString);
+    }
+
+    /**
+     * Copies array from the begin index and filters out all tokens which are equal to any of removeTokens.
+     *
+     * @param beginIndex   begin index of the array from
+     * @param tokens       tokens
+     * @param removeTokens tokens which will be removed from toknes array
+     * @return Array of filtered tokens
+     */
+    private String[] removeTokens(int beginIndex, String[] tokens, String... removeTokens) {
+        if (removeTokens == null || removeTokens.length == 0) {
+            return tokens;
+        }
+
+        if (beginIndex >= tokens.length) {
+            throw new IllegalArgumentException("beginIndex out of range");
+        }
+
+        Set<String> removeList = new HashSet(Arrays.asList(removeTokens));
+        List<String> result = new ArrayList<>();
+        for (String token : tokens) {
+            if (!removeList.contains(token)) {
+                result.add(token);
+            }
+        }
+
+        return result.toArray(new String[] {});
+
+    }
+
+    /**
+     * Determines whether a line is a comment.
+     *
+     * @param line line to be checked
+     * @return true if this lines is comment only
+     */
+    private boolean isComment(String line) {
+        String trimmed = line.trim();
+        return trimmed.startsWith("//");
+    }
+
+    /**
+     * Merges tokens which belongs together because of quotation marks.
+     *
+     * @param tokens array of tokens
+     * @return tokens
+     */
+    private String[] mergeTokens(String[] tokens) throws ModelConversionException {
+        List<String> merged = new ArrayList<>();
+
+        boolean mergeInProgress = false;
+        StringBuilder mergedToken = null;
+        for (String token : tokens) {
+            // start merging if token starts with qutation mark, but does not end with quoatation mark
+            if (token.startsWith("\"") && !token.endsWith("\"")) {
+                mergeInProgress = true;
+                mergedToken = new StringBuilder();
+            }
+
+            if (mergeInProgress) {
+                mergedToken.append(token);
+                if (token.endsWith("\"")) {
+                    mergeInProgress = false;
+                    merged.add(mergedToken.toString());
+                }
+            } else {
+                merged.add(token);
+            }
+        }
+
+        if (mergeInProgress) {
+            throw new ModelConversionException("missing ending quotation mark (\") in tokens: " + String.join(" ", tokens));
+        }
+
+        return merged.toArray(new String[] {});
     }
 
     private String countMilliseconds(String value, Long multiplier) {

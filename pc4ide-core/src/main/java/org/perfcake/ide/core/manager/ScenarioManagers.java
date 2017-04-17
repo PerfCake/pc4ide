@@ -37,6 +37,30 @@ public class ScenarioManagers {
     }
 
     /**
+     * Creates scenario manager. It decides whether dsl or xml scenario manager is loaded based on file extension.
+     *
+     * @param path to the managed file. File should have either ".xml" or ".dsl" suffix
+     * @return Scenario manager
+     */
+    public static ScenarioManager createScenarioManager(Path path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path cannot be empty.");
+        }
+        if (!path.toString().endsWith(".dsl") && !path.toString().endsWith(".xml")) {
+            throw new IllegalArgumentException("Unrecognized file suffix: " + path.getFileName().toString());
+        }
+        if (path.toString().endsWith(".xml")) {
+            return createXmlManager(path);
+        }
+        if (path.toString().endsWith(".dsl")) {
+            return createDslManager(path);
+        }
+
+        return null;
+
+    }
+
+    /**
      * Creates new scenario manager which manages file in XML format.
      *
      * @param path path to scenario location
@@ -45,7 +69,7 @@ public class ScenarioManagers {
      */
     public static ScenarioManager createXmlManager(Path path) throws NullPointerException {
         if (path == null) {
-            throw new NullPointerException("Path cannot be empty.");
+            throw new IllegalArgumentException("Path cannot be empty.");
         }
         return new ScenarioManagerImpl(path, new XmlModelWriter(), new XmlModelLoader());
 
@@ -60,7 +84,7 @@ public class ScenarioManagers {
      */
     public static ScenarioManager createDslManager(Path path) throws NullPointerException {
         if (path == null) {
-            throw new NullPointerException("Path cannot be empty.");
+            throw new IllegalArgumentException("Path cannot be empty.");
         }
         return new ScenarioManagerImpl(path, new DslModelWriter(path.getFileName().toString()), new DslModelLoader());
     }

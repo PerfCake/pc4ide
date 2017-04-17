@@ -96,7 +96,7 @@ public class ScenarioEditor implements FileEditor {
 
         ScenarioManager manager = null;
         try {
-            manager = ScenarioManagers.createXmlManager(VirtualFileConverter.convertPath(file));
+            manager = ScenarioManagers.createScenarioManager(VirtualFileConverter.convertPath(file));
             ExecutionFactory executionFactory = new IntellijExecutionFactory();
 
             ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
