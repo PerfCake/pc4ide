@@ -208,7 +208,7 @@ public class ScenarioBuilder {
             case "iteration":
                 return value + ".iterations";
             case "percentage":
-                return value + "%";
+                return value + ".percent";
             default:
                 throw new IllegalArgumentException("Invalid period type!");
         }

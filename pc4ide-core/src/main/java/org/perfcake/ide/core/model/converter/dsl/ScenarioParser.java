@@ -527,7 +527,7 @@ public class ScenarioParser {
         if (periodAsString.contains(".percent") || periodAsString.contains("%")) {
             Period period = new Period();
             period.setType("percentage");
-            period.setValue(periodAsString.substring(0, periodAsString.length() - 1));
+            period.setValue(periodAsString.substring(0, periodAsString.length() - 8));
             return period;
         }
         if (periodAsString.contains(".iterations")) {

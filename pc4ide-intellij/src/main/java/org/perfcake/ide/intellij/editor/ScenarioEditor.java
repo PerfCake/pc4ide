@@ -188,8 +188,10 @@ public class ScenarioEditor implements FileEditor {
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document != null) {
             ApplicationManager.getApplication().runWriteAction(() -> {
-                FileDocumentManager.getInstance().saveDocument(document);
-                currentDocumentRevision = document.getModificationStamp();
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    FileDocumentManager.getInstance().saveDocument(document);
+                    currentDocumentRevision = document.getModificationStamp();
+                });
             });
         }
     }

@@ -22,7 +22,6 @@ package org.perfcake.ide.core.model.serialization;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import javax.xml.XMLConstants;
@@ -86,8 +85,6 @@ public class XmlModelLoader implements ModelLoader {
             throw new ModelSerializationException("Cannot validate scenario configuration. PerfCake installation seems broken. ", e);
         } catch (final JAXBException e) {
             throw new ModelSerializationException("Cannot parse scenario configuration: ", e);
-        } catch (final MalformedURLException e) {
-            throw new ModelSerializationException("Cannot read scenario schema to validate it: ", e);
         } catch (final IOException e) {
             throw new ModelSerializationException("Wrong scenario url.", e);
         } catch (PerfCakeException e) {

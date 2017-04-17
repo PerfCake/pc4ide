@@ -426,7 +426,7 @@ public class XmlConverter {
             reporter.setEnabled(enabled);
 
             // if value is not simply true or false, then store postprocessing request into the post processing context
-            if (enabledValue.getValue().equalsIgnoreCase("true") || enabledValue.getValue().equalsIgnoreCase("false")) {
+            if (!enabledValue.getValue().equalsIgnoreCase("true") && !enabledValue.getValue().equalsIgnoreCase("false")) {
                 PropertyType postProccessingProperty = createPostProcessingProperty(postProcessingContext);
                 reporter.getProperty().add(postProccessingProperty);
 
@@ -455,7 +455,7 @@ public class XmlConverter {
             destination.setEnabled(Boolean.valueOf(enabledValue.getValue()));
 
             // if value is not simply true or false, then store postprocessing request into the post processing context
-            if (enabledValue.getValue().equalsIgnoreCase("true") || enabledValue.getValue().equalsIgnoreCase("false")) {
+            if (!enabledValue.getValue().equalsIgnoreCase("true") && !enabledValue.getValue().equalsIgnoreCase("false")) {
                 PropertyType postProccessingProperty = createPostProcessingProperty(postProcessingContext);
                 destination.getProperty().add(postProccessingProperty);
 
