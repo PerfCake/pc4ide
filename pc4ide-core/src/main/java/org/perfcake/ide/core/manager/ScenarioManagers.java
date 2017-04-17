@@ -21,6 +21,10 @@
 package org.perfcake.ide.core.manager;
 
 import java.nio.file.Path;
+import org.perfcake.ide.core.model.serialization.DslModelLoader;
+import org.perfcake.ide.core.model.serialization.DslModelWriter;
+import org.perfcake.ide.core.model.serialization.XmlModelLoader;
+import org.perfcake.ide.core.model.serialization.XmlModelWriter;
 
 /**
  * Non instantiable class with static factory methods for creating scenario managers.
@@ -43,7 +47,7 @@ public class ScenarioManagers {
         if (path == null) {
             throw new NullPointerException("Path cannot be empty.");
         }
-        return new XmlScenarioManager(path);
+        return new ScenarioManagerImpl(path, new XmlModelWriter(), new XmlModelLoader());
 
     }
 
@@ -58,7 +62,6 @@ public class ScenarioManagers {
         if (path == null) {
             throw new NullPointerException("Path cannot be empty.");
         }
-        //TODO(jknetl): implement this
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return new ScenarioManagerImpl(path, new DslModelWriter(path.getFileName().toString()), new DslModelLoader());
     }
 }

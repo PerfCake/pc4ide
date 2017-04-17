@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,17 +33,17 @@ import org.junit.Test;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.exception.ModelSerializationException;
-import org.perfcake.ide.core.model.serialization.ModelLoader;
+import org.perfcake.ide.core.model.serialization.XmlModelLoader;
 import org.perfcake.model.Scenario;
 
 /**
- * Tests for {@link org.perfcake.ide.core.model.serialization.ModelLoader}.
+ * Tests for {@link XmlModelLoader}.
  *
  * @author Jakub Knetl
  */
-public class ModelLoaderTest {
+public class XmlModelLoaderTest {
 
-    private ModelLoader loader = new ModelLoader();
+    private XmlModelLoader loader = new XmlModelLoader();
 
     @Test
     public void testParsing() throws ModelConversionException, PerfCakeException, IOException, ModelSerializationException {
