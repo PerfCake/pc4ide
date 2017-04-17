@@ -52,7 +52,7 @@ public class PerfCakeScenarioUtil {
 
     // public static ScenarioManager getScenarioManager(@NotNull Project project, @NotNull VirtualFile file){
     // if (isXmlScenario(file)){
-    //  return new XmlScenarioManager(file, project);
+    //  return new ScenarioManagerImpl(file, project);
     // }
     // if (isDslScenario(file)){
     //  return new DslScenarioManager(file, project);

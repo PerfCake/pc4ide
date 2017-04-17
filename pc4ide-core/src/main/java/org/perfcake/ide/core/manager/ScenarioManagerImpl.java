@@ -36,7 +36,7 @@ import org.perfcake.ide.core.model.serialization.ModelWriter;
  *
  * @author Jakub Knetl
  */
-public class XmlScenarioManager implements ScenarioManager {
+public class ScenarioManagerImpl implements ScenarioManager {
 
     private Path location;
     private ModelWriter writer;
@@ -46,14 +46,23 @@ public class XmlScenarioManager implements ScenarioManager {
      * Creates new XML scenario manager.
      *
      * @param location location of scenario.
+     * @param writer   writer used to write scenaroi
+     * @param loader   loader used to load scenario
      */
-    public XmlScenarioManager(Path location) {
+    public ScenarioManagerImpl(Path location, ModelWriter writer, ModelLoader loader) {
         if (location == null) {
             throw new IllegalArgumentException("Path cannot be null");
         }
+        if (writer == null) {
+            throw new IllegalArgumentException("Writer cannot be null");
+        }
+
+        if (loader == null) {
+            throw new IllegalArgumentException("Loader cannot be null");
+        }
         this.location = location;
-        this.writer = new ModelWriter();
-        this.loader = new ModelLoader();
+        this.writer = writer;
+        this.loader = loader;
     }
 
     @Override

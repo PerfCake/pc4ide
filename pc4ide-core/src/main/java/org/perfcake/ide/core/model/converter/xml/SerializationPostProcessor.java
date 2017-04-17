@@ -18,25 +18,23 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.serialization;
+package org.perfcake.ide.core.model.converter.xml;
 
-import java.io.InputStream;
-import org.perfcake.ide.core.exception.ModelConversionException;
-import org.perfcake.ide.core.exception.ModelSerializationException;
-import org.perfcake.ide.core.model.components.ScenarioModel;
+import java.nio.file.Path;
+import org.perfcake.ide.core.exception.PostProcessingException;
 
 /**
- * Model loader is able to load pc4ide scenario model.
+ * Serialization post processor performs additional processing of a serialized model.
+ *
  * @author Jakub Knetl
  */
-public interface ModelLoader {
+public interface SerializationPostProcessor {
+
     /**
-     * Loads a model of given scenario.
+     * Performs post processing on given file.
      *
-     * @param inputStream input stream with scenario definition
-     * @return Scenario model
-     * @throws ModelSerializationException when model cannot be deserialized.
-     * @throws ModelConversionException    when PerfCake model can't be converted to pc4ide model.
+     * @param file file which should be processed
+     * @throws PostProcessingException when it is not possible to post process file.
      */
-    ScenarioModel loadModel(InputStream inputStream) throws ModelSerializationException, ModelConversionException;
+    void postProcess(Path file) throws PostProcessingException;
 }

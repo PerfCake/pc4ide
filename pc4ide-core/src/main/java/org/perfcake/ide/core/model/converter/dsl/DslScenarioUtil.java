@@ -18,23 +18,25 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.core.model.converter;
+package org.perfcake.ide.core.model.converter.dsl;
 
-import java.nio.file.Path;
-import org.perfcake.ide.core.exception.PostProcessingException;
+import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.model.Scenario;
 
 /**
- * Serialization post processor performs additional processing of a serialized model.
+ * Created by Stanislav Kaleta on 5/14/15.
  *
- * @author Jakub Knetl
+ * @author  Stanislav Kaleta, Jakub Knetl
  */
-public interface SerializationPostProcessor {
+public class DslScenarioUtil {
 
-    /**
-     * Performs post processing on given file.
-     *
-     * @param file file which should be processed
-     * @throws PostProcessingException when it is not possible to post process file.
-     */
-    void postProcess(Path file) throws PostProcessingException;
+    public static String getDslScenarioFrom(Scenario model, String name) {
+        ScenarioBuilder builder = new ScenarioBuilder();
+        return builder.buildScenario(model, name);
+    }
+
+    public static Scenario getModelFrom(String scenario) throws ModelConversionException {
+        ScenarioParser parser = new ScenarioParser();
+        return parser.parseScenario(scenario);
+    }
 }
