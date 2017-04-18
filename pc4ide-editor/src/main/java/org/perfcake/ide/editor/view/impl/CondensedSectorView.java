@@ -98,7 +98,7 @@ public abstract class CondensedSectorView extends SimpleSectorView {
         double textCenterX =
                 layoutData.getCenter().getX()
                         + layoutData.getRadiusData().getOuterRadius()
-                        - chordDistanceFromOuterRadius
+                        //- chordDistanceFromOuterRadius
                         - PADDING
                         - (textDimension.getWidth() / 2);
 
