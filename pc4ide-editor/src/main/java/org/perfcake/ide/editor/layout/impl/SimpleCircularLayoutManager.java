@@ -63,8 +63,13 @@ public class SimpleCircularLayoutManager extends AbstractLayoutManager {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
-        return constraint;
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return constraint.getAngularData().getAngleExtent();
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return constraint.getAngularData().getAngleExtent();
     }
 
     private int computeChildren() {

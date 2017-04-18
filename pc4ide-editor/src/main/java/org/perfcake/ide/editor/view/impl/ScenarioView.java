@@ -109,14 +109,13 @@ public class ScenarioView extends AbstractView {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
-        LayoutData minimumSize = new LayoutData(constraint);
-        double angularExtent = 0.0;
-        for (View child : getChildren()) {
-            angularExtent += child.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
-        }
-        minimumSize.getAngularData().setAngleExtent(angularExtent);
-        return minimumSize;
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return layoutManager.getMinimumAngularExtent(constraint, g2d);
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return layoutManager.getPreferredAngularExtent(constraint, g2d);
     }
 
     /**

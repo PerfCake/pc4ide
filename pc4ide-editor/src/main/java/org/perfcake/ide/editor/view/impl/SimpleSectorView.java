@@ -414,14 +414,20 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return 0;
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
 
         if (constraint == null
                 || constraint.getRadiusData() == null
                 || constraint.getRadiusData().getInnerRadius() == 0
                 || constraint.getRadiusData().getOuterRadius() == 0) {
+
             // it has no point to compute anything if we dont know radius
-            return constraint;
+            return 0;
         }
 
         Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
@@ -431,12 +437,11 @@ public abstract class SimpleSectorView extends SectorView {
         Dimension2D textBounds = computeTextDimension(g2d, constraint);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
-        Double minimumAngularExtentForIcon = getMinimumAngle(iconDiagonal, constraint.getRadiusData().getInnerRadius());
+        Double preferredIconExtent = getMinimumAngle(iconDiagonal, constraint.getRadiusData().getInnerRadius());
         double distanceOfObject = constraint.getRadiusData().getInnerRadius() + 2 * PADDING + iconBounds.getWidth();
-        Double minimumAngularExtentForText = getMinimumAngle(textBounds.getHeight(), distanceOfObject);
-        LayoutData minimumSize = new LayoutData(constraint);
-        minimumSize.getAngularData().setAngleExtent(Math.max(minimumAngularExtentForIcon, minimumAngularExtentForText));
-        return minimumSize;
+        Double preferredTextExtent = getMinimumAngle(textBounds.getHeight(), distanceOfObject);
+        double preferredSize = (Math.max(preferredIconExtent, preferredTextExtent));
+        return preferredSize;
     }
 
     /**

@@ -66,13 +66,9 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
         double requestedExtentByChildren = 0.0;
 
         for (View child : children) {
-
-            LayoutData minimumSize = child.getMinimumSize(constraints, g2d);
-            if (minimumSize != null) {
-                double extent = minimumSize.getAngularData().getAngleExtent();
-                extentMap.put(child, extent);
-                requestedExtentByChildren += extent;
-            }
+            double preferredSize = child.getPreferredAngularExtent(constraints, g2d);
+            extentMap.put(child, preferredSize);
+            requestedExtentByChildren += preferredSize;
         }
 
         double startAngle = constraints.getAngularData().getStartAngle();
@@ -108,20 +104,32 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
      * This layout manager computes required angular data based on radius data constraint.
      */
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
         double requiredExtent = 0;
 
         if (children == null) {
-            return constraint;
+            return 0;
         }
         for (View child : children) {
-            requiredExtent += child.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
+            requiredExtent += child.getMinimumAngularExtent(constraint, g2d);
         }
 
-        LayoutData requiredData = new LayoutData(constraint);
-        requiredData.getAngularData().setAngleExtent(requiredExtent);
+        return requiredExtent;
+    }
 
-        return requiredData;
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        double requiredExtent = 0;
+
+        if (children == null) {
+            return 0;
+        }
+        for (View child : children) {
+            requiredExtent += child.getPreferredAngularExtent(constraint, g2d);
+        }
+
+
+        return requiredExtent;
     }
 
     @Override

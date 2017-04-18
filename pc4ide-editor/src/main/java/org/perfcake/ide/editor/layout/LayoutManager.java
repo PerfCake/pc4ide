@@ -43,14 +43,23 @@ public interface LayoutManager {
     void layout(Graphics2D g2d);
 
     /**
-     * Computes minimum size reqeusted by this layout manager. If some dimension is zero, then there is no minimum
-     * size requested.
+     * Computes minimum angular extent requested by this layout manager in order to draw all components. If this manager
+     * is allocated less extent then minimum extent, then it doesn't have to draw all components.
      *
      * @param constraint constraint on some dimensions of layout data.
      * @param g2d graphics context
      * @return LayoutData which contains information about minimum size in particular dimensions.
      */
-    LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
+    double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d);
+
+    /**
+     * Computes preferred angular extent requested by this layout manager in order to draw all components in their preferred size.
+     *
+     * @param constraint constraint on some dimensions of layout data.
+     * @param g2d graphics context
+     * @return LayoutData which contains information about minimum size in particular dimensions.
+     */
+    double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d);
 
     /**
      * Sets {@link LayoutData} constraint for the layoutManager. This indicates what part of drawing surface

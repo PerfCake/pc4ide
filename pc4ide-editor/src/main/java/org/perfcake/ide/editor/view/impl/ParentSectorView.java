@@ -48,18 +48,20 @@ public abstract class ParentSectorView extends SimpleSectorView {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        //TODO: compute!
+        return 0;
+    }
 
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
         LayoutData constraintForReporter = computeLowerLayerData(constraint);
         LayoutData constraintForChildren = computeUpperLayerData(constraint);
 
-        LayoutData reporterViewMinimumSize = super.getMinimumSize(constraintForReporter, g2d);
-        LayoutData destinationsMinimumSize = layoutManager.getMinimumSize(constraintForChildren, g2d);
+        double reporterExtent = super.getPreferredAngularExtent(constraintForReporter, g2d);
+        double destinationExtent = layoutManager.getPreferredAngularExtent(constraintForChildren, g2d);
 
-        LayoutData requiredTotal = new LayoutData(constraint);
-
-        requiredTotal.getAngularData().setAngleExtent(Math.max(reporterViewMinimumSize.getAngularData().getAngleExtent(),
-                destinationsMinimumSize.getAngularData().getAngleExtent()));
+        double requiredTotal = Math.max(reporterExtent, destinationExtent);
 
         return requiredTotal;
     }

@@ -45,6 +45,7 @@ public class LayeredCircularLayoutManager implements LayoutManager {
 
     /**
      * Creates layered circular layout manager.
+     *
      * @param innerViewsType type of view in the inner layer
      * @param outerViewsType type of view in the outer layer
      */
@@ -70,31 +71,51 @@ public class LayeredCircularLayoutManager implements LayoutManager {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
-        LayoutData minimumSize = new LayoutData(constraint);
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        double minimumSize = 0;
 
         if (!innerLayerManager.getChildren().isEmpty() && !outerLayerManager.getChildren().isEmpty()) {
-            LayoutData innerConstraint = new LayoutData(minimumSize);
-            double splitRadius = computeLayerBorder(minimumSize);
+            LayoutData innerConstraint = new LayoutData(constraint);
+            double splitRadius = computeLayerBorder(constraint);
             innerConstraint.getRadiusData().setOuterRadius(splitRadius);
-            LayoutData outerConstraint = new LayoutData(minimumSize);
+            LayoutData outerConstraint = new LayoutData(constraint);
             outerConstraint.getRadiusData().setInnerRadius(splitRadius);
 
 
-            double minimumInnerExtent = innerLayerManager.getMinimumSize(innerConstraint, g2d).getAngularData().getAngleExtent();
-            double minimumOuterExtent = outerLayerManager.getMinimumSize(outerConstraint, g2d).getAngularData().getAngleExtent();
-            minimumSize.getAngularData().setAngleExtent(Math.max(minimumInnerExtent, minimumOuterExtent));
+            double minimumInnerExtent = innerLayerManager.getMinimumAngularExtent(innerConstraint, g2d);
+            double minimumOuterExtent = outerLayerManager.getMinimumAngularExtent(outerConstraint, g2d);
+            minimumSize = Math.max(minimumInnerExtent, minimumOuterExtent);
         } else if (!innerLayerManager.getChildren().isEmpty() && outerLayerManager.getChildren().isEmpty()) {
-            double minimumInnerExtent = innerLayerManager.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
-            minimumSize.getAngularData().setAngleExtent(minimumInnerExtent);
+            minimumSize = innerLayerManager.getMinimumAngularExtent(constraint, g2d);
         } else if (innerLayerManager.getChildren().isEmpty() && !outerLayerManager.getChildren().isEmpty()) {
-            double minimumOuterExtent = outerLayerManager.getMinimumSize(constraint, g2d).getAngularData().getAngleExtent();
-            minimumSize.getAngularData().setAngleExtent(minimumOuterExtent);
-        } else if (innerLayerManager.getChildren().isEmpty() && outerLayerManager.getChildren().isEmpty()) {
-            minimumSize.getAngularData().setAngleExtent(0);
+            minimumSize = outerLayerManager.getMinimumAngularExtent(constraint, g2d);
         }
 
         return minimumSize;
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        double preferredSize = 0;
+
+        if (!innerLayerManager.getChildren().isEmpty() && !outerLayerManager.getChildren().isEmpty()) {
+            LayoutData innerConstraint = new LayoutData(constraint);
+            double splitRadius = computeLayerBorder(constraint);
+            innerConstraint.getRadiusData().setOuterRadius(splitRadius);
+            LayoutData outerConstraint = new LayoutData(constraint);
+            outerConstraint.getRadiusData().setInnerRadius(splitRadius);
+
+
+            double preferredInnerExtent = innerLayerManager.getPreferredAngularExtent(innerConstraint, g2d);
+            double preferredOuterExtent = outerLayerManager.getPreferredAngularExtent(outerConstraint, g2d);
+            preferredSize = Math.max(preferredInnerExtent, preferredOuterExtent);
+        } else if (!innerLayerManager.getChildren().isEmpty() && outerLayerManager.getChildren().isEmpty()) {
+            preferredSize = innerLayerManager.getPreferredAngularExtent(constraint, g2d);
+        } else if (innerLayerManager.getChildren().isEmpty() && !outerLayerManager.getChildren().isEmpty()) {
+            preferredSize = outerLayerManager.getPreferredAngularExtent(constraint, g2d);
+        }
+
+        return preferredSize;
     }
 
     @Override

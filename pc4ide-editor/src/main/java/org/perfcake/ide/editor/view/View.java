@@ -60,15 +60,29 @@ public interface View {
     Shape getViewBounds();
 
     /**
-     * Computes a minimum size of the view and it children views. The constraint argument is used as a constraint for the size. So if
-     * some dimension of constraint argument is N, then returned value in that dimension cannot be larger than N.
-     * If some dimension of constraint argument is zero then there is no constraint on that dimension
+     * Computes a minimum angular extent which this comonent require in order to be able to draw itself. If the assigned extent for
+     * drawing will be smaller than minimum extent, then component or layoutmanager may decide not to draw the component.
+     * The constraint argument is used as a constraint for the size. So if some dimension of constraint argument is N,
+     * then returned value in that dimension cannot be larger than N. If some dimension of constraint argument is zero,
+     * then there is no constraint on that dimension.
      *
      * @param constraint constraint
      * @param g2d        Graphics context
      * @return Minimum size of the inspector according to given constraints.
      */
-    LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d);
+    double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d);
+
+    /**
+     * Computes preferred angular extend which is recommended by the component for ideal drawing.
+     * The constraint argument is used as a constraint for the size. So if  some dimension of constraint argument is N,
+     * then returned value in that dimension cannot be larger than N. If some dimension of constraint argument is zero,
+     * then there is no constraint on that dimension.
+     *
+     * @param constraint constraint
+     * @param g2d        Graphics context
+     * @return preferred angular extent for given component
+     */
+    double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d);
 
     /**
      * @return Actual layoutData of the view.
@@ -150,7 +164,7 @@ public interface View {
      *
      * @param location location of the click
      * @return Action which should be performed. If no Action should be performed, then {@link ActionType#NONE} is returned. This method
-     *          must not return null.
+     *     must not return null.
      */
     ActionType getAction(Point2D location);
 

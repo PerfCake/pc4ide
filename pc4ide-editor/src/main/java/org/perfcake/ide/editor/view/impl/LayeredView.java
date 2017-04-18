@@ -44,6 +44,7 @@ public class LayeredView extends AbstractView {
 
     /**
      * Creates new layered view.
+     *
      * @param innerViewsType type of views in inner layer
      * @param outerViewsType type of views in outer layer
      */
@@ -77,8 +78,13 @@ public class LayeredView extends AbstractView {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
-        return layoutManager.getMinimumSize(constraint, g2d);
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return layoutManager.getMinimumAngularExtent(constraint, g2d);
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return layoutManager.getPreferredAngularExtent(constraint, g2d);
     }
 
     @Override

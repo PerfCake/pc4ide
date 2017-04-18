@@ -26,7 +26,7 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.view.View;
 
 /**
- * Compares view by its requested minimum size angular extent.
+ * Compares view by its requested angular extent. It sorts lexicographically first by preferred size and the by minimum size.
  *
  * @author Jakub Knetl
  */
@@ -60,32 +60,27 @@ public class ViewAngleExtentComparator implements Comparator<View> {
             return -1;
         }
 
-        LayoutData minSize1 = o1.getMinimumSize(layoutData, g2d);
-        LayoutData minSize2 = o2.getMinimumSize(layoutData, g2d);
-
-        if (minSize1 == null && minSize2 == null) {
-            return 0;
-        }
-
-        if (minSize1 == null) {
-            return -1;
-        }
-        if (minSize2 == null) {
-            return 1;
-        }
-
-        double minAngle1 = minSize1.getAngularData().getAngleExtent();
-        double minAngle2 = minSize2.getAngularData().getAngleExtent();
+        double prefSize1 = o1.getPreferredAngularExtent(layoutData, g2d);
+        double prefSize2 = o2.getPreferredAngularExtent(layoutData, g2d);
 
         int result = 0;
-        if (minAngle1 < minAngle2) {
+        if (prefSize1 < prefSize2) {
             result = -1;
         }
-        if (minAngle1 > minAngle2) {
+        if (prefSize2 > prefSize1) {
             result = 1;
+        }
+        if (prefSize1 == prefSize2) {
+            double minSize1 = o1.getMinimumAngularExtent(layoutData, g2d);
+            double minSize2 = o2.getMinimumAngularExtent(layoutData, g2d);
+            if (minSize1 < minSize2) {
+                result = -1;
+            }
+            if (minSize2 > minSize1) {
+                result = 1;
+            }
         }
 
         return result;
-
     }
 }

@@ -119,12 +119,18 @@ public abstract class CondensedSectorView extends SimpleSectorView {
     }
 
     @Override
-    public LayoutData getMinimumSize(LayoutData constraint, Graphics2D g2d) {
+    public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        //TODO: override this?
+        return super.getMinimumAngularExtent(constraint, g2d);
+    }
+
+    @Override
+    public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
         if (constraint == null
                 || constraint.getRadiusData() == null
                 || constraint.getRadiusData().getInnerRadius() == 0
                 || constraint.getRadiusData().getOuterRadius() == 0) {
-            return constraint;
+            return 0;
         }
 
         Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
@@ -132,11 +138,11 @@ public abstract class CondensedSectorView extends SimpleSectorView {
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
 
-        double minimumAngularExtent = getMinimumAngle(iconDiagonal + iconDiagonal,
+        double preferredExtent = getMinimumAngle(iconDiagonal + iconDiagonal,
                 constraint.getRadiusData().getInnerRadius() + PADDING);
         LayoutData minimumSize = new LayoutData(constraint);
-        minimumSize.getAngularData().setAngleExtent(minimumAngularExtent);
+        minimumSize.getAngularData().setAngleExtent(preferredExtent);
 
-        return minimumSize;
+        return preferredExtent;
     }
 }
