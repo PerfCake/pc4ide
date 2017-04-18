@@ -57,8 +57,8 @@ public class MessageController extends AbstractController {
         MessageView view = (MessageView) this.view;
         view.setHeader("Message");
         Value uri = model.getSingleProperty(MessageModel.PropertyNames.URI.toString(), Value.class);
-        Value content = model.getSingleProperty(MessageModel.PropertyNames.URI.toString(), Value.class);
-        Value multiplicity = model.getSingleProperty(MessageModel.PropertyNames.URI.toString(), Value.class);
+        Value content = model.getSingleProperty(MessageModel.PropertyNames.CONTENT.toString(), Value.class);
+        Value multiplicity = model.getSingleProperty(MessageModel.PropertyNames.MULTIPLICITY.toString(), Value.class);
 
         if (uri != null && !uri.getValue().equals(view.getUri())) {
             view.setUri(uri.getValue());
