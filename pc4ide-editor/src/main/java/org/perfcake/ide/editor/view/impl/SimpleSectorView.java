@@ -100,18 +100,24 @@ public abstract class SimpleSectorView extends SectorView {
             return;
         }
 
+        double preferredExtent = getPreferredAngularExtent(layoutData, g2d);
+        boolean minimumView = false;
+        if (layoutData.getAngularData().getAngleExtent() < preferredExtent) {
+            minimumView = true;
+        }
+
 
         // antialiasing of the shapes
         addRenderingHints(g2d);
 
         // draw the icon
-        drawIcon(g2d);
+        drawIcon(g2d, minimumView);
 
         // draw bounds
         drawBounds(g2d);
 
         // draw text
-        drawText(g2d);
+        drawText(g2d, minimumView);
 
         // draw managementIcons
         drawManagementIcons(g2d);
@@ -144,12 +150,20 @@ public abstract class SimpleSectorView extends SectorView {
     /**
      * Draws icon.
      *
-     * @param g2d graphics context.
+     * @param g2d         graphics context.
+     * @param minimumView draw minimum view
      */
-    protected void drawIcon(Graphics2D g2d) {
+    protected void drawIcon(Graphics2D g2d, boolean minimumView) {
         if (icon != null) {
-            Rectangle2D iconBounds = computeIconBounds(g2d, layoutData);
+            Rectangle2D iconBounds = computeIconBounds(g2d, layoutData, minimumView);
 
+            if (minimumView) {
+                icon.setIconHeight(SMALL_ICON_SIDE);
+                icon.setIconWidth(SMALL_ICON_SIDE);
+            } else {
+                icon.setIconHeight(ICON_SIDE);
+                icon.setIconWidth(ICON_SIDE);
+            }
             Color iconColor = getIconColor();
             icon.setColor(iconColor);
             // we may pass null as inspector since our icon implementation completely ignores this argument
@@ -160,15 +174,16 @@ public abstract class SimpleSectorView extends SectorView {
     /**
      * Draws the text.
      *
-     * @param g2d graphics context.
+     * @param g2d         graphics context.
+     * @param minimumView draw minimum view
      */
-    protected void drawText(Graphics2D g2d) {
+    protected void drawText(Graphics2D g2d, boolean minimumView) {
         Font defaultFont = g2d.getFont();
         final AffineTransform defaultTransform = g2d.getTransform();
 
-        Rectangle2D textRectangle = computeTextBounds(g2d, layoutData);
+        Rectangle2D textRectangle = computeTextBounds(g2d, layoutData, minimumView);
         Point2D textCenter = Utils2D.getCenter(textRectangle);
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconBounds(g2d, layoutData));
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconBounds(g2d, layoutData, minimumView));
         double maximumWidthForText = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
         // if the angle is between 90 and 270, then we need to rotate the text by 180 degrees, otherwise it would be upside down
@@ -189,18 +204,20 @@ public abstract class SimpleSectorView extends SectorView {
         g2d.drawString(renderedHeader, (float) textRectangle.getX(), (float) y);
         //g2d.draw(textRectangle);
 
-        y += HEADER_BOTTOM_SPACE;
+        if (!minimumView) {
+            y += HEADER_BOTTOM_SPACE;
 
-        // render additional text
-        List<Pair> additionalData = getAdditionalData();
-        Font additionalTextFont = getAdditionalTextFont(g2d);
-        FontMetrics additionalTextMetrics = g2d.getFontMetrics(additionalTextFont);
-        g2d.setFont(additionalTextFont);
-        g2d.setColor(colorScheme.getColor(NamedColor.BASE_4));
-        for (Pair p : additionalData) {
-            y += additionalTextMetrics.getHeight();
-            String renderedPair = Utils2D.computeRenderedPart(p.getKey() + ": " + p.getValue(), headerMetrics, maximumWidthForText);
-            g2d.drawString(renderedPair, (float) (textRectangle.getX()), (float) y);
+            // render additional text
+            List<Pair> additionalData = getAdditionalData();
+            Font additionalTextFont = getAdditionalTextFont(g2d);
+            FontMetrics additionalTextMetrics = g2d.getFontMetrics(additionalTextFont);
+            g2d.setFont(additionalTextFont);
+            g2d.setColor(colorScheme.getColor(NamedColor.BASE_4));
+            for (Pair p : additionalData) {
+                y += additionalTextMetrics.getHeight();
+                String renderedPair = Utils2D.computeRenderedPart(p.getKey() + ": " + p.getValue(), headerMetrics, maximumWidthForText);
+                g2d.drawString(renderedPair, (float) (textRectangle.getX()), (float) y);
+            }
         }
         g2d.setTransform(defaultTransform);
         g2d.setFont(defaultFont);
@@ -242,19 +259,28 @@ public abstract class SimpleSectorView extends SectorView {
     /**
      * Computes icon bounds.
      *
-     * @param layoutData layout data
+     * @param g2d         graphics context
+     * @param layoutData  layout data
+     * @param minimumView use small icon size?
      * @return bounds of icon.
      */
-    protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData) {
+    protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
+
+        int iconWidth = ICON_SIDE;
+        int iconHeight = ICON_SIDE;
+        if (minimumView) {
+            iconWidth = SMALL_ICON_SIDE;
+            iconHeight = SMALL_ICON_SIDE;
+        }
 
         double iconCenterX = layoutData.getCenter().getX()
-                + (layoutData.getRadiusData().getInnerRadius() + PADDING + icon.getIconWidth() / 2);
+                + (layoutData.getRadiusData().getInnerRadius() + PADDING + iconWidth / 2);
         double iconCenterY = layoutData.getCenter().getY();
 
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
         Point2D location = Utils2D.rotatePoint(new Point2D.Double(iconCenterX, iconCenterY), theta, layoutData.getCenter());
 
-        Rectangle2D iconBounds = Utils2D.getUpperLeftCorner(location, icon.getIconWidth(), icon.getIconHeight());
+        Rectangle2D iconBounds = Utils2D.getUpperLeftCorner(location, iconWidth, iconHeight);
 
         return iconBounds;
     }
@@ -263,16 +289,17 @@ public abstract class SimpleSectorView extends SectorView {
      * Computes bounds of the text before applying rotation. Therefore this rectangle edges are always parallel to
      * XIcon and Y axes. Before using this rectangle, you should apply rotation to it.
      *
-     * @param g2d        graphics context
-     * @param layoutData layout data
+     * @param g2d         graphics context
+     * @param layoutData  layout data
+     * @param minimumView text contains only component name?
      * @return Rectangle bounds of a text before applying rotation.
      */
-    protected Rectangle2D computeTextBounds(Graphics2D g2d, LayoutData layoutData) {
+    protected Rectangle2D computeTextBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         final Point2D startOuterArcPoint = getStartOuterArcPoint(layoutData);
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
-        Dimension2D textDimension = computeTextDimension(g2d, layoutData);
+        Dimension2D textDimension = computeTextDimension(g2d, layoutData, minimumView);
 
         double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
                 chordCenter,
@@ -326,35 +353,39 @@ public abstract class SimpleSectorView extends SectorView {
     /**
      * Computes dimension of a text.
      *
-     * @param g2d        graphics context
-     * @param layoutData layout data which require at least radius to be set
+     * @param g2d         graphics context
+     * @param layoutData  layout data which require at least radius to be set
+     * @param minimumView compute only using component name
      * @return Rectangle which contains dimension of a text bounds.
      */
-    protected Dimension2D computeTextDimension(Graphics2D g2d, LayoutData layoutData) {
+    protected Dimension2D computeTextDimension(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         final FontRenderContext frc = g2d.getFontRenderContext();
         final Font font = g2d.getFont();
         final Rectangle2D headerBounds = font.getStringBounds(header, frc);
 
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension());
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
         double maximumWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
         FontMetrics metrics = g2d.getFontMetrics(font);
 
-        List<Pair> additionalText = getAdditionalData();
+        int longestAdditionalLineWidth = 0;
+        int additionalHeight = 0;
+        if (!minimumView) {
+            List<Pair> additionalText = getAdditionalData();
 
-        int additionalLines = 0;
-        int longestLineWidth = 0;
-        for (Pair pair : additionalText) {
-            int width = metrics.stringWidth(pair.getKey() + ": " + pair.getValue());
-            if (width > longestLineWidth) {
-                longestLineWidth = width;
+            int additionalLines = 0;
+            for (Pair pair : additionalText) {
+                int width = metrics.stringWidth(pair.getKey() + ": " + pair.getValue());
+                if (width > longestAdditionalLineWidth) {
+                    longestAdditionalLineWidth = width;
+                }
+                additionalLines++;
             }
-            additionalLines++;
+
+            additionalHeight = additionalLines * metrics.getHeight() + metrics.getAscent();
         }
 
-        int additionalHeight = additionalLines * metrics.getHeight() + metrics.getAscent();
-
-        double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestLineWidth), maximumWidth);
+        double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestAdditionalLineWidth), maximumWidth);
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new DimensionDouble(totalWidth, totalHeight);
@@ -415,12 +446,24 @@ public abstract class SimpleSectorView extends SectorView {
 
     @Override
     public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
-        return 0;
+        return getAngularExtent(constraint, g2d, true);
     }
 
     @Override
     public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return getAngularExtent(constraint, g2d, false);
+    }
 
+
+    /**
+     * Computes angular extent required for the view.
+     *
+     * @param constraint  constraint
+     * @param g2d         graphics context
+     * @param minimumView use minimum view?
+     * @return requested angular extent.
+     */
+    protected double getAngularExtent(LayoutData constraint, Graphics2D g2d, boolean minimumView) {
         if (constraint == null
                 || constraint.getRadiusData() == null
                 || constraint.getRadiusData().getInnerRadius() == 0
@@ -430,11 +473,11 @@ public abstract class SimpleSectorView extends SectorView {
             return 0;
         }
 
-        Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
+        Rectangle2D iconBounds = computeIconBounds(g2d, constraint, minimumView);
 
         // we assume that width constraint is positive and large enough!
         // it should be ensured by sufficient minimum size on editor as a whole
-        Dimension2D textBounds = computeTextDimension(g2d, constraint);
+        Dimension2D textBounds = computeTextDimension(g2d, constraint, minimumView);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
         Double preferredIconExtent = getMinimumAngle(iconDiagonal, constraint.getRadiusData().getInnerRadius());
@@ -460,8 +503,12 @@ public abstract class SimpleSectorView extends SectorView {
      *
      * @return rectangle which contains icon dimension.
      */
-    protected Dimension2D computeIconDimension() {
-        return new Dimension(icon.getIconWidth(), icon.getIconHeight());
+    protected Dimension2D computeIconDimension(boolean smallIcon) {
+        if (!smallIcon) {
+            return new Dimension(ICON_SIDE, ICON_SIDE);
+        } else {
+            return new Dimension(SMALL_ICON_SIDE, SMALL_ICON_SIDE);
+        }
     }
 
     /**

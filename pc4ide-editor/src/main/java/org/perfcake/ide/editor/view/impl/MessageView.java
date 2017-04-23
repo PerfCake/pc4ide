@@ -47,7 +47,7 @@ public class MessageView extends SimpleSectorView {
      * Creates new sector view.
      */
     public MessageView() {
-        super(new MessageIcon());
+        super(new MessageIcon(ICON_SIDE, ICON_SIDE));
         validatorRefs = new HashSet<>();
     }
 

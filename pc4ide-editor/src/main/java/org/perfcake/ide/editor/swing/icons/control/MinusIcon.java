@@ -40,10 +40,6 @@ public class MinusIcon extends AbstractControlIcon {
 
     private static final int DEFAULT_WIDTH = 8;
     private static final int DEFAULT_HEIGHT = 2;
-    /**
-     * The rendered image.
-     */
-    private BufferedImage image;
 
     /**
      * Creates a new transcoded SVG image.
@@ -91,7 +87,7 @@ public class MinusIcon extends AbstractControlIcon {
         this.x = x;
         this.y = y;
 
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
             Graphics2D g2d = image.createGraphics();

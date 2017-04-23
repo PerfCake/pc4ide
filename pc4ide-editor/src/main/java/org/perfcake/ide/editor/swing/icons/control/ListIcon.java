@@ -43,11 +43,6 @@ public class ListIcon extends AbstractIcon {
     public static final int DEFAULT_HEIGHT = 7;
 
     /**
-     * The rendered image.
-     */
-    private BufferedImage image;
-
-    /**
      * Creates a new transcoded SVG image.
      */
     public ListIcon() {
@@ -87,7 +82,7 @@ public class ListIcon extends AbstractIcon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
 

@@ -39,10 +39,6 @@ import org.perfcake.ide.editor.swing.icons.AbstractIcon;
 public class CorrelatorIcon extends AbstractIcon {
 
     public static final Color DEFAULT_COLOR = new Color(0x47C30C);
-    /**
-     * The rendered image.
-     */
-    private BufferedImage image;
 
     /**
      * Creates a new transcoded SVG image.
@@ -65,6 +61,16 @@ public class CorrelatorIcon extends AbstractIcon {
      *
      * @param width  width of icon
      * @param height height of icon
+     */
+    public CorrelatorIcon(int width, int height) {
+        super(width, height, DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates a new transcoded SVG image.
+     *
+     * @param width  width of icon
+     * @param height height of icon
      * @param color  color of an icon
      */
     public CorrelatorIcon(int width, int height, Color color) {
@@ -73,7 +79,7 @@ public class CorrelatorIcon extends AbstractIcon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             final double coef = Math.min((double) width / (double) 41, (double) height / (double) 21);
 

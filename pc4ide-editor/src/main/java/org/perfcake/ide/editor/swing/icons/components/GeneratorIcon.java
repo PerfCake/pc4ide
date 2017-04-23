@@ -41,11 +41,6 @@ public class GeneratorIcon extends AbstractIcon {
     public static final Color DEFAULT_COLOR = new Color(0xFF6FAF);
 
     /**
-     * The rendered image.
-     */
-    private BufferedImage image;
-
-    /**
      * Creates a new transcoded SVG image.
      */
     public GeneratorIcon() {
@@ -54,10 +49,21 @@ public class GeneratorIcon extends AbstractIcon {
 
     /**
      * Creates new generator icon.
+     *
      * @param color color of the icon
      */
     public GeneratorIcon(Color color) {
         this(31, 22, color);
+    }
+
+    /**
+     * Creates a new transcoded SVG image.
+     *
+     * @param width  width of the icon
+     * @param height height of the icon
+     */
+    public GeneratorIcon(int width, int height) {
+        super(width, height, DEFAULT_COLOR);
     }
 
     /**
@@ -72,28 +78,8 @@ public class GeneratorIcon extends AbstractIcon {
     }
 
     @Override
-    public int getIconHeight() {
-        return height;
-    }
-
-    @Override
-    public int getIconWidth() {
-        return width;
-    }
-
-    @Override
-    public void setIconWidth(int width) {
-        this.width = width;
-    }
-
-    @Override
-    public void setIconHeight(int height) {
-        this.height = height;
-    }
-
-    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             final double coef = Math.min((double) width / (double) 31, (double) height / (double) 22);
 

@@ -21,7 +21,7 @@
 package org.perfcake.ide.editor.swing.icons;
 
 import java.awt.Color;
-import org.perfcake.ide.editor.swing.icons.ResizableIcon;
+import java.awt.image.BufferedImage;
 
 /**
  * Abstract implementation of component icon.
@@ -44,11 +44,16 @@ public abstract class AbstractIcon implements ResizableIcon {
     protected Color color;
 
     /**
+     * The rendered image.
+     */
+    protected BufferedImage image;
+
+    /**
      * Creates new component icon.
      *
      * @param width  width of the icon
      * @param height height of the icon
-     * @param color color of the icon.
+     * @param color  color of the icon.
      */
     public AbstractIcon(int width, int height, Color color) {
         this.height = height;
@@ -80,5 +85,23 @@ public abstract class AbstractIcon implements ResizableIcon {
 
     public void setIconHeight(int height) {
         this.height = height;
+    }
+
+    /**
+     * Determines whether icon needs to be rendered.
+     *
+     * @return true if icon must be rendered.
+     */
+    public boolean isRenderNeeded() {
+
+        if (image == null) {
+            return true;
+        }
+
+        if (image.getHeight() != height || image.getWidth() != width) {
+            return true;
+        }
+
+        return false;
     }
 }

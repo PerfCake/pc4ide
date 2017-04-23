@@ -39,10 +39,6 @@ public class PlayIcon extends AbstractControlIcon {
 
     public static final int DEFAULT_WIDTH = 6;
     public static final int DEFAULT_HEIGHT = 6;
-    /**
-     * The rendered image.
-     */
-    private BufferedImage image;
 
     /**
      * Creates a new transcoded SVG image.
@@ -80,7 +76,7 @@ public class PlayIcon extends AbstractControlIcon {
         this.x = x;
         this.y = y;
 
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
 

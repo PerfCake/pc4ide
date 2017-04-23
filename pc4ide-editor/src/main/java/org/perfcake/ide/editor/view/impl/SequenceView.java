@@ -42,7 +42,7 @@ public class SequenceView extends CondensedSectorView {
      * creates new sector view.
      */
     public SequenceView() {
-        super(new SequenceIcon());
+        super(new SequenceIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

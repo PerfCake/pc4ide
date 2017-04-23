@@ -40,7 +40,7 @@ public class SenderView extends SimpleSectorView {
      * creates new sector view.
      */
     public SenderView() {
-        super(new SenderIcon());
+        super(new SenderIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

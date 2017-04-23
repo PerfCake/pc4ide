@@ -47,6 +47,16 @@ import org.perfcake.ide.editor.utils.FontUtils;
  */
 public abstract class AbstractView implements View {
 
+    /**
+     * size of a side of a component icon.
+     */
+    public static final int ICON_SIDE = 32;
+
+    /**
+     * size of a side of a small component icon.
+     */
+    public static final int SMALL_ICON_SIDE = 16;
+
     protected List<ControlIcon> managementIcons;
     private boolean isSelected = false;
     protected List<View> children = new ArrayList<>();

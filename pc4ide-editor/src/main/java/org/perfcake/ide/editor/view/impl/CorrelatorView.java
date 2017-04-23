@@ -38,7 +38,7 @@ public class CorrelatorView extends CondensedSectorView {
      * creates new sector view.
      */
     public CorrelatorView() {
-        super(new CorrelatorIcon());
+        super(new CorrelatorIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

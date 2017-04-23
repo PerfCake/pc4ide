@@ -42,7 +42,7 @@ public class ValidatorView extends SimpleSectorView {
      * creates new sector view.
      */
     public ValidatorView() {
-        super(new ValidatorIcon());
+        super(new ValidatorIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

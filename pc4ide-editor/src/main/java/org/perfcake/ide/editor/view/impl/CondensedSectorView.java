@@ -46,11 +46,11 @@ public abstract class CondensedSectorView extends SimpleSectorView {
     }
 
     @Override
-    protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData) {
+    protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         double iconCenterX = layoutData.getCenter().getX() + (computeMiddleRadius(layoutData));
         double iconCenterY = layoutData.getCenter().getY();
 
-        double textHeight = computeTextDimension(g2d, layoutData).getHeight();
+        double textHeight = computeTextDimension(g2d, layoutData, minimumView).getHeight();
         double totalHeight = icon.getIconHeight() + PADDING + textHeight;
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(new Rectangle2D.Double(0, 0, icon.getIconWidth(), icon.getIconHeight()));
@@ -83,12 +83,12 @@ public abstract class CondensedSectorView extends SimpleSectorView {
     }
 
     @Override
-    protected Rectangle2D computeTextBounds(Graphics2D g2d, LayoutData layoutData) {
+    protected Rectangle2D computeTextBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         final Point2D startOuterArcPoint = getStartOuterArcPoint(layoutData);
         final Point2D endOuterArcPoint = getEndOuterArcPoint(layoutData);
         final Point2D chordCenter = getChordCenter(startOuterArcPoint, endOuterArcPoint);
 
-        Dimension2D textDimension = computeTextDimension(g2d, layoutData);
+        Dimension2D textDimension = computeTextDimension(g2d, layoutData, minimumView);
 
         double chordDistanceFromOuterRadius = getChordDistanceFromOuterRadius(layoutData.getCenter(),
                 chordCenter,
@@ -104,7 +104,7 @@ public abstract class CondensedSectorView extends SimpleSectorView {
 
         double textCenterY = layoutData.getCenter().getY();
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension());
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
         if (isReversed(theta)) {
             textCenterY = textCenterY - iconDiagonal / 2 - PADDING;
         } else {
@@ -120,12 +120,23 @@ public abstract class CondensedSectorView extends SimpleSectorView {
 
     @Override
     public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
-        //TODO: override this?
-        return super.getMinimumAngularExtent(constraint, g2d);
+        return getAngularExtent(constraint, g2d, true);
     }
 
     @Override
     public double getPreferredAngularExtent(LayoutData constraint, Graphics2D g2d) {
+        return getAngularExtent(constraint, g2d, false);
+    }
+
+    /**
+     * Computes angular extent required for the view.
+     *
+     * @param constraint  constraint
+     * @param g2d         graphics context
+     * @param minimumView use minimum view?
+     * @return requested angular extent.
+     */
+    protected double getAngularExtent(LayoutData constraint, Graphics2D g2d, boolean minimumView) {
         if (constraint == null
                 || constraint.getRadiusData() == null
                 || constraint.getRadiusData().getInnerRadius() == 0
@@ -133,8 +144,8 @@ public abstract class CondensedSectorView extends SimpleSectorView {
             return 0;
         }
 
-        Rectangle2D iconBounds = computeIconBounds(g2d, constraint);
-        Dimension2D textBounds = computeTextDimension(g2d, constraint);
+        Rectangle2D iconBounds = computeIconBounds(g2d, constraint, minimumView);
+        Dimension2D textBounds = computeTextDimension(g2d, constraint, minimumView);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(iconBounds);
 

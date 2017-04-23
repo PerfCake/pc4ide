@@ -39,7 +39,7 @@ public class ReporterView extends ParentSectorView {
      * creates new sector view.
      */
     public ReporterView() {
-        super(new ReporterIcon());
+        super(new ReporterIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

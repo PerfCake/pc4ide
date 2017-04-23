@@ -40,10 +40,6 @@ public class CogIcon extends AbstractControlIcon {
 
     public static final int DEFAULT_WIDTH = 8;
     private static final int DEFAULT_HEIGHT = 8;
-    /**
-     * The rendered image.
-     */
-    private BufferedImage image;
 
     /**
      * Creates a new transcoded SVG image.
@@ -85,7 +81,7 @@ public class CogIcon extends AbstractControlIcon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
 

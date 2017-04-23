@@ -71,32 +71,67 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             requestedExtentByChildren += preferredSize;
         }
 
-        double startAngle = constraints.getAngularData().getStartAngle();
 
         double angleExtentConstraint = constraints.getAngularData().getAngleExtent();
         if (requestedExtentByChildren <= angleExtentConstraint) {
-            for (View v : children) {
-                final LayoutData data = new LayoutData(constraints);
-                Double angleExtent = extentMap.get(v);
-
-                if (fill) {
-                    double percentage = angleExtent / requestedExtentByChildren;
-                    angleExtent = percentage * angleExtentConstraint;
-                }
-                data.getAngularData().setAngleExtent(angleExtent);
-                data.getAngularData().setStartAngle(startAngle);
-
-                v.setLayoutData(data);
-
-                // move startAgle by angular extent of view v
-                startAngle += angleExtent;
-            }
+            layoutComponents(extentMap, requestedExtentByChildren);
         } else {
-            // TODO: inspector requested larger angular extent than is available
-            // we need to somehow implement shirnking of some views!
-            logger.warn("Too large angular extent. Requested: {}, Provided: {}",
-                    requestedExtentByChildren,
-                    constraints.getAngularData().getAngleExtent());
+
+            // use minimum view
+
+            double adjustedExtent = requestedExtentByChildren;
+            Map<View, Double> minimumViews = new HashMap<>();
+            while (adjustedExtent > angleExtentConstraint && !extentMap.isEmpty()) {
+                // TODO: choose view not by iteration order but rather by rules
+                View view = extentMap.keySet().iterator().next();
+
+                double minimumViewExtent = view.getMinimumAngularExtent(constraints, g2d);
+                adjustedExtent -= extentMap.get(view);
+                extentMap.remove(view);
+                adjustedExtent += minimumViewExtent;
+                minimumViews.put(view, minimumViewExtent);
+            }
+
+            if (adjustedExtent <= angleExtentConstraint) {
+
+                minimumViews.putAll(extentMap); // put all views into minimum views
+                double sum = 0;
+                for (Map.Entry<View, Double> entry : minimumViews.entrySet()) {
+                    sum += entry.getValue();
+                }
+
+                layoutComponents(minimumViews, sum);
+            } else {
+                //even when using components minimum sizes, the angular extent overflows constraints
+                // TODO: inspector requested larger angular extent than is available
+                // we need to somehow implement shirnking of some views!
+                logger.warn("Too large angular extent. Requested: {}, Provided: {}",
+                        requestedExtentByChildren,
+                        constraints.getAngularData().getAngleExtent());
+            }
+        }
+
+
+    }
+
+    protected void layoutComponents(Map<View, Double> extentMap, double extentSum) {
+        double angleExtentConstraint = constraints.getAngularData().getAngleExtent();
+        double startAngle = constraints.getAngularData().getStartAngle();
+        for (View v : children) {
+            final LayoutData data = new LayoutData(constraints);
+            Double angleExtent = extentMap.get(v);
+
+            if (fill) {
+                double percentage = angleExtent / extentSum;
+                angleExtent = percentage * angleExtentConstraint;
+            }
+            data.getAngularData().setAngleExtent(angleExtent);
+            data.getAngularData().setStartAngle(startAngle);
+
+            v.setLayoutData(data);
+
+            // move startAgle by angular extent of view v
+            startAngle += angleExtent;
         }
     }
 

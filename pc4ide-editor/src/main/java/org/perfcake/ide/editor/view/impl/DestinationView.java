@@ -43,7 +43,7 @@ public class DestinationView extends CondensedSectorView {
      * creates new sector view.
      */
     public DestinationView() {
-        super(new DestinationIcon());
+        super(new DestinationIcon(ICON_SIDE, ICON_SIDE));
         periods = new HashSet<>();
         drawExecInfoInside = false;
     }

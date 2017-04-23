@@ -42,7 +42,7 @@ public class GeneratorView extends SimpleSectorView {
      * creates new sector view.
      */
     public GeneratorView() {
-        super(new GeneratorIcon());
+        super(new GeneratorIcon(ICON_SIDE, ICON_SIDE));
     }
 
     public String getRunType() {

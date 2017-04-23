@@ -41,11 +41,6 @@ public class SequenceIcon extends AbstractIcon {
     public static final Color DEFAULT_COLOR = new Color(0xFF8054);
 
     /**
-     * The rendered image.
-     */
-    private BufferedImage image;
-
-    /**
      * Creates a new transcoded SVG image.
      */
     public SequenceIcon() {
@@ -66,6 +61,16 @@ public class SequenceIcon extends AbstractIcon {
      *
      * @param width  width of the icon
      * @param height heigth of the icon
+     */
+    public SequenceIcon(int width, int height) {
+        super(width, height, DEFAULT_COLOR);
+    }
+
+    /**
+     * Creates a new transcoded SVG image.
+     *
+     * @param width  width of the icon
+     * @param height heigth of the icon
      * @param color  Color of the icon
      */
     public SequenceIcon(int width, int height, Color color) {
@@ -73,28 +78,8 @@ public class SequenceIcon extends AbstractIcon {
     }
 
     @Override
-    public int getIconHeight() {
-        return height;
-    }
-
-    @Override
-    public int getIconWidth() {
-        return width;
-    }
-
-    @Override
-    public void setIconWidth(int width) {
-        this.width = width;
-    }
-
-    @Override
-    public void setIconHeight(int height) {
-        this.height = height;
-    }
-
-    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             final double coef = Math.min((double) width / (double) 50, (double) height / (double) 20);
 

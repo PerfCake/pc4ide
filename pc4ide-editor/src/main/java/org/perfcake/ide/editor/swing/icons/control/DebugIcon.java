@@ -39,10 +39,6 @@ public class DebugIcon extends AbstractControlIcon {
 
     public static final int DEFAULT_WIDTH = 8;
     public static final int DEFAULT_HEIGHT = 8;
-    /**
-     * The rendered image.
-     */
-    private BufferedImage image;
 
     /**
      * Creates a new transcoded SVG image.
@@ -74,7 +70,7 @@ public class DebugIcon extends AbstractControlIcon {
         //store location
         this.x = x;
         this.y = y;
-        if (image == null) {
+        if (isRenderNeeded()) {
             image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             double coef = Math.min((double) width / (double) DEFAULT_WIDTH, (double) height / (double) DEFAULT_HEIGHT);
 

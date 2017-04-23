@@ -41,7 +41,7 @@ public class ReceiverView extends ParentSectorView {
      * creates new sector view.
      */
     public ReceiverView() {
-        super(new ReceiverIcon());
+        super(new ReceiverIcon(ICON_SIDE, ICON_SIDE));
     }
 
     @Override

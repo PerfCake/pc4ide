@@ -49,8 +49,15 @@ public abstract class ParentSectorView extends SimpleSectorView {
 
     @Override
     public double getMinimumAngularExtent(LayoutData constraint, Graphics2D g2d) {
-        //TODO: compute!
-        return 0;
+        LayoutData constraintForReporter = computeLowerLayerData(constraint);
+        LayoutData constraintForChildren = computeUpperLayerData(constraint);
+
+        double reporterExtent = super.getMinimumAngularExtent(constraintForReporter, g2d);
+        double destinationExtent = layoutManager.getMinimumAngularExtent(constraintForChildren, g2d);
+
+        double requiredTotal = Math.max(reporterExtent, destinationExtent);
+
+        return requiredTotal;
     }
 
     @Override
@@ -116,15 +123,53 @@ public abstract class ParentSectorView extends SimpleSectorView {
 
     @Override
     public void draw(Graphics2D g2d) {
+        if (layoutData == null) {
+            return;
+        }
         for (View child : getChildren()) {
             child.draw(g2d);
         }
-        super.draw(g2d);
+
+        double preferredExtent = getPreferredAngularExtent(layoutData, g2d);
+        boolean minimumView = false;
+
+
+        // shrink layout data only for data to lower layer, since this view uses only lower layer (upper layer is for children)
+        LayoutData wholeData = this.layoutData;
+        this.layoutData = computeLowerLayerData(wholeData);
+
+        if (layoutData.getAngularData().getAngleExtent() < preferredExtent) {
+            minimumView = true;
+        }
+
+        // antialiasing of the shapes
+        addRenderingHints(g2d);
+
+        // draw the icon
+        drawIcon(g2d, minimumView);
+
+        // draw bounds
+        drawBounds(g2d);
+
+        // draw text
+        drawText(g2d, minimumView);
+
+        // draw managementIcons
+        drawManagementIcons(g2d);
+
+        // draw execution info
+        drawExecutionInfo(g2d);
+
+        // set layout data of this view back to whole data containing both layers.
+        this.layoutData = wholeData;
+
     }
 
     @Override
     public void setLayoutData(LayoutData layoutData) {
-        super.setLayoutData(computeLowerLayerData(layoutData));
+        // do not call super since it sets also layout manager data
+        // super.setLayoutData(computeLowerLayerData(layoutData));
+        this.layoutData = layoutData;
 
         // all data provided serves as constraint for child views
         layoutManager.setConstraint(computeUpperLayerData(layoutData));
