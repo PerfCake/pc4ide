@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.swing.editor;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
@@ -43,8 +44,9 @@ import org.perfcake.ide.editor.form.impl.FormManagerImpl;
  *
  * @author jknelt
  */
-public class Pc4ideEditor extends JSplitPane {
+public class Pc4ideEditor {
 
+    private JSplitPane contentPanel;
     private ScenarioManager scenarioManager;
     private CommandInvoker commandInvoker;
     private GraphicalPanel graphicalEditorPanel;
@@ -62,9 +64,9 @@ public class Pc4ideEditor extends JSplitPane {
      */
     public Pc4ideEditor(ScenarioManager scenarioManager, ExecutionFactory executionFactory, ServiceManager serviceManager,
                         CommandInvoker commandInvoker, ComponentCatalogue componentCatalogue) throws PerfCakeException {
-        super(JSplitPane.HORIZONTAL_SPLIT);
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
+        this.contentPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         this.scenarioManager = scenarioManager;
         this.commandInvoker = commandInvoker;
 
@@ -88,14 +90,14 @@ public class Pc4ideEditor extends JSplitPane {
         formManager.setGraphicalController(graphicalEditorPanel.getController());
 
 
-        setLeftComponent(graphicalEditorPanel);
-        setRightComponent(formManager.getMasterPanel());
+        contentPanel.setLeftComponent(graphicalEditorPanel);
+        contentPanel.setRightComponent(formManager.getMasterPanel());
 
-        addComponentListener(new ComponentAdapter() {
+        contentPanel.addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentResized(ComponentEvent e) {
-                setDividerLocation(0.80);
+                contentPanel.setDividerLocation(0.80);
                 super.componentResized(e);
             }
         });
@@ -161,5 +163,9 @@ public class Pc4ideEditor extends JSplitPane {
 
     public ScenarioManager getScenarioManager() {
         return scenarioManager;
+    }
+
+    public JComponent getContentPanel() {
+        return this.contentPanel;
     }
 }

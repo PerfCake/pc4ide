@@ -137,7 +137,7 @@ public class ScenarioEditor implements FileEditor {
     @NotNull
     @Override
     public JComponent getComponent() {
-        return pc4ideEditor;
+        return pc4ideEditor.getContentPanel();
     }
 
     @Nullable

@@ -97,7 +97,7 @@ public class Main {
                 try {
                     editor = new Pc4ideEditor(scenarioManager, new NoopExecutionFactory(), DefaultServiceManager.getInstance(),
                             new DefaultCommandInvoker(), new ReflectionComponentCatalogue());
-                    frame.add(editor);
+                    frame.add(editor.getContentPanel());
                     frame.setVisible(true);
                 } catch (PerfCakeException e) {
                     e.printStackTrace();
