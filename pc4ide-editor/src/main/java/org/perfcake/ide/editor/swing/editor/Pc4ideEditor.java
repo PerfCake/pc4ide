@@ -81,7 +81,8 @@ public class Pc4ideEditor extends JSplitPane {
             componentCatalogue = createComponentCatalogue();
         }
 
-        formManager = new FormManagerImpl(model, commandInvoker, componentCatalogue, serviceManager.getModelFactory());
+        formManager = new FormManagerImpl(model, commandInvoker, serviceManager.getSwingFactory(),
+                componentCatalogue, serviceManager.getModelFactory());
 
         graphicalEditorPanel = new GraphicalPanel(scenarioManager, model, executionFactory, serviceManager, commandInvoker, formManager);
         formManager.setGraphicalController(graphicalEditorPanel.getController());

@@ -49,7 +49,6 @@ import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.form.FormManager;
-import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.utils.FontUtils;
 import org.slf4j.Logger;
@@ -86,10 +85,11 @@ public class FormManagerImpl implements FormManager {
      *
      * @param scenario           model of a scenario.
      * @param commandInvoker     invoker for executing commands
+     * @param swingFactory       swing factory
      * @param componentCatalogue catalogue of PerfCake components
      * @param modelFactory       model factory
      */
-    public FormManagerImpl(ScenarioModel scenario, CommandInvoker commandInvoker,
+    public FormManagerImpl(ScenarioModel scenario, CommandInvoker commandInvoker, SwingFactory swingFactory,
                            ComponentCatalogue componentCatalogue, ModelFactory modelFactory) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario cannot be null");
@@ -107,7 +107,7 @@ public class FormManagerImpl implements FormManager {
         this.componentCatalogue = componentCatalogue;
         this.commandInvoker = commandInvoker;
         this.modelFactory = modelFactory;
-        swingFactory = new DefaultSwingFactory();
+        this.swingFactory = swingFactory;
         controllers = new Stack<>();
 
         createUiComponents();
@@ -182,7 +182,7 @@ public class FormManagerImpl implements FormManager {
         constraints.gridy++;
         constraints.weighty = 0;
         masterPanel.add(bottomPanel, constraints);
-        formBuilder = new FormBuilderImpl();
+        formBuilder = new FormBuilderImpl(swingFactory);
         controllers = new Stack<>();
     }
 

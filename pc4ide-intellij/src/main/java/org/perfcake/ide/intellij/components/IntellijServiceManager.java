@@ -23,6 +23,7 @@ package org.perfcake.ide.intellij.components;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.editor.AbstractServiceManager;
+import org.perfcake.ide.intellij.IntelliJSwingFactory;
 import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.editor.IntellijExecutionFactory;
 
@@ -38,6 +39,7 @@ public class IntellijServiceManager extends AbstractServiceManager implements Ap
     @Override
     public void initComponent() {
         executionFactory = new IntellijExecutionFactory();
+        swingFactory = new IntelliJSwingFactory();
     }
 
     @Override

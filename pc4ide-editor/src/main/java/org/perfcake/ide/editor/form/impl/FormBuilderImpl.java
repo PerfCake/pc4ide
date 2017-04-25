@@ -56,7 +56,6 @@ import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.form.FormBuilder;
 import org.perfcake.ide.editor.form.FormController;
-import org.perfcake.ide.editor.swing.DefaultSwingFactory;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.swing.icons.control.ChevronRight;
 import org.perfcake.ide.editor.swing.icons.control.CogIcon;
@@ -89,11 +88,15 @@ public class FormBuilderImpl implements FormBuilder {
     public static final int VERTICAL_INSETS = 2;
 
     private boolean useDebugBorders = false;
-    private SwingFactory swingFactory = new DefaultSwingFactory();
+    private SwingFactory swingFactory;
 
     private Color iconColor = Color.BLACK;
     private Color addIconColor = Color.BLACK;
     private Color removeIconColor = Color.BLACK;
+
+    public FormBuilderImpl(SwingFactory swingFactory) {
+        this.swingFactory = swingFactory;
+    }
 
     @Override
     public void buildForm(JPanel panel, Property property, FormController controller) {
