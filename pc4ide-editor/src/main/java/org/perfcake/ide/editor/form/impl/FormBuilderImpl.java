@@ -27,6 +27,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -544,6 +548,7 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.weightx = 0;
 
         JButton button = createSwitchValueButton(controller, info, value, field);
+        field.addMouseListener(new EnableComponentAdapter(field, button));
 
         panel.add(button, constraints);
 
@@ -906,4 +911,31 @@ public class FormBuilderImpl implements FormBuilder {
         return font;
     }
 
+    private static class EnableComponentAdapter extends MouseAdapter {
+
+        private JComponent component;
+        private JButton switchButton;
+        private EnabledSwitchListener switchListener;
+
+        public EnableComponentAdapter(JComponent component, JButton switchButton) {
+            this.component = component;
+            this.switchButton = switchButton;
+
+            for (ActionListener listener : switchButton.getActionListeners()) {
+                if (listener instanceof EnabledSwitchListener) {
+                    switchListener = (EnabledSwitchListener) listener;
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+            if (!component.isEnabled() && switchListener != null) {
+                switchListener.actionPerformed(null);
+                component.grabFocus();
+            }
+            super.mouseReleased(e);
+        }
+    }
 }
