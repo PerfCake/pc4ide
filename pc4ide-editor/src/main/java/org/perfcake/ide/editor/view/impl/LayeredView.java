@@ -150,4 +150,9 @@ public class LayeredView extends AbstractView {
     protected void initManagementIcons() {
         // no icons required
     }
+
+    @Override
+    protected String getToolTipText() {
+        return null;
+    }
 }

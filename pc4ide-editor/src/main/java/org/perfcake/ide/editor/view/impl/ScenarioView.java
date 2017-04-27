@@ -152,6 +152,11 @@ public class ScenarioView extends AbstractView {
         managementIcons.add(debugIcon);
     }
 
+    @Override
+    protected String getToolTipText() {
+        return null;
+    }
+
     public boolean isRunning() {
         return isRunning;
     }

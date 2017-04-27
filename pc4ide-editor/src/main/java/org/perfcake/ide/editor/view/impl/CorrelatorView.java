@@ -55,5 +55,4 @@ public class CorrelatorView extends CondensedSectorView {
     protected void initManagementIcons() {
         // no icons.
     }
-
 }

@@ -62,6 +62,7 @@ public abstract class SimpleSectorView extends SectorView {
      */
     public static final int PADDING = 10;
 
+
     /**
      * Space between management icons.
      */
@@ -561,5 +562,10 @@ public abstract class SimpleSectorView extends SectorView {
         this.executionInfo = executionInfo;
         invalidate();
         return this;
+    }
+
+    @Override
+    protected String getToolTipText() {
+        return getHeader();
     }
 }
