@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.intellij;
 
+import com.intellij.ui.components.JBScrollPane;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -66,7 +67,7 @@ public class IntelliJSwingFactory implements SwingFactory {
 
     @Override
     public JScrollPane createSrollPane() {
-        return new JScrollPane();
+        return new JBScrollPane();
     }
 
     @Override
