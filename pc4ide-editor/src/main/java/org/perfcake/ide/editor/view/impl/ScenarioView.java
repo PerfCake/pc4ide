@@ -201,4 +201,15 @@ public class ScenarioView extends AbstractView {
         final AngularData angularData = new AngularData(START_ANGLE, MAXIMUM_ANGLE_EXTENT);
         return new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
     }
+
+    @Override
+    public boolean isSelected() {
+        //scenario cannot be selected
+        return false;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        //does nothing, scenario cannot be selected
+    }
 }
