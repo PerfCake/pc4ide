@@ -43,7 +43,7 @@ public abstract class ParentSectorView extends SimpleSectorView {
      */
     public ParentSectorView(ResizableIcon icon) {
         super(icon);
-        layoutManager = new CircularSectorLayoutManager(true);
+        layoutManager = new CircularSectorLayoutManager(true, false);
         layoutManager.setConstraint(new LayoutData());
     }
 

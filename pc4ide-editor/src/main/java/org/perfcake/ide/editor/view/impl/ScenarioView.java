@@ -25,6 +25,7 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.AngularData;
@@ -47,7 +48,7 @@ public class ScenarioView extends AbstractView {
 
     private static final int MAXIMUM_ANGLE_EXTENT = 340;
     private static final int MAXIMUM_INNER_RADIUS = 200;
-    public static final int START_ANGLE = 150;
+    public static final int START_ANGLE = 180;
     public static final int ICON_WIDTH = 28;
     public static final int ICON_HEIGTH = 28;
     private static final int PADDING_BEETWEN_ICONS = 35;
@@ -63,7 +64,7 @@ public class ScenarioView extends AbstractView {
      */
     public ScenarioView() {
         super();
-        layoutManager = new CircularSectorLayoutManager();
+        layoutManager = new CircularSectorLayoutManager(false, true);
     }
 
     /* (non-Javadoc)
@@ -90,8 +91,15 @@ public class ScenarioView extends AbstractView {
 
         iconsWidth += ((managementIcons.size() - 1) * PADDING_BEETWEN_ICONS);
 
-        int iconX = (int) (layoutData.getCenter().getX() - iconsWidth / 2);
-        int iconY = (int) (layoutData.getCenter().getY() - ICON_HEIGTH / 2);
+        Point2D center = layoutData.getCenter();
+        if ((layoutManager instanceof CircularSectorLayoutManager)) {
+            Point2D adjustedCenter = ((CircularSectorLayoutManager) layoutManager).getAdjustedCenter();
+            if (adjustedCenter != null) {
+                center = adjustedCenter;
+            }
+        }
+        int iconX = (int) (center.getX() - iconsWidth / 2);
+        int iconY = (int) (center.getY() - ICON_HEIGTH / 2);
 
         for (ControlIcon icon : managementIcons) {
             icon.paintIcon(null, g2d, iconX, iconY);

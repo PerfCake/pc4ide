@@ -37,6 +37,10 @@ public class LayoutData {
     private RadiusData radiusData = new RadiusData();
     private AngularData angularData = new AngularData();
 
+    // if set, explicit center defines alternative center of the screen. If explicitCenter is null, then center is computed
+    // from width and height.
+    private Point2D explicitCenter;
+
     public LayoutData() {
     }
 
@@ -66,6 +70,7 @@ public class LayoutData {
         this.height = other.height;
         this.radiusData = new RadiusData(other.radiusData);
         this.angularData = new AngularData(other.angularData);
+        this.explicitCenter = other.getExplicitCenter();
     }
 
     public double getWidth() {
@@ -100,8 +105,25 @@ public class LayoutData {
         this.angularData = angularData;
     }
 
+    /**
+     * Center of the layout data. If explicit center is set, then this call returns value in explicit center. Otherwise, center of layout
+     * data is computed dynamically.
+     *
+     * @return center
+     */
     public Point2D getCenter() {
-        return new Point2D.Double(width / 2, height / 2);
+        if (explicitCenter != null) {
+            return explicitCenter;
+        } else {
+            return new Point2D.Double(width / 2, height / 2);
+        }
     }
 
+    public Point2D getExplicitCenter() {
+        return explicitCenter;
+    }
+
+    public void setExplicitCenter(Point2D explicitCenter) {
+        this.explicitCenter = explicitCenter;
+    }
 }

@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.layout.impl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,19 +45,27 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
     private boolean fill;
 
     /**
+     * if true, then center of sectors is not in the real center of the panel, but it is moved, so that sectors are as big as possible.
+     */
+    private boolean adjustCenter;
+    private Point2D adjustedCenter;
+
+    /**
      * Creates new CircularSectorLayoutManager.
      */
     public CircularSectorLayoutManager() {
-        this(false);
+        this(false, false);
     }
 
     /**
      * Creates new CircularSectorLayoutManager.
      *
-     * @param fillExtent should layout manager fill whole angle extent provided?
+     * @param fillExtent   should layout manager fill whole angle extent provided?
+     * @param adjustCenter adjust center of the pane so that view is as big as possible.
      */
-    public CircularSectorLayoutManager(boolean fillExtent) {
+    public CircularSectorLayoutManager(boolean fillExtent, boolean adjustCenter) {
         this.fill = fillExtent;
+        this.adjustCenter = adjustCenter;
     }
 
     @Override
@@ -117,8 +126,15 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
     protected void layoutComponents(Map<View, Double> extentMap, double extentSum) {
         double angleExtentConstraint = constraints.getAngularData().getAngleExtent();
         double startAngle = constraints.getAngularData().getStartAngle();
+
+        LayoutData adjustedConstraints = constraints;
+
+        if (adjustCenter) {
+            adjustedConstraints = adjustCenter(extentSum);
+        }
+
         for (View v : children) {
-            final LayoutData data = new LayoutData(constraints);
+            final LayoutData data = new LayoutData(adjustedConstraints);
             Double angleExtent = extentMap.get(v);
 
             if (fill) {
@@ -133,6 +149,58 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             // move startAgle by angular extent of view v
             startAngle += angleExtent;
         }
+    }
+
+    private LayoutData adjustCenter(double extentSum) {
+        LayoutData adjustedConstraints;
+        adjustedConstraints = new LayoutData(constraints);
+
+        double y1 = constraints.getCenter().getY()
+                + constraints.getRadiusData().getOuterRadius() * Math.cos(Math.toRadians(
+                constraints.getAngularData().getStartAngle()));
+        double y2 = constraints.getCenter().getY()
+                + constraints.getRadiusData().getOuterRadius() * Math.cos(Math.toRadians(
+                constraints.getAngularData().getStartAngle() + extentSum));
+
+        double y = constraints.getCenter().getY();
+        double angle = 0;
+
+        if (y1 > y) {
+            y = y1;
+            angle = constraints.getAngularData().getStartAngle();
+        }
+
+        if (y2 > y) {
+            y = y2;
+            angle = constraints.getAngularData().getStartAngle() + extentSum;
+        }
+
+        if (y > constraints.getCenter().getY()) { // is computed y below center?
+            double verticalMove = y - constraints.getCenter().getY();
+            logger.trace("Adjusting view center. Vertical move: {}", verticalMove);
+
+            // we multiple vertical move by 1.2 in order to leave some blank space below
+            double possibleVerticalIncrease = verticalMove - 1.2 * verticalMove * Math.sin(Math.toRadians(angle));
+
+            // we multiple by 0.9 since we want to leave 10% of width free
+            double possibleHorizontalIncrease = (constraints.getWidth() / 2) * 0.9 - constraints.getRadiusData().getOuterRadius();
+            // because of multiplication by 0.9, it is possible that horizontal increase is negative, so we set it to zero in that case
+            possibleHorizontalIncrease = Math.max(possibleHorizontalIncrease, 0);
+            double increase = Math.min(possibleHorizontalIncrease, possibleVerticalIncrease);
+            logger.trace("horizontalIncrease: {}, verticalIncrease: {}, increase: {}",
+                    possibleHorizontalIncrease, possibleVerticalIncrease, increase);
+
+            double adjustedCenterY = constraints.getCenter().getY() + increase;
+            adjustedCenter = new Point2D.Double(constraints.getCenter().getX(), adjustedCenterY);
+            adjustedConstraints.setExplicitCenter(adjustedCenter);
+
+            adjustedConstraints.getRadiusData().setOuterRadius(constraints.getRadiusData().getOuterRadius() + increase);
+        } else {
+            adjustedCenter = new Point2D.Double(constraints.getWidth() / 2, constraints.getHeight() / 2);
+            adjustedConstraints.setExplicitCenter(null);
+        }
+
+        return adjustedConstraints;
     }
 
     /*
@@ -171,5 +239,9 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
     public void add(View component) {
         super.add(component);
         Collections.sort(children, viewComparator);
+    }
+
+    public Point2D getAdjustedCenter() {
+        return adjustedCenter;
     }
 }
