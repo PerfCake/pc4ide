@@ -22,6 +22,9 @@ package org.perfcake.ide.editor.controller.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JComponent;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.exec.ExecutionEvent;
@@ -46,8 +49,10 @@ import org.perfcake.ide.editor.controller.visitor.MouseClickVisitor;
 import org.perfcake.ide.editor.form.FormManager;
 import org.perfcake.ide.editor.view.UnsupportedChildViewException;
 import org.perfcake.ide.editor.view.factory.ViewFactory;
+import org.perfcake.ide.editor.view.impl.DestinationView;
 import org.perfcake.ide.editor.view.impl.LayeredView;
 import org.perfcake.ide.editor.view.impl.MessageView;
+import org.perfcake.ide.editor.view.impl.ReporterView;
 import org.perfcake.ide.editor.view.impl.ScenarioView;
 import org.perfcake.ide.editor.view.impl.SequenceView;
 
@@ -163,6 +168,14 @@ public class ScenarioController extends AbstractController implements RootContro
 
             if (PropertyNames.REPORTERS.toString().equals(info.getName())) {
                 child = new ReporterController(model, modelFactory, viewFactory);
+                Controller reporter = child;
+                List<Controller> composedControllers = new ArrayList<>();
+                composedControllers.add(reporter);
+                Iterator<Controller> it = reporter.getChildrenIterator();
+                while (it.hasNext()) {
+                    composedControllers.add(it.next());
+                }
+                child = new TwoTypeController(composedControllers, modelFactory, viewFactory, ReporterView.class, DestinationView.class);
             } else if (PropertyNames.SEQUENCES.toString().equals(info.getName())) {
                 child = new SequenceController(model, modelFactory, viewFactory);
             } else if (PropertyNames.SENDER.toString().equals(info.getName())) {
