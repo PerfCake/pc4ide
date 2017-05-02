@@ -24,6 +24,7 @@
 package org.perfcake.ide.editor.layout;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * This class holds information about the plane (canvas, inspector, drawing surface) which can be used for editor.
@@ -125,5 +126,37 @@ public class LayoutData {
 
     public void setExplicitCenter(Point2D explicitCenter) {
         this.explicitCenter = explicitCenter;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LayoutData that = (LayoutData) o;
+        return Double.compare(that.width, width) == 0
+                && Double.compare(that.height, height) == 0
+                && Objects.equals(radiusData, that.radiusData)
+                && Objects.equals(angularData, that.angularData)
+                && Objects.equals(explicitCenter, that.explicitCenter);
+    }
+
+    @Override
+    public String toString() {
+        return "LayoutData{"
+                + "width=" + width
+                + ", height=" + height
+                + ", radiusData=" + radiusData
+                + ", angularData=" + angularData
+                + ", explicitCenter=" + explicitCenter
+                + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(width, height, radiusData, angularData, explicitCenter);
     }
 }

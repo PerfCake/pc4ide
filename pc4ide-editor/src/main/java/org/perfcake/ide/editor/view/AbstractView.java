@@ -117,12 +117,17 @@ public abstract class AbstractView implements View {
 
     @Override
     public void validate(Graphics2D g2d) {
+
+        // set layout data for children
         if (layoutManager != null) {
             layoutManager.layout(g2d);
         }
+
+        // call validate on children
         for (final View view : getChildren()) {
             view.validate(g2d);
         }
+
         isValid = true;
     }
 

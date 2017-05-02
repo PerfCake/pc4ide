@@ -27,6 +27,8 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
 import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent sector view splits sectors into two layers. Inner layer is used for actual view. The outer layer is
@@ -35,6 +37,8 @@ import org.perfcake.ide.editor.view.View;
  * @author Jakub Knetl
  */
 public abstract class ParentSectorView extends SimpleSectorView {
+
+    static final Logger logger = LoggerFactory.getLogger(ParentSectorView.class);
 
     /**
      * Constructor for Layered sector view.
@@ -55,6 +59,8 @@ public abstract class ParentSectorView extends SimpleSectorView {
         double reporterExtent = super.getMinimumAngularExtent(constraintForReporter, g2d);
         double destinationExtent = layoutManager.getMinimumAngularExtent(constraintForChildren, g2d);
 
+        logger.trace("Computing minimum extent from layout data: {}. Reporter extent: {}, Destination extent: {}",
+                constraint, reporterExtent, destinationExtent);
         double requiredTotal = Math.max(reporterExtent, destinationExtent);
 
         return requiredTotal;
@@ -68,6 +74,8 @@ public abstract class ParentSectorView extends SimpleSectorView {
         double reporterExtent = super.getPreferredAngularExtent(constraintForReporter, g2d);
         double destinationExtent = layoutManager.getPreferredAngularExtent(constraintForChildren, g2d);
 
+        logger.trace("Computing preffered extent from layout data {}. Reporter extent: {}, Destinations extent: {}",
+                constraint, reporterExtent, destinationExtent);
         double requiredTotal = Math.max(reporterExtent, destinationExtent);
 
         return requiredTotal;

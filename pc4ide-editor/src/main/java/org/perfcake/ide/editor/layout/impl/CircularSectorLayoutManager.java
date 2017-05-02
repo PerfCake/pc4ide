@@ -85,9 +85,7 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
         if (requestedExtentByChildren <= angleExtentConstraint) {
             layoutComponents(extentMap, requestedExtentByChildren);
         } else {
-
             // use minimum view
-
             double adjustedExtent = requestedExtentByChildren;
             Map<View, Double> minimumViews = new HashMap<>();
             while (adjustedExtent > angleExtentConstraint && !extentMap.isEmpty()) {
@@ -144,7 +142,7 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             data.getAngularData().setAngleExtent(angleExtent);
             data.getAngularData().setStartAngle(startAngle);
 
-            v.setLayoutData(data);
+            v.setLayoutData(data); // sets layout data
 
             // move startAgle by angular extent of view v
             startAngle += angleExtent;
@@ -179,8 +177,10 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             double verticalMove = y - constraints.getCenter().getY();
             logger.trace("Adjusting view center. Vertical move: {}", verticalMove);
 
-            // we multiple vertical move by 1.2 in order to leave some blank space below
-            double possibleVerticalIncrease = verticalMove - 1.2 * verticalMove * Math.sin(Math.toRadians(angle));
+            double possibleVerticalIncrease = verticalMove - 1 * (verticalMove * Math.sin(Math.toRadians(angle)));
+
+            // we don't use all increase in order to leave some blank space below
+            possibleVerticalIncrease = 0.85 * possibleVerticalIncrease;
 
             // we multiple by 0.9 since we want to leave 10% of width free
             double possibleHorizontalIncrease = (constraints.getWidth() / 2) * 0.9 - constraints.getRadiusData().getOuterRadius();
@@ -228,9 +228,12 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             return 0;
         }
         for (View child : children) {
-            requiredExtent += child.getPreferredAngularExtent(constraint, g2d);
+            double childExtent = child.getPreferredAngularExtent(constraint, g2d);
+            logger.trace("Child extent: {}", childExtent);
+            requiredExtent += childExtent;
         }
 
+        logger.trace("Preferred extent: {}", requiredExtent);
 
         return requiredExtent;
     }
@@ -244,4 +247,5 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
     public Point2D getAdjustedCenter() {
         return adjustedCenter;
     }
+
 }

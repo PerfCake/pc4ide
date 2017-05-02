@@ -116,6 +116,7 @@ public class ScenarioEditor implements FileEditor {
             Notification notification = new Notification(IntellijUtils.PERFCAKE_NOTIFICATION_ID, "Error",
                     "Cannot create scenario", NotificationType.ERROR);
             Notifications.Bus.notify(notification);
+            logger.error("Cannot create scenario", e);
         }
     }
 

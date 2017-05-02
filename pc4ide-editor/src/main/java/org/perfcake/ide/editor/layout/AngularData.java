@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.layout;
 
+import java.util.Objects;
+
 /**
  * Represents angular data. It contains an angle extent, and start angle
  */
@@ -69,5 +71,31 @@ public class AngularData {
 
     public void addAngleExtent(double addExtent) {
         this.angleExtent += addExtent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AngularData that = (AngularData) o;
+        return Double.compare(that.startAngle, startAngle) == 0
+                && Double.compare(that.angleExtent, angleExtent) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "AngularData{"
+                + "startAngle=" + startAngle
+                + ", angleExtent=" + angleExtent
+                + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startAngle, angleExtent);
     }
 }

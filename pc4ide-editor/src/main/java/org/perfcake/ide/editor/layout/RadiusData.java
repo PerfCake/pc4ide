@@ -20,6 +20,8 @@
 
 package org.perfcake.ide.editor.layout;
 
+import java.util.Objects;
+
 /**
  * Radius data represents a radius of editor. Editor consists of inner radius and outer radius. Content of an editor
  * is placed between inner radius and outer radius. Outer radius must be larger than inner radius.
@@ -65,5 +67,31 @@ public class RadiusData {
 
     public void setOuterRadius(double outerRadius) {
         this.outerRadius = outerRadius;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RadiusData that = (RadiusData) o;
+        return Double.compare(that.innerRadius, innerRadius) == 0
+                && Double.compare(that.outerRadius, outerRadius) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "RadiusData{"
+                + "innerRadius=" + innerRadius
+                + ", outerRadius=" + outerRadius
+                + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(innerRadius, outerRadius);
     }
 }
