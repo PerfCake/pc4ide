@@ -34,7 +34,6 @@ import org.perfcake.ide.core.model.components.ScenarioModel;
 import org.perfcake.ide.core.model.components.ScenarioModel.PropertyNames;
 import org.perfcake.ide.core.model.factory.ModelFactory;
 import org.perfcake.ide.editor.ServiceManager;
-import org.perfcake.ide.editor.actions.handlers.DebugHandler;
 import org.perfcake.ide.editor.actions.handlers.RunHandler;
 import org.perfcake.ide.editor.actions.handlers.SelectionHandler;
 import org.perfcake.ide.editor.actions.handlers.StopHandler;
@@ -112,7 +111,6 @@ public class ScenarioController extends AbstractController implements RootContro
     protected void initActionHandlers() {
         addActionHandler(new SelectionHandler());
         addActionHandler(new RunHandler());
-        addActionHandler(new DebugHandler());
         addActionHandler(new StopHandler());
 
     }

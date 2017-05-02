@@ -106,8 +106,8 @@ public class PlayIcon extends AbstractControlIcon {
         // 
 
         // _0
-        transformations.push(g.getTransform());
-        g.transform(new AffineTransform(1, 0, 0, 1, 1, 1));
+        //transformations.push(g.getTransform());
+        //g.transform(new AffineTransform(1, 0, 0, 1, 1, 1));
 
         // _0_0
         shape = new GeneralPath();
@@ -119,7 +119,7 @@ public class PlayIcon extends AbstractControlIcon {
 
         g.setPaint(color);
         g.fill(shape);
-        g.setTransform(transformations.pop()); // _0_0
+        //g.setTransform(transformations.pop()); // _0_0
     }
 }
 

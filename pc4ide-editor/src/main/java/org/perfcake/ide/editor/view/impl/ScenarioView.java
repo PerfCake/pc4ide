@@ -33,7 +33,6 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
 import org.perfcake.ide.editor.swing.icons.ControlIcon;
-import org.perfcake.ide.editor.swing.icons.control.DebugIcon;
 import org.perfcake.ide.editor.swing.icons.control.PlayIcon;
 import org.perfcake.ide.editor.swing.icons.control.StopIcon;
 import org.perfcake.ide.editor.view.AbstractView;
@@ -55,9 +54,8 @@ public class ScenarioView extends AbstractView {
 
     private JComponent jComponent;
     private boolean isRunning = false;
-    private PlayIcon playIcon;
-    private StopIcon stopIcon;
-    private DebugIcon debugIcon;
+    private ControlIcon playIcon;
+    private ControlIcon stopIcon;
 
     /**
      * Creates new editor view inside of swing container.
@@ -155,9 +153,7 @@ public class ScenarioView extends AbstractView {
     protected void initManagementIcons() {
         playIcon = new PlayIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
         stopIcon = new StopIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_1));
-        debugIcon = new DebugIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
         managementIcons.add(playIcon);
-        managementIcons.add(debugIcon);
     }
 
     @Override
@@ -182,7 +178,6 @@ public class ScenarioView extends AbstractView {
                 managementIcons.add(stopIcon);
             } else {
                 managementIcons.add(playIcon);
-                managementIcons.add(debugIcon);
             }
             invalidate();
         }
