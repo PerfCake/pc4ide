@@ -21,9 +21,11 @@
 package org.perfcake.ide.core.model;
 
 import java.util.Objects;
+import org.perfcake.ide.core.components.ComponentLoaderImpl;
 import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelException;
+import org.perfcake.ide.core.model.properties.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +182,7 @@ public class PropertyInfo {
      * @param minOccurs         minimum number of occurrences of this property.
      * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
      */
-    public <T extends Property> PropertyInfo(String name,  Model model, Class<? extends T> defaultValueClazz,
+    public <T extends Property> PropertyInfo(String name, Model model, Class<? extends T> defaultValueClazz,
                                              T defaultValue, PerfCakeComponent perfCakeComponent, int minOccurs, int maxOccurs) {
         this(name, null, model, defaultValueClazz, defaultValue, perfCakeComponent, minOccurs, maxOccurs);
     }
@@ -249,7 +251,21 @@ public class PropertyInfo {
         if (type == PropertyType.MODEL) {
             docs = docsService.getDocs(model.getComponent().getApi());
         } else {
-            docs = model.getDocsService().getFieldDocs(model.getComponent().getApi(), name);
+
+            Class<?> clazz = null;
+            // try to parse information from implementation
+            if (model.getSupportedProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY) != null
+                    && !model.getProperties(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY).isEmpty()) {
+                Value implName = model.getSingleProperty(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY, Value.class);
+                clazz = new ComponentLoaderImpl().loadComponent(implName.getValue(), model.getComponent());
+            }
+
+            if (clazz == null) {
+                // use component API as a base
+                clazz = model.getComponent().getApi();
+            }
+
+            docs = model.getDocsService().getFieldDocs(clazz, name);
         }
         return docs;
     }

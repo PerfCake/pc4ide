@@ -158,8 +158,8 @@ public class FormBuilderImpl implements FormBuilder {
                             JPanel implPanel = createDetailedValuePanel(controller, value);
                             additionalPanels.add(0, implPanel); //add always to the beginning
                         } else {
-                            addSimpleValueToPanel(valuesPanel, controller, propertyInfo, value, valuesPanelSize);
-                            valuesPanelSize++;
+                            int rowsAdded = addSimpleValueToPanel(valuesPanel, controller, propertyInfo, value, valuesPanelSize);
+                            valuesPanelSize += rowsAdded;
                         }
                         break;
                     case KEY_VALUE:
@@ -517,7 +517,8 @@ public class FormBuilderImpl implements FormBuilder {
         return valuesPanel;
     }
 
-    private void addSimpleValueToPanel(JPanel panel, FormController controller, PropertyInfo info, Value value, int columnIndex) {
+    private int addSimpleValueToPanel(JPanel panel, FormController controller, PropertyInfo info, Value value, int columnIndex) {
+        int rowsAdded = 0;
         // gridbag layout with three columns is expected!
         GridBagConstraints constraints = createGridBagConstraints();
 
@@ -544,15 +545,34 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         panel.add(field, constraints);
 
+        rowsAdded++;
+
         constraints.gridx++;
         constraints.weightx = 0;
 
         JButton button = createSwitchValueButton(controller, info, value, field);
         field.addMouseListener(new EnableComponentAdapter(field, button));
-
         panel.add(button, constraints);
 
+        // add documentation
+        if (info.getDocs() != null) {
+            String documentation = info.getDocs();
 
+            constraints.gridx = 0;
+            constraints.gridy++;
+            constraints.gridwidth = 3;
+            constraints.insets = new Insets(0,5,10,5);
+            JTextArea docsArea = swingFactory.createTextArea();
+            docsArea.setEditable(false);
+            docsArea.setLineWrap(true);
+            docsArea.setText(documentation);
+            docsArea.setOpaque(false);
+            panel.add(docsArea, constraints);
+            rowsAdded++;
+        }
+
+
+        return 2;
     }
 
     private JPanel createListOfValuesPanel(FormController controller, PropertyInfo propertyInfo, List<Property> values) {

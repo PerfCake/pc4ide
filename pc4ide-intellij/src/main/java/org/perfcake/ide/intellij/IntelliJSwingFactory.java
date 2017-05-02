@@ -21,6 +21,7 @@
 package org.perfcake.ide.intellij;
 
 import com.intellij.ui.components.JBScrollPane;
+import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,6 +41,8 @@ import org.perfcake.ide.editor.utils.FontUtils;
 public class IntelliJSwingFactory implements SwingFactory {
 
     private Font font;
+
+    private static final Color LIGHTER_FOREGROUND_COLOR = new Color(117, 117, 117);
 
     public IntelliJSwingFactory() {
         font = FontUtils.getSansFont();
@@ -76,6 +79,7 @@ public class IntelliJSwingFactory implements SwingFactory {
         area.setFont(font);
         area.setLineWrap(true);
         area.setColumns(5);
+        area.setForeground(LIGHTER_FOREGROUND_COLOR);
         return area;
     }
 

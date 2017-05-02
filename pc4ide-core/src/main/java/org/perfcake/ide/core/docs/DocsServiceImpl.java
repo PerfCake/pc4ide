@@ -21,11 +21,14 @@
 package org.perfcake.ide.core.docs;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Docs service implementation. It uses properties files with parsed javadocs from the PerfCake to
  * get documentation.
+ *
  * @author Jakub Knetl
  */
 public class DocsServiceImpl implements DocsService {
@@ -51,8 +54,16 @@ public class DocsServiceImpl implements DocsService {
                 fieldDocs = javadoc.getProperty(String.format("%s.%s", tested.getCanonicalName(), fieldName));
                 break;
             } catch (NoSuchFieldException e) {
-                tested = tested.getSuperclass();
+                // do nothing
             }
+            Method[] methods = tested.getDeclaredMethods();
+            for (Method m : methods) {
+                if (m.getName().equals("set" + StringUtils.capitalize(fieldName))) {
+                    fieldDocs = javadoc.getProperty(String.format("%s.%s", tested.getCanonicalName(), fieldName));
+                    break;
+                }
+            }
+            tested = tested.getSuperclass();
         }
 
         return fieldDocs;

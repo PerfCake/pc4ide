@@ -35,7 +35,7 @@ import org.perfcake.ide.core.model.properties.SimpleValue;
 public class GeneratorModel extends AbstractModel {
 
     public enum PropertyNames {
-        RUN("Run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads");
+        RUN("run"), IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("threads");
 
         private final String propertyName;
 
