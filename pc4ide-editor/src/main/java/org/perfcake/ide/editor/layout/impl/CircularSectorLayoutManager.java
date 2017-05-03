@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class CircularSectorLayoutManager extends AbstractLayoutManager {
 
     static final Logger logger = LoggerFactory.getLogger(CircularSectorLayoutManager.class);
+    public static final int BOTTOM_PADDING = 30;
 
     private Comparator<View> viewComparator = new ViewComparator();
 
@@ -154,11 +155,26 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
         adjustedConstraints = new LayoutData(constraints);
 
         double y1 = constraints.getCenter().getY()
-                + constraints.getRadiusData().getOuterRadius() * Math.cos(Math.toRadians(
+                + constraints.getRadiusData().getOuterRadius() * Math.sin(Math.toRadians(
                 constraints.getAngularData().getStartAngle()));
+
+        // angle of the closing arc of the last sector
+        double endAngle = constraints.getAngularData().getStartAngle() + extentSum;
+
+        // if angle is larger than 450, than the view contains sector with 450 angle, which is has greater y coordinate
+        // so we must compute with the worst situation in order not to strip part of the view out.
+        if (endAngle > 450) {
+            endAngle = 450;
+        }
         double y2 = constraints.getCenter().getY()
-                + constraints.getRadiusData().getOuterRadius() * Math.cos(Math.toRadians(
-                constraints.getAngularData().getStartAngle() + extentSum));
+                + constraints.getRadiusData().getOuterRadius() * Math.sin(Math.toRadians(
+                endAngle));
+
+        logger.trace("Center vertical adjustment. Current position: {}, y1: {}, y2: {}", constraints.getCenter().getY(), y1, y2);
+        logger.trace("Center vertical adjustment. y1 angle: {}, y2 angle: {}",
+                constraints.getAngularData().getStartAngle(),
+                endAngle);
+
 
         double y = constraints.getCenter().getY();
         double angle = 0;
@@ -170,17 +186,17 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
 
         if (y2 > y) {
             y = y2;
-            angle = constraints.getAngularData().getStartAngle() + extentSum;
+            angle = endAngle;
         }
 
-        if (y > constraints.getCenter().getY()) { // is computed y below center?
-            double verticalMove = y - constraints.getCenter().getY();
-            logger.trace("Adjusting view center. Vertical move: {}", verticalMove);
+        double verticalMove = Math.max(0, constraints.getHeight() - y - BOTTOM_PADDING);
+        logger.trace("Possible vertical move: {}. Total height: {}", verticalMove, constraints.getHeight());
+        if (verticalMove > 0) { // is it possible to move view vertically?
 
-            double possibleVerticalIncrease = verticalMove - 1 * (verticalMove * Math.sin(Math.toRadians(angle)));
+            double possibleVerticalIncrease = verticalMove;
 
             // we don't use all increase in order to leave some blank space below
-            possibleVerticalIncrease = 0.85 * possibleVerticalIncrease;
+            //possibleVerticalIncrease = 0.85 * possibleVerticalIncrease;
 
             // we multiple by 0.9 since we want to leave 10% of width free
             double possibleHorizontalIncrease = (constraints.getWidth() / 2) * 0.9 - constraints.getRadiusData().getOuterRadius();
@@ -189,6 +205,13 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             double increase = Math.min(possibleHorizontalIncrease, possibleVerticalIncrease);
             logger.trace("horizontalIncrease: {}, verticalIncrease: {}, increase: {}",
                     possibleHorizontalIncrease, possibleVerticalIncrease, increase);
+
+            /* we cannot move increase with whole vertical move, because extending outer radius could cause
+            getting part of a view out of bounds */
+            double subtrahend = increase * Math.sin(Math.toRadians(angle));
+            logger.trace("Using increase: {}, increse correction: {}", increase, subtrahend);
+            increase = increase - subtrahend;
+            assert increase >= 0;
 
             double adjustedCenterY = constraints.getCenter().getY() + increase;
             adjustedCenter = new Point2D.Double(constraints.getCenter().getX(), adjustedCenterY);
