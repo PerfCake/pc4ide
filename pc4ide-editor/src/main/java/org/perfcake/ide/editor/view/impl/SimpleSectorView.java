@@ -361,32 +361,37 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Dimension2D computeTextDimension(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         final FontRenderContext frc = g2d.getFontRenderContext();
-        final Font font = g2d.getFont();
-        final Rectangle2D headerBounds = font.getStringBounds(header, frc);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
         double maximumWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
-        FontMetrics metrics = g2d.getFontMetrics(font);
+        FontMetrics headerMetrics = g2d.getFontMetrics(getHeaderFont(g2d));
+        String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidth);
+        final Rectangle2D headerBounds = getHeaderFont(g2d).getStringBounds(renderedHeader, frc);
+
 
         int longestAdditionalLineWidth = 0;
         int additionalHeight = 0;
+
         if (!minimumView) {
             List<Pair> additionalText = getAdditionalData();
 
+            FontMetrics additionalDataMetrics = g2d.getFontMetrics(getAdditionalTextFont(g2d));
             int additionalLines = 0;
             for (Pair pair : additionalText) {
-                int width = metrics.stringWidth(pair.getKey() + ": " + pair.getValue());
+                String line = pair.getKey() + ": " + pair.getValue();
+                String renderedPart = Utils2D.computeRenderedPart(line, additionalDataMetrics, maximumWidth);
+                int width = additionalDataMetrics.stringWidth(renderedPart);
                 if (width > longestAdditionalLineWidth) {
                     longestAdditionalLineWidth = width;
                 }
                 additionalLines++;
             }
 
-            additionalHeight = additionalLines * metrics.getHeight() + metrics.getAscent();
+            additionalHeight = additionalLines * additionalDataMetrics.getHeight() + additionalDataMetrics.getAscent();
         }
 
-        double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestAdditionalLineWidth), maximumWidth);
+        double totalWidth = Math.max(headerBounds.getWidth(), longestAdditionalLineWidth);
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new DimensionDouble(totalWidth, totalHeight);
