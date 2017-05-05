@@ -29,6 +29,7 @@ import org.perfcake.ide.core.exception.ImplementationNotFoundException;
 import org.perfcake.ide.core.exception.PropertyLimitException;
 import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.listeners.ModelListener;
+import org.perfcake.ide.core.model.visitor.ModelVisitor;
 
 /**
  * Represents a model object of a PerfCake inspector. Model maintains supported properties and their values.
@@ -167,6 +168,12 @@ public interface Model extends Property {
      * @return return kind of PerfCake component which is represented by this model.
      */
     PerfCakeComponent getComponent();
+
+    /**
+     * Accepts a visitor which visits this model and all its submodels.
+     * @param visitor visitor
+     */
+    void accept(ModelVisitor visitor);
 
     /**
      * Updates implementation class of given model. This method is intended to update list

@@ -47,6 +47,7 @@ import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.core.model.validation.ModelValidator;
 import org.perfcake.ide.core.model.validation.Validator;
 import org.perfcake.ide.core.model.validation.error.ValidationError;
+import org.perfcake.ide.core.model.visitor.ModelVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,6 +281,19 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         }
 
         return container.size();
+    }
+
+    @Override
+    public void accept(ModelVisitor visitor) {
+        visitor.visit(this);
+
+        for (PropertyInfo info : getSupportedProperties()) {
+            if (info.getType() == PropertyType.MODEL) {
+                for (Property p : getProperties(info)) {
+                    ((Model) p).accept(visitor);
+                }
+            }
+        }
     }
 
     @Override
