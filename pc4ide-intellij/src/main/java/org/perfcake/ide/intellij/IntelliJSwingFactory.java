@@ -20,10 +20,12 @@
 
 package org.perfcake.ide.intellij;
 
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.components.JBScrollPane;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -70,7 +72,8 @@ public class IntelliJSwingFactory implements SwingFactory {
 
     @Override
     public JScrollPane createSrollPane() {
-        return new JBScrollPane();
+        JBScrollPane jbScrollPane = new JBScrollPane();
+        return jbScrollPane;
     }
 
     @Override
@@ -94,6 +97,13 @@ public class IntelliJSwingFactory implements SwingFactory {
         JButton button = new JButton();
         button.setFont(font);
         return button;
+    }
+
+    @Override
+    public JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new ComboBox<>();
+        comboBox.setFont(font);
+        return comboBox;
     }
 
     public Font getFont() {

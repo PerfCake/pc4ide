@@ -513,7 +513,7 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     /**
-     * @return ListIcon of additional pairs of key value, which this view will draw into surface along with header.
+     * @return ListIcon of additional pairs of key property, which this view will draw into surface along with header.
      */
     protected abstract List<Pair> getAdditionalData();
 

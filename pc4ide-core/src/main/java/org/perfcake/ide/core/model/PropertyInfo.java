@@ -290,13 +290,13 @@ public class PropertyInfo {
      * @param model         model which owns this property
      * @param minOccurs     minimum number of occurrences of this property.
      * @param maxOccurs     maximum number of occurrences of this property. Use -1 for unlimited.
-     * @param valueDataType data type of value (optional)
      * @param keyDataType   data type of key (optional)
+     * @param valueDataType data type of value (optional)
      * @param defaultValue  default value (optional)
      * @return property info
      */
     public static PropertyInfo createKeyValueInfo(String name, String displayName, Model model, int minOccurs, int maxOccurs,
-                                                  DataType valueDataType, DataType keyDataType, KeyValue defaultValue) {
+                                                  DataType keyDataType, DataType valueDataType, KeyValue defaultValue) {
         PropertyInfo info = createKeyValueInfo(name, model, minOccurs, maxOccurs);
         if (valueDataType != null) {
             info.valueDataType = valueDataType;

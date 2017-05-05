@@ -23,6 +23,7 @@ package org.perfcake.ide.editor.swing;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -90,6 +91,13 @@ public class DefaultSwingFactory implements SwingFactory {
         JButton button = new JButton();
         button.setFont(font);
         return button;
+    }
+
+    @Override
+    public JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new JComboBox<>();
+        comboBox.setFont(font);
+        return comboBox;
     }
 
     public Font getFont() {

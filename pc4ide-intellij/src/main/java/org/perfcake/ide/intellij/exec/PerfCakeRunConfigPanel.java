@@ -182,7 +182,7 @@ public class PerfCakeRunConfigPanel extends JPanel {
 
         systemPropertiesTableModel = new DefaultTableModel();
         systemPropertiesTableModel.addColumn("Property name");
-        systemPropertiesTableModel.addColumn("Property value");
+        systemPropertiesTableModel.addColumn("Property property");
 
         systemPropertiesField = new JBTable(systemPropertiesTableModel);
         systemPropertiesField.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
