@@ -48,7 +48,7 @@ public class FactoryController extends AbstractController {
      */
     public FactoryController(Model model, ModelFactory modelFactory, ViewFactory viewFactory) {
         super(model, modelFactory, viewFactory);
-        view = new ComponentAddView(new PlusIcon(32,32));
+        view = new ComponentAddView(new PlusIcon(20,20));
     }
 
     @Override

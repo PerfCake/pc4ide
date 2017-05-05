@@ -94,17 +94,19 @@ public abstract class CondensedSectorView extends SimpleSectorView {
                 chordCenter,
                 layoutData.getRadiusData().getOuterRadius());
 
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
+        double maximumTextWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
+
         //do not compute text position from inside, but rather place it near to the outer radius:
         double textCenterX =
                 layoutData.getCenter().getX()
-                        + layoutData.getRadiusData().getOuterRadius()
+                        + layoutData.getRadiusData().getInnerRadius()
                         //- chordDistanceFromOuterRadius
-                        - PADDING
-                        - (textDimension.getWidth() / 2);
+                        + PADDING
+                        + maximumTextWidth / 2;
 
         double textCenterY = layoutData.getCenter().getY();
         double theta = Utils2D.getMiddleAngle(layoutData.getAngularData());
-        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
         if (isReversed(theta)) {
             textCenterY = textCenterY - iconDiagonal / 2 - PADDING;
         } else {

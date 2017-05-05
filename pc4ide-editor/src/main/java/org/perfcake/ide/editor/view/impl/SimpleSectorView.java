@@ -138,6 +138,7 @@ public abstract class SimpleSectorView extends SectorView {
         final Area boundArea = computeBounds(layoutData);
 
         final Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(getBoundsStroke(g2d));
         if (isSelected()) {
             final Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
             g2d.setStroke(selectedStroke);
@@ -159,11 +160,11 @@ public abstract class SimpleSectorView extends SectorView {
             Rectangle2D iconBounds = computeIconBounds(g2d, layoutData, minimumView);
 
             if (minimumView) {
-                icon.setIconHeight(SMALL_ICON_SIDE);
-                icon.setIconWidth(SMALL_ICON_SIDE);
+                icon.setIconHeight(getSmallIconSide());
+                icon.setIconWidth(getSmallIconSide());
             } else {
-                icon.setIconHeight(ICON_SIDE);
-                icon.setIconWidth(ICON_SIDE);
+                icon.setIconHeight(getIconSide());
+                icon.setIconWidth(getIconSide());
             }
             Color iconColor = getIconColor();
             icon.setColor(iconColor);
@@ -225,7 +226,6 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     protected void drawManagementIcons(Graphics2D g2d) {
-
         List<Rectangle2D> iconBounds = computeManagementIconBounds(layoutData);
 
         for (int i = 0; i < iconBounds.size(); i++) {
@@ -267,11 +267,11 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
 
-        int iconWidth = ICON_SIDE;
-        int iconHeight = ICON_SIDE;
+        int iconWidth = getIconSide();
+        int iconHeight = getIconSide();
         if (minimumView) {
-            iconWidth = SMALL_ICON_SIDE;
-            iconHeight = SMALL_ICON_SIDE;
+            iconWidth = getSmallIconSide();
+            iconHeight = getSmallIconSide();
         }
 
         double iconCenterX = layoutData.getCenter().getX()
@@ -306,13 +306,15 @@ public abstract class SimpleSectorView extends SectorView {
                 chordCenter,
                 layoutData.getRadiusData().getOuterRadius());
 
-        //do not compute text position from inside, but rather place it near to the outer radius:
-        double textCenterX =
-                layoutData.getCenter().getX()
-                        + layoutData.getRadiusData().getOuterRadius()
-                        //- chordDistanceFromOuterRadius
-                        - PADDING
-                        - (textDimension.getWidth() / 2);
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
+        double maximumTextWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
+
+        //place text into center of a view
+        double textCenterX = layoutData.getCenter().getX()
+                + layoutData.getRadiusData().getInnerRadius()
+                + iconDiagonal
+                + PADDING
+                + maximumTextWidth / 2;
 
         Point2D textCenter = new Point2D.Double(
                 textCenterX,
@@ -460,7 +462,6 @@ public abstract class SimpleSectorView extends SectorView {
         return getAngularExtent(constraint, g2d, false);
     }
 
-
     /**
      * Computes angular extent required for the view.
      *
@@ -504,6 +505,10 @@ public abstract class SimpleSectorView extends SectorView {
         return 2 * Math.toDegrees(Math.atan((size / 2) / distanceOfObject));
     }
 
+    protected Stroke getBoundsStroke(Graphics2D g2d) {
+        return g2d.getStroke();
+    }
+
     /**
      * Computes rectangle which contains icon dimension.
      *
@@ -511,10 +516,18 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Dimension2D computeIconDimension(boolean smallIcon) {
         if (!smallIcon) {
-            return new Dimension(ICON_SIDE, ICON_SIDE);
+            return new Dimension(getIconSide(), getIconSide());
         } else {
-            return new Dimension(SMALL_ICON_SIDE, SMALL_ICON_SIDE);
+            return new Dimension(getSmallIconSide(), getSmallIconSide());
         }
+    }
+
+    protected int getIconSide() {
+        return ICON_SIDE;
+    }
+
+    protected int getSmallIconSide() {
+        return SMALL_ICON_SIDE;
     }
 
     /**
