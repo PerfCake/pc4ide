@@ -18,26 +18,21 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
+package org.perfcake.ide.core.model.visitor;
 
-import java.awt.geom.Point2D;
-import org.perfcake.ide.editor.actions.ActionType;
+import org.perfcake.ide.core.model.Model;
 
 /**
- * Debug handlers handles a debug action.
+ * Abstract visitor visits model and all its submodels.
  *
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
-
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
-    }
+public abstract class AbstractModelVisitor implements ModelVisitor {
 
     @Override
-    public void handleAction(Point2D location) {
-        super.handleAction(location);
-        //TODO: forcibly set debug option to true
+    public void visit(Model model) {
+        performAction(model);
     }
+
+    protected abstract void performAction(Model model);
 }

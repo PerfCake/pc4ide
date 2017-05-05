@@ -24,9 +24,8 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.ide.core.model.properties.SimpleValue;
-import org.perfcake.reporting.destination.Destination;
 
 /**
  * Represent model of a Destination PerfCake inspector.
@@ -63,9 +62,11 @@ public class DestinationModel extends AbstractModel {
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.ENABLED.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("true"), 0, 1),
-                new PropertyInfo(PropertyNames.PERIOD.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
+                PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1),
+                PropertyInfo.createValueInfo(PropertyNames.ENABLED.toString(), null, this, 0, 1,
+                        DataType.BOOLEAN, new SimpleValue("true")),
+                PropertyInfo.createKeyValueInfo(PropertyNames.PERIOD.toString(), null, this, 0, -1,
+                        DataType.PERIOD, DataType.INTEGER, null)
         );
 
     }

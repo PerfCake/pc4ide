@@ -21,6 +21,7 @@
 package org.perfcake.ide.core.inspector;
 
 import java.util.Objects;
+import org.perfcake.ide.core.model.properties.DataType;
 
 /**
  * Implementation field contains information about a field in some inspector implmentation.
@@ -30,6 +31,7 @@ public class ImplementationField {
 
     private String name;
     private String value;
+    private DataType dataType;
     private boolean mandatory;
 
     /**
@@ -38,11 +40,14 @@ public class ImplementationField {
      * @param name name of the field
      * @param value value of the field
      * @param mandatory is field mandatory?
+     * @param dataType data type of a field
+     *
      */
-    public ImplementationField(String name, String value, boolean mandatory) {
+    public ImplementationField(String name, String value, boolean mandatory, DataType dataType) {
         this.name = name;
         this.value = value;
         this.mandatory = mandatory;
+        this.dataType = dataType;
     }
 
     public String getName() {
@@ -57,6 +62,10 @@ public class ImplementationField {
         return mandatory;
     }
 
+    public DataType getDataType() {
+        return dataType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -68,12 +77,13 @@ public class ImplementationField {
         ImplementationField that = (ImplementationField) o;
         return mandatory == that.mandatory
                 && Objects.equals(name, that.name)
-                && Objects.equals(value, that.value);
+                && Objects.equals(value, that.value)
+                && Objects.equals(dataType, that.dataType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, value, mandatory);
+        return Objects.hash(name, value, mandatory, dataType);
     }
 
     @Override
@@ -82,6 +92,7 @@ public class ImplementationField {
                 + "name='" + name + '\''
                 + ", value='" + value + '\''
                 + ", mandatory=" + mandatory
+                + ", dataType=" + dataType
                 + '}';
     }
 }

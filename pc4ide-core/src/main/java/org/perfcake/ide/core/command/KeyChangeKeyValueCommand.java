@@ -18,41 +18,48 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.view.impl;
+package org.perfcake.ide.core.command;
 
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
-import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.swing.icons.components.CorrelatorIcon;
-import org.perfcake.ide.editor.view.Pair;
+import org.perfcake.ide.core.model.properties.KeyValue;
 
 /**
- * Creates new view of a correlator.
+ * Represents change of Key in KeyValue property.
  *
  * @author Jakub Knetl
  */
-public class CorrelatorView extends CondensedSectorView {
+public class KeyChangeKeyValueCommand implements Command {
+    private KeyValue property;
+    private String key;
+    private String oldKey;
 
     /**
-     * creates new sector view.
+     * Creates new KeyValueCommand.
+     *
+     * @param property key value property.
+     * @param key      new value of a key.
      */
-    public CorrelatorView() {
-        super(new CorrelatorIcon(ICON_SIDE, ICON_SIDE));
+    public KeyChangeKeyValueCommand(KeyValue property, String key) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property is null.");
+        }
+        this.property = property;
+        this.key = key;
     }
 
     @Override
-    protected List<Pair> getAdditionalData() {
-        return Collections.emptyList();
+    public void execute() {
+        oldKey = property.getKey();
+
+        property.setKey(key);
     }
 
     @Override
-    protected Color getIconColor() {
-        return colorScheme.getColor(NamedColor.COMPONENT_CORRELATOR);
+    public void undo() {
+        property.setKey(oldKey);
     }
 
     @Override
-    protected void initManagementIcons() {
-        // no icons.
+    public boolean isUndoable() {
+        return true;
     }
 }

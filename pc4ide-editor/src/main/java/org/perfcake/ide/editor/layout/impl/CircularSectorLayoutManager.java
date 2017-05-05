@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.layout.impl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,25 +39,34 @@ import org.slf4j.LoggerFactory;
 public class CircularSectorLayoutManager extends AbstractLayoutManager {
 
     static final Logger logger = LoggerFactory.getLogger(CircularSectorLayoutManager.class);
+    public static final int BOTTOM_PADDING = 30;
 
     private Comparator<View> viewComparator = new ViewComparator();
 
     private boolean fill;
 
     /**
+     * if true, then center of sectors is not in the real center of the panel, but it is moved, so that sectors are as big as possible.
+     */
+    private boolean adjustCenter;
+    private Point2D adjustedCenter;
+
+    /**
      * Creates new CircularSectorLayoutManager.
      */
     public CircularSectorLayoutManager() {
-        this(false);
+        this(false, false);
     }
 
     /**
      * Creates new CircularSectorLayoutManager.
      *
-     * @param fillExtent should layout manager fill whole angle extent provided?
+     * @param fillExtent   should layout manager fill whole angle extent provided?
+     * @param adjustCenter adjust center of the pane so that view is as big as possible.
      */
-    public CircularSectorLayoutManager(boolean fillExtent) {
+    public CircularSectorLayoutManager(boolean fillExtent, boolean adjustCenter) {
         this.fill = fillExtent;
+        this.adjustCenter = adjustCenter;
     }
 
     @Override
@@ -76,9 +86,7 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
         if (requestedExtentByChildren <= angleExtentConstraint) {
             layoutComponents(extentMap, requestedExtentByChildren);
         } else {
-
             // use minimum view
-
             double adjustedExtent = requestedExtentByChildren;
             Map<View, Double> minimumViews = new HashMap<>();
             while (adjustedExtent > angleExtentConstraint && !extentMap.isEmpty()) {
@@ -117,8 +125,15 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
     protected void layoutComponents(Map<View, Double> extentMap, double extentSum) {
         double angleExtentConstraint = constraints.getAngularData().getAngleExtent();
         double startAngle = constraints.getAngularData().getStartAngle();
+
+        LayoutData adjustedConstraints = constraints;
+
+        if (adjustCenter) {
+            adjustedConstraints = adjustCenter(extentSum);
+        }
+
         for (View v : children) {
-            final LayoutData data = new LayoutData(constraints);
+            final LayoutData data = new LayoutData(adjustedConstraints);
             Double angleExtent = extentMap.get(v);
 
             if (fill) {
@@ -128,11 +143,87 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             data.getAngularData().setAngleExtent(angleExtent);
             data.getAngularData().setStartAngle(startAngle);
 
-            v.setLayoutData(data);
+            v.setLayoutData(data); // sets layout data
 
             // move startAgle by angular extent of view v
             startAngle += angleExtent;
         }
+    }
+
+    private LayoutData adjustCenter(double extentSum) {
+        LayoutData adjustedConstraints;
+        adjustedConstraints = new LayoutData(constraints);
+
+        double y1 = constraints.getCenter().getY()
+                + constraints.getRadiusData().getOuterRadius() * Math.sin(Math.toRadians(
+                constraints.getAngularData().getStartAngle()));
+
+        // angle of the closing arc of the last sector
+        double endAngle = constraints.getAngularData().getStartAngle() + extentSum;
+
+        // if angle is larger than 450, than the view contains sector with 450 angle, which is has greater y coordinate
+        // so we must compute with the worst situation in order not to strip part of the view out.
+        if (endAngle > 450) {
+            endAngle = 450;
+        }
+        double y2 = constraints.getCenter().getY()
+                + constraints.getRadiusData().getOuterRadius() * Math.sin(Math.toRadians(
+                endAngle));
+
+        logger.trace("Center vertical adjustment. Current position: {}, y1: {}, y2: {}", constraints.getCenter().getY(), y1, y2);
+        logger.trace("Center vertical adjustment. y1 angle: {}, y2 angle: {}",
+                constraints.getAngularData().getStartAngle(),
+                endAngle);
+
+
+        double y = constraints.getCenter().getY();
+        double angle = 0;
+
+        if (y1 > y) {
+            y = y1;
+            angle = constraints.getAngularData().getStartAngle();
+        }
+
+        if (y2 > y) {
+            y = y2;
+            angle = endAngle;
+        }
+
+        double verticalMove = Math.max(0, constraints.getHeight() - y - BOTTOM_PADDING);
+        logger.trace("Possible vertical move: {}. Total height: {}", verticalMove, constraints.getHeight());
+        if (verticalMove > 0) { // is it possible to move view vertically?
+
+            double possibleVerticalIncrease = verticalMove;
+
+            // we don't use all increase in order to leave some blank space below
+            //possibleVerticalIncrease = 0.85 * possibleVerticalIncrease;
+
+            // we multiple by 0.9 since we want to leave 10% of width free
+            double possibleHorizontalIncrease = (constraints.getWidth() / 2) * 0.9 - constraints.getRadiusData().getOuterRadius();
+            // because of multiplication by 0.9, it is possible that horizontal increase is negative, so we set it to zero in that case
+            possibleHorizontalIncrease = Math.max(possibleHorizontalIncrease, 0);
+            double increase = Math.min(possibleHorizontalIncrease, possibleVerticalIncrease);
+            logger.trace("horizontalIncrease: {}, verticalIncrease: {}, increase: {}",
+                    possibleHorizontalIncrease, possibleVerticalIncrease, increase);
+
+            /* we cannot move increase with whole vertical move, because extending outer radius could cause
+            getting part of a view out of bounds */
+            double subtrahend = increase * Math.sin(Math.toRadians(angle));
+            logger.trace("Using increase: {}, increse correction: {}", increase, subtrahend);
+            increase = increase - subtrahend;
+            assert increase >= 0;
+
+            double adjustedCenterY = constraints.getCenter().getY() + increase;
+            adjustedCenter = new Point2D.Double(constraints.getCenter().getX(), adjustedCenterY);
+            adjustedConstraints.setExplicitCenter(adjustedCenter);
+
+            adjustedConstraints.getRadiusData().setOuterRadius(constraints.getRadiusData().getOuterRadius() + increase);
+        } else {
+            adjustedCenter = new Point2D.Double(constraints.getWidth() / 2, constraints.getHeight() / 2);
+            adjustedConstraints.setExplicitCenter(null);
+        }
+
+        return adjustedConstraints;
     }
 
     /*
@@ -160,9 +251,12 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
             return 0;
         }
         for (View child : children) {
-            requiredExtent += child.getPreferredAngularExtent(constraint, g2d);
+            double childExtent = child.getPreferredAngularExtent(constraint, g2d);
+            logger.trace("Child extent: {}", childExtent);
+            requiredExtent += childExtent;
         }
 
+        logger.trace("Preferred extent: {}", requiredExtent);
 
         return requiredExtent;
     }
@@ -172,4 +266,9 @@ public class CircularSectorLayoutManager extends AbstractLayoutManager {
         super.add(component);
         Collections.sort(children, viewComparator);
     }
+
+    public Point2D getAdjustedCenter() {
+        return adjustedCenter;
+    }
+
 }

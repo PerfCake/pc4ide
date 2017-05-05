@@ -2,10 +2,10 @@
 <Configuration status="info">
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+            <PatternLayout pattern="%highlight{[%-5level]} %d{yyyy-MM-dd HH:mm:ss.SSS} [%.15ct] %c{1} - %msg%n"/>
         </Console>
         <File name="FILE" fileName="pc4ide-core/target/pc4ide.log" append="true">
-            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n"/>
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%.15ct] %C{2} (%F:%L) - %m%n"/>
         </File>
     </Appenders>
     <Loggers>
@@ -13,7 +13,6 @@
             <AppenderRef ref="console"/>
             <AppenderRef ref="FILE"/>
         </Root>
-        <Logger name="org.perfcake.ide" level="debug" additivity="true">
-        </Logger>
+        <Logger name="org.perfcake.ide" level="debug" additivity="true" />
     </Loggers>
 </Configuration>

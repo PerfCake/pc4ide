@@ -20,25 +20,31 @@
 
 package org.perfcake.ide.editor.view.impl;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.util.Collections;
 import java.util.List;
 import org.perfcake.ide.editor.colors.NamedColor;
-import org.perfcake.ide.editor.swing.icons.components.CorrelatorIcon;
+import org.perfcake.ide.editor.swing.icons.ResizableIcon;
 import org.perfcake.ide.editor.view.Pair;
 
 /**
- * Creates new view of a correlator.
+ * View which serves as "add" button for adding other components.
  *
  * @author Jakub Knetl
  */
-public class CorrelatorView extends CondensedSectorView {
+public class ComponentAddView extends SimpleSectorView {
 
     /**
      * creates new sector view.
+     *
+     * @param icon icon of the inspector in the sector
      */
-    public CorrelatorView() {
-        super(new CorrelatorIcon(ICON_SIDE, ICON_SIDE));
+    public ComponentAddView(ResizableIcon icon) {
+        super(icon);
+        header = "Add component";
     }
 
     @Override
@@ -48,11 +54,33 @@ public class CorrelatorView extends CondensedSectorView {
 
     @Override
     protected Color getIconColor() {
-        return colorScheme.getColor(NamedColor.COMPONENT_CORRELATOR);
+        return colorScheme.getColor(NamedColor.ACCENT_4);
     }
 
     @Override
     protected void initManagementIcons() {
-        // no icons.
+        // null
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+    }
+
+    @Override
+    protected Stroke getBoundsStroke(Graphics2D g2d) {
+        final float[] dash1 = {10.0f};
+        final BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+        return dashed;
+    }
+
+    @Override
+    protected int getIconSide() {
+        return 20;
+    }
+
+    @Override
+    protected int getSmallIconSide() {
+        return 10;
     }
 }

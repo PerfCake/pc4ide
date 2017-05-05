@@ -117,12 +117,17 @@ public abstract class AbstractView implements View {
 
     @Override
     public void validate(Graphics2D g2d) {
+
+        // set layout data for children
         if (layoutManager != null) {
             layoutManager.layout(g2d);
         }
+
+        // call validate on children
         for (final View view : getChildren()) {
             view.validate(g2d);
         }
+
         isValid = true;
     }
 
@@ -230,4 +235,25 @@ public abstract class AbstractView implements View {
      * This method is intended to add management icons.
      */
     protected abstract void initManagementIcons();
+
+    @Override
+    public String getToolTip(Point2D location) {
+        Shape toolTipBounds = getToolTipBounds();
+        if (toolTipBounds != null && toolTipBounds.contains(location)) {
+            return getToolTipText();
+        }
+
+        return null;
+    }
+
+    protected Shape getToolTipBounds() {
+        return getViewBounds();
+    }
+
+    /**
+     * Tooltip text for this component.
+     *
+     * @return tooltip text
+     */
+    protected abstract String getToolTipText();
 }

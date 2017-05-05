@@ -18,26 +18,33 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
+package org.perfcake.ide.editor.swing.listeners;
 
-import java.awt.geom.Point2D;
-import org.perfcake.ide.editor.actions.ActionType;
+import javax.swing.JComboBox;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.model.Property;
 
 /**
- * Debug handlers handles a debug action.
+ * Listener for combobox property change.
  *
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
+public class ComboValueChangeListener extends ValueChangeListener {
 
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
+    private JComboBox<String> comboBox;
+
+    public ComboValueChangeListener(Property property, KeyValueField keyValueField, CommandInvoker invoker, JComboBox<String> comboBox) {
+        super(property, keyValueField, invoker, comboBox);
+        this.comboBox = comboBox;
     }
 
     @Override
-    public void handleAction(Point2D location) {
-        super.handleAction(location);
-        //TODO: forcibly set debug option to true
+    public void subscribeAll() {
+        comboBox.addActionListener(this);
+    }
+
+    @Override
+    public void unsubscribeAll() {
+        comboBox.removeActionListener(this);
     }
 }

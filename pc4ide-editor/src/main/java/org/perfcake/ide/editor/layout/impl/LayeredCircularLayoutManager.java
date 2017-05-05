@@ -52,8 +52,8 @@ public class LayeredCircularLayoutManager implements LayoutManager {
     public LayeredCircularLayoutManager(Class<? extends View> innerViewsType, Class<? extends View> outerViewsType) {
         this.innerViewsType = innerViewsType;
         this.outerViewsType = outerViewsType;
-        innerLayerManager = new CircularSectorLayoutManager(true);
-        outerLayerManager = new CircularSectorLayoutManager(true);
+        innerLayerManager = new CircularSectorLayoutManager(true, false);
+        outerLayerManager = new CircularSectorLayoutManager(true, false);
 
         innerLayerManager.setConstraint(new LayoutData());
         outerLayerManager.setConstraint(new LayoutData());

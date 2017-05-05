@@ -24,6 +24,7 @@
 package org.perfcake.ide.editor.layout;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * This class holds information about the plane (canvas, inspector, drawing surface) which can be used for editor.
@@ -36,6 +37,10 @@ public class LayoutData {
     private double height;
     private RadiusData radiusData = new RadiusData();
     private AngularData angularData = new AngularData();
+
+    // if set, explicit center defines alternative center of the screen. If explicitCenter is null, then center is computed
+    // from width and height.
+    private Point2D explicitCenter;
 
     public LayoutData() {
     }
@@ -66,6 +71,7 @@ public class LayoutData {
         this.height = other.height;
         this.radiusData = new RadiusData(other.radiusData);
         this.angularData = new AngularData(other.angularData);
+        this.explicitCenter = other.getExplicitCenter();
     }
 
     public double getWidth() {
@@ -100,8 +106,57 @@ public class LayoutData {
         this.angularData = angularData;
     }
 
+    /**
+     * Center of the layout data. If explicit center is set, then this call returns value in explicit center. Otherwise, center of layout
+     * data is computed dynamically.
+     *
+     * @return center
+     */
     public Point2D getCenter() {
-        return new Point2D.Double(width / 2, height / 2);
+        if (explicitCenter != null) {
+            return explicitCenter;
+        } else {
+            return new Point2D.Double(width / 2, height / 2);
+        }
     }
 
+    public Point2D getExplicitCenter() {
+        return explicitCenter;
+    }
+
+    public void setExplicitCenter(Point2D explicitCenter) {
+        this.explicitCenter = explicitCenter;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LayoutData that = (LayoutData) o;
+        return Double.compare(that.width, width) == 0
+                && Double.compare(that.height, height) == 0
+                && Objects.equals(radiusData, that.radiusData)
+                && Objects.equals(angularData, that.angularData)
+                && Objects.equals(explicitCenter, that.explicitCenter);
+    }
+
+    @Override
+    public String toString() {
+        return "LayoutData{"
+                + "width=" + width
+                + ", height=" + height
+                + ", radiusData=" + radiusData
+                + ", angularData=" + angularData
+                + ", explicitCenter=" + explicitCenter
+                + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(width, height, radiusData, angularData, explicitCenter);
+    }
 }

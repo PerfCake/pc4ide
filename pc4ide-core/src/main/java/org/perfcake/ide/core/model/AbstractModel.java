@@ -47,6 +47,7 @@ import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.core.model.validation.ModelValidator;
 import org.perfcake.ide.core.model.validation.Validator;
 import org.perfcake.ide.core.model.validation.error.ValidationError;
+import org.perfcake.ide.core.model.visitor.ModelVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,6 +284,19 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
     }
 
     @Override
+    public void accept(ModelVisitor visitor) {
+        visitor.visit(this);
+
+        for (PropertyInfo info : getSupportedProperties()) {
+            if (info.getType() == PropertyType.MODEL) {
+                for (Property p : getProperties(info)) {
+                    ((Model) p).accept(visitor);
+                }
+            }
+        }
+    }
+
+    @Override
     public DocsService getDocsService() {
         return this.docsService;
     }
@@ -336,8 +350,10 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         for (ImplementationField f : fields) {
             int minOccurs = (f.isMandatory()) ? 1 : 0;
             SimpleValue value = (f.getValue() == null) ? null : new SimpleValue(f.getValue());
+
+            //TODO: determine data type
             PropertyInfo implementationPropertyInfo =
-                    new PropertyInfo(f.getName(), this, Value.class, value, minOccurs, 1);
+                    PropertyInfo.createValueInfo(f.getName(), this, minOccurs, 1);
 
             PropertyContainer propertyContainer = new PropertyContainerImpl(this, implementationPropertyInfo);
             properties.put(implementationPropertyInfo, propertyContainer);

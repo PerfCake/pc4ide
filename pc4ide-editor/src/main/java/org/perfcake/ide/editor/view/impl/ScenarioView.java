@@ -25,6 +25,7 @@ package org.perfcake.ide.editor.view.impl;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.layout.AngularData;
@@ -32,7 +33,6 @@ import org.perfcake.ide.editor.layout.LayoutData;
 import org.perfcake.ide.editor.layout.RadiusData;
 import org.perfcake.ide.editor.layout.impl.CircularSectorLayoutManager;
 import org.perfcake.ide.editor.swing.icons.ControlIcon;
-import org.perfcake.ide.editor.swing.icons.control.DebugIcon;
 import org.perfcake.ide.editor.swing.icons.control.PlayIcon;
 import org.perfcake.ide.editor.swing.icons.control.StopIcon;
 import org.perfcake.ide.editor.view.AbstractView;
@@ -47,23 +47,22 @@ public class ScenarioView extends AbstractView {
 
     private static final int MAXIMUM_ANGLE_EXTENT = 340;
     private static final int MAXIMUM_INNER_RADIUS = 200;
-    public static final int START_ANGLE = 150;
+    public static final int START_ANGLE = 180;
     public static final int ICON_WIDTH = 28;
     public static final int ICON_HEIGTH = 28;
     private static final int PADDING_BEETWEN_ICONS = 35;
 
     private JComponent jComponent;
     private boolean isRunning = false;
-    private PlayIcon playIcon;
-    private StopIcon stopIcon;
-    private DebugIcon debugIcon;
+    private ControlIcon playIcon;
+    private ControlIcon stopIcon;
 
     /**
      * Creates new editor view inside of swing container.
      */
     public ScenarioView() {
         super();
-        layoutManager = new CircularSectorLayoutManager();
+        layoutManager = new CircularSectorLayoutManager(false, true);
     }
 
     /* (non-Javadoc)
@@ -90,8 +89,15 @@ public class ScenarioView extends AbstractView {
 
         iconsWidth += ((managementIcons.size() - 1) * PADDING_BEETWEN_ICONS);
 
-        int iconX = (int) (layoutData.getCenter().getX() - iconsWidth / 2);
-        int iconY = (int) (layoutData.getCenter().getY() - ICON_HEIGTH / 2);
+        Point2D center = layoutData.getCenter();
+        if ((layoutManager instanceof CircularSectorLayoutManager)) {
+            Point2D adjustedCenter = ((CircularSectorLayoutManager) layoutManager).getAdjustedCenter();
+            if (adjustedCenter != null) {
+                center = adjustedCenter;
+            }
+        }
+        int iconX = (int) (center.getX() - iconsWidth / 2);
+        int iconY = (int) (center.getY() - ICON_HEIGTH / 2);
 
         for (ControlIcon icon : managementIcons) {
             icon.paintIcon(null, g2d, iconX, iconY);
@@ -147,9 +153,12 @@ public class ScenarioView extends AbstractView {
     protected void initManagementIcons() {
         playIcon = new PlayIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
         stopIcon = new StopIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_1));
-        debugIcon = new DebugIcon(ICON_WIDTH, ICON_HEIGTH, colorScheme.getColor(NamedColor.ACCENT_4));
         managementIcons.add(playIcon);
-        managementIcons.add(debugIcon);
+    }
+
+    @Override
+    protected String getToolTipText() {
+        return null;
     }
 
     public boolean isRunning() {
@@ -169,7 +178,6 @@ public class ScenarioView extends AbstractView {
                 managementIcons.add(stopIcon);
             } else {
                 managementIcons.add(playIcon);
-                managementIcons.add(debugIcon);
             }
             invalidate();
         }
@@ -195,5 +203,16 @@ public class ScenarioView extends AbstractView {
         final RadiusData radiusData = new RadiusData(innerRadius, outerRadius);
         final AngularData angularData = new AngularData(START_ANGLE, MAXIMUM_ANGLE_EXTENT);
         return new LayoutData(jComponent.getWidth(), jComponent.getHeight(), radiusData, angularData);
+    }
+
+    @Override
+    public boolean isSelected() {
+        //scenario cannot be selected
+        return false;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        //does nothing, scenario cannot be selected
     }
 }

@@ -20,10 +20,16 @@
 
 package org.perfcake.ide.intellij;
 
+import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.components.JBScrollPane;
+import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -39,6 +45,8 @@ import org.perfcake.ide.editor.utils.FontUtils;
 public class IntelliJSwingFactory implements SwingFactory {
 
     private Font font;
+
+    private static final Color LIGHTER_FOREGROUND_COLOR = new Color(117, 117, 117);
 
     public IntelliJSwingFactory() {
         font = FontUtils.getSansFont();
@@ -66,7 +74,8 @@ public class IntelliJSwingFactory implements SwingFactory {
 
     @Override
     public JScrollPane createSrollPane() {
-        return new JScrollPane();
+        JBScrollPane jbScrollPane = new JBScrollPane();
+        return jbScrollPane;
     }
 
     @Override
@@ -75,6 +84,7 @@ public class IntelliJSwingFactory implements SwingFactory {
         area.setFont(font);
         area.setLineWrap(true);
         area.setColumns(5);
+        area.setForeground(LIGHTER_FOREGROUND_COLOR);
         return area;
     }
 
@@ -91,11 +101,36 @@ public class IntelliJSwingFactory implements SwingFactory {
         return button;
     }
 
+    @Override
+    public JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new ComboBox<String>() {
+            @Override
+            public String getPrototypeDisplayValue() {
+                //this effectively sets minimum size (in conjunction of GridBagLayout horizontal fill)
+                return "xxxxxxx";
+            }
+        };
+        comboBox.setFont(font);
+        return comboBox;
+    }
+
     public Font getFont() {
         return font;
     }
 
     public void setFont(Font font) {
         this.font = font;
+    }
+
+    @Override
+    public JMenuItem createMenuItem() {
+        JMenuItem menuItem = new JMenuItem();
+        return  menuItem;
+    }
+
+    @Override
+    public JPopupMenu createPopupMenu() {
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        return jPopupMenu;
     }
 }

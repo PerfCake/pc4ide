@@ -21,7 +21,6 @@
 package org.perfcake.ide.core.inspector;
 
 import java.util.List;
-import org.perfcake.ide.core.components.PerfCakeComponent;
 
 /**
  * Property inspector enables to find properties specific to implementation class of a PerfCake inspector.

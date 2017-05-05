@@ -20,48 +20,33 @@
 
 package org.perfcake.ide.editor.swing.listeners;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import org.perfcake.ide.core.command.Command;
-import org.perfcake.ide.core.command.KeyValueCommand;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
-import org.perfcake.ide.core.model.properties.KeyValue;
+import org.perfcake.ide.core.model.Property;
 
 /**
  * Listener for text field change.
  *
  * @author Jakub Knetl
  */
-public class KeyValueChangeListener implements ActionListener, DocumentListener {
+public class TextValueChangeListener extends ValueChangeListener implements DocumentListener {
 
-    private JTextComponent keyComponent;
-    private JTextComponent valueComopnent;
-    private CommandInvoker invoker;
-    private KeyValue keyValue;
+    protected JTextComponent textComponent;
 
     /**
-     * creates new keyValue change listener.
+     * creates new propertyInfo change listener.
      *
-     * @param keyComponent   text component
-     * @param valueComopnent text component
-     * @param invoker        invoker
-     * @param keyValue       property
+     * @param textComponent text component
+     * @param keyValueField either key or property field (applicable only for KeyValue property
+     * @param invoker       invoker
+     * @param property      property
      */
-
-    public KeyValueChangeListener(JTextComponent keyComponent, JTextComponent valueComopnent, CommandInvoker invoker, KeyValue keyValue) {
-        this.keyComponent = keyComponent;
-        this.valueComopnent = valueComopnent;
-        this.invoker = invoker;
-        this.keyValue = keyValue;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        fireCommand(keyComponent.getText(), valueComopnent.getText());
+    protected TextValueChangeListener(JTextComponent textComponent, KeyValueField keyValueField,
+                                      CommandInvoker invoker, Property property) {
+        super(property, keyValueField, invoker, textComponent);
+        this.textComponent = textComponent;
     }
 
     @Override
@@ -76,11 +61,16 @@ public class KeyValueChangeListener implements ActionListener, DocumentListener 
 
     @Override
     public void changedUpdate(DocumentEvent e) {
-        fireCommand(keyComponent.getText(), valueComopnent.getText());
+        fireCommand(valueAgent.getValue());
     }
 
-    protected void fireCommand(String key, String value) {
-        Command command = new KeyValueCommand(keyValue, key, value);
-        invoker.executeCommand(command);
+    @Override
+    public void subscribeAll() {
+        textComponent.getDocument().addDocumentListener(this);
+    }
+
+    @Override
+    public void unsubscribeAll() {
+        textComponent.getDocument().removeDocumentListener(this);
     }
 }

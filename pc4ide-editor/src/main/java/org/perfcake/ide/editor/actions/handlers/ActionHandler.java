@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.Controller;
 
@@ -36,7 +37,11 @@ public interface ActionHandler {
      */
     ActionType getEventType();
 
-    void handleAction();
+    /**
+     * Handles action.
+     * @param location location (if applicable)
+     */
+    void handleAction(Point2D location);
 
     /**
      * @return Controller which owns this handler. If this handler is not assigned to a controller, then createControllers return null.

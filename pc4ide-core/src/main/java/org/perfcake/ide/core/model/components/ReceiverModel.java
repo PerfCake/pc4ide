@@ -24,7 +24,7 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.properties.DataType;
 
 /**
  * Represents model of a Receiver.
@@ -60,11 +60,10 @@ public class ReceiverModel extends AbstractModel {
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.THREADS.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.SOURCE.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.CORRELATOR.toString(), this, PropertyType.MODEL.getClazz(), null,
-                        PerfCakeComponent.CORRELATOR, 1, 1)
+                PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1),
+                PropertyInfo.createValueInfo(PropertyNames.THREADS.toString(), null, this, 0, 1, DataType.INTEGER, null),
+                PropertyInfo.createValueInfo(PropertyNames.SOURCE.toString(), this, 0, 1),
+                PropertyInfo.createModelInfo(PropertyNames.CORRELATOR.toString(), this, PerfCakeComponent.CORRELATOR, 1, 1)
         );
 
     }

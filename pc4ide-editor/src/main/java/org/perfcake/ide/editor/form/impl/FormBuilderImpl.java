@@ -27,21 +27,27 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentListener;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.components.ComponentLoaderImpl;
@@ -52,6 +58,7 @@ import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.components.MessageModel;
+import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.perfcake.ide.editor.form.FormBuilder;
@@ -68,8 +75,9 @@ import org.perfcake.ide.editor.swing.listeners.ChooseImplementationListener;
 import org.perfcake.ide.editor.swing.listeners.ConfigureModelListener;
 import org.perfcake.ide.editor.swing.listeners.EnabledSwitchListener;
 import org.perfcake.ide.editor.swing.listeners.ImplementationChangedListener;
-import org.perfcake.ide.editor.swing.listeners.KeyValueChangeListener;
 import org.perfcake.ide.editor.swing.listeners.RemovePropertyControlsListener;
+import org.perfcake.ide.editor.swing.listeners.ValueAgent;
+import org.perfcake.ide.editor.swing.listeners.ValueAgents;
 import org.perfcake.ide.editor.swing.listeners.ValueChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,8 +162,8 @@ public class FormBuilderImpl implements FormBuilder {
                             JPanel implPanel = createDetailedValuePanel(controller, value);
                             additionalPanels.add(0, implPanel); //add always to the beginning
                         } else {
-                            addSimpleValueToPanel(valuesPanel, controller, propertyInfo, value, valuesPanelSize);
-                            valuesPanelSize++;
+                            int rowsAdded = addSimpleValueToPanel(valuesPanel, controller, propertyInfo, value, valuesPanelSize);
+                            valuesPanelSize += rowsAdded;
                         }
                         break;
                     case KEY_VALUE:
@@ -306,20 +314,28 @@ public class FormBuilderImpl implements FormBuilder {
         c.gridwidth = 2;
         keyValuePanel.add(headerLabel, c);
 
+        PropertyInfo info = keyValue.getPropertyInfo();
+
 
         JLabel keyLabel = swingFactory.createLabel();
         keyLabel.setText("type: ");
         JLabel valueLabel = swingFactory.createLabel();
-        valueLabel.setText("propertyInfo: ");
-        JTextField keyField = swingFactory.createTextField();
-        keyField.setText(keyValue.getKey());
-        JTextField valueField = swingFactory.createTextField();
-        valueField.setText(keyValue.getValue());
-        DocumentListener kvListener = new KeyValueChangeListener(keyField, valueField,
-                controller.getFormManager().getCommandInvoker(), keyValue);
+        valueLabel.setText("value: ");
+        JComponent keyField = createField(info.getKeyDataType());
+        ValueAgent keyFieldAgent = ValueAgents.createAgent(keyField);
+        keyFieldAgent.setValue(keyValue.getKey());
+        JComponent valueField = createField(info.getValueDataType());
+        ValueAgent valueFieldAgent = ValueAgents.createAgent(valueField);
+        valueFieldAgent.setValue(keyValue.getValue());
 
-        keyField.getDocument().addDocumentListener(kvListener);
-        valueField.getDocument().addDocumentListener(kvListener);
+        CommandInvoker commandInvoker = controller.getFormManager().getCommandInvoker();
+        ValueChangeListener keyListener = ValueChangeListener.createKeyValueListener(keyValue,
+                ValueChangeListener.KeyValueField.KEY, commandInvoker, keyField);
+        ValueChangeListener valueListener = ValueChangeListener.createKeyValueListener(keyValue,
+                ValueChangeListener.KeyValueField.VALUE, commandInvoker, valueField);
+
+        keyListener.subscribeAll();
+        valueListener.subscribeAll();
 
         if (useDebugBorders) {
             keyValuePanel.setBorder(BorderFactory.createTitledBorder(sectionName));
@@ -513,7 +529,8 @@ public class FormBuilderImpl implements FormBuilder {
         return valuesPanel;
     }
 
-    private void addSimpleValueToPanel(JPanel panel, FormController controller, PropertyInfo info, Value value, int columnIndex) {
+    private int addSimpleValueToPanel(JPanel panel, FormController controller, PropertyInfo info, Value value, int columnIndex) {
+        int rowsAdded = 0;
         // gridbag layout with three columns is expected!
         GridBagConstraints constraints = createGridBagConstraints();
 
@@ -521,16 +538,20 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.gridy = columnIndex;
         JLabel label = swingFactory.createLabel();
         label.setText(info.getDisplayName() + ": ");
-        JTextField field = swingFactory.createTextField();
+
+        JComponent field = createField(info.getValueDataType());
+        ValueAgent valueAgent = ValueAgents.createAgent(field);
+
         if (value == null) {
-            final String defaultValue = info.getDefaultValue(Value.class) == null ? "null" : info.getDefaultValue(Value.class).getValue();
-            field.setText(defaultValue);
+            final String defaultValue = info.getDefaultValue(Value.class) == null
+                    ? "null" : info.getDefaultValue(Value.class).getValue();
+            valueAgent.setValue(defaultValue);
             field.setEnabled(false);
         } else {
-            field.setText(value.getValue());
-            ValueChangeListener valueChangedListener = new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(),
-                    value);
-            field.getDocument().addDocumentListener(valueChangedListener);
+            valueAgent.setValue(value.getValue());
+            ValueChangeListener listener = ValueChangeListener.createValueListener(value,
+                    controller.getFormManager().getCommandInvoker(), field);
+            listener.subscribeAll();
         }
 
         panel.add(label, constraints);
@@ -540,14 +561,39 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         panel.add(field, constraints);
 
+        rowsAdded++;
+
         constraints.gridx++;
         constraints.weightx = 0;
 
         JButton button = createSwitchValueButton(controller, info, value, field);
-
+        field.addMouseListener(new EnableComponentAdapter(field, button));
         panel.add(button, constraints);
 
+        // add documentation
+        if (info.getDocs() != null) {
+            String documentation = info.getDocs();
 
+            constraints.gridx = 0;
+            constraints.gridy++;
+            constraints.gridwidth = 3;
+            constraints.insets = new Insets(0, 5, 10, 5);
+            JTextArea docsArea = swingFactory.createTextArea();
+            docsArea.setEditable(false);
+            docsArea.setLineWrap(true);
+            docsArea.setText(documentation);
+            docsArea.setOpaque(false);
+            panel.add(docsArea, constraints);
+            rowsAdded++;
+        }
+
+
+        return 2;
+    }
+
+    private void addPlaceholders(List<String> values) {
+        values.add("${name}");
+        values.add("${name:default}");
     }
 
     private JPanel createListOfValuesPanel(FormController controller, PropertyInfo propertyInfo, List<Property> values) {
@@ -641,14 +687,21 @@ public class FormBuilderImpl implements FormBuilder {
         for (Property keyValue : keyValues) {
             KeyValue kv = keyValue.cast(KeyValue.class);
 
-            JTextField keyTextField = swingFactory.createTextField();
-            keyTextField.setText(kv.getKey());
+            JComponent keyTextField = createField(kv.getPropertyInfo().getKeyDataType());
+            ValueAgent keyAgent = ValueAgents.createAgent(keyTextField);
+            keyAgent.setValue(kv.getKey());
 
-            JTextField valueTextField = swingFactory.createTextField();
-            valueTextField.setText(kv.getValue());
+            JComponent valueTextField = createField(kv.getPropertyInfo().getValueDataType());
+            ValueAgent valueAgent = ValueAgents.createAgent(valueTextField);
+            valueAgent.setValue(kv.getKey());
 
-            KeyValueChangeListener kvListener = new KeyValueChangeListener(keyTextField, valueTextField,
-                    controller.getFormManager().getCommandInvoker(), keyValue.cast(KeyValue.class));
+            ValueChangeListener keyChangeListener = ValueChangeListener.createKeyValueListener(kv,
+                    ValueChangeListener.KeyValueField.KEY, controller.getFormManager().getCommandInvoker(), keyTextField);
+            ValueChangeListener valueChangeListener = ValueChangeListener.createKeyValueListener(kv,
+                    ValueChangeListener.KeyValueField.VALUE, controller.getFormManager().getCommandInvoker(), valueTextField);
+
+            keyChangeListener.subscribeAll();
+            valueChangeListener.subscribeAll();
             c.weightx = 0.45;
             c.gridx = 0;
             c.gridwidth = 1;
@@ -826,7 +879,7 @@ public class FormBuilderImpl implements FormBuilder {
      * @param field field which is controlled by this button
      * @return switch button
      */
-    private JButton createSwitchValueButton(FormController controller, PropertyInfo info, final Value value, final JTextField field) {
+    private JButton createSwitchValueButton(FormController controller, PropertyInfo info, final Value value, final JComponent field) {
         JButton button = swingFactory.createButton();
         button.setMargin(new Insets(0, 2, 0, 2));
         button.setContentAreaFilled(false);
@@ -844,6 +897,23 @@ public class FormBuilderImpl implements FormBuilder {
             }
         }
         return button;
+    }
+
+    private JComponent createField(DataType dataType) {
+        JComponent component;
+        if (dataType.getValues() != null && !dataType.getValues().isEmpty()) {
+            JComboBox<String> comboBox = swingFactory.createComboBox();
+
+            List<String> values = new ArrayList<>(dataType.getValues());
+            addPlaceholders(values);
+            comboBox.setModel(new DefaultComboBoxModel<>(values.toArray(new String[values.size()])));
+            comboBox.setEditable(true);
+            component = comboBox;
+        } else {
+            component = swingFactory.createTextField();
+        }
+
+        return component;
     }
 
     private JSeparator createSeparator() {
@@ -906,4 +976,31 @@ public class FormBuilderImpl implements FormBuilder {
         return font;
     }
 
+    private static class EnableComponentAdapter extends MouseAdapter {
+
+        private JComponent component;
+        private JButton switchButton;
+        private EnabledSwitchListener switchListener;
+
+        public EnableComponentAdapter(JComponent component, JButton switchButton) {
+            this.component = component;
+            this.switchButton = switchButton;
+
+            for (ActionListener listener : switchButton.getActionListeners()) {
+                if (listener instanceof EnabledSwitchListener) {
+                    switchListener = (EnabledSwitchListener) listener;
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+            if (!component.isEnabled() && switchListener != null) {
+                switchListener.actionPerformed(null);
+                component.grabFocus();
+            }
+            super.mouseReleased(e);
+        }
+    }
 }

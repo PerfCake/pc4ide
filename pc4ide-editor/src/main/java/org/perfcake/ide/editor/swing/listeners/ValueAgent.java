@@ -18,26 +18,25 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
-
-import java.awt.geom.Point2D;
-import org.perfcake.ide.editor.actions.ActionType;
+package org.perfcake.ide.editor.swing.listeners;
 
 /**
- * Debug handlers handles a debug action.
- *
+ * Value agent is able to get property of JComponent field.
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
+public interface ValueAgent {
 
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
-    }
+    /**
+     * Get current property of a JComponent.
+     *
+     * @return property
+     */
+    String getValue();
 
-    @Override
-    public void handleAction(Point2D location) {
-        super.handleAction(location);
-        //TODO: forcibly set debug option to true
-    }
+    /**
+     * Set current property of a JComponent.
+     *
+     * @param value property
+     */
+    void setValue(String value);
 }

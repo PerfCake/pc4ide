@@ -126,7 +126,7 @@ public class PerfCakeRunConfiguration extends LocatableConfigurationBase {
             for (Element propertyElement : systemProperties.getChildren()) {
                 perfCakeExecutor.getSystemProperties().add(
                         new SystemProperty(propertyElement.getAttributeValue("name"),
-                                propertyElement.getAttributeValue("value")));
+                                propertyElement.getAttributeValue("property")));
             }
         }
 

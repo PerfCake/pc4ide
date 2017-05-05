@@ -18,26 +18,28 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
+package org.perfcake.ide.editor.swing.listeners;
 
-import java.awt.geom.Point2D;
-import org.perfcake.ide.editor.actions.ActionType;
+import javax.swing.JComboBox;
 
 /**
- * Debug handlers handles a debug action.
- *
+ * Combo box agent is able to get property of JComboBox.
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
+public class ComboBoxAgent implements ValueAgent {
+    private JComboBox<String> comboBox;
 
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
+    public ComboBoxAgent(JComboBox<String> comboBox) {
+        this.comboBox = comboBox;
     }
 
     @Override
-    public void handleAction(Point2D location) {
-        super.handleAction(location);
-        //TODO: forcibly set debug option to true
+    public String getValue() {
+        return String.valueOf(comboBox.getSelectedItem());
+    }
+
+    @Override
+    public void setValue(String value) {
+        comboBox.setSelectedItem(value);
     }
 }

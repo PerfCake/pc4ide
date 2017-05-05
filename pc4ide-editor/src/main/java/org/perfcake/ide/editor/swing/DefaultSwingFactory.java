@@ -20,10 +20,14 @@
 
 package org.perfcake.ide.editor.swing;
 
+import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -73,6 +77,7 @@ public class DefaultSwingFactory implements SwingFactory {
         JTextArea area = new JTextArea();
         area.setFont(font);
         area.setLineWrap(true);
+        area.setForeground(Color.GRAY);
         area.setColumns(5);
         return area;
     }
@@ -90,11 +95,36 @@ public class DefaultSwingFactory implements SwingFactory {
         return button;
     }
 
+    @Override
+    public JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new JComboBox<String>() {
+            @Override
+            public String getPrototypeDisplayValue() {
+                //this effectively sets minimum size (in conjunction of GridBagLayout horizontal fill)
+                return "xxxxxxx";
+            }
+        };
+        comboBox.setFont(font);
+        return comboBox;
+    }
+
     public Font getFont() {
         return font;
     }
 
     public void setFont(Font font) {
         this.font = font;
+    }
+
+    @Override
+    public JMenuItem createMenuItem() {
+        JMenuItem menuItem = new JMenuItem();
+        return  menuItem;
+    }
+
+    @Override
+    public JPopupMenu createPopupMenu() {
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        return jPopupMenu;
     }
 }

@@ -26,6 +26,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.manager.ScenarioManager;
@@ -35,6 +36,8 @@ import org.perfcake.ide.editor.colors.NamedColor;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
 import org.perfcake.ide.editor.controller.RootController;
 import org.perfcake.ide.editor.controller.impl.ScenarioController;
+import org.perfcake.ide.editor.controller.visitor.ControllerVisitor;
+import org.perfcake.ide.editor.controller.visitor.ToolTipVisitor;
 import org.perfcake.ide.editor.form.FormManager;
 
 /**
@@ -64,6 +67,7 @@ public class GraphicalPanel extends JPanel {
         super();
         addMouseListener(new EditorMouseListener());
         addComponentListener(new EditorComponentListener());
+        addMouseMotionListener(new MouseMotionListener(this));
         this.scenarioModel = scenarioModel;
         this.serviceManager = serviceManager;
         this.formManager = formManager;
@@ -89,6 +93,26 @@ public class GraphicalPanel extends JPanel {
             scenarioController.getView().validate((Graphics2D) getGraphics());
         }
         scenarioController.getView().draw((Graphics2D) g);
+    }
+
+    private class MouseMotionListener implements java.awt.event.MouseMotionListener {
+
+        private JPanel jPanel;
+
+        public MouseMotionListener(JPanel jPanel) {
+            this.jPanel = jPanel;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            ControllerVisitor visitor = new ToolTipVisitor(jPanel, e);
+            visitor.visit(scenarioController);
+        }
     }
 
     private class EditorComponentListener implements ComponentListener {

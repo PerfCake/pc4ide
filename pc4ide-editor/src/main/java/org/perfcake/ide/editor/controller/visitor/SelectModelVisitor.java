@@ -21,7 +21,9 @@
 package org.perfcake.ide.editor.controller.visitor;
 
 import org.perfcake.ide.core.model.Model;
+import org.perfcake.ide.editor.actions.handlers.SelectionHandler;
 import org.perfcake.ide.editor.controller.Controller;
+import org.perfcake.ide.editor.form.FormManager;
 
 /**
  * This visitor selects view of controller which contains particular model.
@@ -42,5 +44,12 @@ public class SelectModelVisitor extends SearchModelVisitor {
     @Override
     protected void performAction(Controller controller) {
         controller.getView().setSelected(true);
+        FormManager formManger = controller.getRoot().getFormManger();
+        if (formManger.getCurrentPageController().getModel() != controller.getModel()) {
+            //update form controller
+            SelectionHandler hanlder = new SelectionHandler();
+            hanlder.setController(controller);
+            hanlder.handleAction(null);
+        }
     }
 }

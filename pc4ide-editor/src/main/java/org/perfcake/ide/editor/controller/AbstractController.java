@@ -24,6 +24,7 @@
 package org.perfcake.ide.editor.controller;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,10 +202,10 @@ public abstract class AbstractController implements Controller, ModelListener {
     }
 
     @Override
-    public void performAction(ActionType action) {
+    public void performAction(ActionType action, Point2D location) {
         ActionHandler handler = actionHandlers.get(action);
         if (handler != null) {
-            handler.handleAction();
+            handler.handleAction(location);
         }
     }
 

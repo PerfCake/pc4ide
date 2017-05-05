@@ -23,7 +23,7 @@ package org.perfcake.ide.editor.swing.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JTextField;
+import javax.swing.JComponent;
 import org.perfcake.ide.core.command.AddPropertyCommand;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.RemovePropertyCommand;
@@ -40,15 +40,16 @@ import org.perfcake.ide.editor.form.FormController;
  * @author Jakub Knetl
  */
 public class EnabledSwitchListener implements ActionListener {
-    private final JTextField field;
+    private final JComponent field;
     private final PropertyInfo info;
     private final JButton button;
     private final String nullifyText = "default";
     private final String enableText = "edit";
     private final FormController controller;
+    private ValueAgent valueAgent;
     private boolean isNull;
     private String previousValue;
-    private ValueChangeListener fieldChangeListener;
+    private ValueChangeListener listener;
 
     /**
      * Creates new enabled switch listener.
@@ -59,7 +60,7 @@ public class EnabledSwitchListener implements ActionListener {
      * @param info       property info
      * @param button     button which controls the field.
      */
-    public EnabledSwitchListener(Value value, FormController controller, JTextField field, PropertyInfo info, JButton button) {
+    public EnabledSwitchListener(Value value, FormController controller, JComponent field, PropertyInfo info, JButton button) {
         if (controller == null) {
             throw new IllegalArgumentException("cotnroller cannot be null");
         }
@@ -76,6 +77,7 @@ public class EnabledSwitchListener implements ActionListener {
         this.info = info;
         this.button = button;
         this.controller = controller;
+        this.valueAgent = ValueAgents.createAgent(field);
         isNull = value == null;
         previousValue = getDefaultValue();
     }
@@ -84,7 +86,7 @@ public class EnabledSwitchListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Model model = info.getModel();
         if (isNull) {
-            field.setText(previousValue);
+            valueAgent.setValue(previousValue);
             if (info.getMinOccurs() > 0) {
                 button.setEnabled(false);
             }
@@ -99,18 +101,18 @@ public class EnabledSwitchListener implements ActionListener {
 
             // execute command changing parent model by adding the propertyInfo property
             if (model != null) {
-                Value value = new SimpleValue(field.getText());
+                Value value = new SimpleValue(valueAgent.getValue());
                 Command command = new AddPropertyCommand(model, value, info);
                 controller.getFormManager().getCommandInvoker().executeCommand(command);
 
                 // add listener to button which will control the propertyInfo
-                fieldChangeListener = new ValueChangeListener(field, controller.getFormManager().getCommandInvoker(), value);
-                field.getDocument().addDocumentListener(fieldChangeListener);
+                listener = ValueChangeListener.createValueListener(value, controller.getFormManager().getCommandInvoker(), field);
+                listener.subscribeAll();
             }
         } else {
-            previousValue = field.getText();
+            previousValue = valueAgent.getValue();
             field.setEnabled(false);
-            field.setText(getDefaultValue());
+            valueAgent.setValue(getDefaultValue());
             field.repaint();
             button.setText(enableText);
             isNull = true;
@@ -121,9 +123,9 @@ public class EnabledSwitchListener implements ActionListener {
                 Command command = new RemovePropertyCommand(model, value, info);
                 controller.getFormManager().getCommandInvoker().executeCommand(command);
 
-                if (fieldChangeListener != null) {
-                    field.getDocument().removeDocumentListener(fieldChangeListener);
-                    fieldChangeListener = null;
+                if (listener != null) {
+                    listener.unsubscribeAll();
+                    listener = null;
                 }
             }
         }

@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.core.command.AddPropertyCommand;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.model.Model;
@@ -41,7 +42,7 @@ public class AddSiblingHandler extends AbstractHandler {
     }
 
     @Override
-    public void handleAction() {
+    public void handleAction(Point2D location) {
         Model currentModel = controller.getModel();
         Model newSibling = controller.getModelFactory().createModel(currentModel.getComponent());
         Controller parentController = controller.getParent();

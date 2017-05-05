@@ -168,4 +168,11 @@ public interface View {
      */
     ActionType getAction(Point2D location);
 
+    /**
+     * Get tooltip for location inside this view bounds..
+     *
+     * @param location location <b>inside this view bounds</b>.
+     * @return tooltip or null if no tooltip should be displayed
+     */
+    String getToolTip(Point2D location);
 }

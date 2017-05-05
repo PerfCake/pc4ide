@@ -18,26 +18,30 @@
  *-----------------------------------------------------------------------------
  */
 
-package org.perfcake.ide.editor.actions.handlers;
+package org.perfcake.ide.editor.swing.listeners;
 
-import java.awt.geom.Point2D;
-import org.perfcake.ide.editor.actions.ActionType;
+import javax.swing.text.JTextComponent;
 
 /**
- * Debug handlers handles a debug action.
+ * Text agent is able to get property of a {@link JTextComponent}.
  *
  * @author Jakub Knetl
  */
-public class DebugHandler extends RunHandler {
+public class TextAgent implements ValueAgent {
 
-    public DebugHandler() {
-        super();
-        actionType = ActionType.DEBUG;
+    private JTextComponent component;
+
+    public TextAgent(JTextComponent component) {
+        this.component = component;
     }
 
     @Override
-    public void handleAction(Point2D location) {
-        super.handleAction(location);
-        //TODO: forcibly set debug option to true
+    public String getValue() {
+        return component.getText();
+    }
+
+    @Override
+    public void setValue(String value) {
+        component.setText(value);
     }
 }

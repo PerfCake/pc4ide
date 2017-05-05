@@ -24,11 +24,10 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.message.correlator.Correlator;
 
 /**
  * Represents model of a Correlator.
+ *
  * @author Jakub Knetl
  */
 public class CorrelatorModel extends AbstractModel {
@@ -61,7 +60,7 @@ public class CorrelatorModel extends AbstractModel {
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1)
+                PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1)
         );
     }
 }

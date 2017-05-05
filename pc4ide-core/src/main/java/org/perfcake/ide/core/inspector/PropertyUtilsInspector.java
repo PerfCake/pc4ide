@@ -29,6 +29,7 @@ import org.apache.commons.beanutils.FluentPropertyBeanIntrospector;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
 import org.perfcake.ide.core.components.PerfCakeComponent;
+import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.util.properties.MandatoryProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,8 @@ public class PropertyUtilsInspector implements PropertyInspector {
             if (descriptor.getWriteMethod() != null) {
                 String value = getDefaultValue(implementation, propertyUtils, instance, descriptor);
                 boolean isMandatory = hasMandatoryAnnotation(descriptor, implementation, component.getApi());
-                ImplementationField field = new ImplementationField(descriptor.getName(), value, isMandatory);
+                DataType dataType = DataType.detectFromJavaType(descriptor.getPropertyType());
+                ImplementationField field = new ImplementationField(descriptor.getName(), value, isMandatory, dataType);
                 fields.add(field);
             }
 

@@ -62,6 +62,7 @@ public abstract class SimpleSectorView extends SectorView {
      */
     public static final int PADDING = 10;
 
+
     /**
      * Space between management icons.
      */
@@ -137,6 +138,7 @@ public abstract class SimpleSectorView extends SectorView {
         final Area boundArea = computeBounds(layoutData);
 
         final Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(getBoundsStroke(g2d));
         if (isSelected()) {
             final Stroke selectedStroke = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
             g2d.setStroke(selectedStroke);
@@ -158,11 +160,11 @@ public abstract class SimpleSectorView extends SectorView {
             Rectangle2D iconBounds = computeIconBounds(g2d, layoutData, minimumView);
 
             if (minimumView) {
-                icon.setIconHeight(SMALL_ICON_SIDE);
-                icon.setIconWidth(SMALL_ICON_SIDE);
+                icon.setIconHeight(getSmallIconSide());
+                icon.setIconWidth(getSmallIconSide());
             } else {
-                icon.setIconHeight(ICON_SIDE);
-                icon.setIconWidth(ICON_SIDE);
+                icon.setIconHeight(getIconSide());
+                icon.setIconWidth(getIconSide());
             }
             Color iconColor = getIconColor();
             icon.setColor(iconColor);
@@ -224,7 +226,6 @@ public abstract class SimpleSectorView extends SectorView {
     }
 
     protected void drawManagementIcons(Graphics2D g2d) {
-
         List<Rectangle2D> iconBounds = computeManagementIconBounds(layoutData);
 
         for (int i = 0; i < iconBounds.size(); i++) {
@@ -266,11 +267,11 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Rectangle2D computeIconBounds(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
 
-        int iconWidth = ICON_SIDE;
-        int iconHeight = ICON_SIDE;
+        int iconWidth = getIconSide();
+        int iconHeight = getIconSide();
         if (minimumView) {
-            iconWidth = SMALL_ICON_SIDE;
-            iconHeight = SMALL_ICON_SIDE;
+            iconWidth = getSmallIconSide();
+            iconHeight = getSmallIconSide();
         }
 
         double iconCenterX = layoutData.getCenter().getX()
@@ -305,13 +306,15 @@ public abstract class SimpleSectorView extends SectorView {
                 chordCenter,
                 layoutData.getRadiusData().getOuterRadius());
 
-        //do not compute text position from inside, but rather place it near to the outer radius:
-        double textCenterX =
-                layoutData.getCenter().getX()
-                        + layoutData.getRadiusData().getOuterRadius()
-                        //- chordDistanceFromOuterRadius
-                        - PADDING
-                        - (textDimension.getWidth() / 2);
+        double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
+        double maximumTextWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
+
+        //place text into center of a view
+        double textCenterX = layoutData.getCenter().getX()
+                + layoutData.getRadiusData().getInnerRadius()
+                + iconDiagonal
+                + PADDING
+                + maximumTextWidth / 2;
 
         Point2D textCenter = new Point2D.Double(
                 textCenterX,
@@ -360,32 +363,37 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Dimension2D computeTextDimension(Graphics2D g2d, LayoutData layoutData, boolean minimumView) {
         final FontRenderContext frc = g2d.getFontRenderContext();
-        final Font font = g2d.getFont();
-        final Rectangle2D headerBounds = font.getStringBounds(header, frc);
 
         double iconDiagonal = Utils2D.getRectangleDiagonal(computeIconDimension(minimumView));
         double maximumWidth = computeTextMaximumWidth(layoutData.getRadiusData(), iconDiagonal);
 
-        FontMetrics metrics = g2d.getFontMetrics(font);
+        FontMetrics headerMetrics = g2d.getFontMetrics(getHeaderFont(g2d));
+        String renderedHeader = Utils2D.computeRenderedPart(header, headerMetrics, maximumWidth);
+        final Rectangle2D headerBounds = getHeaderFont(g2d).getStringBounds(renderedHeader, frc);
+
 
         int longestAdditionalLineWidth = 0;
         int additionalHeight = 0;
+
         if (!minimumView) {
             List<Pair> additionalText = getAdditionalData();
 
+            FontMetrics additionalDataMetrics = g2d.getFontMetrics(getAdditionalTextFont(g2d));
             int additionalLines = 0;
             for (Pair pair : additionalText) {
-                int width = metrics.stringWidth(pair.getKey() + ": " + pair.getValue());
+                String line = pair.getKey() + ": " + pair.getValue();
+                String renderedPart = Utils2D.computeRenderedPart(line, additionalDataMetrics, maximumWidth);
+                int width = additionalDataMetrics.stringWidth(renderedPart);
                 if (width > longestAdditionalLineWidth) {
                     longestAdditionalLineWidth = width;
                 }
                 additionalLines++;
             }
 
-            additionalHeight = additionalLines * metrics.getHeight() + metrics.getAscent();
+            additionalHeight = additionalLines * additionalDataMetrics.getHeight() + additionalDataMetrics.getAscent();
         }
 
-        double totalWidth = Math.min(Math.max(headerBounds.getWidth(), longestAdditionalLineWidth), maximumWidth);
+        double totalWidth = Math.max(headerBounds.getWidth(), longestAdditionalLineWidth);
         double totalHeight = headerBounds.getHeight() + HEADER_BOTTOM_SPACE + additionalHeight;
 
         return new DimensionDouble(totalWidth, totalHeight);
@@ -454,7 +462,6 @@ public abstract class SimpleSectorView extends SectorView {
         return getAngularExtent(constraint, g2d, false);
     }
 
-
     /**
      * Computes angular extent required for the view.
      *
@@ -498,6 +505,10 @@ public abstract class SimpleSectorView extends SectorView {
         return 2 * Math.toDegrees(Math.atan((size / 2) / distanceOfObject));
     }
 
+    protected Stroke getBoundsStroke(Graphics2D g2d) {
+        return g2d.getStroke();
+    }
+
     /**
      * Computes rectangle which contains icon dimension.
      *
@@ -505,14 +516,22 @@ public abstract class SimpleSectorView extends SectorView {
      */
     protected Dimension2D computeIconDimension(boolean smallIcon) {
         if (!smallIcon) {
-            return new Dimension(ICON_SIDE, ICON_SIDE);
+            return new Dimension(getIconSide(), getIconSide());
         } else {
-            return new Dimension(SMALL_ICON_SIDE, SMALL_ICON_SIDE);
+            return new Dimension(getSmallIconSide(), getSmallIconSide());
         }
     }
 
+    protected int getIconSide() {
+        return ICON_SIDE;
+    }
+
+    protected int getSmallIconSide() {
+        return SMALL_ICON_SIDE;
+    }
+
     /**
-     * @return ListIcon of additional pairs of key value, which this view will draw into surface along with header.
+     * @return ListIcon of additional pairs of key property, which this view will draw into surface along with header.
      */
     protected abstract List<Pair> getAdditionalData();
 
@@ -561,5 +580,10 @@ public abstract class SimpleSectorView extends SectorView {
         this.executionInfo = executionInfo;
         invalidate();
         return this;
+    }
+
+    @Override
+    protected String getToolTipText() {
+        return getHeader();
     }
 }
