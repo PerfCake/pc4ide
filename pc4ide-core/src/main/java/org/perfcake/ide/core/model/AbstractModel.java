@@ -336,8 +336,10 @@ public abstract class AbstractModel extends AbstractProperty implements Model, P
         for (ImplementationField f : fields) {
             int minOccurs = (f.isMandatory()) ? 1 : 0;
             SimpleValue value = (f.getValue() == null) ? null : new SimpleValue(f.getValue());
+
+            //TODO: determine data type
             PropertyInfo implementationPropertyInfo =
-                    new PropertyInfo(f.getName(), this, Value.class, value, minOccurs, 1);
+                    PropertyInfo.createValueInfo(f.getName(), this, minOccurs, 1);
 
             PropertyContainer propertyContainer = new PropertyContainerImpl(this, implementationPropertyInfo);
             properties.put(implementationPropertyInfo, propertyContainer);

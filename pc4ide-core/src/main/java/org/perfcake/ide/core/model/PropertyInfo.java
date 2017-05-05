@@ -25,12 +25,16 @@ import org.perfcake.ide.core.components.ComponentLoaderImpl;
 import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exception.ModelException;
+import org.perfcake.ide.core.model.properties.DataType;
+import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Contains metadata about property of a model class.
+ * <p>Contains metadata about property of a model class.</p>
+ *
+ * <p>Use on of the static factory methods in order to instantiate this class.</p>
  *
  * @author Jakub Knetl
  */
@@ -59,6 +63,16 @@ public class PropertyInfo {
     private PropertyType type;
 
     /**
+     * Data type of a key (applicable only if this {@link PropertyType} is KEY_VALUE).
+     */
+    private DataType keyDataType;
+
+    /**
+     * Data type of a value (applicable for all {@link PropertyType}s).
+     */
+    private DataType valueDataType;
+
+    /**
      * Which component is represented by this property (applicable only in case that type == PropertyType.Model)
      */
     private PerfCakeComponent perfCakeComponent;
@@ -78,21 +92,7 @@ public class PropertyInfo {
      */
     private int maxOccurs;
 
-    /**
-     * Creates new propertyInfo
-     *
-     * @param <T>               Type of property value.
-     * @param name              Name of the property
-     * @param displayName       Name to be displayed in the UI
-     * @param model             Model to which this property belongs
-     * @param defaultValueClazz class of a default value
-     * @param defaultValue      default value of the property
-     * @param perfCakeComponent PerfCake component represented by this property (applicable only if propertyType == MODEL)
-     * @param minOccurs         minimum number of occurrences of this property.
-     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
-     */
-    public <T extends Property> PropertyInfo(String name, String displayName, Model model, Class<? extends T> defaultValueClazz,
-                                             T defaultValue, PerfCakeComponent perfCakeComponent, int minOccurs, int maxOccurs) {
+    private PropertyInfo(String name, Model model, PropertyType type, int minOccurs, int maxOccurs, DataType valueDataType) {
 
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
@@ -104,10 +104,6 @@ public class PropertyInfo {
             throw new IllegalArgumentException("Model cannot be null.");
         }
 
-        if (defaultValueClazz == null) {
-            throw new IllegalArgumentException("defaultValue class must not be null");
-        }
-
         if (minOccurs < 0) {
             throw new IllegalArgumentException("Minimum number of occurences must be positive.");
         }
@@ -117,74 +113,15 @@ public class PropertyInfo {
                     + " number of occurences.");
         }
 
-        // Detects type of a property based on implementation class.
-        type = PropertyType.detectPropertyType(defaultValueClazz);
-
-        if (type == PropertyType.MODEL && perfCakeComponent == null) {
-            throw new IllegalArgumentException("perfCakeComponent cannot be null in case that this represents model type");
+        if (valueDataType == null) {
+            throw new IllegalArgumentException("Value data type cannot be null.");
         }
-
-        if (type != PropertyType.MODEL && perfCakeComponent != null) {
-            throw new IllegalArgumentException("perfCakeComponent must be null in case that this does not represents model type");
-        }
-
-        this.perfCakeComponent = perfCakeComponent;
         this.name = name;
-        this.defaultValue = defaultValue;
-        this.displayName = displayName;
         this.model = model;
+        this.type = type;
         this.minOccurs = minOccurs;
         this.maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Creates new propertyInfo
-     *
-     * @param <T>               Type of property value.
-     * @param name              Name of the property
-     * @param displayName       Name to be displayed in the UI
-     * @param model             Model to which this property belongs
-     * @param defaultValueClazz class of a default value
-     * @param defaultValue      default value of the property
-     * @param minOccurs         minimum number of occurrences of this property.
-     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
-     */
-    public <T extends Property> PropertyInfo(String name, String displayName, Model model, Class<? extends T> defaultValueClazz,
-                                             T defaultValue, int minOccurs, int maxOccurs) {
-        this(name, displayName, model, defaultValueClazz, defaultValue, null, minOccurs, maxOccurs);
-    }
-
-    /**
-     * Creates new propertyInfo
-     *
-     * @param <T>               Type of property value.
-     * @param name              Name of the property
-     * @param model             Model to which this property belongs
-     * @param defaultValueClazz class of a default value
-     * @param defaultValue      default value of the property
-     * @param minOccurs         minimum number of occurrences of this property.
-     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
-     */
-    public <T extends Property> PropertyInfo(String name, Model model, Class<? extends T> defaultValueClazz,
-                                             T defaultValue, int minOccurs, int maxOccurs) {
-        this(name, null, model, defaultValueClazz, defaultValue, null, minOccurs, maxOccurs);
-    }
-
-    /**
-     * Creates new propertyInfo
-     *
-     * @param <T>               Type of property value.
-     * @param name              Name of the property
-     * @param model             Model to which this property belongs
-     * @param defaultValueClazz class of a default value
-     * @param defaultValue      default value of the property
-     * @param perfCakeComponent PerfCake component represented by this property (applicable only if propertyType == MODEL)
-     * @param minOccurs         minimum number of occurrences of this property.
-     * @param maxOccurs         maximum number of occurrences of this property. Use -1 for unlimited.
-     */
-    public <T extends Property> PropertyInfo(String name, Model model, Class<? extends T> defaultValueClazz,
-                                             T defaultValue, PerfCakeComponent perfCakeComponent, int minOccurs, int maxOccurs) {
-        this(name, null, model, defaultValueClazz, defaultValue, perfCakeComponent, minOccurs, maxOccurs);
+        this.valueDataType = valueDataType;
     }
 
     /**
@@ -270,7 +207,6 @@ public class PropertyInfo {
         return docs;
     }
 
-
     /**
      * @return Minimum number of occurrences of this property.
      */
@@ -283,6 +219,137 @@ public class PropertyInfo {
      */
     public int getMaxOccurs() {
         return maxOccurs;
+    }
+
+    public DataType getKeyDataType() {
+        return keyDataType;
+    }
+
+    public DataType getValueDataType() {
+        return valueDataType;
+    }
+
+    /**
+     * Creates info about {@link Value} property.
+     *
+     * @param name      name
+     * @param model     model which owns this property
+     * @param minOccurs minimum number of occurrences of this property.
+     * @param maxOccurs maximum number of occurrences of this property. Use -1 for unlimited.
+     * @return property info
+     */
+    public static PropertyInfo createValueInfo(String name, Model model, int minOccurs, int maxOccurs) {
+        PropertyInfo info = new PropertyInfo(name, model, PropertyType.VALUE, minOccurs, maxOccurs, DataType.STRING);
+        return info;
+    }
+
+    /**
+     * Creates info about {@link Value} property.
+     *
+     * @param name          name
+     * @param displayName   display name (optional)
+     * @param model         model which owns this property
+     * @param minOccurs     minimum number of occurrences of this property.
+     * @param maxOccurs     maximum number of occurrences of this property. Use -1 for unlimited.
+     * @param valueDataType data type of value (optional)
+     * @param defaultValue  default value (optional)
+     * @return property info
+     */
+    public static PropertyInfo createValueInfo(String name, String displayName, Model model, int minOccurs, int maxOccurs,
+                                               DataType valueDataType, Value defaultValue) {
+        PropertyInfo info = createValueInfo(name, model, minOccurs, maxOccurs);
+        if (valueDataType != null) {
+            info.valueDataType = valueDataType;
+        }
+        info.defaultValue = defaultValue;
+        info.displayName = displayName;
+        return info;
+    }
+
+    /**
+     * Creates info about {@link KeyValue} property.
+     *
+     * @param name      name
+     * @param model     model which owns this property
+     * @param minOccurs minimum number of occurrences of this property.
+     * @param maxOccurs maximum number of occurrences of this property. Use -1 for unlimited.
+     * @return property info
+     */
+    public static PropertyInfo createKeyValueInfo(String name, Model model, int minOccurs, int maxOccurs) {
+        PropertyInfo info = new PropertyInfo(name, model, PropertyType.KEY_VALUE, minOccurs, maxOccurs, DataType.STRING);
+        info.valueDataType = DataType.STRING;
+        info.keyDataType = DataType.STRING;
+        return info;
+    }
+
+    /**
+     * Creates info about {@link KeyValue} property.
+     *
+     * @param name          name
+     * @param displayName   display name (optional)
+     * @param model         model which owns this property
+     * @param minOccurs     minimum number of occurrences of this property.
+     * @param maxOccurs     maximum number of occurrences of this property. Use -1 for unlimited.
+     * @param valueDataType data type of value (optional)
+     * @param keyDataType   data type of key (optional)
+     * @param defaultValue  default value (optional)
+     * @return property info
+     */
+    public static PropertyInfo createKeyValueInfo(String name, String displayName, Model model, int minOccurs, int maxOccurs,
+                                                  DataType valueDataType, DataType keyDataType, KeyValue defaultValue) {
+        PropertyInfo info = createKeyValueInfo(name, model, minOccurs, maxOccurs);
+        if (valueDataType != null) {
+            info.valueDataType = valueDataType;
+        }
+        if (keyDataType != null) {
+            info.keyDataType = keyDataType;
+        }
+
+        info.displayName = displayName;
+        info.defaultValue = defaultValue;
+        return info;
+    }
+
+    /**
+     * Creates info about {@link Model} property.
+     *
+     * @param name      name
+     * @param model     model which owns this property
+     * @param minOccurs minimum number of occurrences of this property.
+     * @param maxOccurs maximum number of occurrences of this property. Use -1 for unlimited.
+     * @param component perfcake component
+     * @return property info
+     */
+    public static PropertyInfo createModelInfo(String name, Model model, PerfCakeComponent component, int minOccurs, int maxOccurs) {
+        PropertyInfo info = new PropertyInfo(name, model, PropertyType.MODEL, minOccurs, maxOccurs, DataType.MODEL);
+        if (component == null) {
+            throw new IllegalArgumentException("Component cannot be null.");
+        }
+
+        info.perfCakeComponent = component;
+
+        return info;
+    }
+
+
+    /**
+     * Creates info about {@link Model} property.
+     *
+     * @param name        name
+     * @param displayName display name (optional)
+     * @param model       model which owns this property
+     * @param minOccurs   minimum number of occurrences of this property.
+     * @param maxOccurs   maximum number of occurrences of this property. Use -1 for unlimited.
+     * @param component   perfcake component
+     * @return property info
+     */
+    public static PropertyInfo createModelInfo(String name, String displayName, Model model, PerfCakeComponent component,
+                                               int minOccurs, int maxOccurs) {
+        PropertyInfo info = createModelInfo(name, model, component, minOccurs, maxOccurs);
+
+        info.displayName = displayName;
+
+        return info;
     }
 
     @Override
@@ -299,12 +366,14 @@ public class PropertyInfo {
                 && Objects.equals(name, that.name)
                 && Objects.equals(model, that.model)
                 && type == that.type
+                && keyDataType == that.keyDataType
+                && valueDataType == that.valueDataType
                 && Objects.equals(defaultValue, that.defaultValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, model, type, defaultValue, minOccurs, maxOccurs);
+        return Objects.hash(name, model, type, keyDataType, valueDataType, defaultValue, minOccurs, maxOccurs);
     }
 
     @Override
@@ -314,6 +383,8 @@ public class PropertyInfo {
                 + ", displayName='" + displayName + '\''
                 + ", model=" + model
                 + ", type=" + type
+                + ", keyDataType=" + keyDataType
+                + ", valueDataType=" + valueDataType
                 + ", defaultValue=" + defaultValue
                 + ", minOccurs=" + minOccurs
                 + ", maxOccurs=" + maxOccurs

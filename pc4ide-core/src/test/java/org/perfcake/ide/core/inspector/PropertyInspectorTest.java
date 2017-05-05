@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import org.junit.Test;
+import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.message.generator.DefaultMessageGenerator;
 import org.perfcake.message.sender.JdbcSender;
 import org.perfcake.message.sequence.RandomSequence;
@@ -41,34 +42,34 @@ public class PropertyInspectorTest {
     private PropertyInspector inspector = new PropertyUtilsInspector();
 
     private ImplementationField[] expectedGeneratorFields = new ImplementationField[] {
-            new ImplementationField("monitoringPeriod", "1000", false),
-            new ImplementationField("shutdownPeriod", "5000", false),
-            new ImplementationField("senderTaskQueueSize", "1000", false)
+            new ImplementationField("monitoringPeriod", "1000", false, DataType.INTEGER),
+            new ImplementationField("shutdownPeriod", "5000", false, DataType.INTEGER),
+            new ImplementationField("senderTaskQueueSize", "1000", false, DataType.INTEGER)
 
     };
 
     private ImplementationField[] expectedSenderFields = new ImplementationField[] {
-            new ImplementationField("driverClass", "", true),
-            new ImplementationField("username", "", false),
-            new ImplementationField("password", "", false),
-            new ImplementationField("jdbcUrl", "", false),
-            new ImplementationField("keepConnection", "true", false) //this is inherited from abstractSender
+            new ImplementationField("driverClass", "", true, DataType.STRING),
+            new ImplementationField("username", "", false, DataType.STRING),
+            new ImplementationField("password", "", false, DataType.STRING),
+            new ImplementationField("jdbcUrl", "", false, DataType.STRING),
+            new ImplementationField("keepConnection", "true", false, DataType.BOOLEAN) //this is inherited from abstractSender
     };
 
     private ImplementationField[] expectedSequenceFields = new ImplementationField[] {
-            new ImplementationField("min", "0", false),
-            new ImplementationField("max", "100", false)
+            new ImplementationField("min", "0", false, DataType.INTEGER),
+            new ImplementationField("max", "100", false, DataType.INTEGER)
     };
 
     private ImplementationField[] expectedReporterFields = new ImplementationField[] {
-            new ImplementationField("attribute", null, true),
-            new ImplementationField("prefix", "class_", false)
+            new ImplementationField("attribute", null, true, DataType.STRING),
+            new ImplementationField("prefix", "class_", false, DataType.STRING)
     };
 
     private ImplementationField[] expectedValidatorFields = new ImplementationField[] {
-            new ImplementationField("dictionaryDirectory", null, true),
-            new ImplementationField("record", "false", false),
-            new ImplementationField("dictionaryIndex", "index", false)
+            new ImplementationField("dictionaryDirectory", null, true, DataType.STRING),
+            new ImplementationField("record", "false", false, DataType.BOOLEAN),
+            new ImplementationField("dictionaryIndex", "index", false, DataType.STRING)
     };
 
     @Test

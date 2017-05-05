@@ -24,8 +24,6 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.message.sequence.Sequence;
 
 /**
  * Model of a sequence inspector.
@@ -61,7 +59,7 @@ public class SequenceModel extends AbstractModel {
     @Override
     protected void initializeSupportedProperties() {
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.IMPLEMENTATION.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1),
-                new PropertyInfo(PropertyNames.ID.toString(), this, PropertyType.VALUE.getClazz(), null, 1, 1));
+                PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1),
+                PropertyInfo.createValueInfo(PropertyNames.ID.toString(), this, 1, 1));
     }
 }

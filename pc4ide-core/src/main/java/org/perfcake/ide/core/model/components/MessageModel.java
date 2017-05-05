@@ -24,9 +24,8 @@ import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.AbstractModel;
 import org.perfcake.ide.core.model.PropertyInfo;
-import org.perfcake.ide.core.model.PropertyType;
+import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.ide.core.model.properties.SimpleValue;
-import org.perfcake.message.Message;
 
 /**
  * Model of PerfCake message.
@@ -65,12 +64,14 @@ public class MessageModel extends AbstractModel {
     protected void initializeSupportedProperties() {
 
         addSupportedProperties(
-                new PropertyInfo(PropertyNames.URI.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.CONTENT.toString(), this, PropertyType.VALUE.getClazz(), null, 0, 1),
-                new PropertyInfo(PropertyNames.MULTIPLICITY.toString(), this, PropertyType.VALUE.getClazz(), new SimpleValue("1"), 0, 1),
-                new PropertyInfo(PropertyNames.HEADERS.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.VALIDATOR_REFS.toString(), this, PropertyType.VALUE.getClazz(), null, 0, -1),
-                new PropertyInfo(PropertyNames.PROPERTIES.toString(), this, PropertyType.KEY_VALUE.getClazz(), null, 0, -1)
+                PropertyInfo.createValueInfo(PropertyNames.URI.toString(), this, 0, 1),
+                PropertyInfo.createValueInfo(PropertyNames.CONTENT.toString(), this, 0, 1),
+                PropertyInfo.createValueInfo(PropertyNames.MULTIPLICITY.toString(), null, this, 0, 1,
+                        DataType.INTEGER, new SimpleValue("1")),
+                PropertyInfo.createKeyValueInfo(PropertyNames.HEADERS.toString(), null, this, 0, -1,
+                        DataType.STRING, DataType.STRING, null),
+                PropertyInfo.createValueInfo(PropertyNames.VALIDATOR_REFS.toString(), this, 0, -1),
+                PropertyInfo.createKeyValueInfo(PropertyNames.PROPERTIES.toString(), this, 0, -1)
         );
     }
 

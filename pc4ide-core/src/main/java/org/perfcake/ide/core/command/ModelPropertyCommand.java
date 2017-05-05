@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.core.command;
 
-import org.perfcake.ide.core.exception.PropertyLimitException;
-import org.perfcake.ide.core.exception.UnsupportedPropertyException;
 import org.perfcake.ide.core.model.Model;
 import org.perfcake.ide.core.model.Property;
 import org.perfcake.ide.core.model.PropertyInfo;

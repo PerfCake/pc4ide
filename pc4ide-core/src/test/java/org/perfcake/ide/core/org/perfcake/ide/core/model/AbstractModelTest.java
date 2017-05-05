@@ -139,8 +139,8 @@ public class AbstractModelTest {
         model = new ScenarioModel(docsService);
 
         PropertyInfo info = model.getSupportedProperty(ScenarioModel.PropertyNames.GENERATOR.toString());
-        PropertyInfo wrongInfo = new PropertyInfo(info.getName() + "wrong", info.getDisplayName(), info.getModel(), Value.class,
-                null, 1, 1);
+        PropertyInfo wrongInfo = PropertyInfo.createValueInfo(info.getName() + "wrong", info.getDisplayName(), info.getModel(),
+                1, 1, info.getValueDataType(), null);
         assertThat(model.getProperties("non-existent-property"), nullValue());
         assertThat(model.getProperties(info), empty());
         assertThat(model.getProperties(wrongInfo), nullValue());
