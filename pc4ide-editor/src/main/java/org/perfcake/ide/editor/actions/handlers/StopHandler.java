@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.RootController;
 
@@ -35,7 +36,7 @@ public class StopHandler extends AbstractHandler {
     }
 
     @Override
-    public void handleAction() {
+    public void handleAction(Point2D location) {
         if (getController() instanceof RootController) {
             RootController root = (RootController) getController();
 

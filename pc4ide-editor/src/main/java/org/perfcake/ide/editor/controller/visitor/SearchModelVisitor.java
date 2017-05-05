@@ -67,7 +67,7 @@ public abstract class SearchModelVisitor implements ControllerVisitor {
             throw new IllegalArgumentException("controller cannot be null");
         }
 
-        if (model.equals(controller.getModel())) {
+        if (model == controller.getModel()) {
             performAction(controller);
             actionPerformed = true;
         } else {

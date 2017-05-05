@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.actions.ActionType;
 
 /**
@@ -35,8 +36,8 @@ public class DebugHandler extends RunHandler {
     }
 
     @Override
-    public void handleAction() {
-        super.handleAction();
+    public void handleAction(Point2D location) {
+        super.handleAction(location);
         //TODO: forcibly set debug option to true
     }
 }

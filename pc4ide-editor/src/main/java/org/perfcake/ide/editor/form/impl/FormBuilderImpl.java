@@ -592,8 +592,8 @@ public class FormBuilderImpl implements FormBuilder {
     }
 
     private void addPlaceholders(List<String> values) {
-        values.add("${placeholder-name}");
-        values.add("${placeholder-name:default-property}");
+        values.add("${name}");
+        values.add("${name:default}");
     }
 
     private JPanel createListOfValuesPanel(FormController controller, PropertyInfo propertyInfo, List<Property> values) {

@@ -23,7 +23,9 @@ package org.perfcake.ide.editor.swing;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -75,4 +77,15 @@ public interface SwingFactory {
      * @return JComboBox&lt;String&gt;.
      */
     JComboBox<String> createComboBox();
+
+    /**
+     * @return JMenuItem.
+     */
+    JMenuItem createMenuItem();
+
+    /**
+     *
+     * @return JPopupMenu.
+     */
+    JPopupMenu createPopupMenu();
 }

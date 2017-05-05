@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.core.exception.Pc4ideException;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.ExecutionFactory;
@@ -40,7 +41,7 @@ public class RunHandler extends AbstractHandler {
     }
 
     @Override
-    public void handleAction() {
+    public void handleAction(Point2D location) {
         ExecutionFactory executionFactory = getController().getRoot().getExecutionFactory();
 
         if (executionFactory == null) {

@@ -153,6 +153,12 @@ public class ScenarioController extends AbstractController implements RootContro
     }
 
     @Override
+    protected void createChildrenControllers() {
+        super.createChildrenControllers();
+        addChild(new FactoryController(model, modelFactory,viewFactory));
+    }
+
+    @Override
     public Controller createChildController(Model model) {
         Controller child = super.createChildController(model);
 

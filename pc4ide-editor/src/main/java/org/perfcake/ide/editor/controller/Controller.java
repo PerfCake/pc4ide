@@ -21,6 +21,7 @@
 package org.perfcake.ide.editor.controller;
 
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.exec.ExecutionListener;
@@ -113,8 +114,9 @@ public interface Controller extends MouseListener, ExecutionListener {
      * Performs an action.
      *
      * @param action action type to be performed.
+     * @param location location of action (if applicable).
      */
-    void performAction(ActionType action);
+    void performAction(ActionType action, Point2D location);
 
     /**
      * @return Model factory.

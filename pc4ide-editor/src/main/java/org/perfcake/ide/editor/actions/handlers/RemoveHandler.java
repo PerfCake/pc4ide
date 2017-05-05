@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.RemovePropertyCommand;
 import org.perfcake.ide.core.model.Model;
@@ -38,7 +39,7 @@ public class RemoveHandler extends AbstractHandler {
     }
 
     @Override
-    public void handleAction() {
+    public void handleAction(Point2D location) {
         if (controller == null) {
             throw new IllegalStateException("controller must not be null");
         }

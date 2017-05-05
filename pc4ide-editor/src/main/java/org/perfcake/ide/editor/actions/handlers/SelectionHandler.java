@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.actions.handlers;
 
+import java.awt.geom.Point2D;
 import org.perfcake.ide.editor.actions.ActionType;
 import org.perfcake.ide.editor.controller.visitor.UnselectVisitor;
 import org.perfcake.ide.editor.form.FormManager;
@@ -40,7 +41,7 @@ public class SelectionHandler extends AbstractHandler {
     }
 
     @Override
-    public void handleAction() {
+    public void handleAction(Point2D location) {
         UnselectVisitor visitor = new UnselectVisitor();
         controller.getRoot().accept(visitor);
         controller.getView().setSelected(true);

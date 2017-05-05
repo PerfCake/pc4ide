@@ -54,6 +54,6 @@ public class MouseClickVisitor extends ViewTargetedVisitor {
     protected void performOperation(Controller controller) {
         ActionType action = controller.getView().getAction(location);
         logger.debug("Action detected: {}. Controller {}", action, controller);
-        controller.performAction(action);
+        controller.performAction(action, location);
     }
 }
