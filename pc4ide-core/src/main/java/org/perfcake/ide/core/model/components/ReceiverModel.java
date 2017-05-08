@@ -34,7 +34,7 @@ import org.perfcake.ide.core.model.properties.DataType;
 public class ReceiverModel extends AbstractModel {
 
     public enum PropertyNames {
-        IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("Threads"), SOURCE("Source"), CORRELATOR("Correlator");
+        IMPLEMENTATION(AbstractModel.IMPLEMENTATION_CLASS_PROPERTY), THREADS("threads"), SOURCE("source"), CORRELATOR("correlator");
 
         private final String propertyName;
 

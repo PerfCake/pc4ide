@@ -118,6 +118,9 @@ public abstract class ParentSectorView extends SimpleSectorView {
 
     @Override
     public Shape getViewBounds() {
+        if (super.getViewBounds() == null) {
+            return new Area(); //empty area
+        }
         Area area = new Area(super.getViewBounds());
         for (View child : getChildren()) {
             if (child != null && child.getViewBounds() != null) {

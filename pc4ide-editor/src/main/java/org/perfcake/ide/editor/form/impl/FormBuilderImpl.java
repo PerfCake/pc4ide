@@ -47,6 +47,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import org.apache.commons.lang3.StringUtils;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
@@ -94,6 +95,7 @@ public class FormBuilderImpl implements FormBuilder {
     public static final int ICON_HEIGHT = 16;
     public static final int HORIZONTAL_INSETS = 5;
     public static final int VERTICAL_INSETS = 2;
+    public static final int PROPERTY_DOCUMENTATION_LENGTH_LIMIT = 200;
 
     private boolean useDebugBorders = false;
     private SwingFactory swingFactory;
@@ -578,17 +580,42 @@ public class FormBuilderImpl implements FormBuilder {
             constraints.gridy++;
             constraints.gridwidth = 3;
             constraints.insets = new Insets(0, 5, 10, 5);
-            JTextArea docsArea = swingFactory.createTextArea();
-            docsArea.setEditable(false);
-            docsArea.setLineWrap(true);
-            docsArea.setText(documentation);
-            docsArea.setOpaque(false);
+            JTextArea docsArea = createDocumentationTextArea(documentation);
             panel.add(docsArea, constraints);
             rowsAdded++;
         }
 
 
         return 2;
+    }
+
+    private JTextArea createDocumentationTextArea(String documentation) {
+        JTextArea docsArea = swingFactory.createTextArea();
+        docsArea.setEditable(false);
+        docsArea.setLineWrap(true);
+        String shortenedText = shortenText(documentation);
+        docsArea.setText(shortenedText);
+        String toolTip = replaceNewlineWithHtml(documentation);
+        docsArea.setToolTipText("<html>" + toolTip + "</html>");
+        docsArea.setOpaque(false);
+        return docsArea;
+    }
+
+    private String replaceNewlineWithHtml(String documentation) {
+        return StringUtils.replace(documentation, "\n", "<br>");
+    }
+
+    private String shortenText(String documentation) {
+        String shortenedDocumentation = documentation;
+        if (shortenedDocumentation.length() > PROPERTY_DOCUMENTATION_LENGTH_LIMIT) {
+            shortenedDocumentation = shortenedDocumentation.substring(0, PROPERTY_DOCUMENTATION_LENGTH_LIMIT) + "...";
+        }
+
+        if (documentation.contains("\n")) {
+            shortenedDocumentation = shortenedDocumentation.substring(0, shortenedDocumentation.indexOf('\n')) + "...";
+        }
+
+        return shortenedDocumentation;
     }
 
     private void addPlaceholders(List<String> values) {
