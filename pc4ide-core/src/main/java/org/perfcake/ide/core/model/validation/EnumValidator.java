@@ -35,6 +35,7 @@ import org.perfcake.ide.core.model.validation.error.ValidationError;
 public class EnumValidator extends StringValidator {
 
     private List<String> allowedValues;
+    private boolean caseSensitive = false;
 
     /**
      * Creates new enum validator.
@@ -70,7 +71,7 @@ public class EnumValidator extends StringValidator {
                 isValid = true;
                 break;
             }
-            if (s.equals(value)) {
+            if (equals(value, s)) {
                 isValid = true;
                 break;
             }
@@ -81,6 +82,20 @@ public class EnumValidator extends StringValidator {
         }
 
         return error;
+    }
+
+    /**
+     * Compares two values if they are equal.
+     * @param value value
+     * @param s value
+     * @return true if the values are equal
+     */
+    public boolean equals(String value, String s) {
+        if (caseSensitive) {
+            return s.equals(value);
+        } else {
+            return s.equalsIgnoreCase(value);
+        }
     }
 
     private String createErrorMessage(String value) {

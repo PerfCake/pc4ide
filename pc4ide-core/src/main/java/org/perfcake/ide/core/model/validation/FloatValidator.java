@@ -27,10 +27,11 @@ import org.perfcake.ide.core.model.validation.error.SingleError;
 import org.perfcake.ide.core.model.validation.error.ValidationError;
 
 /**
- * Validates whether string value is a number.
+ * FloatValidator validates that a  value is a floating point number.
+ *
  * @author Jakub Knetl
  */
-public class IntegerValidator implements Validator<String> {
+public class FloatValidator implements Validator<String> {
 
     @Override
     public ValidationError validate(Property property, String value) {
@@ -40,9 +41,9 @@ public class IntegerValidator implements Validator<String> {
         }
 
         try {
-            Integer.parseInt(value);
+            Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            error = new SingleError(property, ErrorType.INVALID_VALUE, String.format("'%s' is not an integer", value));
+            error = new SingleError(property, ErrorType.INVALID_VALUE, String.format("'%s' is not floating point number", value));
         }
 
         return error;

@@ -86,7 +86,7 @@ public class SimpleValidatorTest {
         PropertyInfo runInfo = generator.getSupportedProperty(GeneratorModel.PropertyNames.RUN.toString());
         PropertyInfo implInfo = generator.getSupportedProperty(GeneratorModel.PropertyNames.IMPLEMENTATION.toString());
 
-        SimpleValue threadsProperty = new SimpleValue("10", new IntegerValidator());
+        SimpleValue threadsProperty = new SimpleValue("10");
         generator.addProperty(threadsInfo, threadsProperty);
         generator.addProperty(runInfo, new KeyValueImpl("iterations", "2000"));
         generator.addProperty(implInfo, new SimpleValue("DefaultMessageGenerator"));

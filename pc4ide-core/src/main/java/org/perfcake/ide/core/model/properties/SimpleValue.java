@@ -23,8 +23,6 @@ package org.perfcake.ide.core.model.properties;
 import java.util.Objects;
 import org.perfcake.ide.core.model.AbstractProperty;
 import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.ide.core.model.validation.StringValidator;
-import org.perfcake.ide.core.model.validation.Validator;
 import org.perfcake.ide.core.model.validation.error.ValidationError;
 
 /**
@@ -35,7 +33,6 @@ import org.perfcake.ide.core.model.validation.error.ValidationError;
 public class SimpleValue extends AbstractProperty implements Value {
 
     private String value;
-    private Validator<String> validator;
 
     /**
      * Creates new properties value.
@@ -43,23 +40,8 @@ public class SimpleValue extends AbstractProperty implements Value {
      * @param value value of the property
      */
     public SimpleValue(String value) {
-        this(value, null);
-    }
-
-    /**
-     * Creates new properties value.
-     *
-     * @param value     value of the property
-     * @param validator value validator
-     */
-    public SimpleValue(String value, Validator<String> validator) {
         super(PropertyType.VALUE);
         this.value = value;
-        if (validator == null) {
-            this.validator = new StringValidator();
-        } else {
-            this.validator = validator;
-        }
     }
 
     @Override
@@ -77,12 +59,20 @@ public class SimpleValue extends AbstractProperty implements Value {
 
     @Override
     public boolean isValid() {
-        return (validator.validate(this, value) == null);
+        if (getPropertyInfo() == null) {
+            return true;
+        } else {
+            return (getPropertyInfo().getValueValidator().validate(this, value) == null);
+        }
     }
 
     @Override
     public ValidationError getValidationError() {
-        return validator.validate(this, value);
+        if (getPropertyInfo() == null) {
+            return null;
+        } else {
+            return getPropertyInfo().getValueValidator().validate(this, value);
+        }
     }
 
     @Override

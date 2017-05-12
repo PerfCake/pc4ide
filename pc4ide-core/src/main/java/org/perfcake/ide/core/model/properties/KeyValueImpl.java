@@ -22,9 +22,8 @@ package org.perfcake.ide.core.model.properties;
 
 import java.util.Objects;
 import org.perfcake.ide.core.model.AbstractProperty;
+import org.perfcake.ide.core.model.PropertyInfo;
 import org.perfcake.ide.core.model.PropertyType;
-import org.perfcake.ide.core.model.validation.StringValidator;
-import org.perfcake.ide.core.model.validation.Validator;
 import org.perfcake.ide.core.model.validation.error.CompoundError;
 import org.perfcake.ide.core.model.validation.error.ValidationError;
 
@@ -42,36 +41,6 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
     private String value;
     private String any;
 
-    private Validator<String> keyValidator;
-    private Validator<String> valueValidator;
-
-    /**
-     * Constructs new key-value instance.
-     *
-     * @param key            key of the instance
-     * @param value          value of the instance
-     * @param keyValidator   validator for key
-     * @param valueValidator validator for value
-     */
-    public KeyValueImpl(String key, String value, Validator<String> keyValidator, Validator<String> valueValidator) {
-        super(PropertyType.KEY_VALUE);
-        this.key = key;
-        this.value = value;
-
-        if (keyValidator == null) {
-            this.keyValidator = new StringValidator();
-        } else {
-            this.keyValidator = keyValidator;
-        }
-
-        if (valueValidator == null) {
-            this.valueValidator = new StringValidator();
-        } else {
-            this.valueValidator = valueValidator;
-        }
-
-    }
-
     /**
      * Constructs new key-value instance.
      *
@@ -79,7 +48,10 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
      * @param value value of the instance
      */
     public KeyValueImpl(String key, String value) {
-        this(key, value, null, null);
+        super(PropertyType.KEY_VALUE);
+        this.key = key;
+        this.value = value;
+
     }
 
     /**
@@ -135,13 +107,27 @@ public class KeyValueImpl extends AbstractProperty implements KeyValue {
 
     @Override
     public boolean isValid() {
-        return (keyValidator.validate(this, key) == null && valueValidator.validate(this, value) == null);
+        boolean isKeyValid = true;
+        boolean isValueValid = true;
+
+        if (getPropertyInfo() != null) {
+            PropertyInfo info = getPropertyInfo();
+            isKeyValid = info.getKeyValidator().validate(this, getKey()) == null;
+            isValueValid = info.getValueValidator().validate(this, getValue()) == null;
+        }
+        return isKeyValid && isValueValid;
     }
 
     @Override
     public ValidationError getValidationError() {
-        ValidationError keyError = keyValidator.validate(this, key);
-        ValidationError valueError = keyValidator.validate(this, key);
+        ValidationError keyError = null;
+        ValidationError valueError = null;
+
+        if (getPropertyInfo() != null) {
+            PropertyInfo info = getPropertyInfo();
+            keyError = info.getKeyValidator().validate(this, getKey());
+            valueError = info.getValueValidator().validate(this, getValue());
+        }
 
         ValidationError result = null;
         if (keyError != null && valueError != null) {

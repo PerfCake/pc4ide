@@ -28,6 +28,8 @@ import org.perfcake.ide.core.exception.ModelException;
 import org.perfcake.ide.core.model.properties.DataType;
 import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.Value;
+import org.perfcake.ide.core.model.validation.Validator;
+import org.perfcake.ide.core.model.validation.Validators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +93,16 @@ public class PropertyInfo {
      * Maximum number of occurrences of this property. Set to -1 for unlimited.
      */
     private int maxOccurs;
+
+    /**
+     * Validator of the key.
+     */
+    private Validator keyValidator;
+
+    /**
+     * Validator of the value.
+     */
+    private Validator valueValidator;
 
     private PropertyInfo(String name, Model model, PropertyType type, int minOccurs, int maxOccurs, DataType valueDataType) {
 
@@ -229,6 +241,14 @@ public class PropertyInfo {
         return valueDataType;
     }
 
+    public Validator getKeyValidator() {
+        return keyValidator;
+    }
+
+    public Validator getValueValidator() {
+        return valueValidator;
+    }
+
     /**
      * Creates info about {@link Value} property.
      *
@@ -240,6 +260,7 @@ public class PropertyInfo {
      */
     public static PropertyInfo createValueInfo(String name, Model model, int minOccurs, int maxOccurs) {
         PropertyInfo info = new PropertyInfo(name, model, PropertyType.VALUE, minOccurs, maxOccurs, DataType.STRING);
+        initValidators(info);
         return info;
     }
 
@@ -263,6 +284,7 @@ public class PropertyInfo {
         }
         info.defaultValue = defaultValue;
         info.displayName = displayName;
+        initValidators(info);
         return info;
     }
 
@@ -279,6 +301,7 @@ public class PropertyInfo {
         PropertyInfo info = new PropertyInfo(name, model, PropertyType.KEY_VALUE, minOccurs, maxOccurs, DataType.STRING);
         info.valueDataType = DataType.STRING;
         info.keyDataType = DataType.STRING;
+        initValidators(info);
         return info;
     }
 
@@ -307,6 +330,7 @@ public class PropertyInfo {
 
         info.displayName = displayName;
         info.defaultValue = defaultValue;
+        initValidators(info);
         return info;
     }
 
@@ -328,6 +352,7 @@ public class PropertyInfo {
 
         info.perfCakeComponent = component;
 
+        initValidators(info);
         return info;
     }
 
@@ -349,7 +374,17 @@ public class PropertyInfo {
 
         info.displayName = displayName;
 
+        initValidators(info);
         return info;
+    }
+
+    private static void initValidators(PropertyInfo info) {
+        if (info.keyDataType != null) {
+            info.keyValidator = Validators.createValidator(info.keyDataType);
+        }
+        if (info.valueDataType != null) {
+            info.valueValidator = Validators.createValidator(info.valueDataType);
+        }
     }
 
     @Override
