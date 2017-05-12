@@ -39,4 +39,5 @@ public interface ValueAgent {
      * @param value property
      */
     void setValue(String value);
+
 }

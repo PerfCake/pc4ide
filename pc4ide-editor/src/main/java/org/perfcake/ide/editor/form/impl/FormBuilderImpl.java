@@ -103,6 +103,9 @@ public class FormBuilderImpl implements FormBuilder {
     private Color addIconColor = Color.BLACK;
     private Color removeIconColor = Color.BLACK;
 
+    private Color errorColor = Color.RED;
+    private Color standardTextColor = Color.BLACK;
+
     public FormBuilderImpl(SwingFactory swingFactory) {
         this.swingFactory = swingFactory;
     }
@@ -556,6 +559,7 @@ public class FormBuilderImpl implements FormBuilder {
             valueAgent.setValue(value.getValue());
             ValueChangeListener listener = ValueChangeListener.createValueListener(value,
                     controller.getFormManager().getCommandInvoker(), field);
+            listener.validate(); //sets the proper color
             listener.subscribeAll();
         }
 
@@ -590,23 +594,6 @@ public class FormBuilderImpl implements FormBuilder {
 
 
         return 2;
-    }
-
-    private JTextArea createDocumentationTextArea(String documentation, PropertyInfo info) {
-        JTextArea docsArea = swingFactory.createTextArea();
-        docsArea.setEditable(false);
-        docsArea.setLineWrap(true);
-
-        // create a text builder
-        TextBuilder builder = new TextBuilder().setMaxLength(PROPERTY_DOCUMENTATION_LENGTH_LIMIT)
-                .setFirstLineOnly(true).setVisualizeCut(true);
-
-        docsArea.setText(builder.buildText(documentation));
-        builder.setFirstLineOnly(false).setMaxLength(-1);
-        String toolTip = builder.buildText(documentation);
-        docsArea.setToolTipText(toolTip);
-        docsArea.setOpaque(false);
-        return docsArea;
     }
 
     private void addPlaceholders(List<String> values) {
@@ -888,6 +875,23 @@ public class FormBuilderImpl implements FormBuilder {
             }
         }
         return text;
+    }
+
+    private JTextArea createDocumentationTextArea(String documentation, PropertyInfo info) {
+        JTextArea docsArea = swingFactory.createTextArea();
+        docsArea.setEditable(false);
+        docsArea.setLineWrap(true);
+
+        // create a text builder
+        TextBuilder builder = new TextBuilder().setMaxLength(PROPERTY_DOCUMENTATION_LENGTH_LIMIT)
+                .setFirstLineOnly(true).setVisualizeCut(true);
+
+        docsArea.setText(builder.buildText(documentation));
+        builder.setFirstLineOnly(false).setMaxLength(-1);
+        String toolTip = builder.buildText(documentation);
+        docsArea.setToolTipText(toolTip);
+        docsArea.setOpaque(false);
+        return docsArea;
     }
 
     /**

@@ -35,7 +35,7 @@ import org.perfcake.ide.core.model.validation.error.ValidationError;
 public class PlaceholderValidator implements Validator<String> {
 
     private Validator validator;
-    private boolean checkDefaultValue;
+    private boolean checkDefaultValue = true;
 
     /**
      * Creates a new placeholder validator.

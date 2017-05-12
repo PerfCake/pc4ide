@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor.swing.listeners;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
@@ -108,6 +109,18 @@ public abstract class ValueChangeListener implements ActionListener {
             logger.warn("Uknown command type");
         } else {
             invoker.executeCommand(command);
+        }
+        validate();
+    }
+
+    /**
+     * Validates a property.
+     */
+    public void validate() {
+        if (property.isValid()) {
+            jComponent.setForeground(Color.BLACK);
+        } else {
+            jComponent.setForeground(Color.RED);
         }
     }
 
