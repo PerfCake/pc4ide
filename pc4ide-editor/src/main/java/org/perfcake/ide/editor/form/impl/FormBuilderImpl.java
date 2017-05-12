@@ -47,7 +47,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import org.apache.commons.lang3.StringUtils;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
@@ -539,7 +538,11 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.gridx = 0;
         constraints.gridy = columnIndex;
         JLabel label = swingFactory.createLabel();
-        label.setText(info.getDisplayName() + ": ");
+        TextBuilder builder = new TextBuilder();
+        if (info.getMinOccurs() > 0) {
+            builder.setBold(true);
+        }
+        label.setText(builder.buildText(info.getDisplayName() + ": "));
 
         JComponent field = createField(info.getValueDataType());
         ValueAgent valueAgent = ValueAgents.createAgent(field);
@@ -580,7 +583,7 @@ public class FormBuilderImpl implements FormBuilder {
             constraints.gridy++;
             constraints.gridwidth = 3;
             constraints.insets = new Insets(0, 5, 10, 5);
-            JTextArea docsArea = createDocumentationTextArea(documentation);
+            JTextArea docsArea = createDocumentationTextArea(documentation, info);
             panel.add(docsArea, constraints);
             rowsAdded++;
         }
@@ -589,33 +592,21 @@ public class FormBuilderImpl implements FormBuilder {
         return 2;
     }
 
-    private JTextArea createDocumentationTextArea(String documentation) {
+    private JTextArea createDocumentationTextArea(String documentation, PropertyInfo info) {
         JTextArea docsArea = swingFactory.createTextArea();
         docsArea.setEditable(false);
         docsArea.setLineWrap(true);
-        String shortenedText = shortenText(documentation);
-        docsArea.setText(shortenedText);
-        String toolTip = replaceNewlineWithHtml(documentation);
-        docsArea.setToolTipText("<html>" + toolTip + "</html>");
+
+        // create a text builder
+        TextBuilder builder = new TextBuilder().setMaxLength(PROPERTY_DOCUMENTATION_LENGTH_LIMIT)
+                .setFirstLineOnly(true).setVisualizeCut(true);
+
+        docsArea.setText(builder.buildText(documentation));
+        builder.setFirstLineOnly(false).setMaxLength(-1);
+        String toolTip = builder.buildText(documentation);
+        docsArea.setToolTipText(toolTip);
         docsArea.setOpaque(false);
         return docsArea;
-    }
-
-    private String replaceNewlineWithHtml(String documentation) {
-        return StringUtils.replace(documentation, "\n", "<br>");
-    }
-
-    private String shortenText(String documentation) {
-        String shortenedDocumentation = documentation;
-        if (shortenedDocumentation.length() > PROPERTY_DOCUMENTATION_LENGTH_LIMIT) {
-            shortenedDocumentation = shortenedDocumentation.substring(0, PROPERTY_DOCUMENTATION_LENGTH_LIMIT) + "...";
-        }
-
-        if (documentation.contains("\n")) {
-            shortenedDocumentation = shortenedDocumentation.substring(0, shortenedDocumentation.indexOf('\n')) + "...";
-        }
-
-        return shortenedDocumentation;
     }
 
     private void addPlaceholders(List<String> values) {
@@ -720,7 +711,7 @@ public class FormBuilderImpl implements FormBuilder {
 
             JComponent valueTextField = createField(kv.getPropertyInfo().getValueDataType());
             ValueAgent valueAgent = ValueAgents.createAgent(valueTextField);
-            valueAgent.setValue(kv.getKey());
+            valueAgent.setValue(kv.getValue());
 
             ValueChangeListener keyChangeListener = ValueChangeListener.createKeyValueListener(kv,
                     ValueChangeListener.KeyValueField.KEY, controller.getFormManager().getCommandInvoker(), keyTextField);

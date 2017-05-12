@@ -151,7 +151,7 @@ public class PerfCakeRunConfigPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(2, 5, 2, 5);
 
-        JLabel header = new JLabel("<html><h3>PerfCake run configuration</h3></html>");
+        JLabel header = new JLabel("<isHtmlUsed><h3>PerfCake run configuration</h3></isHtmlUsed>");
 
         add(header, c);
 
