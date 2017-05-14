@@ -22,6 +22,7 @@ package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import org.perfcake.ide.core.command.AddPropertyCommand;
@@ -50,6 +51,8 @@ public class EnabledSwitchListener implements ActionListener {
     private boolean isNull;
     private String previousValue;
     private ValueChangeListener listener;
+    private Icon deleteIcon;
+    private Icon editIcon;
 
     /**
      * Creates new enabled switch listener.
@@ -59,8 +62,11 @@ public class EnabledSwitchListener implements ActionListener {
      * @param field      controlled field
      * @param info       property info
      * @param button     button which controls the field.
+     * @param deleteIcon icon to delete a value
+     * @param editIcon icon to edit a value
      */
-    public EnabledSwitchListener(Value value, FormController controller, JComponent field, PropertyInfo info, JButton button) {
+    public EnabledSwitchListener(Value value, FormController controller, JComponent field, PropertyInfo info, JButton button,
+                                 Icon deleteIcon, Icon editIcon) {
         if (controller == null) {
             throw new IllegalArgumentException("cotnroller cannot be null");
         }
@@ -73,11 +79,19 @@ public class EnabledSwitchListener implements ActionListener {
         if (button == null) {
             throw new IllegalArgumentException("button cannot be null");
         }
+        if (deleteIcon == null) {
+            throw new IllegalArgumentException("deleteIcon cannot be null");
+        }
+        if (editIcon == null) {
+            throw new IllegalArgumentException("editIcon cannot be null");
+        }
         this.field = field;
         this.info = info;
         this.button = button;
         this.controller = controller;
         this.valueAgent = ValueAgents.createAgent(field);
+        this.deleteIcon = deleteIcon;
+        this.editIcon = editIcon;
         isNull = value == null;
         previousValue = getDefaultValue();
     }
@@ -87,17 +101,13 @@ public class EnabledSwitchListener implements ActionListener {
         Model model = info.getModel();
         if (isNull) {
             valueAgent.setValue(previousValue);
+            button.setIcon(deleteIcon);
             if (info.getMinOccurs() > 0) {
                 button.setEnabled(false);
+                button.setVisible(false);
             }
-            button.setText(nullifyText);
             field.setEnabled(true);
             isNull = false;
-            if (info.getMinOccurs() > 0) {
-                button.setEnabled(false);
-            } else {
-                button.setEnabled(true);
-            }
 
             // execute command changing parent model by adding the propertyInfo property
             if (model != null) {
@@ -111,10 +121,12 @@ public class EnabledSwitchListener implements ActionListener {
             }
         } else {
             previousValue = valueAgent.getValue();
+            button.setEnabled(true);
+            button.setVisible(true);
+            button.setIcon(editIcon);
             field.setEnabled(false);
             valueAgent.setValue(getDefaultValue());
             field.repaint();
-            button.setText(enableText);
             isNull = true;
 
             // execute command changing parent model by removing the propertyInfo property

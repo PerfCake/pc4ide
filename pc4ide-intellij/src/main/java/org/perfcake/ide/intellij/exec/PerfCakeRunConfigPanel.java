@@ -197,7 +197,7 @@ public class PerfCakeRunConfigPanel extends JPanel {
             systemPropertiesTableModel.addRow(new String[] {"", ""});
         });
 
-        JButton removeButton = new JButton("Delete");
+        JButton removeButton = new JButton("DeleteIcon");
         removeButton.addActionListener(e -> {
             int[] rows = systemPropertiesField.getSelectedRows();
 

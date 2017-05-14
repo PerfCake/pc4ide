@@ -66,6 +66,7 @@ import org.perfcake.ide.editor.form.FormController;
 import org.perfcake.ide.editor.swing.SwingFactory;
 import org.perfcake.ide.editor.swing.icons.control.ChevronRight;
 import org.perfcake.ide.editor.swing.icons.control.CogIcon;
+import org.perfcake.ide.editor.swing.icons.control.DeleteIcon;
 import org.perfcake.ide.editor.swing.icons.control.ListIcon;
 import org.perfcake.ide.editor.swing.icons.control.MinusIcon;
 import org.perfcake.ide.editor.swing.icons.control.PlusIcon;
@@ -908,14 +909,19 @@ public class FormBuilderImpl implements FormBuilder {
         final String nullifyText = "default";
         final String enableText = "edit";
         final String defaultValue = info.getDefaultValue(Value.class) == null ? "null" : info.getDefaultValue(Value.class).getValue();
-        button.addActionListener(new EnabledSwitchListener(value, controller, field, info, button));
+        DeleteIcon deleteIcon = new DeleteIcon();
+        CogIcon editIcon = new CogIcon();
+        button.addActionListener(new EnabledSwitchListener(value, controller, field, info, button, deleteIcon, editIcon));
+
+        button.setIcon(deleteIcon);
 
         if (value == null) {
-            button.setText(enableText);
+            button.setIcon(editIcon);
         } else {
-            button.setText(nullifyText);
+            //button.setText(nullifyText);
+            button.setIcon(deleteIcon);
             if (info.getMinOccurs() > 0) {
-                button.setEnabled(false);
+                button.setVisible(false);
             }
         }
         return button;
@@ -1020,6 +1026,7 @@ public class FormBuilderImpl implements FormBuilder {
 
             if (!component.isEnabled() && switchListener != null) {
                 switchListener.actionPerformed(null);
+                component.setEnabled(true);
                 component.grabFocus();
             }
             super.mouseReleased(e);
