@@ -65,7 +65,7 @@ public class GeneratorModel extends AbstractModel {
                 PropertyInfo.createKeyValueInfo(PropertyNames.RUN.toString(), null, this, 1, 1,
                         DataType.PERIOD, DataType.INTEGER, null),
                 PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1),
-                PropertyInfo.createValueInfo(PropertyNames.THREADS.toString(), null, this, 0, 1, DataType.INTEGER, new SimpleValue("1"))
+                PropertyInfo.createValueInfo(PropertyNames.THREADS.toString(), null, this, 1, 1, DataType.INTEGER, new SimpleValue("1"))
         );
     }
 }

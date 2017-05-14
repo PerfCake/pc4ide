@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public enum DataType {
 
-    STRING, INTEGER, FLOAT, BOOLEAN("true", "false"), PERIOD("time","iterations"), MODEL;
+    STRING, INTEGER, FLOAT, BOOLEAN("true", "false"), PERIOD("time","iteration"), MODEL;
 
     private List<String> values;
 

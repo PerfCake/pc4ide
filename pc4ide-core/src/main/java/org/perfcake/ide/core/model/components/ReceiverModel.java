@@ -61,7 +61,7 @@ public class ReceiverModel extends AbstractModel {
     protected void initializeSupportedProperties() {
         addSupportedProperties(
                 PropertyInfo.createValueInfo(PropertyNames.IMPLEMENTATION.toString(), this, 1, 1),
-                PropertyInfo.createValueInfo(PropertyNames.THREADS.toString(), null, this, 0, 1, DataType.INTEGER, null),
+                PropertyInfo.createValueInfo(PropertyNames.THREADS.toString(), null, this, 1, 1, DataType.INTEGER, null),
                 PropertyInfo.createValueInfo(PropertyNames.SOURCE.toString(), this, 0, 1),
                 PropertyInfo.createModelInfo(PropertyNames.CORRELATOR.toString(), this, PerfCakeComponent.CORRELATOR, 1, 1)
         );
