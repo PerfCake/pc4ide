@@ -574,7 +574,7 @@ public class FormBuilderImpl implements FormBuilder {
         rowsAdded++;
 
         constraints.gridx++;
-        constraints.weightx = 0;
+        constraints.weightx = 0.05;
 
         JLabel switchLabel = createSwitchValueLabel(controller, info, value, field);
         field.addMouseListener(new EnableComponentAdapter(field, switchLabel));
