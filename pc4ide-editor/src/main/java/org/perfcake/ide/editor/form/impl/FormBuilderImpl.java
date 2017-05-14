@@ -27,7 +27,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
@@ -96,6 +95,7 @@ public class FormBuilderImpl implements FormBuilder {
     public static final int HORIZONTAL_INSETS = 5;
     public static final int VERTICAL_INSETS = 2;
     public static final int PROPERTY_DOCUMENTATION_LENGTH_LIMIT = 200;
+    public static final int SWITCH_ICON_SIZE = 12;
 
     private boolean useDebugBorders = false;
     private SwingFactory swingFactory;
@@ -576,9 +576,9 @@ public class FormBuilderImpl implements FormBuilder {
         constraints.gridx++;
         constraints.weightx = 0;
 
-        JButton button = createSwitchValueButton(controller, info, value, field);
-        field.addMouseListener(new EnableComponentAdapter(field, button));
-        panel.add(button, constraints);
+        JLabel switchLabel = createSwitchValueLabel(controller, info, value, field);
+        field.addMouseListener(new EnableComponentAdapter(field, switchLabel));
+        panel.add(switchLabel, constraints);
 
         // add documentation
         if (info.getDocs() != null) {
@@ -896,35 +896,36 @@ public class FormBuilderImpl implements FormBuilder {
     }
 
     /**
-     * Creates a switch button which controls if another component is null or not.
+     * Creates a switch panel which controls if another component is null or not.
      *
      * @param value propertyInfo of the button
      * @param field field which is controlled by this button
      * @return switch button
      */
-    private JButton createSwitchValueButton(FormController controller, PropertyInfo info, final Value value, final JComponent field) {
-        JButton button = swingFactory.createButton();
-        button.setMargin(new Insets(0, 2, 0, 2));
-        button.setContentAreaFilled(false);
-        final String nullifyText = "default";
-        final String enableText = "edit";
-        final String defaultValue = info.getDefaultValue(Value.class) == null ? "null" : info.getDefaultValue(Value.class).getValue();
-        DeleteIcon deleteIcon = new DeleteIcon();
-        CogIcon editIcon = new CogIcon();
-        button.addActionListener(new EnabledSwitchListener(value, controller, field, info, button, deleteIcon, editIcon));
+    private JLabel createSwitchValueLabel(FormController controller, PropertyInfo info, final Value value, final JComponent field) {
+        JLabel switchLabel = swingFactory.createLabel();
 
-        button.setIcon(deleteIcon);
+        DeleteIcon deleteIcon = new DeleteIcon(SWITCH_ICON_SIZE, SWITCH_ICON_SIZE);
+        CogIcon editIcon = new CogIcon(SWITCH_ICON_SIZE, SWITCH_ICON_SIZE);
+        EnabledSwitchListener enableSwitchListener = new EnabledSwitchListener(value, controller, field, info,
+                switchLabel, deleteIcon, editIcon);
+        switchLabel.addMouseListener(enableSwitchListener);
+
+
+        switchLabel.setIcon(deleteIcon);
 
         if (value == null) {
-            button.setIcon(editIcon);
+            switchLabel.setIcon(editIcon);
+            switchLabel.setToolTipText(enableSwitchListener.getEditText());
         } else {
             //button.setText(nullifyText);
-            button.setIcon(deleteIcon);
+            switchLabel.setIcon(deleteIcon);
+            switchLabel.setToolTipText(enableSwitchListener.getDeleteText());
             if (info.getMinOccurs() > 0) {
-                button.setVisible(false);
+                switchLabel.setVisible(false);
             }
         }
-        return button;
+        return switchLabel;
     }
 
     private JComponent createField(DataType dataType) {
@@ -1007,17 +1008,15 @@ public class FormBuilderImpl implements FormBuilder {
     private static class EnableComponentAdapter extends MouseAdapter {
 
         private JComponent component;
-        private JButton switchButton;
+        private JComponent switchComponent;
         private EnabledSwitchListener switchListener;
 
-        public EnableComponentAdapter(JComponent component, JButton switchButton) {
+        public EnableComponentAdapter(JComponent component, JComponent switchComponent) {
             this.component = component;
-            this.switchButton = switchButton;
+            this.switchComponent = switchComponent;
 
-            for (ActionListener listener : switchButton.getActionListeners()) {
-                if (listener instanceof EnabledSwitchListener) {
-                    switchListener = (EnabledSwitchListener) listener;
-                }
+            for (EnabledSwitchListener listener : switchComponent.getListeners(EnabledSwitchListener.class)) {
+                switchListener = listener;
             }
         }
 
@@ -1025,8 +1024,11 @@ public class FormBuilderImpl implements FormBuilder {
         public void mouseReleased(MouseEvent e) {
 
             if (!component.isEnabled() && switchListener != null) {
-                switchListener.actionPerformed(null);
-                component.setEnabled(true);
+                if (switchListener != null) {
+                    switchListener.actionPerformed(null);
+                } else {
+                    component.setEnabled(true);
+                }
                 component.grabFocus();
             }
             super.mouseReleased(e);

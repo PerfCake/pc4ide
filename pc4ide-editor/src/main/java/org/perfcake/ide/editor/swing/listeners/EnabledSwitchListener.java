@@ -22,9 +22,11 @@ package org.perfcake.ide.editor.swing.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import org.perfcake.ide.core.command.AddPropertyCommand;
 import org.perfcake.ide.core.command.Command;
 import org.perfcake.ide.core.command.RemovePropertyCommand;
@@ -40,12 +42,12 @@ import org.perfcake.ide.editor.form.FormController;
  *
  * @author Jakub Knetl
  */
-public class EnabledSwitchListener implements ActionListener {
+public class EnabledSwitchListener extends MouseAdapter implements ActionListener {
     private final JComponent field;
     private final PropertyInfo info;
-    private final JButton button;
-    private final String nullifyText = "default";
-    private final String enableText = "edit";
+    private final JLabel switchLabel;
+    private final String deleteText = "Delete the value";
+    private final String editText = "Change the value";
     private final FormController controller;
     private ValueAgent valueAgent;
     private boolean isNull;
@@ -58,14 +60,14 @@ public class EnabledSwitchListener implements ActionListener {
      * Creates new enabled switch listener.
      *
      * @param value      propertyInfo represented by controlled field
-     * @param controller form controller which contains field and button
+     * @param controller form controller which contains field and switchLabel
      * @param field      controlled field
      * @param info       property info
-     * @param button     button which controls the field.
+     * @param switchLabel     switchLabel which controls the field.
      * @param deleteIcon icon to delete a value
-     * @param editIcon icon to edit a value
+     * @param editIcon   icon to edit a value
      */
-    public EnabledSwitchListener(Value value, FormController controller, JComponent field, PropertyInfo info, JButton button,
+    public EnabledSwitchListener(Value value, FormController controller, JComponent field, PropertyInfo info, JLabel switchLabel,
                                  Icon deleteIcon, Icon editIcon) {
         if (controller == null) {
             throw new IllegalArgumentException("cotnroller cannot be null");
@@ -76,8 +78,8 @@ public class EnabledSwitchListener implements ActionListener {
         if (info == null) {
             throw new IllegalArgumentException("info cannot be null");
         }
-        if (button == null) {
-            throw new IllegalArgumentException("button cannot be null");
+        if (switchLabel == null) {
+            throw new IllegalArgumentException("switchLabel cannot be null");
         }
         if (deleteIcon == null) {
             throw new IllegalArgumentException("deleteIcon cannot be null");
@@ -87,7 +89,7 @@ public class EnabledSwitchListener implements ActionListener {
         }
         this.field = field;
         this.info = info;
-        this.button = button;
+        this.switchLabel = switchLabel;
         this.controller = controller;
         this.valueAgent = ValueAgents.createAgent(field);
         this.deleteIcon = deleteIcon;
@@ -97,14 +99,24 @@ public class EnabledSwitchListener implements ActionListener {
     }
 
     @Override
+    public void mouseReleased(MouseEvent e) {
+        switchComponentState();
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
+        switchComponentState();
+    }
+
+    private void switchComponentState() {
         Model model = info.getModel();
         if (isNull) {
             valueAgent.setValue(previousValue);
-            button.setIcon(deleteIcon);
+            switchLabel.setIcon(deleteIcon);
+            switchLabel.setToolTipText(deleteText);
             if (info.getMinOccurs() > 0) {
-                button.setEnabled(false);
-                button.setVisible(false);
+                switchLabel.setEnabled(false);
+                switchLabel.setVisible(false);
             }
             field.setEnabled(true);
             isNull = false;
@@ -115,15 +127,17 @@ public class EnabledSwitchListener implements ActionListener {
                 Command command = new AddPropertyCommand(model, value, info);
                 controller.getFormManager().getCommandInvoker().executeCommand(command);
 
-                // add listener to button which will control the propertyInfo
+                // add listener to switchLabel which will control the propertyInfo
                 listener = ValueChangeListener.createValueListener(value, controller.getFormManager().getCommandInvoker(), field);
                 listener.subscribeAll();
             }
+            field.grabFocus();
         } else {
             previousValue = valueAgent.getValue();
-            button.setEnabled(true);
-            button.setVisible(true);
-            button.setIcon(editIcon);
+            switchLabel.setEnabled(true);
+            switchLabel.setVisible(true);
+            switchLabel.setIcon(editIcon);
+            switchLabel.setToolTipText(editText);
             field.setEnabled(false);
             valueAgent.setValue(getDefaultValue());
             field.repaint();
@@ -156,11 +170,11 @@ public class EnabledSwitchListener implements ActionListener {
         return defaultValue;
     }
 
-    public String getNullifyText() {
-        return nullifyText;
+    public String getDeleteText() {
+        return deleteText;
     }
 
-    public String getEnableText() {
-        return enableText;
+    public String getEditText() {
+        return editText;
     }
 }
