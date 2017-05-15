@@ -26,8 +26,6 @@ import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.command.invoker.CommandInvoker;
-import org.perfcake.ide.core.components.ComponentCatalogue;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.ModelConversionException;
 import org.perfcake.ide.core.exception.ModelSerializationException;
 import org.perfcake.ide.core.exception.Pc4ideException;
@@ -55,15 +53,14 @@ public class Pc4ideEditor {
     /**
      * Creates new editor panel.
      *
-     * @param scenarioManager    Path to the scenarioManager
-     * @param executionFactory   execution manager
-     * @param serviceManager     service manager
-     * @param componentCatalogue PerfCake inspector manager
-     * @param commandInvoker     Command invoker
+     * @param scenarioManager  Path to the scenarioManager
+     * @param executionFactory execution manager
+     * @param serviceManager   service manager
+     * @param commandInvoker   Command invoker
      * @throws PerfCakeException When it is impossible to load scenario from scenario path
      */
     public Pc4ideEditor(ScenarioManager scenarioManager, ExecutionFactory executionFactory, ServiceManager serviceManager,
-                        CommandInvoker commandInvoker, ComponentCatalogue componentCatalogue) throws PerfCakeException {
+                        CommandInvoker commandInvoker) throws PerfCakeException {
         // final BorderLayout layout = new BorderLayout();
         // setLayout(layout);
         this.contentPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -78,13 +75,9 @@ public class Pc4ideEditor {
             throw new PerfCakeException("Cannot load model of a scenario.", e);
         }
 
-        // init catalogue
-        if (componentCatalogue == null) {
-            componentCatalogue = createComponentCatalogue();
-        }
 
         formManager = new FormManagerImpl(model, commandInvoker, serviceManager.getSwingFactory(),
-                componentCatalogue, serviceManager.getModelFactory());
+                serviceManager.getComponentCatalogue(), serviceManager.getModelFactory());
 
         graphicalEditorPanel = new GraphicalPanel(scenarioManager, model, executionFactory, serviceManager, commandInvoker, formManager);
         formManager.setGraphicalController(graphicalEditorPanel.getController());
@@ -143,10 +136,6 @@ public class Pc4ideEditor {
         getGraphicalEditorPanel().setModel(model);
         formManager.setGraphicalController(graphicalEditorPanel.getController());
         formManager.setModel(model);
-    }
-
-    private ComponentCatalogue createComponentCatalogue() {
-        return new ReflectionComponentCatalogue();
     }
 
     public GraphicalPanel getGraphicalEditorPanel() {

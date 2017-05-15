@@ -20,6 +20,7 @@
 
 package org.perfcake.ide.editor;
 
+import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
@@ -69,6 +70,11 @@ public interface ServiceManager {
      * @return installation validator instance.
      */
     PerfCakeInstallationValidator getInstallationValidator();
+
+    /**
+     * @return a component catalogue.
+     */
+    ComponentCatalogue getComponentCatalogue();
 
     /**
      * Sets componentLoader.
@@ -125,5 +131,13 @@ public interface ServiceManager {
      * @return this instance
      */
     ServiceManager setExecutinFactory(ExecutionFactory executionFactory);
+
+
+    /**
+     * Sets PerfCake component catalogue.
+     * @param catalogue catalogue
+     * @return this instance
+     */
+    ServiceManager setComponentCatalogue(ComponentCatalogue catalogue);
 
 }

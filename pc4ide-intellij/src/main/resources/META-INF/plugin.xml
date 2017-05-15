@@ -51,5 +51,10 @@
             <implementation-class>org.perfcake.ide.intellij.components.PerfCakeInstallationChecker</implementation-class>
         </component>
     </application-components>
+    <project-components>
+        <component>
+            <implementation-class>org.perfcake.ide.intellij.components.PluginWatcher</implementation-class>
+        </component>
+    </project-components>
 
 </idea-plugin>

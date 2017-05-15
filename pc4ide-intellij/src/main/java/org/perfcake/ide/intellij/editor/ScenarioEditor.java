@@ -103,7 +103,7 @@ public class ScenarioEditor implements FileEditor {
 
             Document document = FileDocumentManager.getInstance().getDocument(file);
             IntellijCommandInvoker commandInvoker = new IntellijCommandInvoker(project, this);
-            pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, commandInvoker, new ReflectionComponentCatalogue());
+            pc4ideEditor = new Pc4ideEditor(manager, executionFactory, serviceManager, commandInvoker);
             documentListener = new ScenarioDocumentListener(this);
             if (document != null) {
                 currentDocumentRevision = document.getModificationStamp();

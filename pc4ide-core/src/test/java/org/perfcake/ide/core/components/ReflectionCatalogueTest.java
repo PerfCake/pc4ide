@@ -66,6 +66,8 @@ public class ReflectionCatalogueTest {
         checkDefaultPerfcakeComponents();
     }
 
+
+
     @Test
     public void testAdditionalcomponents() {
         List<String> packages = new ArrayList(Arrays.asList(ComponentCatalogue.DEFAULT_PACKAGES));

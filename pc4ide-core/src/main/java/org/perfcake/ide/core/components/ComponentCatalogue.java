@@ -20,7 +20,9 @@
 
 package org.perfcake.ide.core.components;
 
+import java.nio.file.Path;
 import java.util.List;
+import org.perfcake.PerfCakeException;
 
 /**
  * ComponentCatalogue enables to obtain a list of PerfCake component implementations.
@@ -32,7 +34,8 @@ public interface ComponentCatalogue {
     /**
      * List of the default packages, that are scanned by default for PerfCake components. These packages will be always scanned.
      */
-    String[] DEFAULT_PACKAGES = new String[] {"org.perfcake"};
+    String[] DEFAULT_PACKAGES = new String[] {"org.perfcake", "."};
+
 
     /**
      * Updates a catalogue in order to find new implementations. This method may take a while to finish.
@@ -64,4 +67,12 @@ public interface ComponentCatalogue {
      * @return Unmodifiable List of implementation classes. If no implementation is found, then empty list is returned.
      */
     List<String> list(PerfCakeComponent component);
+
+    /**
+     * Adds an external jar to the library.
+     *
+     * @param jar path to a jar package with.
+     * @throws PerfCakeException when it cannot add the jar.
+     */
+    void addSoftwareLibrary(Path jar) throws PerfCakeException;
 }

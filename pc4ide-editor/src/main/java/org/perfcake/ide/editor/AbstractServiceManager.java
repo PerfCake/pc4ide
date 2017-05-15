@@ -24,8 +24,10 @@ import static org.perfcake.ide.core.Pc4ideConstants.PERFCAKE_COMMENT_PROPERTIES;
 
 import java.io.IOException;
 import java.util.Properties;
+import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ComponentLoader;
 import org.perfcake.ide.core.components.ComponentLoaderImpl;
+import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.docs.DocsServiceImpl;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
@@ -53,6 +55,7 @@ public abstract class AbstractServiceManager implements ServiceManager {
     protected ViewFactory viewFactory;
     protected SwingFactory swingFactory;
     protected ExecutionFactory executionFactory;
+    protected ComponentCatalogue componentCatalogue;
     protected PerfCakeInstallationValidator installationValidator;
 
     /**
@@ -66,6 +69,7 @@ public abstract class AbstractServiceManager implements ServiceManager {
         swingFactory = new DefaultSwingFactory();
         installationValidator = new SimpleInstallationValidator();
         componentLoader = new ComponentLoaderImpl();
+        componentCatalogue = new ReflectionComponentCatalogue();
         executionFactory = new NoopExecutionFactory();
     }
 
@@ -98,6 +102,11 @@ public abstract class AbstractServiceManager implements ServiceManager {
     @Override
     public PerfCakeInstallationValidator getInstallationValidator() {
         return installationValidator;
+    }
+
+    @Override
+    public ComponentCatalogue getComponentCatalogue() {
+        return componentCatalogue;
     }
 
     @Override
@@ -170,6 +179,12 @@ public abstract class AbstractServiceManager implements ServiceManager {
             throw new IllegalArgumentException("Exectuion factory cannot be null");
         }
         this.executionFactory = executionFactory;
+        return this;
+    }
+
+    @Override
+    public AbstractServiceManager setComponentCatalogue(ComponentCatalogue componentCatalogue) {
+        this.componentCatalogue = componentCatalogue;
         return this;
     }
 }

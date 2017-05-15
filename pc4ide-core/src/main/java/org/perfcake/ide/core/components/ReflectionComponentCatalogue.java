@@ -20,7 +20,13 @@
 
 package org.perfcake.ide.core.components;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +35,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.perfcake.PerfCakeException;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +60,7 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
      * List of additional packages which will be scanned.
      */
     private Set<String> additionalPackages;
+    private Reflections reflections;
 
     /**
      * Creates a new catalogue. It also triggers scanning for components in given packages. Therefore, creating a new
@@ -121,9 +131,31 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
         Set<String> allPackages = new HashSet<>(Arrays.asList(DEFAULT_PACKAGES));
         allPackages.addAll(additionalPackages);
-        Reflections reflections = new Reflections(allPackages);
+        allPackages.add(".");
+        ConfigurationBuilder configuration = new ConfigurationBuilder()
+                .addUrls(ClasspathHelper.forPackage("org.perfcake"))
+                .addUrls(ClasspathHelper.forPackage("."))
+                .addClassLoader(URLClassLoader.class.getClassLoader())
+                .addClassLoader(Thread.currentThread().getContextClassLoader())
+                .addClassLoader(this.getClass().getClassLoader())
+                .addClassLoader(ClassLoader.getSystemClassLoader());
+        reflections = new Reflections(configuration);
+
 
         return reflections;
     }
 
+    @Override
+    public void addSoftwareLibrary(Path jar) throws PerfCakeException {
+        Method method = null;
+        try {
+            method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
+            method.setAccessible(true);
+            method.invoke(ClassLoader.getSystemClassLoader(), new Object[] {jar.toUri().toURL()});
+        } catch (NoSuchMethodException | IllegalAccessException
+                | InvocationTargetException | MalformedURLException e) {
+            throw new PerfCakeException("Cannot add external jar to classpath.", e);
+        }
+
+    }
 }
