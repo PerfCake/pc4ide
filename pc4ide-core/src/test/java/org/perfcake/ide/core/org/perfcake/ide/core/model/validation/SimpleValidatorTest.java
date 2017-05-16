@@ -80,7 +80,7 @@ public class SimpleValidatorTest {
 
         CompoundError compoundError = (CompoundError) error;
         // 2 errors expected (missing class and missing run)
-        assertThat(compoundError.getErrors().size(), equalTo(2));
+        assertThat(compoundError.getErrors().size(), equalTo(3));
 
         PropertyInfo threadsInfo = generator.getSupportedProperty(GeneratorModel.PropertyNames.THREADS.toString());
         PropertyInfo runInfo = generator.getSupportedProperty(GeneratorModel.PropertyNames.RUN.toString());
@@ -88,7 +88,7 @@ public class SimpleValidatorTest {
 
         SimpleValue threadsProperty = new SimpleValue("10");
         generator.addProperty(threadsInfo, threadsProperty);
-        generator.addProperty(runInfo, new KeyValueImpl("iterations", "2000"));
+        generator.addProperty(runInfo, new KeyValueImpl("iteration", "2000"));
         generator.addProperty(implInfo, new SimpleValue("DefaultMessageGenerator"));
 
         // assert that generator is valid now

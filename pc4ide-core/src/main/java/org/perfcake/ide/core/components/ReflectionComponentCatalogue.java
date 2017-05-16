@@ -131,14 +131,15 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
         Set<String> allPackages = new HashSet<>(Arrays.asList(DEFAULT_PACKAGES));
         allPackages.addAll(additionalPackages);
-        allPackages.add(".");
         ConfigurationBuilder configuration = new ConfigurationBuilder()
-                .addUrls(ClasspathHelper.forPackage("org.perfcake"))
-                .addUrls(ClasspathHelper.forPackage("."))
                 .addClassLoader(URLClassLoader.class.getClassLoader())
                 .addClassLoader(Thread.currentThread().getContextClassLoader())
                 .addClassLoader(this.getClass().getClassLoader())
                 .addClassLoader(ClassLoader.getSystemClassLoader());
+
+        for (String p: allPackages) {
+            configuration.addUrls(ClasspathHelper.forPackage(p));
+        }
         reflections = new Reflections(configuration);
 
 

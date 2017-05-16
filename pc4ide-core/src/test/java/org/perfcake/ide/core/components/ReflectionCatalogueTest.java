@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -83,6 +84,7 @@ public class ReflectionCatalogueTest {
     }
 
     @Test
+    @Ignore("pc4ide scans all packages by default since 2017-05-15")
     public void testModifyingPackages() {
         catalogue = new ReflectionComponentCatalogue();
         assertThat(catalogue.list(PerfCakeComponent.SENDER), not(hasItem(BOB_SENDER)));

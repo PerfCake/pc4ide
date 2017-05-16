@@ -20,8 +20,6 @@
 
 package org.perfcake.ide.core.model.factory;
 
-import com.sun.tools.javac.jvm.Gen;
-import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.PerfCakeComponent;
 import org.perfcake.ide.core.docs.DocsService;
 import org.perfcake.ide.core.model.Model;
@@ -39,7 +37,6 @@ import org.perfcake.ide.core.model.properties.KeyValue;
 import org.perfcake.ide.core.model.properties.KeyValueImpl;
 import org.perfcake.ide.core.model.properties.SimpleValue;
 import org.perfcake.ide.core.model.properties.Value;
-import org.perfcake.ide.core.model.validation.Validator;
 import org.perfcake.message.correlator.GenerateHeaderCorrelator;
 import org.perfcake.message.generator.DefaultMessageGenerator;
 import org.perfcake.message.receiver.HttpReceiver;
@@ -70,7 +67,7 @@ public class ValidModelFactory implements ModelFactory {
     /**
      * Creates new ValidModeFactory.
      *
-     * @param docsService        documentation service
+     * @param docsService documentation service
      */
     public ValidModelFactory(DocsService docsService) {
         this.docsService = docsService;
@@ -162,9 +159,11 @@ public class ValidModelFactory implements ModelFactory {
 
         Value impl = new SimpleValue(HttpReceiver.class.getSimpleName());
         Value source = new SimpleValue("http://localhost:8080/source-url");
+        Value threads = new SimpleValue("1");
         Model correlator = createCorrelator();
 
         receiver.addProperty(ReceiverModel.PropertyNames.IMPLEMENTATION.toString(), impl);
+        receiver.addProperty(ReceiverModel.PropertyNames.THREADS.toString(), threads);
         receiver.addProperty(ReceiverModel.PropertyNames.SOURCE.toString(), source);
         receiver.addProperty(ReceiverModel.PropertyNames.CORRELATOR.toString(), correlator);
 
@@ -210,7 +209,7 @@ public class ValidModelFactory implements ModelFactory {
         Model destination = new DestinationModel(docsService);
 
         Value impl = new SimpleValue(ConsoleDestination.class.getSimpleName());
-        KeyValue period = new KeyValueImpl("time","5000");
+        KeyValue period = new KeyValueImpl("time", "5000");
         destination.addProperty(DestinationModel.PropertyNames.IMPLEMENTATION.toString(), impl);
         destination.addProperty(DestinationModel.PropertyNames.PERIOD.toString(), period);
 
