@@ -2,8 +2,34 @@
 
 pc4ide's goal is to create graphical editor for [PerfCake](https://www.perfcake.org/) scenarios.
 
-However it is not intended to use this editor directly (although it is possible), because it wouldn't bring you the full functionality needed for scenario editor. It is expected to use pc4ide as a plugin in your favourite IDE (Eclipse, Idea and NetBeans will be supported). pc4ide's goal is to create common codebase for individual IDE plugins.
+However it is not intended to use this editor directly (although it is possible), because it wouldn't bring you the full functionality needed for scenario editor. It is expected to use pc4ide as a plugin in your favourite IDE (Eclipse, IDEA and NetBeans will be supported). pc4ide's goal is to create common codebase for individual IDE plugins.
 
+## Installing pc4ide into IntelliJ IDEA
+
+1. Navigate to [releases](https://github.com/PerfCake/pc4ide/releases) and download the latest pc4ide-intellij realease.
+2. In IntelliJ IDEA navigate to `File -> Settings -> Plugins` and select _Install plugin from disk..._
+3. Set path to the location where you downloaded the plugin
+4. Restart IDEA
+
+
+## Building from sources
+
+### Building core only
+
+If you want to build core and editor modules only than it is enough to run maven:
+
+    mvn clean install
+
+It will also trigger tests.
+
+### Building IntelliJ IDEA plugin
+
+We don't have IntelliJ libraries in any repository. For this reason, you must tell maven where the libraries are located. Any IntelliJ IDEA installation contains these libraries in installation location. Hence, you can build IntelliJ plugin using maven.
+
+    mvn clean install -Dintellij.home=<INTELLIJ_HOME>
+
+where `<INTELLIJ_HOME>` stands for location where you have IntelliJ IDEA installed.
+    
 ## Contributing
 
 We would very appreciate if you decide to contribute. There are many opportunities such as sending pull request or reporting issue with bug or possible enhancement.
