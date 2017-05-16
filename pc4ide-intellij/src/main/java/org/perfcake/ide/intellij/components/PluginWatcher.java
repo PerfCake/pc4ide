@@ -110,11 +110,19 @@ public class PluginWatcher implements ProjectComponent {
 
         @Override
         public boolean processFile(VirtualFile fileOrDir) {
-            if (listener.isJarFile(fileOrDir)) {
+            if (listener.isJarFile(fileOrDir) && isInLibDirectory(fileOrDir)) {
                 listener.processFile(fileOrDir);
                 librariesModified = true;
             }
             return true;
+        }
+
+        private boolean isInLibDirectory(VirtualFile jarFile) {
+            if (jarFile.getParent() != null && "lib".equals(jarFile.getParent().getName())) {
+                return true;
+            }
+
+            return false;
         }
 
         public boolean isLibrariesModified() {
