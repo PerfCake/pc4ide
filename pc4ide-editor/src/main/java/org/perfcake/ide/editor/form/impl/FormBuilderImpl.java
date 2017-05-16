@@ -888,7 +888,7 @@ public class FormBuilderImpl implements FormBuilder {
                 .setFirstLineOnly(true).setVisualizeCut(true);
 
         docsArea.setText(builder.buildText(documentation));
-        builder.setFirstLineOnly(false).setMaxLength(-1);
+        builder.setFirstLineOnly(false).setMaxLength(-1).setReplaceNewlines(false);
         String toolTip = builder.buildText(documentation);
         docsArea.setToolTipText(toolTip);
         docsArea.setOpaque(false);
