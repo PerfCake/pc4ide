@@ -1,27 +1,15 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>org.perfcake.ide</id>
     <name>pc4ide</name>
-    <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <version>7.0.0-SNAPSHOT</version>
+    <vendor url="http://www.perfcake.org">PerfCake Community</vendor>
 
     <description><![CDATA[
-    <a href="https://www.perfcake.org/">PerfCake</a> plugin for Intellij idea.
+    <a href="https://www.perfcake.org/">PerfCake</a> plugin for Intellij idea. The plugin contains a graphical scenario editor and
+    enables to launch PerfCake scenarios right away from the IDE.
     ]]></description>
 
-    <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-    </change-notes>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="141.0"/>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="org.perfcake.ide.intellij.editor.ScenarioEditorProvider"/>
@@ -35,7 +23,6 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
         <action id="org.perfcake.ide.intellij.newscenario" class="org.perfcake.ide.intellij.NewScenarioAction" text="PerfCake scenario"
                 description="Creates new scenario file" icon="/img/perfcake-logo-small.png">
             <add-to-group group-id="NewGroup" anchor="first"/>
