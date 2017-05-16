@@ -20,13 +20,13 @@
 
 package org.perfcake.pc4ide.eclipse.editor;
 
-import java.net.MalformedURLException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
 import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.exception.ModelSerializationException;
+import org.perfcake.ide.core.manager.ScenarioManager;
+import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.loader.ModelLoader;
 import org.perfcake.pc4ide.eclipse.Activator;
 import org.perfcake.pc4ide.eclipse.EclipseLogger;
 
@@ -39,6 +39,7 @@ public class GraphicalEditorInput extends FileEditorInput {
     private static final String SCENARIO_DESIGN_EDITOR = "Scenario Design editor";
     static final EclipseLogger log = Activator.getInstance().getLogger();
     private ScenarioModel model;
+	private ScenarioManager manager;
 
     /**
      * Creates new graphical editor input from file.
@@ -46,7 +47,7 @@ public class GraphicalEditorInput extends FileEditorInput {
      */
     public GraphicalEditorInput(IFile file) {
         super(file);
-        createModel();
+        createModel(file);
     }
 
     @Override
@@ -60,17 +61,24 @@ public class GraphicalEditorInput extends FileEditorInput {
 
     /**
      * Creates scenario model from file.
+     * @param file 
      */
-    public void createModel() {
-        final ModelLoader loader = new ModelLoader();
+    public void createModel(IFile file) {
+        manager = ScenarioManagers.createScenarioManager(file.getFullPath().toFile().toPath());
         try {
-            model = loader.loadModel(getURI().toURL());
-        } catch (final MalformedURLException e) {
-            e.printStackTrace();
+            model = manager.loadScenarioModel();
         } catch (ModelConversionException e) {
             e.printStackTrace();
-        } catch (org.perfcake.PerfCakeException e) {
-            e.printStackTrace();
-        }
+        } catch (ModelSerializationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
+
+	public ScenarioManager getManager() {
+		return manager;
+	}
+    
+    
+    
 }

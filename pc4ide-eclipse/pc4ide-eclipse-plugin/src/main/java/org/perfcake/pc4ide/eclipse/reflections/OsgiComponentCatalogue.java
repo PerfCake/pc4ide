@@ -38,6 +38,7 @@ public class OsgiComponentCatalogue extends ReflectionComponentCatalogue {
     protected Reflections createReflections() {
         final Bundle bundle = org.perfcake.pc4ide.eclipse.Activator.getInstance().getBundle();
         Vfs.addDefaultURLTypes(new BundleUrlType(bundle));
-        return super.createReflections();
+        Reflections reflections = new Reflections("org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake");
+        return reflections;
     }
 }

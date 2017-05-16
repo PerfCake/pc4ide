@@ -20,6 +20,7 @@
 
 package org.perfcake.pc4ide.eclipse.editor;
 
+import java.awt.Component;
 import java.awt.Frame;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,10 +31,16 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.command.invoker.DefaultCommandInvoker;
 import org.perfcake.ide.core.model.components.ScenarioModel;
+import org.perfcake.ide.editor.DefaultServiceManager;
+import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.editor.controller.NoopExecutionFactory;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 import org.perfcake.pc4ide.eclipse.Activator;
 import org.perfcake.pc4ide.eclipse.EclipseLogger;
+import org.perfcake.pc4ide.eclipse.reflections.OsgiComponentCatalogue;
 
 
 /**
@@ -91,8 +98,17 @@ public class Pc4ideWindow extends EditorPart {
         // TODO Auto-generated method stub
         final Composite composite = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
         final Frame frame = SWT_AWT.new_Frame(composite);
-        final Pc4ideEditor editorJPanel = new Pc4ideEditor(scenarioModel);
-        frame.add(editorJPanel);
+        ServiceManager serviceManager = DefaultServiceManager.getInstance();
+        Pc4ideEditor editorJPanel;
+		try {
+			editorJPanel = new Pc4ideEditor(((GraphicalEditorInput)getEditorInput()).getManager(), 
+					new NoopExecutionFactory(),	serviceManager, new DefaultCommandInvoker());
+	        frame.add(editorJPanel.getContentPanel());
+		} catch (PerfCakeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 
     }
 

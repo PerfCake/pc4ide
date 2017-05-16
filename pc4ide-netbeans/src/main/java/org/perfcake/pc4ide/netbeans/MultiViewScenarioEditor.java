@@ -25,7 +25,9 @@
 
 package org.perfcake.pc4ide.netbeans;
 
-import java.util.logging.Level;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -48,11 +50,15 @@ import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
 import org.perfcake.PerfCakeException;
+import org.perfcake.ide.core.command.invoker.CommandInvoker;
+import org.perfcake.ide.core.command.invoker.DefaultCommandInvoker;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
-import org.perfcake.ide.core.exception.ModelConversionException;
+import org.perfcake.ide.core.manager.ScenarioManager;
+import org.perfcake.ide.core.manager.ScenarioManagers;
 import org.perfcake.ide.core.model.components.ScenarioModel;
-import org.perfcake.ide.core.model.loader.ModelLoader;
+import org.perfcake.ide.editor.DefaultServiceManager;
+import org.perfcake.ide.editor.controller.NoopExecutionFactory;
 import org.perfcake.ide.editor.swing.editor.Pc4ideEditor;
 
 /**
@@ -84,36 +90,31 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
      * @param lookup lookup
      */
     public MultiViewScenarioEditor(Lookup lookup) {
-        dataObject = lookup.lookup(PerfCakeScenarioDataObject.class);
-        assert dataObject != null;
-        JLabel label = new JLabel("Hello world");
-        add(label);
-        setVisible(true);
-
-        ModelLoader loader = new ModelLoader();
-        ScenarioModel model = null;
         try {
-            model = loader.loadModel(dataObject.getPrimaryFile().toURL());
+            dataObject = lookup.lookup(PerfCakeScenarioDataObject.class);
+            assert dataObject != null;
+            JLabel label = new JLabel("Hello world");
+            add(label);
+            setVisible(true);
+            ScenarioModel model = null;
+            String[] packages = new String[] {"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"};
+            ComponentCatalogue manager = new ReflectionComponentCatalogue(packages);
+            URI uri = dataObject.getPrimaryFile().toURI();
+            Path file = Paths.get(uri);
+            ScenarioManager scenarioManager = ScenarioManagers.createXmlManager(file);
+            pc4ideEditor = new Pc4ideEditor(scenarioManager, new NoopExecutionFactory(), DefaultServiceManager.getInstance(), new DefaultCommandInvoker());
+            Node palette = new AbstractNode(Children.LEAF);
+            paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());
+            dataObject.getPrimaryFile().addFileChangeListener(new FileChangeAdapter() {
+                @Override
+                public void fileChanged(FileEvent fe) {
+                    refreshUi();
+                }
+
+            });
         } catch (PerfCakeException e) {
-            logger.log(Level.SEVERE, "Cannot open scenario", e);
-        } catch (ModelConversionException e) {
-            logger.log(Level.SEVERE, "Cannot open scenario", e);
+            e.printStackTrace();
         }
-
-        String[] packages = new String[] {"org.perfcake.message", "org.perfcake.reporting", "org.perfcake.validation", "org.perfcake"};
-        ComponentCatalogue manager = new ReflectionComponentCatalogue(packages);
-        pc4ideEditor = new Pc4ideEditor(model, manager);
-
-        Node palette = new AbstractNode(Children.LEAF);
-        paletteController = PaletteFactory.createPalette(palette, new NoopPaletteActions());
-
-        dataObject.getPrimaryFile().addFileChangeListener(new FileChangeAdapter() {
-            @Override
-            public void fileChanged(FileEvent fe) {
-                refreshUi();
-            }
-
-        });
     }
 
     private void refreshUi() {
@@ -122,7 +123,7 @@ public class MultiViewScenarioEditor extends JPanel implements MultiViewElement 
 
     @Override
     public JComponent getVisualRepresentation() {
-        return pc4ideEditor;
+        return pc4ideEditor.getContentPanel();
     }
 
     @Override
