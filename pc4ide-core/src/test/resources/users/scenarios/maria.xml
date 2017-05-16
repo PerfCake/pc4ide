@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+     Maria's use case:
+     ================
+
+     1. sender executes simple bash scritp which simply calls echo: "echo $who".
+     2. the $who variable is passed to script ussing message property
+     3. validator verifies that script outpus something starting with uppercase M
+     4. reporters:
+       * IterationPerSeconds to console
+       * ChartDestination - charts are drawn to ${chart.location}, which is
+                            by default set to scenario-dir/../chart
+
+     Executing scenario:
+     ===================
+     perfcake -sd /PATH/TO/SCENARIO/DIR -s maria -Dscript.dir=/PATH/TO/DIR/WITH/SCRIPT -Dwho=Maria
+
+-->
+<scenario xmlns="urn:perfcake:scenario:7.0">
+    <properties>
+        <property name="chart.location" value="${perfcake.scenarios.dir}/../chart" />
+    </properties>
+    <run type="time" value="${run.time:2000}"/>
+    <generator class="DefaultMessageGenerator" threads="${thread.count:10}">
+        <property name="monitoringPeriod" value="1000" />
+        <property name="senderTaskQueueSize" value="500" />
+    </generator>
+
+    <sequences>
+        <sequence id="seq.natural" class="PrimitiveNumberSequence" />
+    </sequences>
+    <sender class="CommandSender">
+        <target>${script.dir}/perfcake-maria.sh</target>
+        <property name="messageFrom" value="stdin" />
+    </sender>
+    <receiver class="HttpReceiver" threads="10">
+        <correlator class="GenerateHeaderCorrelator" />
+        <source>localhost:8080</source>
+    </receiver>
+    <reporting>
+        <reporter class="IterationsPerSecondReporter">
+            <destination class="ConsoleDestination">
+                <period type="time" value="1000"/>
+                <property name="prefix" value="iterationsPerSec" />
+                <property name="foreground" value="7" />
+            </destination>
+            <destination class="ChartDestination">
+                <period type="time" value="500"/>
+                <property name="attributes" value="*" />
+                <property name="name" value="Iteration per seconds" />
+                <property name="group" value="throughput" />
+                <property name="outputDir" value="${chart.location}" />
+            </destination>
+        </reporter>
+        <reporter class="ResponseTimeStatsReporter">
+            <destination class="ConsoleDestination">
+                <period type="time" value="1000"/>
+            </destination>
+        </reporter>
+    </reporting>
+    <messages>
+        <!-- message content is not being used by the command sender -->
+        <message content="greeting message">
+            <property name="who" value="${who}" />
+            <validatorRef id="greeting-validator" />
+        </message>
+    </messages>
+    <validation>
+        <validator id="greeting-validator" class="RegExpValidator">
+            <property name="pattern">
+                <text>hi M.*</text>
+            </property>
+        </validator>
+    </validation>
+</scenario>

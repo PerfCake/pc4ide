@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+    <feature url="features/org.perfcake.pc4ide.eclipse.feature_7.0.0.qualifier.jar" id="org.perfcake.pc4ide.eclipse.feature"
+             version="7.0.0.qualifier">
+        <category name="org.perfcake.pc4ide.eclipse.repo"/>
+    </feature>
+    <category-def name="org.perfcake.pc4ide.eclipse.repo" label="pc4ide-eclipse-plugin"/>
+</site>
