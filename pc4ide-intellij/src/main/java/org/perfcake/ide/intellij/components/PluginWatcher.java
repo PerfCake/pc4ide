@@ -20,23 +20,26 @@
 
 package org.perfcake.ide.intellij.components;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ContentIterator;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileAdapter;
 import com.intellij.openapi.vfs.VirtualFileCopyEvent;
 import com.intellij.openapi.vfs.VirtualFileEvent;
-import com.intellij.openapi.vfs.VirtualFileFilter;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.VirtualFileMoveEvent;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.PerfCakeException;
 import org.perfcake.ide.core.components.ComponentCatalogue;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.VirtualFileConverter;
 import org.perfcake.ide.intellij.editor.ScenarioEditor;
 
@@ -52,6 +55,7 @@ public class PluginWatcher implements ProjectComponent {
 
     private final Project project;
     private final ServiceManager serviceManager;
+    private List<String> libraryDirs = Arrays.asList("lib", "src/main/lib");
 
     public PluginWatcher(Project project, ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
@@ -71,22 +75,42 @@ public class PluginWatcher implements ProjectComponent {
 
     @Override
     public void initComponent() {
-        LibraryListener listener = new LibraryListener();
+        long start = System.currentTimeMillis();
 
+        LibraryLoader libraryLoader = new LibraryLoader(project, serviceManager);
+
+        // load libraries in PROJECT/lib and PROJECT/src/main/resources/lib directories
+        findLibraries(libraryLoader);
+
+        // attach listener which monitors lib directories for new components
+        LibraryListener listener = new LibraryListener(libraryLoader);
         VirtualFileManager.getInstance().addVirtualFileListener(listener);
 
-        LibraryLoader libraryLoader = new LibraryLoader(listener);
-        VfsUtilCore.iterateChildrenRecursively(project.getBaseDir(), new VirtualFileFilter() {
-            @Override
-            public boolean accept(VirtualFile file) {
-                return true;
-            }
-        }, libraryLoader);
+        long time = System.currentTimeMillis() - start;
+        logger.debug("Plugin watcher initialization. Took " + time);
 
-        if (libraryLoader.isLibrariesModified()) {
-            serviceManager.getComponentCatalogue().update();
+    }
+
+    private void findLibraries(LibraryLoader libraryLoader) {
+        boolean librariesModified = false;
+        for (String dir : libraryDirs) {
+
+            VirtualFile libDir = project.getBaseDir().findFileByRelativePath(dir);
+
+            if (libDir != null && libDir.isDirectory()) {
+                VirtualFile[] files = libDir.getChildren();
+                for (VirtualFile f : files) {
+                    if (libraryLoader.isJarFile(f)) {
+                        libraryLoader.addLibrary(f);
+                        librariesModified = true;
+                    }
+                }
+            }
         }
 
+        if (librariesModified) {
+            libraryLoader.scanLibraries();
+        }
     }
 
     @Override
@@ -100,67 +124,42 @@ public class PluginWatcher implements ProjectComponent {
         return "perfcake-plugin-watcher";
     }
 
-    private static class LibraryLoader implements ContentIterator {
-        private final LibraryListener listener;
-        private boolean librariesModified = false;
+    private class LibraryLoader {
+        private Project project;
+        private ServiceManager serviceManager;
 
-        public LibraryLoader(LibraryListener listener) {
-            this.listener = listener;
+        public LibraryLoader(Project project, ServiceManager serviceManager) {
+            this.project = project;
+            this.serviceManager = serviceManager;
         }
 
-        @Override
-        public boolean processFile(VirtualFile fileOrDir) {
-            if (listener.isJarFile(fileOrDir) && isInLibDirectory(fileOrDir)) {
-                listener.processFile(fileOrDir);
-                librariesModified = true;
+        public void addLibrary(VirtualFile library) {
+            try {
+                ComponentCatalogue componentCatalogue = serviceManager.getComponentCatalogue();
+                componentCatalogue.addSoftwareLibrary(VirtualFileConverter.convertPath(library));
+            } catch (PerfCakeException | PerfCakeResourceException e) {
+                Notification notification = new Notification(IntellijUtils.PERFCAKE_NOTIFICATION_ID, "Cannot load a library",
+                        String.format("Library %s cannot be loaded. See log for more details.", library.getName()),
+                        NotificationType.WARNING);
+                Notifications.Bus.notify(notification);
+                logger.warn("Cannot load  jar " + library, e);
             }
-            return true;
         }
 
-        private boolean isInLibDirectory(VirtualFile jarFile) {
-            if (jarFile.getParent() != null && "lib".equals(jarFile.getParent().getName())) {
-                return true;
+        public boolean isInLibDirectory(VirtualFile jarFile) {
+            if (jarFile == null || jarFile.getParent() == null) {
+                return false;
+            }
+
+            for (String dir : libraryDirs) {
+                VirtualFile libDir = project.getBaseDir().findFileByRelativePath(dir);
+
+                if (libDir != null && libDir.equals(jarFile.getParent())) {
+                    return true;
+                }
             }
 
             return false;
-        }
-
-        public boolean isLibrariesModified() {
-            return librariesModified;
-        }
-    }
-
-    private class LibraryListener extends VirtualFileAdapter {
-
-        @Override
-        public void fileCreated(@NotNull VirtualFileEvent event) {
-            super.fileCreated(event);
-            processFile(event.getFile());
-        }
-
-        @Override
-        public void fileMoved(@NotNull VirtualFileMoveEvent event) {
-            super.fileMoved(event);
-            processFile(event.getFile());
-        }
-
-        @Override
-        public void fileCopied(@NotNull VirtualFileCopyEvent event) {
-            super.fileCopied(event);
-            processFile(event.getFile());
-        }
-
-        public void processFile(VirtualFile file) {
-            if (isJarFile(file)) {
-                try {
-                    ComponentCatalogue componentCatalogue = serviceManager.getComponentCatalogue();
-                    componentCatalogue.addSoftwareLibrary(VirtualFileConverter.convertPath(file));
-                    componentCatalogue.update();
-                } catch (PerfCakeException | PerfCakeResourceException e) {
-                    //TODO(show notification)
-                    logger.warn("Cannot load  jar " + file, e);
-                }
-            }
         }
 
         public boolean isJarFile(VirtualFile file) {
@@ -173,6 +172,50 @@ public class PluginWatcher implements ProjectComponent {
             }
 
             return false;
+        }
+
+        public void scanLibraries() {
+            serviceManager.getComponentCatalogue().update();
+        }
+    }
+
+    private class LibraryListener extends VirtualFileAdapter {
+
+        private LibraryLoader loader;
+
+        public LibraryListener(LibraryLoader loader) {
+            this.loader = loader;
+        }
+
+        @Override
+        public void fileCreated(@NotNull VirtualFileEvent event) {
+            super.fileCreated(event);
+            processByLoader(event.getFile());
+        }
+
+        @Override
+        public void fileDeleted(@NotNull VirtualFileEvent event) {
+            super.fileDeleted(event);
+            processByLoader(event.getFile());
+        }
+
+        @Override
+        public void fileMoved(@NotNull VirtualFileMoveEvent event) {
+            super.fileMoved(event);
+            processByLoader(event.getFile());
+        }
+
+        @Override
+        public void fileCopied(@NotNull VirtualFileCopyEvent event) {
+            super.fileCopied(event);
+            processByLoader(event.getFile());
+        }
+
+        private void processByLoader(VirtualFile file) {
+            if (loader.isInLibDirectory(file) && loader.isJarFile(file)) {
+                loader.addLibrary(file);
+                loader.scanLibraries();
+            }
         }
     }
 }
