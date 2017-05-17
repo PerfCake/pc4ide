@@ -101,7 +101,7 @@ public class NewScenarioAction extends AnAction {
                 openFileDescriptor.navigate(true);
             } catch (ModelSerializationException | ModelConversionException e1) {
                 Notification error = IntellijUtils.createNotification("Cannot create scenario", NotificationType.ERROR)
-                        .setContent(String.format("Caused by: %s. See log for more details"));
+                        .setContent(String.format("Caused by: %s. See log for more details", e1.getMessage()));
                 Notifications.Bus.notify(error, project);
                 logger.error("Cannot create scenario", e1);
                 return;
