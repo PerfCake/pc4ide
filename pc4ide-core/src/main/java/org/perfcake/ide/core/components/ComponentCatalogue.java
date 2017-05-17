@@ -32,9 +32,11 @@ import org.perfcake.PerfCakeException;
 public interface ComponentCatalogue {
 
     /**
-     * List of the default packages, that are scanned by default for PerfCake components. These packages will be always scanned.
+     * List of the default packages, that are scanned by default for PerfCake components.
+     * These packages will be always scanned. Note that even if you specify "." for all packages, Reflections library
+     * do not always be able to load them, so it is more safe to locate these packages manually.
      */
-    String[] DEFAULT_PACKAGES = new String[] {"org.perfcake", "."};
+    String[] DEFAULT_PACKAGES = new String[] {"org.perfcake", "org", "com", "."};
 
 
     /**
