@@ -22,9 +22,6 @@ package org.perfcake.ide.intellij;
 
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
@@ -77,16 +74,6 @@ public class VirtualFileConverter {
             throw new IllegalArgumentException("file cannot be null");
         }
 
-        Path p = null;
-        // convert using URI
-        URL url = null;
-        try {
-            url = new URL(file.getUrl());
-            p = Paths.get(url.toURI());
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new PerfCakeResourceException("Cannot convert VirtualFile to Path.", e);
-        }
-
-        return p;
+        return Paths.get(file.getCanonicalPath());
     }
 }
