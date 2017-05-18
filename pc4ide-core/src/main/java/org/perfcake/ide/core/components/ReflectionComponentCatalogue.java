@@ -30,11 +30,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.perfcake.PerfCakeException;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
@@ -51,10 +53,16 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
 
     static final Logger logger = LoggerFactory.getLogger(ReflectionComponentCatalogue.class);
 
+    // maximum update timeout. If update does not finishes until this timeout, it is automatically marked as finished
+    // this allows to recover situation when a update thread is killed and it never releases the lock.
+    protected static final long MAX_UPDATE_TIMEOUT = 20000;
+
     /**
      * Map of components type and their implementations.
      */
     private Map<PerfCakeComponent, List<String>> components;
+
+    private AtomicBoolean updateInProgress = new AtomicBoolean(false);
 
     /**
      * List of additional packages which will be scanned.
@@ -70,38 +78,77 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
      */
     public ReflectionComponentCatalogue(String... additionalPackages) {
         this.additionalPackages = new HashSet<String>(Arrays.asList(additionalPackages));
-        components = new HashMap<>();
-        update();
+        components = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void update() {
-        final Reflections reflections = createReflections();
-        for (final PerfCakeComponent componentApi : PerfCakeComponent.values()) {
-            logger.debug("Scanning for perfcake components in packages {}.", String.join(",", additionalPackages));
-            List<String> list = new ArrayList<>();
-            for (Class<?> subType : reflections.getSubTypesOf(componentApi.getApi())) {
-                if (!subType.isInterface() && !Modifier.isAbstract(subType.getModifiers())) {
-                    String name;
-                    if (subType.getCanonicalName().startsWith(componentApi.getDefaultPackage())) {
-                        name = subType.getSimpleName();
-                    } else {
-                        name = subType.getCanonicalName();
+    public synchronized void update() {
+        updateInProgress.set(true);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Reflections reflections = createReflections();
+                    for (final PerfCakeComponent componentApi : PerfCakeComponent.values()) {
+                        logger.debug("Scanning for perfcake components in packages {}.", String.join(",", additionalPackages));
+                        List<String> list = new ArrayList<>();
+                        for (Class<?> subType : reflections.getSubTypesOf(componentApi.getApi())) {
+                            if (!subType.isInterface() && !Modifier.isAbstract(subType.getModifiers())) {
+                                String name;
+                                if (subType.getCanonicalName().startsWith(componentApi.getDefaultPackage())) {
+                                    name = subType.getSimpleName();
+                                } else {
+                                    name = subType.getCanonicalName();
+                                }
+
+                                logger.trace("Component found. Type: {}, Name: {}", componentApi.name(), name);
+                                list.add(name);
+                            }
+                        }
+
+                        components.put(componentApi, list);
                     }
 
-                    logger.trace("Component found. Type: {}, Name: {}", componentApi.name(), name);
-                    list.add(name);
+                } catch (Exception e) {
+                    logger.warn("Exception during component scanning", e);
+                } finally {
+                    updateInProgress.set(false);
                 }
             }
+        };
 
-            components.put(componentApi, list);
-        }
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
-    public List<String> list(PerfCakeComponent component) {
-        return Collections.unmodifiableList(components.get(component));
+    public synchronized List<String> list(PerfCakeComponent component) {
+        waitUntilUpdateFinishes();
+        List<String> list = components.get(component);
+        if (list == null)  {
+            list = Collections.emptyList();
+        }
+        return Collections.unmodifiableList(list);
 
+    }
+
+    /**
+     * If an update was triggered, then this method waits until the update finishes.
+     */
+    public void waitUntilUpdateFinishes() {
+        // If update is in progress, then wait
+        long start = System.currentTimeMillis();
+        while (updateInProgress.get()) {
+            if (System.currentTimeMillis() - start > MAX_UPDATE_TIMEOUT) {
+                updateInProgress.set(false);
+                break;
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                logger.debug("Wait for lock interrupted", e);
+            }
+        }
     }
 
     @Override
@@ -137,7 +184,7 @@ public class ReflectionComponentCatalogue implements ComponentCatalogue {
                 .addClassLoader(this.getClass().getClassLoader())
                 .addClassLoader(ClassLoader.getSystemClassLoader());
 
-        for (String p: allPackages) {
+        for (String p : allPackages) {
             configuration.addUrls(ClasspathHelper.forPackage(p));
         }
         reflections = new Reflections(configuration);

@@ -92,7 +92,6 @@ public class PluginWatcher implements ProjectComponent {
     }
 
     private void findLibraries(LibraryLoader libraryLoader) {
-        boolean librariesModified = false;
         for (String dir : libraryDirs) {
 
             VirtualFile libDir = project.getBaseDir().findFileByRelativePath(dir);
@@ -102,15 +101,13 @@ public class PluginWatcher implements ProjectComponent {
                 for (VirtualFile f : files) {
                     if (libraryLoader.isJarFile(f)) {
                         libraryLoader.addLibrary(f);
-                        librariesModified = true;
                     }
                 }
             }
         }
 
-        if (librariesModified) {
-            libraryLoader.scanLibraries();
-        }
+        //scan libraries now since the IntellijServiceManager do not perform this task.
+        libraryLoader.scanLibraries();
     }
 
     @Override

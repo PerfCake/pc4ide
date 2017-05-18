@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import javax.swing.event.HyperlinkEvent;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
-import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.core.exec.SimpleInstallationValidator;
 import org.perfcake.ide.intellij.IntellijUtils;
 import org.perfcake.ide.intellij.settings.Pc4ideSettings;
 
@@ -45,16 +45,8 @@ import org.perfcake.ide.intellij.settings.Pc4ideSettings;
 public class PerfCakeInstallationChecker implements ApplicationComponent {
 
     public static final String PERFCAKE_DIR_CONFIG = "perfcake-dir-config";
-    private ServiceManager serviceManager;
 
-    /**
-     * Instantiates component.
-     *
-     * @param serviceManager service manager.
-     */
-    public PerfCakeInstallationChecker(ServiceManager serviceManager) {
-        this.serviceManager = serviceManager;
-    }
+    private PerfCakeInstallationValidator validator = new SimpleInstallationValidator();
 
     @Override
     public void initComponent() {
@@ -65,7 +57,6 @@ public class PerfCakeInstallationChecker implements ApplicationComponent {
      * Validates if PerfCake installation dir is set properly. If not, then notification is displayed.
      */
     public void validateInstallationDir() {
-        PerfCakeInstallationValidator validator = serviceManager.getInstallationValidator();
         String installationDir = PropertiesComponent.getInstance().getValue(Pc4ideSettings.INSTALLATION_DIR_KEY, "");
         String content = null;
         if (installationDir.isEmpty() || !validator.isValid(Paths.get(installationDir))) {

@@ -21,7 +21,6 @@
 package org.perfcake.ide.intellij.settings;
 
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -35,7 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.perfcake.ide.core.exec.PerfCakeInstallationValidator;
-import org.perfcake.ide.editor.ServiceManager;
+import org.perfcake.ide.core.exec.SimpleInstallationValidator;
 
 /**
  * Forms with PerfCake settings.
@@ -62,8 +61,7 @@ public class PerfCakeSettingsForm extends JPanel {
         wrongLocationLabel = new JLabel();
         wrongLocationLabel.setForeground(Color.red);
         String storedInstallation = PropertiesComponent.getInstance().getValue(Pc4ideSettings.INSTALLATION_DIR_KEY, "");
-        PerfCakeInstallationValidator validator = ApplicationManager.getApplication()
-                .getComponent(ServiceManager.class).getInstallationValidator();
+        PerfCakeInstallationValidator validator = new SimpleInstallationValidator();
 
         if (storedInstallation != null && !validator.isValid(Paths.get(storedInstallation))) {
             wrongLocationLabel.setText(INVALID_PATH_MESSAGE);

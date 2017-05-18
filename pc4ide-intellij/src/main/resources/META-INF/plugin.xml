@@ -31,16 +31,16 @@
 
     <application-components>
         <component>
-            <interface-class>org.perfcake.ide.editor.ServiceManager</interface-class>
-            <implementation-class>org.perfcake.ide.intellij.components.IntellijServiceManager</implementation-class>
-        </component>
-        <component>
             <implementation-class>org.perfcake.ide.intellij.components.PerfCakeInstallationChecker</implementation-class>
         </component>
     </application-components>
     <project-components>
         <component>
             <implementation-class>org.perfcake.ide.intellij.components.PluginWatcher</implementation-class>
+        </component>
+        <component>
+            <interface-class>org.perfcake.ide.editor.ServiceManager</interface-class>
+            <implementation-class>org.perfcake.ide.intellij.components.IntellijServiceManager</implementation-class>
         </component>
     </project-components>
 

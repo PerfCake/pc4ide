@@ -60,8 +60,10 @@ public abstract class AbstractServiceManager implements ServiceManager {
 
     /**
      * Creates service manager with all services initialized.
+     *
+     * @param updateComponents whether component catalog should scan for components and update its list
      */
-    public AbstractServiceManager() {
+    public AbstractServiceManager(boolean updateComponents) {
         docsService = createDocsService();
         modelFactory = new ValidModelFactory(docsService);
         viewFactory = new GraphicalViewFactory();
@@ -70,7 +72,18 @@ public abstract class AbstractServiceManager implements ServiceManager {
         installationValidator = new SimpleInstallationValidator();
         componentLoader = new ComponentLoaderImpl();
         componentCatalogue = new ReflectionComponentCatalogue();
+        if (updateComponents) {
+            componentCatalogue.update();
+        }
         executionFactory = new NoopExecutionFactory();
+    }
+
+    /**
+     * Creates service manager with all services initialized.
+     *
+     */
+    public AbstractServiceManager() {
+        this(true);
     }
 
     public DocsService getDocsService() {

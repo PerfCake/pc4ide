@@ -20,7 +20,7 @@
 
 package org.perfcake.ide.intellij.components;
 
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
 import org.perfcake.ide.editor.AbstractServiceManager;
 import org.perfcake.ide.intellij.IntelliJSwingFactory;
@@ -33,9 +33,13 @@ import org.perfcake.ide.intellij.editor.IntellijExecutionFactory;
  *
  * @author Jakub Knetl
  */
-public class IntellijServiceManager extends AbstractServiceManager implements ApplicationComponent {
+public class IntellijServiceManager extends AbstractServiceManager implements ProjectComponent {
 
     public static final String NAME = "ServiceManager";
+
+    public IntellijServiceManager() {
+        super(false);
+    }
 
     @Override
     public void initComponent() {
@@ -53,5 +57,15 @@ public class IntellijServiceManager extends AbstractServiceManager implements Ap
     @Override
     public String getComponentName() {
         return String.format("%s.%s", IntellijUtils.PLUGIN_ID, NAME);
+    }
+
+    @Override
+    public void projectOpened() {
+
+    }
+
+    @Override
+    public void projectClosed() {
+
     }
 }

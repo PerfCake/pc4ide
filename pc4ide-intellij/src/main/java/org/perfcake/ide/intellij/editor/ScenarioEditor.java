@@ -46,7 +46,6 @@ import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.perfcake.PerfCakeException;
-import org.perfcake.ide.core.components.ReflectionComponentCatalogue;
 import org.perfcake.ide.core.exception.PerfCakeResourceException;
 import org.perfcake.ide.core.manager.ScenarioManager;
 import org.perfcake.ide.core.manager.ScenarioManagers;
@@ -99,7 +98,7 @@ public class ScenarioEditor implements FileEditor {
             manager = ScenarioManagers.createScenarioManager(VirtualFileConverter.convertPath(file));
             ExecutionFactory executionFactory = new IntellijExecutionFactory();
 
-            ServiceManager serviceManager = ApplicationManager.getApplication().getComponent(ServiceManager.class);
+            ServiceManager serviceManager = project.getComponent(ServiceManager.class);
 
             Document document = FileDocumentManager.getInstance().getDocument(file);
             IntellijCommandInvoker commandInvoker = new IntellijCommandInvoker(project, this);

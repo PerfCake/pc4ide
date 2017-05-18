@@ -62,6 +62,7 @@ public class ReflectionCatalogueTest {
     @Test
     public void testContainsDefaultComponents() {
         catalogue = new ReflectionComponentCatalogue();
+        catalogue.update();
 
         // check that default components are present
         checkDefaultPerfcakeComponents();
@@ -75,6 +76,7 @@ public class ReflectionCatalogueTest {
         packages.add(ADDITIONAL_IMPLEMENTATIONS);
 
         catalogue = new ReflectionComponentCatalogue(ADDITIONAL_IMPLEMENTATIONS);
+        catalogue.update();
 
         // bob's sender is present
         assertThat(catalogue.list(PerfCakeComponent.SENDER), hasItem(BOB_SENDER));
